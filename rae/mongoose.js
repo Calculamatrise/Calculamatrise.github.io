@@ -1,6 +1,6 @@
 import { mongoose } from 'mongoose';
 
-module.exports = {
+var mongo = {
     init: () => {
         const dbOptions = {
             useNewUrlParser: true,
@@ -26,3 +26,4 @@ module.exports = {
         });
     }
 }
+export { mongo }
