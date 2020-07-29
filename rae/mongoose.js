@@ -17,16 +17,12 @@ module.exports = {
         mongoose.set('useFindAndModify', false);
         mongoose.Promise = global.Promise;
 
-        mongoose.connection.on('connected', () => {
-            console.log('Mongoose has successfully connected!');
-        });
-
         mongoose.connection.on('err', err => {
-            console.log(`Mongoose connection error: \n${err}`);
+            console.error(`Mongoose connection error: \n${err}`);
         });
 
         mongoose.connection.on('disconnected', () => {
-            console.warn('Mongoose connection lost');
+            console.warn('Lost connection to the Database');
         });
     }
 }
