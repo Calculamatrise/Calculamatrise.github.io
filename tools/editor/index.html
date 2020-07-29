@@ -1,0 +1,32 @@
+<link rel="icon" href="images/icons/icon_128.png">
+<DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Track Editor</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="style.css" rel="stylesheet">
+	<script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+	<div class="editor">
+		<h3>Track Editor v1.0</h3>
+		<textarea id="input" cols="30" rows="10" placeholder="Paste the code you want to edit here." spellcheck="false"></textarea>
+		<br>
+		Move X: <input type="number" id="move-x" value="0" step="1">
+		<br>
+		Move Y: <input type="number" id="move-y" value="0" step="1">
+		<br>
+		Scale X: <input type="number" id="scale-x" value="1" step="any">
+		<br>
+		Scale Y: <input type="number" id="scale-y" value="1" step="any">
+		<br>
+		Rotate: <input type="number" id="rotate" value="0" step="any">
+		<br>
+		<button id="transform">Transform</button>
+		Chars: <span id="chars">0</span>k
+		<br>
+		<textarea id="output" cols="30" rows="10" placeholder="Output will appear here." spellcheck="false" readonly></textarea>
+	</div>
+</body>
+</html>
