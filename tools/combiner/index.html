@@ -14,7 +14,88 @@
             <br>
             <textarea type="text"id=output readonly placeholder='Combined Track'></textarea>
         </div>
-        <script type="text/javascript" src="script.js"></script>
-        <link href="style.css" rel="stylesheet">
+        <script type="text/javascript">
+            var input1 = document.getElementById("input1"),
+                input2 = document.getElementById("input2"),
+                output = document.getElementById("output");
+            function run() {
+                i1 = input1.value.split('#');
+                i2 = input2.value.split('#');
+                combined = `${i1[0]},${i2[0]}#${i1[1]},${i2[1]}#${i1[2]},${i2[2]}`;
+                output.value = combined;
+                output.select();
+            }
+            function copy() {
+                output.select();
+                document.execCommand('copy');
+            }
+            input1.addEventListener('click',function() {
+                input1.select();
+            });
+            input2.addEventListener('click',function() {
+                input2.select();
+            });
+            output.addEventListener('click',function() {
+                output.select();
+            });
+            window.addEventListener('keydown',function(e) {
+                var key = e.keyCode || e.which;
+                if (key == 13) run();
+                if (key == 67) copy();
+            });
+        </script>
+        <style>
+            html {
+                background: #1d1d1d;
+                font-family: Arial,helvetica,sans-serif;
+            }
+            h1 {
+                color: #dfdfdf;
+            }
+            textarea {
+                color: #bebebe;
+                background: #595959;
+                border: none;
+            }
+            textarea:hover,textarea:focus {
+                background: #404040;
+                border: none;
+            }
+            textarea[id=input1],textarea[id=input2] {
+                position: relative;
+                width:49%;
+                height:100px;
+            }
+            textarea[id=output] {
+                width:98.5%;
+                height:200px;
+            }
+            input.run {
+                position: absolute;
+                top: 20px;
+                left: 270px;
+                color: #2d2d2d;
+                padding: 10px;
+                background: #dfdfdf;
+                border: 1px solid #bebebe;
+                border-radius: 30px;
+                display: inline-flex;
+            }
+            input.copy {
+                position: absolute;
+                top: 20px;
+                left: 330px;
+                color: #2d2d2d;
+                padding: 10px;
+                background: #dfdfdf;
+                border: 1px solid #bebebe;
+                border-radius: 30px;
+                display: inline-flex;
+            }
+            input:hover {
+                opacity: 0.9;
+                cursor: pointer
+            }
+        </style>
     </body>
 </html>
