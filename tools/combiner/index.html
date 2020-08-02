@@ -4,16 +4,17 @@
         <title>Track Combiner</title>
         <link rel="icon" href="images/icons/icon_128.png">
         <link href="style.css" rel="stylesheet">
-        <script type="text/javascript" src="script.js"></script>
     </head>
     <body>
         <div id=contain>
-            <h1>FRHD Track Combiner</h1>
-            <p>Hotkeys: Enter = Run, C = Copy Code</p>
-        <textarea id=input1 rows=auto cols=auto spellcheck=false placeholder='Track 1'></textarea>
-        <textarea id=input2 rows=auto cols=auto spellcheck=false placeholder='Track 2'></textarea>
-        <br>
-        <textarea id=output rows=auto cols=auto spellcheck=false readonly placeholder='Combined Track'></textarea>
+            <h1>Track Combiner</h1>
+            <input type="button" value="Run" class="run" onclick="run()"/>
+            <input type="button" value="Copy" class="copy" onclick="copy()"/>
+            <textarea id="input1" rows="auto" cols="auto" spellcheck="false" placeholder="Track 1"></textarea>
+            <textarea id="input2" rows="auto" cols="auto" spellcheck="false" placeholder="Track 2"></textarea>
+            <br>
+            <textarea type="text"id=output readonly placeholder='Combined Track'></textarea>
         </div>
     </body>
+    <script type="text/javascript" src="script.js"></script>
 </html>
