@@ -33,6 +33,12 @@ header {
   background: #40404080;
 }
 
+#new {
+  background-image: url(https://imgur.com/7bZP6pv.png);
+  background-repeat: no-repeat;
+  background-position: 5px 2px;
+}
+
 button {
   color: #404040;
   padding: 10px;
@@ -44,7 +50,7 @@ button {
 
 button:hover {
   cursor: pointer;
-  opacity: 0.9;
+  opacity: 0.8;
 }
 
 button:disabled {
