@@ -7,95 +7,68 @@
     <body>
         <div id=contain>
             <h1>Track Combiner</h1>
-            <input type="button" value="Run" class="run" onclick="run()"/>
-            <input type="button" value="Copy" class="copy" onclick="copy()"/>
+            <input type="button" value="Run" onclick="run()">
+            <input type="button" value="Copy" onclick="copy()">
+            <input type="button" value="Add Track" onclick="add()">
+            <br><br>
             <textarea id="input1" rows="auto" cols="auto" spellcheck="false" placeholder="Track 1"></textarea>
             <textarea id="input2" rows="auto" cols="auto" spellcheck="false" placeholder="Track 2"></textarea>
-            <br>
-            <textarea type="text"id=output readonly placeholder='Combined Track'></textarea>
+            <div id="div0"></div><br>
+            <textarea type="text" id=output placeholder='Combined Track' style="width:325px" readonly></textarea>
         </div>
         <script type="text/javascript">
-            var input1 = document.getElementById("input1"),
-                input2 = document.getElementById("input2"),
-                output = document.getElementById("output");
-            function run() {
-                i1 = input1.value.split('#');
-                i2 = input2.value.split('#');
-                combined = `${i1[0]},${i2[0]}#${i1[1]},${i2[1]}#${i1[2]},${i2[2]}`;
-                output.value = combined;
-                output.select();
+            this.output = document.getElementById("output");
+            this.inputs = [
+                document.getElementById("input1"),
+                document.getElementById("input2")
+            ];
+            this.black = "";
+            this.grey = "";
+            this.powerups = "";
+
+            function add() {
+            var e = document.createElement("textarea");
+            e.id = inputs.length + 1;
+            e.rows = "auto";
+            e.spellcheck = "false";
+            e.placeholder = "Track " + (inputs.length + 1);
+            inputs.push(e);
+            document.getElementById("div0").appendChild(e);
             }
+
+            function run() {
+            inputs.forEach(i => {
+                black += (i.value.split("#")[0] ? i.value.split("#")[0] : "") + (i.value.split("#")[0] ? "," : "")
+                grey += (i.value.split("#")[1] ? i.value.split("#")[1] : "") + (i.value.split("#")[1] ? "," : "")
+                powerups += (i.value.split("#")[2] ? i.value.split("#")[2] : "") + (i.value.split("#")[2] ? "," : "")
+            });
+            this.combined = (black.endsWith(",") ? black.slice(0,-1) : black) + "#" + (grey.endsWith(",") ? grey.slice(0,-1) : grey) + "#" + (powerups.endsWith(",") ? powerups.slice(0,-1) : powerups);
+            output.value = combined;
+            output.select();
+            }
+
             function copy() {
-                output.select();
+            output.select();
                 document.execCommand('copy');
             }
+
             input1.addEventListener('click',function() {
                 input1.select();
             });
+
             input2.addEventListener('click',function() {
                 input2.select();
             });
+
             output.addEventListener('click',function() {
                 output.select();
             });
+
             window.addEventListener('keydown',function(e) {
                 var key = e.keyCode || e.which;
                 if (key == 13) run();
                 if (key == 67) copy();
             });
         </script>
-        <style>
-            html {
-                background: #1d1d1d;
-                font-family: Arial,helvetica,sans-serif;
-            }
-            h1 {
-                color: #dfdfdf;
-            }
-            textarea {
-                color: #bebebe;
-                background: #595959;
-                border: none;
-            }
-            textarea:hover,textarea:focus {
-                background: #404040;
-                border: none;
-            }
-            textarea[id=input1],textarea[id=input2] {
-                position: relative;
-                width:49%;
-                height:100px;
-            }
-            textarea[id=output] {
-                width:98.5%;
-                height:200px;
-            }
-            input.run {
-                position: absolute;
-                top: 20px;
-                left: 270px;
-                color: #2d2d2d;
-                padding: 10px;
-                background: #dfdfdf;
-                border: 1px solid #bebebe;
-                border-radius: 30px;
-                display: inline-flex;
-            }
-            input.copy {
-                position: absolute;
-                top: 20px;
-                left: 330px;
-                color: #2d2d2d;
-                padding: 10px;
-                background: #dfdfdf;
-                border: 1px solid #bebebe;
-                border-radius: 30px;
-                display: inline-flex;
-            }
-            input:hover {
-                opacity: 0.9;
-                cursor: pointer
-            }
-        </style>
     </body>
 </html>
