@@ -1,56 +1,69 @@
 header {
-  border: 1px solid black;
+    border: 1px solid black;
 }
 
 #logoBlock{
-	background: url('../images/banner.png') center;
-  height: 200px;
-  left: 0;
-  top: 0;
-  width: 100%;
-  z-index: 3
+    background-image: linear-gradient(to-bottom, #fff, #000);
+    height: 200px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    z-index: 3
 }
  
 #div {
-  margin-top: 10px;
-  display: block;
-  width: 100px;
-  float:left;
-  height:100px;
-  margin-left:20px;
+    margin-top: 10px;
+    display: block;
+    width: 100px;
+    float:left;
+    height:100px;
+    margin-left:20px;
 }
 
 #div1 {
-  margin-top: 10px;
-  display: block;
-  width: 100px;
-  float:left;
-  height:100px;
-  margin-left:180px;
+    margin-top: 10px;
+    display: block;
+    width: 100px;
+    float:left;
+    height:100px;
+    margin-left:180px;
 }
 
 #tabs {
-  background: #40404080;
+    background: #40404080;
 }
 
 button {
-  color: #404040;
-  padding: 10px;
-  width: 125px;
-  height: 40px;
-  background: #dfdfdf;
-  border: 1px solid #bebebe;
-  border-radius: 12.5px;
-  display: inline-flex;
-  text-align: center;
+    color: #404040;
+    padding: 10px;
+    width: 125px;
+    height: 40px;
+    background: #ccc;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: background 1s;
+}
+
+.button_main {
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    display: inline-block;
+    height: 50px;
+    width: 130px;
+    overflow: hidden;
 }
 
 button:hover {
-  cursor: pointer;
-  opacity: 0.8;
+    cursor: pointer;
+    background-color: #999999;
+    transition: background 50ms;
 }
 
 button:disabled {
-  cursor: default;
-  opacity: 0.5;
+    cursor: default;
+    opacity: 0.5;
 }
