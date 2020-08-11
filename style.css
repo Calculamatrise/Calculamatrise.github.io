@@ -36,34 +36,55 @@ header {
 button {
     color: #404040;
     padding: 10px;
-    width: 125px;
-    height: 40px;
+    width: 130px;
+    height: 50px;
     background: #ccc;
     border: 1px solid #ccc;
-    border-radius: 20px;
+    border-radius: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    transition: background 1s;
-}
-
-.button_main {
-    border: 1px solid #ccc;
-    border-radius: 30px;
-    display: inline-block;
-    height: 50px;
-    width: 130px;
-    overflow: hidden;
+    transition: all 1s;
 }
 
 button:hover {
     cursor: pointer;
     background-color: #999999;
-    transition: background 50ms;
+    transition: all 50ms;
+}
+
+button:active {
+    border: none;
 }
 
 button:disabled {
     cursor: default;
     opacity: 0.5;
+}
+
+.abutton {
+	position: relative;
+	transition: all 0.4s;
+}
+.abutton:hover {
+	background-color: transparent;
+    text-shadow: ntwo;
+}
+.abutton:hover:before {
+	top: 0;
+	bottom: auto;
+    height: 100%;
+}
+.abutton:before {
+	display: block;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 0;
+	width: 100%;
+	z-index: -1;
+	content: '';
+	background: #aaa;
+	transition: all 0.4s;
 }
