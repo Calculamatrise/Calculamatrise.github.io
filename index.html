@@ -1,52 +1,26 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Free Rider Tools</title>
+        <title>Development</title>
         <link rel="icon" href="images/icons/icon_128.png">
         <link href="style.css" rel="stylesheet">
     </head>
     <body>
-        <header id="logoBlock" style="display: block;"></header>
-        <div id="tabs">
-        <div id="div">
-            <h2>Tools</h2>
-            <form action="tools/editor/" target="_blank">
-                <button type="submit" class="abutton">Editor Tool</button>
-            </form>
-            <br>
-            <form action="tools/visual_editor/" target="_blank">
-                <button type="submit" class="button_main">Visual Editor</button>
-            </form>
-            <br>
-            <form action="tools/mover/" target="_blank">
-                <button type="submit" class="button_main">Track Mover</button>
-            </form>
-            <br>
-            <form action="tools/combiner/" target="_blank">
-                <button type="submit" class="button_main">Track Combiner</button>
-            </form>
-            <br>
-            <form action="tools/reverser/" target="_blank">
-                <button type="submit" class="button_main">Track Reverser</button>
-            </form>
-        </div>
-        <div id="div1">
-            <h2>Editors</h2>
-            <form action="https://blackhatrider.github.io/editor/" target="_blank">
-                <button type="submit" class="button_main">BHR Editor</button>
-            </form>
-            <br>
-            <form action="editor/" target="_blank">
-                <button type="submit" class="button_main">Free Rider Editor</button>
-            </form>
-        </div>
-        </div>
-        <style>
-            #new {
-                background-image: url(https://imgur.com/7bZP6pv.png);
-                background-repeat: no-repeat;
-                background-position: 5px 2px;
-            }
-        </style>
+        <header>
+            <div class="header">
+                <input type="button" onclick="location.href=''" value="Home" class="button" active="true">
+                <input type="button" onclick="location.href='rae/'" value="Rae Dashboard" class="button">
+                <input type="button" onclick="location.href='tools/'" onmouseenter="onmousemove=(e)=>{this.y = e.clientY};document.getElementById('frtools-dropdown').style.display='block'" onmouseleave="this.y<50 ? document.getElementById('frtools-dropdown').style.display='none' : null" value="Free Rider Tools" class="button" id="frtools">
+                <div id="frtools-dropdown" onmouseenter="onmousemove=(e)=>{this.yy = e.clientY}" onmouseleave="this.yy>70 ? document.getElementById('frtools-dropdown').style.display='none' : null">
+                    <input type="button" onclick="location.href='tools/combiner/'" value="Combiner" class="button"><br>
+                    <input type="button" onclick="location.href='tools/editor/'" value="Advanced Editor" class="button"><br>
+                    <input type="button" onclick="location.href='tools/free_rider_editor/'" value="Free Rider Editor" class="button"><br>
+                    <input type="button" onclick="location.href='tools/mover/'" value="Mover" class="button"><br>
+                    <input type="button" onclick="location.href='tools/reverser/'" value="Reverser" class="button"><br>
+                    <input type="button" onclick="location.href='tools/visual_editor/'" value="Visual Editor" class="button">
+                </div>
+                <input type="button" onclick="location.href='contact/'" value="Contact" class="button">
+            </div>
+        </header>
     </body>
 </html>

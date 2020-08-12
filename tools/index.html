@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Free Rider Tools</title>
+        <link rel="icon" href="images/icons/icon_128.png">
+        <link href="style.css" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            <div class="header">
+                <input type="button" onclick="location.href='/'" value="Home" class="button" active="true">
+                <input type="button" onclick="location.href='/rae/'" value="Rae Dashboard" class="button">
+                <input type="button" onclick="location.href=''" onmouseenter="onmousemove=(e)=>{this.y = e.clientY};document.getElementById('frtools-dropdown').style.display='block'" onmouseleave="this.y<55 ? document.getElementById('frtools-dropdown').style.display='none' : null" value="Free Rider Tools" class="button" id="frtools">
+                <div id="frtools-dropdown" onmouseenter="onmousemove=(e)=>{this.yy = e.clientY}" onmouseleave="this.yy>62 ? document.getElementById('frtools-dropdown').style.display='none' : null">
+                    <input type="button" onclick="location.href='combiner/'" value="Combiner" class="button"><br>
+                    <input type="button" onclick="location.href='editor/'" value="Advanced Editor" class="button"><br>
+                    <input type="button" onclick="location.href='free_rider_editor/'" value="Free Rider Editor" class="button"><br>
+                    <input type="button" onclick="location.href='mover/'" value="Mover" class="button"><br>
+                    <input type="button" onclick="location.href='reverser/'" value="Reverser" class="button"><br>
+                    <input type="button" onclick="location.href='visual_editor/'" value="Visual Editor" class="button">
+                </div>
+                <input type="button" onclick="location.href='/contact/'" value="Contact" class="button">
+            </div>
+        </header>
+        <div id="tabs">
+        <div id="div-left">
+            <h2 class="title">Tools</h2>
+            <form action="editor/" target="_blank">
+                <button type="submit" class="abutton">Editor Tool</button>
+            </form>
+            <br>
+            <form action="visual_editor/" target="_blank">
+                <button type="submit" class="button_main">Visual Editor</button>
+            </form>
+            <br>
+            <form action="mover/" target="_blank">
+                <button type="submit" class="button_main">Track Mover</button>
+            </form>
+            <br>
+            <form action="combiner/" target="_blank">
+                <button type="submit" class="button_main">Track Combiner</button>
+            </form>
+            <br>
+            <form action="reverser/" target="_blank">
+                <button type="submit" class="button_main">Track Reverser</button>
+            </form>
+        </div>
+        <div id="div-right">
+            <h2 class="title">Editors</h2>
+            <form action="https://blackhatrider.github.io/editor/" target="_blank">
+                <button type="submit" class="button_main">BHR Editor</button>
+            </form>
+            <br>
+            <form action="freditor/" target="_blank">
+                <button type="submit" class="button_main">Free Rider Editor</button>
+            </form>
+        </div>
+        </div>
+        <style>
+            #new {
+                background-image: url(https://imgur.com/7bZP6pv.png);
+                background-repeat: no-repeat;
+                background-position: 5px 2px;
+            }
+        </style>
+    </body>
+</html>

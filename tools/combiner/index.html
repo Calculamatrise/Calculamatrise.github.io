@@ -2,19 +2,36 @@
 <html>
     <head>
         <title>Track Combiner</title>
-        <link rel="icon" href="/images/icons/icon_128.png">
+        <link rel="icon" href="/tools/images/icons/icon_128.png">
+        <link href="style.css" rel="stylesheet">
     </head>
     <body>
+        <header>
+            <div class="header">
+                <input type="button" onclick="location.href='/'" value="Home" class="button" active="true">
+                <input type="button" onclick="location.href='/rae/'" value="Rae Dashboard" class="button">
+                <input type="button" onclick="location.href='../'" onmouseenter="onmousemove=(e)=>{this.y = e.clientY};document.getElementById('frtools-dropdown').style.display='block'" onmouseleave="this.y<55 ? document.getElementById('frtools-dropdown').style.display='none' : null" value="Free Rider Tools" class="button" id="frtools">
+                <div id="frtools-dropdown" onmouseenter="onmousemove=(e)=>{this.yy = e.clientY}" onmouseleave="this.yy>62 ? document.getElementById('frtools-dropdown').style.display='none' : null">
+                    <input type="button" onclick="location.href=''" value="Combiner" class="button"><br>
+                    <input type="button" onclick="location.href='../editor/'" value="Advanced Editor" class="button"><br>
+                    <input type="button" onclick="location.href='../free_rider_editor/'" value="Free Rider Editor" class="button"><br>
+                    <input type="button" onclick="location.href='../mover/'" value="Mover" class="button"><br>
+                    <input type="button" onclick="location.href='../reverser/'" value="Reverser" class="button"><br>
+                    <input type="button" onclick="location.href='../visual_editor/'" value="Visual Editor" class="button">
+                </div>
+                <input type="button" onclick="location.href='/contact/'" value="Contact" class="button">
+            </div>
+        </header>
         <div id=contain>
-            <h1>Track Combiner</h1>
-            <input type="button" value="Run" onclick="run()">
-            <input type="button" value="Copy" onclick="copy()">
-            <input type="button" value="Add Track" onclick="add()">
+            <h1 class="title">Track Combiner</h1>
+            <input type="button" value="Run" onclick="run()" class="button">
+            <input type="button" value="Copy" onclick="copy()" class="button">
+            <input type="button" value="Add Track" onclick="add()" class="button">
             <br><br>
-            <textarea id="input1" rows="auto" cols="auto" spellcheck="false" placeholder="Track 1"></textarea>
-            <textarea id="input2" rows="auto" cols="auto" spellcheck="false" placeholder="Track 2"></textarea>
-            <div id="div0"></div><br>
-            <textarea type="text" id=output placeholder='Combined Track' style="width:325px" readonly></textarea>
+            <textarea id="input1" spellcheck="false" placeholder="Track 1"></textarea>
+            <textarea id="input2" spellcheck="false" placeholder="Track 2"></textarea>
+            <div id="div0"></div>
+            <textarea type="text" id="output" placeholder="Combined Track" readonly></textarea>
         </div>
         <script type="text/javascript">
             this.output = document.getElementById("output");
