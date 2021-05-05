@@ -81,8 +81,6 @@ button:disabled, .button:disabled {
 	height: 0;
 	width: 100%;
 	z-index: -1;
-	content: '';
-	background: #aaa;
 	transition: all 0.4s;
 }
 
