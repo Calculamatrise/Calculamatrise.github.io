@@ -9,8 +9,13 @@ html:active {
     transition: all 1s;
 }
 
+body {
+    display: flex;
+    margin: 50px;
+}
+
 div#main {
-    display: block;
+    display: inline-block;
     margin: auto;
     width: 700px;
     height: 400px;
@@ -33,5 +38,6 @@ a {
 }
 
 .author {
-    
+    padding-top: 35%;
+    text-align: center;
 }

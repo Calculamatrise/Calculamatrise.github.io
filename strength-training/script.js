@@ -13,7 +13,7 @@ document.onclick = (t) => {
     }
 }
 console.log(slide)
-document.title = "Strength Training - " + slides[slide].replace(/_/, " ").replace(/\.html/, "");
+document.title = "Strength Training - " + slides[slide].replace(/_/g, " ").replace(/\./, "");
 
 const icon = document.createElement("link");
 icon.rel = "icon";
