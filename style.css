@@ -46,7 +46,7 @@ header {
 .button:hover {
     cursor: pointer;
     color: #1d1d1d;
-    background-color: #aaa;
+    background-color: #ccc;
     transition: all 50ms;
 }
 
@@ -60,17 +60,13 @@ header {
     opacity: 0.5;
 }
 
-#frtools-dropdown {
+.dropdown {
 	width: 130px;
     display: none;
     margin-top: 7.5vh;
     margin-left: 24.9vw;
     position: relative;
     box-shadow: 1px 1px 20px 1px #aaa;
-}
-
-#frtools-dropdown .button {
-    border-radius: 0;
 }
 
 .abutton {
