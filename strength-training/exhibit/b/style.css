@@ -1,0 +1,42 @@
+html {
+    font-family: Arial, Helvetica, sans-serif;
+    opacity: 1;
+    transition: all 2s;
+}
+
+html:active {
+    opacity: .5;
+    transition: all 1s;
+}
+
+body {
+    display: flex;
+    justify-content: space-around;
+}
+
+body {
+    margin: 50px;
+}
+
+div#main {
+    display: block;
+    margin: auto;
+    width: 700px;
+    height: 400px;
+    padding: 20px;
+    border-radius: 30px;
+    box-shadow: 1px 1px 40px 5px #4e7686;
+}
+
+div#content {
+    height: 300px;
+}
+
+h2#title {
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+    color: #4e7686;
+}
