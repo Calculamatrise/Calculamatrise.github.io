@@ -3,13 +3,26 @@
     <head>
         <link rel="stylesheet" href="./style.css">
         <script src="./script.js"></script>
+        <style>
+            #a {
+                left: 0;
+            }
+
+            #b {
+                right: 0;
+            }
+
+            .button-large {
+                top: 0;
+                border: 0;
+                width: 50%;
+                height: 100%;
+                position: fixed;
+            }
+        </style>
     </head>
     <body>
-        <h2 id="title">Strength Training</h2>
-        <h4>Ayoob</h4>
-        <div class="options">
-            <input type="button" onclick="location.href='a'" value="Exhibit A">
-            <input type="button" onclick="location.href='b'" value="Exhibit B">
-        </div>
+        <input type="button" onclick="location.href='a'" value="Exhibit A" class="button-large" id="a">
+        <input type="button" onclick="location.href='b'" value="Exhibit B" class="button-large" id="b">
     </body>
 </html>
