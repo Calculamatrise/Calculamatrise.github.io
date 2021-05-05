@@ -12,7 +12,7 @@ document.onclick = (t) => {
         }
     }
 }
-
+console.log(slide)
 document.title = "Strength Training - " + slides[slide].replace(/_/, " ").replace(/\.html/, "");
 
 const icon = document.createElement("link");
