@@ -8,14 +8,29 @@ html {
 }
 
 header {
-	background: #f2f2f2;
-	padding: 10px;
+    display: flex;
+    padding: 10px;
+    margin-top: -1vh;
+    margin-bottom: 2vh;
+    background: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+}
+
+.header-left {
+    display: flex;
+}
+
+.header-right {
+    display: flex;
 }
 
 .header .button {
-    font-size: 13px;
     font-weight: bold;
     text-decoration: none;
+}
+
+.button {
+	font-size: 13px;
     color: #333;
     padding: 10px;
     width: 130px;
@@ -23,30 +38,22 @@ header {
     border: none;
     overflow: hidden;
     transition: all 100ms;
+    background: #f2f2f2;
 }
 
-button {
-    color: #333;
-    padding: 10px;
-    width: 130px;
-    height: 50px;
-    border: none;
-    overflow: hidden;
-    transition: all 100ms;
-}
-
-button:hover, .button:hover {
+.button:hover {
     cursor: pointer;
-    background-color: #999999;
+    color: #1d1d1d;
+    background-color: #aaa;
     transition: all 50ms;
 }
 
-button:hover:active, .button:hover:active {
+.button:hover:active {
     color: #ccc;
     background-color: #444;
 }
 
-button:disabled, .button:disabled {
+.button:disabled {
     cursor: default;
     opacity: 0.5;
 }
