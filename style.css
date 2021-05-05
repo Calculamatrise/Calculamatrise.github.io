@@ -13,7 +13,7 @@ header {
     width: 100vw;
     display: flex;
     padding: 10px;
-    position: absolute;
+    position: fixed;
     background: #f5f5f5;
     border-bottom: 1px solid #ddd;
 }
@@ -39,7 +39,7 @@ header {
     height: 45px;
     border: none;
     overflow: hidden;
-    background: #ffffff00;
+    background: #f5f5f5;
     transition: all 100ms;
 }
 
@@ -61,9 +61,12 @@ header {
 }
 
 #frtools-dropdown {
+	width: 130px;
     display: none;
+    margin-top: 7.5vh;
+    margin-left: 24.9vw;
     position: relative;
-    box-shadow: 1px 1px 20px 1px #1d1d1d;
+    box-shadow: 1px 1px 20px 1px #aaa;
 }
 
 #frtools-dropdown .button {
