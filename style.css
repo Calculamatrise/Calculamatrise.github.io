@@ -26,8 +26,13 @@ header {
     display: flex;
 }
 
+body {
+	padding: 10px;
+	margin-top: 5%;
+	margine-bottom: 5%;
+}
+
 .button {
-	font-size: 13px;
     color: #333;
     width: 130px;
     height: 45px;
@@ -54,6 +59,23 @@ header {
 .button:disabled {
     cursor: default;
     opacity: 0.5;
+}
+
+input[type="number"], input[type="text"] {
+    text-align: center;
+    height: 43px;
+    width: 200px;
+    border: none;
+    border-radius: 2px;
+    background: #eee;
+}
+
+textarea {
+    height: 400px;
+    width: 470px;
+    border: none;
+    border-radius: 2px;
+    background: #eee;
 }
 
 .dropdown {
