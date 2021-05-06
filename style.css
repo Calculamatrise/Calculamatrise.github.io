@@ -3,6 +3,10 @@
     src: url(../fonts/helsinki.ttf);
 }
 
+* {
+	box-sizing: border-box;
+}
+
 html {
 	font-family: Arial, helvetica, sans-serif;
 }
@@ -28,11 +32,11 @@ header {
 
 body {
 	padding: 10px;
-	margin-top: 5%;
-	margine-bottom: 5%;
+	margin-top: 50px;
+	margine-bottom: 50px;
 }
 
-.button {
+button, .button {
     color: #333;
     width: 130px;
     height: 45px;
@@ -44,19 +48,19 @@ body {
     transition: all 100ms;
 }
 
-.button:hover {
+button:hover, .button:hover {
     cursor: pointer;
     color: #1d1d1d;
     background-color: #ccc;
     transition: all 50ms;
 }
 
-.button:hover:active {
+button:hover:active, .button:hover:active {
     color: #ccc;
     background-color: #444;
 }
 
-.button:disabled {
+button:disabled, .button:disabled {
     cursor: default;
     opacity: 0.5;
 }

@@ -3,7 +3,16 @@
     <head>
         <title>Free Rider Tools</title>
         <link rel="icon" href="images/icons/icon_128.png">
-        <link href="../style.css" rel="stylesheet">
+        <link href="/style.css" rel="stylesheet">
+        <style>
+            #div-left {
+                float: left;
+            }
+
+            #div-right {
+                float: right;
+            }
+        </style>
     </head>
     <body>
         <header>
@@ -14,10 +23,12 @@
                     <input type="button" onclick="location.href='/tools/'" onmouseenter="onmousemove=(e)=>{this.y = e.clientY};document.getElementById('dropdown-content').style.display='block'" onmouseleave="this.y<50 ? document.getElementById('dropdown-content').style.display='none' : null" value="Free Rider Tools" class="button">
                     <div class="dropdown-content" id="dropdown-content" onmouseenter="onmousemove=(e)=>{this.yy = e.clientY}" onmouseleave="this.yy>70 ? document.getElementById('dropdown-content').style.display='none' : null">
                         <input type="button" onclick="location.href='/tools/combiner/'" value="Combiner" class="button"><br>
-                        <input type="button" onclick="location.href='/tools/editor/'" value="Advanced Editor" class="button"><br>
                         <input type="button" onclick="location.href='/tools/mover/'" value="Mover" class="button"><br>
                         <input type="button" onclick="location.href='/tools/reverser/'" value="Reverser" class="button"><br>
-                        <input type="button" onclick="location.href='/tools/visual_editor/'" value="Visual Editor" class="button">
+                        <input type="button" onclick="location.href='/tools/visual_editor/'" value="Visual Editor" class="button"><br>
+                        <input type="button" onclick="location.href='/tools/editor/'" value="Advanced Editor" class="button">
+                        <input type="button" onclick="location.href='/tools/track_renderer/'" value="Track Renderer" class="button">
+                        <input type="button" onclick="location.href='/tools/tube_generator/'" value="Tube Generator" class="button">
                     </div>
                 </div>
                 <input type="button" onclick="location.href='/contact/'" value="Contact" class="button">
@@ -27,14 +38,6 @@
         <div id="tabs">
         <div id="div-left">
             <h2 class="title">Tools</h2>
-            <form action="editor/" target="_blank">
-                <button type="submit" class="abutton">Editor Tool</button>
-            </form>
-            <br>
-            <form action="visual_editor/" target="_blank">
-                <button type="submit" class="button_main">Visual Editor</button>
-            </form>
-            <br>
             <form action="mover/" target="_blank">
                 <button type="submit" class="button_main">Track Mover</button>
             </form>
@@ -46,6 +49,22 @@
             <form action="reverser/" target="_blank">
                 <button type="submit" class="button_main">Track Reverser</button>
             </form>
+            <br>
+            <form action="editor/" target="_blank">
+                <button type="submit" class="abutton">Editor Tool</button>
+            </form>
+            <br>
+            <form action="visual_editor/" target="_blank">
+                <button type="submit" class="button_main">Visual Editor</button>
+            </form>
+            <br>
+            <form action="track_renderer/" target="_blank">
+                <button type="submit" class="abutton">Track Renderer</button>
+            </form>
+            <br>
+            <form action="tube_generator/" target="_blank">
+                <button type="submit" class="button_main">Tube Generator</button>
+            </form>
         </div>
         <div id="div-right">
             <h2 class="title">Editors</h2>
@@ -53,7 +72,7 @@
                 <button type="submit" class="button_main">BHR Editor</button>
             </form>
             <br>
-            <form action="freditor/" target="_blank">
+            <form action="https://www.freeriderhd.com/create" target="_blank">
                 <button type="submit" class="button_main">Free Rider Editor</button>
             </form>
         </div>
