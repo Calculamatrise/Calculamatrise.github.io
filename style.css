@@ -67,7 +67,7 @@ button:disabled, .button:disabled {
 
 input[type="number"], input[type="text"] {
     text-align: center;
-    height: 43px;
+    height: 45px;
     width: 200px;
     border: none;
     border-radius: 2px;
