@@ -131,6 +131,7 @@ class Track {
                 }
             }
         }
+        if (!this.powerups?.vehicles) return;
         this.powerups = Object.assign(this.powerups.vehicles, this.powerups);
         delete this.powerups.vehicles;
         this.powerups = Object.values(this.powerups).map(t => t.map(t => t.join(" ")).join(",")).join(",").replace(/,+/g, ",");
