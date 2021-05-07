@@ -239,70 +239,26 @@ class Track {
             }
         }
     }
-    flip() {
-        if(this.physics[0] != "") {
-            for(var t in this.physics) {
-                this.physics[t] = this.physics[t].map(e => e *= -1);
-            }
-        }
-        if(this.scenery[0] != "") {
-            for(var t in this.scenery) {
-                this.scenery[t] = this.scenery[t].map(e => e *= -1);
-            }
-        }
-        for(var i in this.powerups) {
-            if(i != "vehicles") {
-                var s = this.powerups[i]
-                for(var n in s) {
-                    s[n][1] *= -1;
-                    s[n][2] *= -1;
-                    if(i == "teleporters") {
-                        s[n][3] *= -1;
-                        s[n][4] *= -1;
-                    }
-                }
-            } else {
-                for(var s in this.powerups[i]) {
-                    var n = this.powerups[i][s];
-                    for(var r in n) {
-                        n[r][1] *= -1;
-                        n[r][2] *= -1;
-                    }
-                }
-            }
-        }
-    }
     get code() {
         this.encodeTrack();
         return this.physics + "#" + this.scenery + "#" + this.powerups;
     }
 }
 
-var command;
+function execute() {
+    let t = new Track(input.value);
+    t.move(travelDistanceX.value, travelDistanceY.value);
 
-move.onclick = () => {
-    command = "move";
-    execute();
-};
-flip.onclick = () => {
-    command = "flip";
-    execute()
-};
-
-execute = () => {
-    var t = new Track(input.value);
-    switch(command) {
-        case "move":
-            t.move(travelDistanceX.value, travelDistanceY.value);
-            break;
-        case "flip":
-            t.flip();
-            break;
-    }
-    input.value = t.code;
+    return input.value = t.code;
 }
 
-input.onclick = () => input.select();
+move.onclick = execute;
+input.onclick = input.select;
+
+copy.onclick = function() {
+    input.select();
+    document.execCommand("copy");
+}
 
 document.onkeypress = t => {
     switch(t.key) {
@@ -310,12 +266,7 @@ document.onkeypress = t => {
             execute();
             break;
         case "c":
-            document.execCommand("copy");
+            copy.onclick();
             break;
     }
-}
-
-copy.onclick = () => {
-    input.select();
-    document.execCommand("copy");
 }
