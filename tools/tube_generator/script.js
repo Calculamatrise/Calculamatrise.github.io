@@ -2,31 +2,25 @@ class Segment {
     constructor(last) {
         const random = this.randomize(last);
         this.id = random.id;
-        this.code = random.code;
+        this.code = random.code.split(/,/).map(t => t.split(/\s/));
         this.x = random.x + (last?.x || 0);
         this.y = random.y + (last?.y || 0);
         this.adjust(last);
     }
     adjust(last) {
-        if (!last) return;
-
-        let code = this.code.split(/,/).map(t => t.split(/\s/));
-        for (const t in code) {
-            for (let e = 0; e < code[t].length; e += 2) {
-                code[t][e] = this.encode(this.decode(code[t][e]) + (last?.x || 0));
+        for (const t of this.code) {
+            for (let e = 0, i = 1; e < t.length; e += 2, i += 2) {
+                t[e] = this.encode(this.decode(t[e]) + (last?.x || 0));
+                t[i] = this.encode(this.decode(t[i]) + (last?.y || 0));
             }
-            for (let e = 1; e < code[t].length; e += 2) {
-                code[t][e] = this.encode(this.decode(code[t][e]) + (last?.y || 0));
-            }
-            code[t] = code[t].join(" ");
         }
-        this.code = code.join(",");
+        this.code = this.code.map(t => t.join(" ")).join(",");
     }
     encode(t) {
-        return parseInt(Math.floor(t)).toString(32);
+        return parseInt(t).toString(32);
     }
     decode(t) {
-        return parseInt(parseInt(t, 32).toString());
+        return parseInt(t, 32);
     }
     random(t) {
         if (t.length > 3) return this.options[Math.floor(Math.random() * 9)];

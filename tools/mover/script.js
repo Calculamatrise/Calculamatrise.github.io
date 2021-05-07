@@ -1,9 +1,9 @@
 class Track {
     constructor(t) {
         t = t.split("#");
-        this.physics = t[0].split(",");
-        this.scenery = t[1].split(",");
-        this.powerups = t[2];
+        this.physics = t[0].length > 0 ? t[0].split(",").map(t => t.split(/\s/)) : [];
+        this.scenery = t[1].length > 0 ? t[1].split(",").map(t => t.split(/\s/)) : [];
+        this.powerups = t[2] || [];
         this.splitPowerups();
         this.decodeTrack();
     }
@@ -14,7 +14,8 @@ class Track {
         return parseInt(t, 32);
     }
     splitPowerups() {
-        var powerups = this.powerups.split(",");
+        if (this.powerups.length < 1) return;
+        let powerups = this.powerups.split(",").map(t => t.split(/\s/));
         this.powerups = {
             targets: [],
             boosters: [],
@@ -30,99 +31,70 @@ class Track {
                 blob: []
             }
         }
-        for(var i in powerups) {
-            switch(powerups[i].charAt(0)) {
+        for (const t of powerups) {
+            switch(t[0]) {
                 case "T":
-                    this.powerups.targets.push(powerups[i]);
+                    this.powerups.targets.push(t);
                     break;
                 case "B":
-                    this.powerups.boosters.push(powerups[i]);
+                    this.powerups.boosters.push(t);
                     break;
                 case "S":
-                    this.powerups.slowmos.push(powerups[i]);
+                    this.powerups.slowmos.push(t);
                     break;
                 case "O":
-                    this.powerups.bombs.push(powerups[i]);
+                    this.powerups.bombs.push(t);
                     break;
                 case "G":
-                    this.powerups.gravity.push(powerups[i]);
+                    this.powerups.gravity.push(t);
                     break;
                 case "A":
-                    this.powerups.antigravity.push(powerups[i]);
+                    this.powerups.antigravity.push(t);
                     break;
                 case "W":
-                    this.powerups.teleporters.push(powerups[i]);
+                    this.powerups.teleporters.push(t);
                     break;
                 case "V":
-                    switch(powerups[i].split(" ")[3]) {
+                    switch(t[3]) {
                         case "1":
-                            this.powerups.vehicles.heli.push(powerups[i]);
+                            this.powerups.vehicles.heli.push(t);
                             break;
                         case "2":
-                            this.powerups.vehicles.truck.push(powerups[i]);
+                            this.powerups.vehicles.truck.push(t);
                             break;
                         case "3":
-                            this.powerups.vehicles.balloon.push(powerups[i]);
+                            this.powerups.vehicles.balloon.push(t);
                             break;
                         case "4":
-                            this.powerups.vehicles.blob.push(powerups[i]);
+                            this.powerups.vehicles.blob.push(t);
                             break;
                     }
             }
         }
     }
     decodeTrack() {
-        if(this.physics[0] != "") {
-            var t = this.physics;
-            this.physics = [];
-            for(var e in t) {
-                var i = t[e].split(" ");
-                t[e] = [];
-                for(var s in i) {
-                    t[e].push(this.decode(i[s]))
-                }
-                this.physics.push(t[e]);
+        for (const t of this.physics) {
+            for (const e in t) {
+                t[e] = this.decode(t[e]);
             }
         }
-        if(this.scenery[0] != "") {
-            var e = this.scenery;
-            this.scenery = [];
-            for(var i in e) {
-                var s = e[i].split(" ");
-                e[i] = [];
-                for(var n in s) {
-                    e[i].push(this.decode(s[n]))
-                }
-                this.scenery.push(e[i]);
+        for (const t of this.scenery) {
+            for (const e of t) {
+                t[e] = this.decode(t[e]);
             }
         }
-        if(this.powerups[0] != "") {
-            var i = this.powerups;
-            for(var s in i) {
-                if(s != "vehicles") {
-                    var n = i[s];
-                    i[s] = [];
-                    for(var r in n) {
-                        var o = n[r].split(" ");
-                        n[r] = [o[0]];
-                        o = o.slice(1)
-                        for(var a in o) {
-                            n[r].push(this.decode(o[a]))
-                        }
-                        i[s].push(n[r]);
+        for (const t in this.powerups) {
+            if (t != "vehicles") {
+                for (const e of this.powerups[t]) {
+                    for (let i = 1; i < e.length; i++) {
+                        e[i] = this.decode(e[i]);
                     }
-                } else {
-                    for(var n in i[s]) {
-                        var r = i[s][n];
-                        i[s][n] = [];
-                        for(var o in r) {
-                            var a = r[o].split(" ");
-                            r[o] = [a[0]];
-                            a = a.slice(1);
-                            for(var h in a) {
-                                r[o].push(this.decode(a[h]));
-                            }
-                            i[s][n].push(r[o]);
+                }
+            } else {
+                for (const e in this.powerups[t]) {
+                    for (const i of this.powerups[t][e]) {
+                        for (let s = 1; s < i.length - 2; s++) {
+                            i[s] = this.decode(i[s]);
                         }
                     }
                 }
@@ -130,110 +102,87 @@ class Track {
         }
     }
     encodeTrack() {
-        var t = this.physics;
-        this.physics = [];
-        for(var e in t) {
-            var i = t[e];
-            t[e] = [];
-            for(var s in i) {
-                t[e].push(this.encode(i[s]))
+        for (const t of this.physics) {
+            for (const e in t) {
+                t[e] = this.encode(t[e]);
             }
-            this.physics.push(t[e].join(" "));
         }
-        var e = this.scenery;
-        this.scenery = [];
-        for(var i in e) {
-            var s = e[i];
-            e[i] = [];
-            for(var n in s) {
-                e[i].push(this.encode(s[n]))
+        this.physics = this.physics.map(t => t.join(" ")).join(",");
+        for (const t of this.scenery) {
+            for (const e in t) {
+                t[e] = this.encode(t[e]);
             }
-            this.scenery.push(e[i].join(" "));
         }
-        var i = this.powerups;
-        this.powerups = [];
-        for(var s in i) {
-            if(s != "vehicles") {
-                var n = i[s];
-                i[s] = [];
-                for(var r in n) {
-                    var o = n[r];
-                    n[r] = [o[0]];
-                    o = o.slice(1)
-                    for(var a in o) {
-                        n[r].push(this.encode(o[a]))
+        this.scenery = this.scenery.map(t => t.join(" ")).join(",");
+        for (const t in this.powerups) {
+            if (t != "vehicles") {
+                for (const e of this.powerups[t]) {
+                    for (let i = 1; i < e.length; i++) {
+                        e[i] = this.encode(e[i]);
                     }
-                    this.powerups.push(n[r].join(" "));
                 }
             } else {
-                var e = i[s];
-                i[s] = [];
-                for(var n in e) {
-                    var r = e[n];
-                    e[n] = [];
-                    for(var o in r) {
-                        var a = r[o];
-                        r[o] = [a[0]];
-                        a = a.slice(1);
-                        for(var h in a) {
-                            r[o].push(this.encode(a[h]));
+                for (const e in this.powerups[t]) {
+                    for (const i of this.powerups[t][e]) {
+                        for (let s = 1; s < i.length - 2; s++) {
+                            i[s] = this.encode(i[s]);
                         }
-                        i[s].push(r[o].join(" "));
                     }
                 }
-                this.powerups.push(i[s])
             }
         }
-        this.powerups = this.powerups.join(",");
+        this.powerups = Object.assign(this.powerups.vehicles, this.powerups);
+        delete this.powerups.vehicles;
+        this.powerups = Object.values(this.powerups).map(t => t.map(t => t.join(" ")).join(",")).join(",").replace(/,+/g, ",");
     }
     condense() {
-        var t = this.physics;
-        for(var e in t) {
+        let t = this.physics;
+        for (let e in t) {
             t[e] = t[e].join(" ");
         }
-        var e = t.filter((e, i) => t.indexOf(e) == i);
-        for(var i in e) {
+        let e = t.filter((e, i) => t.indexOf(e) == i);
+        for (let i in e) {
             e[i] = e[i].split(" ");
         }
         this.physics = e;
-        var i = this.scenery;
-        for(var s in i) {
+        let i = this.scenery;
+        for (let s in i) {
             i[s] = i[s].join(" ");
         }
-        var s = i.filter((s, n) => t.indexOf(s) == n);
-        for(var n in s) {
+        let s = i.filter((s, n) => t.indexOf(s) == n);
+        for (let n in s) {
             s[n] = s[n].split(" ");
         }
         this.scenery = s;
     }
     move(t, e) {
-        if(this.physics[0] != "") {
-            for(var i in this.physics) {
-                this.physics[i] = this.physics[i].map((s, n) => n & 1 ? (e ? parseInt(s) + parseInt(e) : s) : (t ? parseInt(s) + parseInt(t) : s));
+        for (const i of this.physics) {
+            for (let s = 0, n = 1; s < i.length; s += 2, n += 2) {
+                i[s] += t;
+                i[n] += e;
             }
         }
-        if(this.scenery[0] != "") {
-            for(var i in this.scenery) {
-                this.scenery[i] = this.scenery[i].map((s, n) => n & 1 ? (e ? parseInt(s) + parseInt(e) : s) : (t ? parseInt(s) + parseInt(t) : s));
+        for (const i of this.scenery) {
+            for (let s = 0, n = 1; s < i.length; s += 2, n += 2) {
+                i[s] += t;
+                i[n] += e;
             }
         }
-        for(var i in this.powerups) {
-            if(i != "vehicles") {
-                var s = this.powerups[i]
-                for(var n in s) {
-                    t && (s[n][1] = parseInt(s[n][1]) + parseInt(t));
-                    e && (s[n][2] = parseInt(s[n][2]) + parseInt(e));
-                    if(i == "teleporters") {
-                        t && (s[n][3] = parseInt(s[n][3]) + parseInt(t));
-                        e && (s[n][4] = parseInt(s[n][4]) + parseInt(e));
+        for (const i in this.powerups) {
+            if (i != "vehicles") {
+                for (const s of this.powerups[i]) {
+                    for (let n = 1, o = 2; n < s.length; n += 2, o += 2) {
+                        s[n] += t;
+                        s[o] += e;
                     }
                 }
             } else {
-                for(var s in this.powerups[i]) {
-                    var n = this.powerups[i][s];
-                    for(var r in n) {
-                        t && (n[r][1] = parseInt(n[r][1]) + parseInt(t));
-                        e && (n[r][2] = parseInt(n[r][2]) + parseInt(e));
+                for (const s in this.powerups[i]) {
+                    for (const n of this.powerups[i][s]) {
+                        for (let o = 1, p = 2; o < n.length - 2; o += 2, p += 2) {
+                            n[o] += t;
+                            n[p] += e;
+                        }
                     }
                 }
             }
@@ -247,7 +196,7 @@ class Track {
 
 function execute() {
     let t = new Track(input.value);
-    t.move(travelDistanceX.value, travelDistanceY.value);
+    t.move(parseInt(travelDistanceX.value), parseInt(travelDistanceY.value));
 
     return input.value = t.code;
 }
