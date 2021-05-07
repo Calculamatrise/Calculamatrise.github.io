@@ -5,10 +5,9 @@ export default class PhysicsLine extends Line {
     collide(a) {
         if (this.yb) return this;
         this.yb = !0;
-        var b = a.pos,
+        let b = a.pos,
             c = a.vel,
             d = a.size,
-            e = new Vector(0,0),
             f = 0,
             e = b.sub(this.a),
             h = e.dot(this.vector) / this.len / this.len;
@@ -28,7 +27,7 @@ export default class PhysicsLine extends Line {
     }
     getEnd() {
         this.ma = !0;
-        var a = " " + this.b.toString(),
+        let a = " " + this.b.toString(),
             b = this.track.grid[Math.floor(this.b.x / this.track.scale)][Math.floor(this.b.y / this.track.scale)].search(this.b, "line");
         b !== void 0 && (a += b.getEnd());
         return a

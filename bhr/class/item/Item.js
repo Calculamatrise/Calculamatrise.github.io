@@ -7,7 +7,7 @@ export default class Item {
         this.id = tool.powerups++
     }
     draw(t = this.color, e = this.pos.toPixel()) {
-        var i = this.track;
+        let i = this.track;
         ctx.fillStyle = t;
         ctx.beginPath();
         ctx.moveTo(e.x + 7 * i.zoom, e.y);

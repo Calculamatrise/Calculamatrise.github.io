@@ -1,55 +1,63 @@
 import Vector from "../Vector.js";
 import MTB from "../bike/MTB.js";
 import BMX from "../bike/BMX.js";
-import { Lb, Mb, Hb } from "../../variable/var.js";
-import PhysicsLine from "./line/PhysicsLine.js";
-import SceneryLine from "./line/SceneryLine.js";
+import { Lb, Mb } from "../../constant/variable.js";
+import PhysicsLine from "../item/line/PhysicsLine.js";
+import SceneryLine from "../item/line/SceneryLine.js";
 import UndoManager from "../history/UndoManager.js";
 import tool from "../../constant/tool.js";
-import { canvas, ctx } from "../../bootstrap.js";
+import { ctx } from "../../bootstrap.js";
 import Sector from "./Sector.js";
+import Grid from "../grid/Grid.js";
+import RenderCell from "../grid/cell/RenderCell.js";
+import PhysicsCell from "../grid/cell/PhysicsCell.js";
+import { MAX_ZOOM, MIN_ZOOM, TRACK_DEFAULT } from "../../constant/TrackConstants.js";
+import { GRID_CELL_SIZE } from "../../constant/GridConstants.js";
 
 export default class Track {
-    constructor(t) {
-        this.grid = {};
+    constructor(canvas, options = {}) {
         this.scale = 100;
+
         this.canvas = canvas;
-        this.sectors = {};
-        this.zoom = 0.6;
-        this.currentTime = 0;
-        this.id = t;
+
+        this.id = options.id;
+
+        this.zoomFactor = 0.6;
+        this.cameraLock = !1;
+        this.camera = new Vector();
+        this.origin = new Vector();
+
+        this.grid = new Grid(GRID_CELL_SIZE, PhysicsCell);
+        this.sectors = new Grid(GRID_CELL_SIZE, PhysicsCell);
+
+        this.grid = new Grid(GRID_CELL_SIZE, RenderCell);
+        this.sectors = new Grid(GRID_CELL_SIZE, RenderCell);
+
+
         this.vehicle = "BMX";
         this.players = [];
-        this.editor = 1;
-        this.undoManager = new UndoManager();
-        this.paused = !1;
-        this.camera = new Vector(0,0);
-        this.cameraLock = !1;
-        this.displayText = !1;
-        this.lineShading = !1;
-        if (!!this.id) {
-            this.editor = 0;
-        } else {
-            t = "-18 1i 18 1i###BMX";
+        this.editor = options.editor || false;
+        this.paused = false;
+        this.displayText = false;
+        this.lineShading = false;
+
+        if (options.editor) {
             tool.selected = "line";
         }
-        this.code = t;
+        this.code = options.code || TRACK_DEFAULT;
         this.targets = 0;
         this.powerups = [];
+
+        this.time = 0;
+        
+        this.undoManager = new UndoManager();
+
         this.read(this.code);
         window.Game.watchGhost = this.watchGhost
     }
-    zoomIn() {
-        if (4 > this.zoom) {
-            this.zoom = Math.round(10 * this.zoom + 2) / 10;
-            this.sectors = {}
-        }
-    }
-    zoomOut() {
-        if (0.2 < this.zoom) {
-            this.zoom = Math.round(10 * this.zoom + 2 * -1) / 10;
-            this.sectors = {}
-        }
+    zoom(direction = 1) {
+        this.zoomFactor = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, 10 * this.zoomFactor + 2 * direction) / 10)
+        this.sectors = {};
     }
     switchBike() {
         this.vehicle = "BMX" === this.vehicle ? "MTB" : "BMX";
@@ -58,34 +66,34 @@ export default class Track {
     gotoCheckpoint() {
         this.removeCollectedItems();
         this.paused = !1; // JSON.parse(localStorage.pauseOnEnter) ? true : !1;
-        var checkpoints = this.firstPlayer.checkpoints,
+        let checkpoints = this.firstPlayer.checkpoints,
             checkpointsCache = this.firstPlayer.checkpointsCache;
         this.firstPlayer = this.players[0] = this.vehicle === "BMX" ? new BMX(this, 1, this.firstPlayer.checkpoints) : new MTB(this, 1, this.firstPlayer.checkpoints);
         if (this.firstPlayer) {
             if (checkpoints.length > 0) {
-                var cp = checkpoints[checkpoints.length - 1];
+                let cp = checkpoints[checkpoints.length - 1];
                 this.firstPlayer.checkpointsCache = checkpointsCache;
-                this.currentTime = cp.time;
+                this.time = cp.time;
             } else
-                this.currentTime = 0;
+                this.time = 0;
             this.cameraFocus = this.firstPlayer.head,
             this.camera = this.firstPlayer.head.pos.clone();
         }
         if (this.players.length > 1) {
-            for (var i = 1; i < this.players.length; i++) {
+            for (let i = 1; i < this.players.length; i++) {
                 checkpoints = this.players[i].checkpoints,
                 checkpointsCache = this.players[i].checkpointsCache;
                 this.players[i] = this.ghost_data[6] === "BMX" ? new BMX(this, 1, this.players[i].checkpoints, this.ghost_data) : new MTB(this, 1, this.players[i].checkpoints, this.ghost_data);
                 this.players[i].checkpoints = checkpoints;
                 this.players[i].checkpointsCache = checkpointsCache;
-                if (!this.firstPlayer || this.currentTime == 0) {
+                if (!this.firstPlayer || this.time == 0) {
                     this.cameraFocus = this.players[i].head
                 }
             }
         }
     }
     removeCheckpoint() {
-        for (var i in this.players) {
+        for (let i in this.players) {
             if (this.players[i].checkpoints.length > 0) {
                 if (this.players[i].checkpointsCache !== void 0) {
                     this.players[i].checkpointsCache.push(this.players[i].checkpoints[this.players[i].checkpoints.length - 1]);
@@ -95,7 +103,7 @@ export default class Track {
         }
     }
     removeCheckpointUndo() {
-        for (var i in this.players) {
+        for (let i in this.players) {
             if (this.players[i].checkpointsCache.length > 0) {
                 if (this.players[i].checkpoints !== void 0) {
                     checkpoints.push(checkpointsCache[checkpointsCache.length - 1]);
@@ -109,7 +117,7 @@ export default class Track {
         this.firstPlayer.checkpoints = [];
         this.firstPlayer.checkpointsCache = [];
         if (this.players.length > 1) {
-            for (var i = 1; i < this.players.length; i++) {
+            for (let i = 1; i < this.players.length; i++) {
                 this.players[i].checkpoints = [];
                 this.players[i].checkpointsCache = [];
             }
@@ -117,7 +125,7 @@ export default class Track {
         this.gotoCheckpoint()
     }
     removeCollectedItems() {
-        var a, b, c, d, e;
+        let a, b, c, d, e;
         for (a in this.grid) {
             if (this.grid.hasOwnProperty(a)) {
                 for (b in this.grid[a]) {
@@ -135,15 +143,15 @@ export default class Track {
         }
     }
     watchGhost(a, b) {
-        var b = b || track
+        b = b || track
         , e = [], c, d;
         !function(a) {
             e.push(a);
             d && (c = a(c));
         }(function(a) {
-            var c = [{}, {}, {}, {}, {}];
+            let c = [{}, {}, {}, {}, {}];
             5 < a.split(",").length && (c = c.concat(a.split(",").slice(5)));
-            for (var d = 0, e, m, n; 5 > d; d++) {
+            for (let d = 0, e, m, n; 5 > d; d++) {
                 n = a.split(",")[d].split(" ");
                 e = 0;
                 for (m = n.length - 1; e < m; e++)
@@ -156,14 +164,14 @@ export default class Track {
         !function(a) {
             d = !0;
             c = a;
-            for (var b = 0, f = e.length; b < f; b++) {
+            for (let b = 0, f = e.length; b < f; b++) {
                 e[b](a)
             }
         }(a);
         this.paused = !1;
     }
     collide(a) {
-        var x = Math.floor(a.pos.x / this.scale - 0.5),
+        let x = Math.floor(a.pos.x / this.scale - 0.5),
             y = Math.floor(a.pos.y / this.scale - 0.5),
             grid = this.grid;
         if (grid[x] !== void 0) {
@@ -200,98 +208,90 @@ export default class Track {
     }
     update(t) {
         if (!this.paused) {
-            for (var i in this.players) {
+            for (let i in this.players) {
                 this.players[i].update(t);
             }
-            this.currentTime += 1000 / 25
+            this.time += 1000 / 25
         }
         if (this.cameraFocus) {
             this.camera.addToSelf(this.cameraFocus.pos.sub(this.camera).scale(0.3))
         }
         return this
     }
-    render() {
-        this.draw();
-        for (var i in this.players) {
-            this.players[i].draw();
-        }
-        tool.draw.left;
-        if ("eraser\\brush\\scenery brush".split(/\\/).includes(tool.selected)) {
-            tool.draw.bottomLeft;
-        }
-        if (this.editor) {
-            tool.draw.right;
-        }
-    }
-    draw() {
-        var b = this.firstPlayer
-        , c = this.currentTime
-        , d = this.zoom
-        , e = this.scale
-        , f = tool.mouse.pos.toPixel()
-        , h = this.grid;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.lineWidth = Math.max(2 * d, 0.5);
-        if (this.cameraLock && !Hb && "line\\scenery line\\brush\\scenery brush\\teleporter".split(/\\/).includes(tool.selected))
-            50 > f.x ? (this.camera.x -= 10 / d,
-            tool.mouse.pos.x -= 10 / d) : f.x > canvas.width - 50 && (this.camera.x += 10 / d,
-            tool.mouse.pos.x += 10 / d),
-            50 > f.y ? (this.camera.y -= 10 / d,
-            tool.mouse.pos.y -= 10 / d) : f.y > canvas.height - 50 && (this.camera.y += 10 / d,
-            tool.mouse.pos.y += 10 / d),
-            ctx.strokeStyle = "#f00",
-            f = tool.mouse.pos.toPixel(),
-            ctx.beginPath(),
-            ctx.moveTo(tool.mouse.old.toPixel().x, tool.mouse.old.toPixel().y),
-            ctx.lineTo(f.x, f.y),
+    render(ctx) {
+        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.lineWidth = Math.max(2 * this.zoomFactor, 0.5);
+        if (this.cameraLock && ["line", "scenery line", "brush", "scenery brush", "teleporter"].includes(tool.selected)) {
+            if (tool.mouse.pos.toPixel(this).x < 50) {
+                this.camera.x -= 10 / this.zoomFactor;
+                tool.mouse.pos.x -= 10 / this.zoomFactor;
+            } else {
+                if (tool.mouse.pos.toPixel(this).x > this.canvas.width - 50) {
+                    this.camera.x += 10 / this.zoomFactor;
+                    tool.mouse.pos.x += 10 / this.zoomFactor;
+                }
+            }
+            if (tool.mouse.pos.toPixel(this).y < 50) {
+                this.camera.y -= 10 / this.zoomFactor;
+                tool.mouse.pos.y -= 10 / this.zoomFactor;
+            } else {
+                if (tool.mouse.pos.toPixel(this).y > this.canvas.height - 50) {
+                    this.camera.y += 10 / this.zoomFactor;
+                    tool.mouse.pos.y += 10 / this.zoomFactor;
+                }
+            }
+            ctx.strokeStyle = "#f00";
+            ctx.beginPath();
+            ctx.moveTo(tool.mouse.old.toPixel(this).x, tool.mouse.old.toPixel(this).y);
+            ctx.lineTo(tool.mouse.pos.toPixel(this).x, tool.mouse.pos.toPixel(this).y);
             ctx.stroke();
-        var i = (new Vector(0,0)).adjustToCanvas()
-        , l = (new Vector(canvas.width,canvas.height)).adjustToCanvas();
-        i.x = Math.floor(i.x / e);
-        i.y = Math.floor(i.y / e);
-        l.x = Math.floor(l.x / e);
-        l.y = Math.floor(l.y / e);
-        var m = [], n, x, w, y, C;
-        for (w = i.x; w <= l.x; w++) {
-            for (y = i.y; y <= l.y; y++) {
-                if (h[w] !== void 0 && h[w][y] !== void 0) {
-                    if (0 < h[w][y].physics.length || 0 < h[w][y].scenery.length) {
+        }
+        let topLeft = (new Vector(0,0)).adjustToCanvas(this);
+        let bottomRight = (new Vector(this.canvas.width, this.canvas.height)).adjustToCanvas(this);
+        topLeft.x = Math.floor(topLeft.x / this.scale);
+        topLeft.y = Math.floor(topLeft.y / this.scale);
+        bottomRight.x = Math.floor(bottomRight.x / this.scale);
+        bottomRight.y = Math.floor(bottomRight.y / this.scale);
+        
+        let m = [], n, x, w, y, C;
+        for (let w = topLeft.x; w <= bottomRight.x; w++) {
+            for (let y = topLeft.y; y <= bottomRight.y; y++) {
+                if (this.grid[w] !== void 0 && this.grid[w][y] !== void 0) {
+                    if (this.grid[w][y].physics.length > 0 || this.grid[w][y].scenery.length > 0) {
                         m[C = w + "_" + y] = 1;
                         if (this.sectors[C] === void 0) {
                             n = this.sectors[C] = document.createElement("canvas");
-                            n.width = e * d;
-                            n.height = e * d;
-                            var M = n.getContext("2d");
+                            n.width = this.scale * this.zoomFactor;
+                            n.height = this.scale * this.zoomFactor;
+                            let M = n.getContext("2d");
                             M.lineCap = "round";
-                            M.lineWidth = Math.max(2 * d, 0.5);
+                            M.lineWidth = Math.max(2 * this.zoomFactor, 0.5);
                             M.strokeStyle = "#aaa";
                             n = 0;
-                            for (x = h[w][y].scenery.length; n < x; n++)
-                                h[w][y].scenery[n].draw(M, w * e * d, y * e * d);
+                            for (x = this.grid[w][y].scenery.length; n < x; n++)
+                            this.grid[w][y].scenery[n].draw(M, w * this.scale * this.zoomFactor, y * this.scale * this.zoomFactor);
                             M.strokeStyle = "#000";
                             this.lineShading && (M.shadowOffsetX = M.shadowOffsetY = 2,
-                            M.shadowBlur = Math.max(2, 10 * d),
+                            M.shadowBlur = Math.max(2, 10 * this.zoomFactor),
                             M.shadowColor = "#000");
                             n = 0;
-                            for (x = h[w][y].physics.length; n < x; n++)
-                                h[w][y].physics[n].draw(M, w * e * d, y * e * d)
+                            for (x = this.grid[w][y].physics.length; n < x; n++)
+                                this.grid[w][y].physics[n].draw(M, w * this.scale * this.zoomFactor, y * this.scale * this.zoomFactor)
                         }
-                        ctx.drawImage(this.sectors[C], Math.floor(canvas.width / 2 - this.camera.x * d + w * e * d), Math.floor(canvas.height / 2 - this.camera.y * d + y * e * d))
+                        ctx.drawImage(this.sectors[C], Math.floor(this.canvas.width / 2 - this.camera.x * this.zoomFactor + w * this.scale * this.zoomFactor), Math.floor(this.canvas.height / 2 - this.camera.y * this.zoomFactor + y * this.scale * this.zoomFactor))
                     }
                     ctx.strokeStyle = "#000";
                     n = 0;
-                    for (x = h[w][y].powerups.length; n < x; n++) {
-                        h[w][y].powerups[n].draw();
+                    for (x = this.grid[w][y].powerups.length; n < x; n++) {
+                        this.grid[w][y].powerups[n].draw();
                     }
                 }
             }
         }
-        for (var X in this.sectors)
+        for (let X in this.sectors)
             m[X] === void 0 && delete this.sectors[X];
-        if (250 !== canvas.width) {
-            if (Hb) {
-                tool.eraser.draw();
-            } else if (tool.selected !== "camera" && !this.cameraFocus)
+        if (250 !== this.canvas.width) {
+            if (tool.selected !== "camera" && !this.cameraFocus)
                 switch (tool.selected) {
                     case "line":
                     case "scenery line":
@@ -299,8 +299,8 @@ export default class Track {
                     case "scenery brush":
                         ctx.lineWidth = 1;
                         ctx.strokeStyle = "#000";
-                        w = f.x;
-                        y = f.y;
+                        w = tool.mouse.pos.toPixel(this).x;
+                        y = tool.mouse.pos.toPixel(this).y;
                         ctx.beginPath(),
                         ctx.moveTo(w - 10, y),
                         ctx.lineTo(w + 10, y),
@@ -319,7 +319,7 @@ export default class Track {
                     case "teleporter":
                         ctx.fillStyle = tool.selected == "goal" ? "#ff0" : tool.selected == "checkpoint" ? "#00f" : tool.selected == "bomb" ? "#f00" : tool.selected == "slow-mo" ? "#eee" : tool.selected == "antigravity" ? "#0ff" : "#f0f";
                         ctx.beginPath(),
-                        ctx.arc(f.x, f.y, 7 * d, 0, 2 * Math.PI, !0),
+                        ctx.arc(tool.mouse.pos.toPixel(this).x, tool.mouse.pos.toPixel(this).y, 7 * this.zoomFactor, 0, 2 * Math.PI, !0),
                         ctx.fill(),
                         ctx.stroke();
                         break;
@@ -329,15 +329,15 @@ export default class Track {
                         ctx.fillStyle = tool.selected == "boost" ? "#ff0" : "#0f0",
                         ctx.save();
                         if (this.cameraLock) {
-                            ctx.translate(tool.mouse.old.toPixel().x, tool.mouse.old.toPixel().y),
+                            ctx.translate(tool.mouse.old.toPixel(this).x, tool.mouse.old.toPixel(this).y),
                             ctx.rotate(Math.atan2(-(tool.mouse.pos.x - tool.mouse.old.x), tool.mouse.pos.y - tool.mouse.old.y));
                         } else {
-                            ctx.translate(f.x, f.y);
+                            ctx.translate(tool.mouse.pos.toPixel(this).x, tool.mouse.pos.toPixel(this).y);
                         }
-                        ctx.moveTo(-7 * d, -10 * d),
-                        ctx.lineTo(0, 10 * d),
-                        ctx.lineTo(7 * d, -10 * d),
-                        ctx.lineTo(-7 * d, -10 * d),
+                        ctx.moveTo(-7 * this.zoomFactor, -10 * this.zoomFactor),
+                        ctx.lineTo(0, 10 * this.zoomFactor),
+                        ctx.lineTo(7 * this.zoomFactor, -10 * this.zoomFactor),
+                        ctx.lineTo(-7 * this.zoomFactor, -10 * this.zoomFactor),
                         ctx.fill(),
                         ctx.stroke(),
                         ctx.restore()
@@ -352,16 +352,18 @@ export default class Track {
             ctx.lineWidth = 10;
             ctx.strokeStyle = "#fff";
             ctx.fillStyle = "#000";
-            e = Math.floor(c / 6E4);
-            h = Math.floor(c % 6E4 / 1E3);
-            c = Math.floor((c - 6E4 * e - 1E3 * h) / 100);
-            i = "";
-            10 > e && (e = "0" + e);
-            10 > h && (h = "0" + h);
-            i = e + ":" + h + "." + c;
+            let e = Math.floor(this.time / 6E4);
+            let h = Math.floor(this.time % 6E4 / 1E3);
+            if (e < 10) {
+                e = "0" + e;
+            }
+            if (h < 10) {
+                h = "0" + h;
+            }
+            let i = e + ":" + h + "." + Math.floor((this.time - 6E4 * e - 1E3 * h) / 100);
             if (this.paused && !window.autoPause) {
                 i += " - Game paused";
-            } else if (b && b.dead) {
+            } else if (this.firstPlayer && this.firstPlayer.dead) {
                 i = "Press ENTER to restart";
                 if (this.firstPlayer.checkpoints.length > 1) {
                     i += " or BACKSPACE to cancel Checkpoint"
@@ -385,11 +387,11 @@ export default class Track {
             ctx.strokeText(i = ": " + this.firstPlayer.targetsCollected + " / " + this.targets + "  -  " + i, 50, 16);
             ctx.fillText(i, 50, 16);
             if (this.players.length > 1) {
-                for (var i = 1; i < this.players.length; i++) {
+                for (let i = 1; i < this.players.length; i++) {
                     ctx.fillStyle = "#aaa";
                     ctx.textAlign = "right";
-                    ctx.strokeText(i = (this.players[i].name || "Ghost") + (this.players[i].targetsCollected === this.targets ? " finished!" : ": " + this.players[i].targetsCollected + " / " + this.targets), canvas.width - 7, 16);
-                    ctx.fillText(i, canvas.width - 7, 16);
+                    ctx.strokeText(i = (this.players[i].name || "Ghost") + (this.players[i].targetsCollected === this.targets ? " finished!" : ": " + this.players[i].targetsCollected + " / " + this.targets), this.canvas.width - 7, 16);
+                    ctx.fillText(i, this.canvas.width - 7, 16);
                     ctx.textAlign = "left";
                     ctx.fillStyle = "#000";
                 }
@@ -399,11 +401,11 @@ export default class Track {
                     if (this.displayText[0]) {
                         ctx.textAlign = "right";
                         if (document.documentElement.offsetHeight <= window.innerHeight) {
-                            ctx.strokeText(this.displayText[2], canvas.width - 36, 15 + 25 * this.displayText[1]);
-                            ctx.fillText(this.displayText[2], canvas.width - 36, 15 + 25 * this.displayText[1]);
+                            ctx.strokeText(this.displayText[2], this.canvas.width - 36, 15 + 25 * this.displayText[1]);
+                            ctx.fillText(this.displayText[2], this.canvas.width - 36, 15 + 25 * this.displayText[1]);
                         } else {
-                            ctx.strokeText(this.displayText[2], canvas.width - 51, 15 + 25 * this.displayText[1]);
-                            ctx.fillText(this.displayText[2], canvas.width - 51, 15 + 25 * this.displayText[1]);
+                            ctx.strokeText(this.displayText[2], this.canvas.width - 51, 15 + 25 * this.displayText[1]);
+                            ctx.fillText(this.displayText[2], this.canvas.width - 51, 15 + 25 * this.displayText[1]);
                         }
                         ctx.textAlign = "left";
                     } else {
@@ -413,24 +415,37 @@ export default class Track {
                 }
             }
             if (this.Ab) {
-                b = (canvas.width - 250) / 2;
-                c = (canvas.height - 150) / 2;
+                let b = (this.canvas.width - 250) / 2;
+                let c = (this.canvas.height - 150) / 2;
                 ctx.lineWidth = 1;
                 ctx.strokeStyle = "#fff";
                 ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-                ctx.fillRect(0, 0, canvas.width, c);
-                ctx.fillRect(0, c + 150, canvas.width, c);
+                ctx.fillRect(0, 0, this.canvas.width, c);
+                ctx.fillRect(0, c + 150, this.canvas.width, c);
                 ctx.fillRect(0, c, b, 150);
                 ctx.fillRect(b + 250, c, b, 150);
                 ctx.strokeRect(b, c, 250, 150);
             }
+        }
+
+
+
+        for (let i in this.players) {
+            this.players[i].draw();
+        }
+        tool.draw.left;
+        if ("eraser\\brush\\scenery brush".split(/\\/).includes(tool.selected)) {
+            tool.draw.bottomLeft;
+        }
+        if (this.editor) {
+            tool.draw.right;
         }
     }
     erase(a) {
         function b(b) {
             (b = b.erase(a)) && l.push(b)
         }
-        var c = Math.floor(a.x / this.scale - 0.5), d = Math.floor(a.y / this.scale - 0.5), e = this.grid[c], c = this.grid[c + 1], f, h, i, l = [];
+        let t = Math.floor(a.x / this.scale - 0.5), d = Math.floor(a.y / this.scale - 0.5), e = this.grid[t], c = this.grid[t + 1], f, h, i, l = [];
         if (e !== void 0) {
             f = e[d];
             h = e[d + 1];
@@ -525,22 +540,22 @@ export default class Track {
         return a
     }
     addLineInternal(a) {
-        var b = function(a, b, c) {
-            var zb = {};
+        let b = function(a, b, c) {
+            let zb = {}, e, f, h, i;
             zb[c] || (zb[c] = {});
-            var d = a + ";" + b;
+            let d = a + ";" + b;
             if (zb[c][d]) {
                 return zb[c][d];
             }
-            var d = zb[c][d] = []
+            d = zb[c][d] = []
             , e = new Vector(a.x,a.y)
             , f = (b.y - a.y) / (b.x - a.x)
             , h = new Vector(a.x < b.x ? 1 : -1,a.y < b.y ? 1 : -1)
             , i = 0;
             for (d.push(a); 5E3 > i && !(Math.floor(e.x / c) === Math.floor(b.x / c) && Math.floor(e.y / c) === Math.floor(b.y / c));) {
-                var l = new Vector(0 > h.x ? Math.round(Math.ceil((e.x + 1) / c + h.x) * c) - 1 : Math.round(Math.floor(e.x / c + h.x) * c),0);
+                let l = new Vector(0 > h.x ? Math.round(Math.ceil((e.x + 1) / c + h.x) * c) - 1 : Math.round(Math.floor(e.x / c + h.x) * c),0);
                 l.y = Math.round(a.y + (l.x - a.x) * f);
-                var m = new Vector(0,0 > h.y ? Math.round(Math.ceil((e.y + 1) / c + h.y) * c) - 1 : Math.round(Math.floor(e.y / c + h.y) * c));
+                let m = new Vector(0,0 > h.y ? Math.round(Math.ceil((e.y + 1) / c + h.y) * c) - 1 : Math.round(Math.floor(e.y / c + h.y) * c));
                 m.x = Math.round(a.x + (m.y - a.y) / f);
                 if (Math.pow(l.x - a.x, 2) + Math.pow(l.y - a.y, 2) < Math.pow(m.x - a.x, 2) + Math.pow(m.y - a.y, 2)) {
                     e = l;
@@ -564,21 +579,21 @@ export default class Track {
     }
     read(a = "-18 1i 18 1i###BMX") {
         ctx.fillText("Loading track... Please wait.", 36, 16);
-        var e = a.split("#")
+        let e = a.split("#")
           , i = e[0].split(",")
           , s = []
           , n = [];
         if (e.length > 2)
-            var s = e[1].split(",")
-              , n = e[2].split(",");
+            s = e[1].split(",")
+            , n = e[2].split(",");
         else if (e.length > 1)
-            var n = e[1].split(",");
+            n = e[1].split(",");
         this.addLines(i, this.addLine),
         this.addLines(s, this.addLine, !0);
-        for (var t in n) {
+        for (let t in n) {
             e = n[t].split(/\s+/g);
-            var i, b = parseInt(e[1], 32);
-            var d = parseInt(e[2], 32);
+            let i, b = parseInt(e[1], 32);
+            let d = parseInt(e[2], 32);
             switch (e[0]) {
                 case "T":
                     i = new Target(b, d, this);
@@ -619,12 +634,12 @@ export default class Track {
         }
     }
     addLines(t, e, scenery = !1) {
-        for (var i = t.length, s = 0; i > s; s++) {
-            var n = t[s].split(" ")
+        for (let i = t.length, s = 0; i > s; s++) {
+            let n = t[s].split(" ")
               , r = n.length;
             if (r > 3) {
-                for (var o = 0; r - 2 > o; o += 2) {
-                    var a = parseInt(n[o], 32)
+                for (let o = 0; r - 2 > o; o += 2) {
+                    let a = parseInt(n[o], 32)
                       , h = parseInt(n[o + 1], 32)
                       , l = parseInt(n[o + 2], 32)
                       , c = parseInt(n[o + 3], 32)
@@ -635,7 +650,7 @@ export default class Track {
         }
     }
     addToSelf(a, b) {
-        for (var i = 0, d = a.length; i < d; i++) {
+        for (let i = 0, d = a.length; i < d; i++) {
             if (a[i].type) {
                 a[i] = new a[i].type(a[i].x,a[i].y,this)
             }
@@ -648,21 +663,21 @@ export default class Track {
     }
     remove(a, b) {
         b === void 0 && (b = a);
-        for (var c = function(a, b, c) {
-            var zb = {};
+        for (let c = function(a, b, c) {
+            let zb = {};
             zb[c] || (zb[c] = {});
-            var d = a + ";" + b;
+            let d = a + ";" + b;
             if (zb[c][d])
                 return zb[c][d];
-            var d = zb[c][d] = []
+            d = zb[c][d] = []
             , e = new Vector(a.x,a.y)
             , f = (b.y - a.y) / (b.x - a.x)
             , h = new Vector(a.x < b.x ? 1 : -1,a.y < b.y ? 1 : -1)
             , i = 0;
             for (d.push(a); 5E3 > i && !(Math.floor(e.x / c) === Math.floor(b.x / c) && Math.floor(e.y / c) === Math.floor(b.y / c)); ) {
-                var l = new Vector(0 > h.x ? Math.round(Math.ceil((e.x + 1) / c + h.x) * c) - 1 : Math.round(Math.floor(e.x / c + h.x) * c),0);
+                let l = new Vector(0 > h.x ? Math.round(Math.ceil((e.x + 1) / c + h.x) * c) - 1 : Math.round(Math.floor(e.x / c + h.x) * c),0);
                 l.y = Math.round(a.y + (l.x - a.x) * f);
-                var m = new Vector(0,0 > h.y ? Math.round(Math.ceil((e.y + 1) / c + h.y) * c) - 1 : Math.round(Math.floor(e.y / c + h.y) * c));
+                let m = new Vector(0,0 > h.y ? Math.round(Math.ceil((e.y + 1) / c + h.y) * c) - 1 : Math.round(Math.floor(e.y / c + h.y) * c));
                 m.x = Math.round(a.x + (m.y - a.y) / f);
                 Math.pow(l.x - a.x, 2) + Math.pow(l.y - a.y, 2) < Math.pow(m.x - a.x, 2) + Math.pow(m.y - a.y, 2) ? (e = l,
                 d.push(l)) : (e = m,
@@ -671,7 +686,7 @@ export default class Track {
             }
             return d
         }(a, b, this.scale), d = [], e = 0, f = c.length; e < f; e++) {
-            var h = Math.floor(c[e].x / this.scale),
+            let h = Math.floor(c[e].x / this.scale),
                 i = Math.floor(c[e].y / this.scale),
                 d = d.concat(this.grid[h][i].remove());
             delete this.sectors[h + "_" + i]
@@ -689,7 +704,7 @@ export default class Track {
     }
     undo() {
         if ("scenery line" === tool.selected || "scenery brush" === tool.selected) {
-            var a = Math.floor(Mb.x / this.scale)
+            let a = Math.floor(Mb.x / this.scale)
             , b = Math.floor(Mb.y / this.scale);
             (a = this.grid[a][b].scenery[this.grid[a][b].scenery.length - 1]) && a.b.x === Math.round(Mb.x) && a.b.y === Math.round(Mb.y) ? (a.Remove = !0,
             Mb.copy(a.a),
@@ -703,11 +718,11 @@ export default class Track {
             this.remove(a.a, a.b)) : alert("No more line to erase!")
     }
     toString() {
-        var a = "", b = "", c = "", d;
+        let a = "", b = "", c = "", d;
         for (d in this.grid)
-            for (var e in this.grid[d])
+            for (let e in this.grid[d])
                 if (this.grid[d][e].physics) {
-                    for (var f = 0; f < this.grid[d][e].physics.length; f++)
+                    for (let f = 0; f < this.grid[d][e].physics.length; f++)
                         this.grid[d][e].physics[f].ma || (a += this.grid[d][e].physics[f].a + this.grid[d][e].physics[f].getEnd() + ",");
                     for (f = 0; f < this.grid[d][e].scenery.length; f++)
                         this.grid[d][e].scenery[f].ma || (b += this.grid[d][e].scenery[f].a + this.grid[d][e].scenery[f].getEnd() + ",");

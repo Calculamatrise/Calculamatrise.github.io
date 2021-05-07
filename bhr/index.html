@@ -1,31 +1,34 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="icon" href="/images/icons/icon_512.png">
+        <link rel="stylesheet" href="/style.css">
         <link rel="stylesheet" href="style.css">
+        <script type="module">
+            import Game from "./bootstrap.js";
+
+            Game.ride();
+            
+            let e = e => e.stopPropagation();
+            ([...document.querySelectorAll('input')]).forEach(n => {
+                n.addEventListener('keydown', e);
+                n.addEventListener('keyup', e);
+                n.addEventListener('keypress', e);
+            });
+            ([...document.querySelectorAll('textarea')]).forEach(n => {
+                n.addEventListener('keydown', e);
+                n.addEventListener('keyup', e);
+                n.addEventListener('keypress', e);
+            });
+        </script>
     </head>
     <body>
-        <canvas id="black_hat_rider" width="800" height="450" style="background-color:white;"></canvas>
+        <div id="content">
+            <canvas id="black_hat_rider" width="800" height="450" style="background-color:white;"></canvas>
             <div id="track_menu" style="display:none">
                 <div class="span12" id="charcount">Trackcode - CTRL + V to paste</div>
                 <input id="trackcode" style="width:528px" spellcheck="false">
             </div>
-            <script type="module">
-                import Game from "./bootstrap.js";
-
-                Game.ride();
-                
-                let e = e => e.stopPropagation();
-                ([...document.querySelectorAll('input')]).forEach(n => {
-                    n.addEventListener('keydown', e);
-                    n.addEventListener('keyup', e);
-                    n.addEventListener('keypress', e);
-                });
-                ([...document.querySelectorAll('textarea')]).forEach(n => {
-                    n.addEventListener('keydown', e);
-                    n.addEventListener('keyup', e);
-                    n.addEventListener('keypress', e);
-                });
-            </script>
         </div>
     </body>
 </html>

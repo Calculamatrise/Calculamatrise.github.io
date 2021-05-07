@@ -19,20 +19,20 @@ export default class MountainBike extends Vehicle {
         -1 === b && this.swap(),
         this.pastCheckpoint = !1;
         if (this.checkpoints.length > 0) {
-            var cp = this.checkpoints[this.checkpoints.length - 1];
+            let cp = this.checkpoints[this.checkpoints.length - 1];
             this.dir = cp.dir;
             this.gravity = new Vector(cp.gravity.x, cp.gravity.y);
             this.slow = cp.slow;
             this.targetsCollected = cp.targetsCollected;
             this.time = cp.time;
-            for (var i in c.oldGamepad) {
+            for (let i in c.oldGamepad) {
                 this.oldGamepad[i] = c.oldGamepad[i];
             }
-            for (var i in this.track.powerups) {
+            for (let i in this.track.powerups) {
                 this.track.powerups[i].used = cp.powerups[i];
             }
-            for (var i in records) {
-                for (var x in records[i]) {
+            for (let i in records) {
+                for (let x in records[i]) {
                     if (x >= this.time) {
                         delete records[i][x];
                     }
@@ -42,7 +42,7 @@ export default class MountainBike extends Vehicle {
             this.slow = !1,
             this.time = 0,
             this.targetsCollected = 0;
-            for (var i in this.track.powerups) {
+            for (let i in this.track.powerups) {
                 this.track.powerups[i].used = 0
             }
         }
@@ -59,7 +59,7 @@ export default class MountainBike extends Vehicle {
     gamepad = { up: 0, down: 0, left: 0, right: 0, swap: 0 };
     oldGamepad = { up: 0, down: 0, left: 0, right: 0, swap: 0 };
     createMasses() {
-        var a = 2, b = -3,
+        let a = 2, b = -3,
             c = 23, d = 35,
             e = -23, f = 35,
             g = new Vector(0,0),
@@ -68,7 +68,7 @@ export default class MountainBike extends Vehicle {
             j = 0,
             k = 0;
         if (this.checkpoints.length > 0) {
-            var cp = this.checkpoints[this.checkpoints.length - 1];
+            let cp = this.checkpoints[this.checkpoints.length - 1];
             a = cp.masses[0].pos.x, b = cp.masses[0].pos.y,
             c = cp.masses[1].pos.x, d = cp.masses[1].pos.y,
             e = cp.masses[2].pos.x, f = cp.masses[2].pos.y,
@@ -92,11 +92,11 @@ export default class MountainBike extends Vehicle {
             this.rearWheel.old = new Vector(cp.masses[2].old.x,cp.masses[2].old.y)
     }
     createSprings() {
-        var a = 47,
+        let a = 47,
             b = 45,
             c = 45;
         if (this.checkpoints.length > 0) {
-            var cp = this.checkpoints[this.checkpoints.length - 1];
+            let cp = this.checkpoints[this.checkpoints.length - 1];
             a = cp.springs[0].leff,
             b = cp.springs[1].leff,
             c = cp.springs[2].leff;
@@ -122,7 +122,7 @@ export default class MountainBike extends Vehicle {
         this.rearWheel.brake = !1;
         this.frontWheel.brake = !1;
         this.head.collide = !1;
-        for (var i in this.track.players) {
+        for (let i in this.track.players) {
             if (this.track.players[i].dead) {
                 this.track.players[i] = new DeadBike(this, this.getStickMan(), this.track, this.checkpoints);
                 this.track.players[i].hat = new Shard(this.head.pos.clone(), this);
@@ -139,7 +139,7 @@ export default class MountainBike extends Vehicle {
         this.gamepad.swap = !1;
         this.dir *= -1;
         this.chasse.swap();
-        var a = this.rearSpring.leff;
+        let a = this.rearSpring.leff;
         this.rearSpring.leff = this.frontSpring.leff;
         this.frontSpring.leff = a;
         this.swapped = !this.swapped;
@@ -150,7 +150,7 @@ export default class MountainBike extends Vehicle {
         this.rearWheel.motor += (this.gamepad.up - this.rearWheel.motor) / 10;
         this.gamepad.up && (this.pedalSpeed += this.rearWheel.pedalSpeed / 5);
         this.rearWheel.brake = this.frontWheel.brake = this.gamepad.down;
-        var a = this.gamepad.left - this.gamepad.right;
+        let a = this.gamepad.left - this.gamepad.right;
         this.rearSpring.lean(5 * a * this.dir);
         this.frontSpring.lean(5 * -a * this.dir);
         this.chasse.rotate(a / 8);
@@ -158,7 +158,7 @@ export default class MountainBike extends Vehicle {
         this.frontSpring.lean(7))
     }
     draw() {
-        var a = this.track
+        let a = this.track
         , b = this.rearWheel.pos.toPixel()
         , c = this.frontWheel.pos.toPixel()
         , d = this.head.pos.toPixel()
@@ -171,13 +171,13 @@ export default class MountainBike extends Vehicle {
         ctx.beginPath(),ctx.arc(b.x, b.y, 12.5 * a.zoom, 0, 2 * Math.PI, !0),ctx.moveTo(c.x + 12.5 * a.zoom, c.y),ctx.arc(c.x, c.y, 12.5 * a.zoom, 0, 2 * Math.PI, !0),ctx.stroke(),ctx.beginPath(),ctx.fillStyle = "grey";
         ctx.moveTo(b.x + 5 * a.zoom, b.y),ctx.arc(b.x, b.y, 5 * a.zoom, 0, 2 * Math.PI, !0),ctx.moveTo(c.x + 4 * a.zoom, c.y),ctx.arc(c.x, c.y, 4 * a.zoom, 0, 2 * Math.PI, !0),ctx.fill(),ctx.beginPath(),ctx.lineWidth = 5 * a.zoom;
         ctx.moveTo(b.x, b.y),ctx.lineTo(b.x + 0.4 * e.x + 0.05 * f.x, b.y + 0.4 * e.y + 0.05 * f.y),ctx.moveTo(b.x + 0.72 * e.x + 0.64 * h.x, b.y + 0.72 * e.y + 0.64 * h.y),ctx.lineTo(b.x + 0.46 * e.x + 0.4 * h.x, b.y + 0.46 * e.y + 0.4 * h.y),ctx.lineTo(b.x + 0.4 * e.x + 0.05 * f.x, b.y + 0.4 * e.y + 0.05 * f.y),ctx.stroke(),ctx.beginPath(),ctx.lineWidth = 2 * a.zoom;
-        var i = new Vector(6 * Math.cos(this.pedalSpeed) * a.zoom,6 * Math.sin(this.pedalSpeed) * a.zoom);
+        let i = new Vector(6 * Math.cos(this.pedalSpeed) * a.zoom,6 * Math.sin(this.pedalSpeed) * a.zoom);
         ctx.moveTo(b.x + 0.72 * e.x + 0.64 * h.x, b.y + 0.72 * e.y + 0.64 * h.y),ctx.lineTo(b.x + 0.43 * e.x + 0.05 * f.x, b.y + 0.43 * e.y + 0.05 * f.y),ctx.moveTo(b.x + 0.45 * e.x + 0.3 * h.x, b.y + 0.45 * e.y + 0.3 * h.y),ctx.lineTo(b.x + 0.3 * e.x + 0.4 * h.x, b.y + 0.3 * e.y + 0.4 * h.y),ctx.lineTo(b.x + 0.25 * e.x + 0.6 * h.x, b.y + 0.25 * e.y + 0.6 * h.y),ctx.moveTo(b.x + 0.17 * e.x + 0.6 * h.x, b.y + 0.17 * e.y + 0.6 * h.y),ctx.lineTo(b.x + 0.3 * e.x + 0.6 * h.x, b.y + 0.3 * e.y + 0.6 * h.y),ctx.moveTo(b.x + 0.43 * e.x + 0.05 * f.x + i.x, b.y + 0.43 * e.y + 0.05 * f.y + i.y),ctx.lineTo(b.x + 0.43 * e.x + 0.05 * f.x - i.x, b.y + 0.43 * e.y + 0.05 * f.y - i.y),ctx.stroke(),ctx.beginPath(),ctx.lineWidth = a.zoom;
         ctx.moveTo(b.x + 0.46 * e.x + 0.4 * h.x, b.y + 0.46 * e.y + 0.4 * h.y),ctx.lineTo(b.x + 0.28 * e.x + 0.5 * h.x, b.y + 0.28 * e.y + 0.5 * h.y),ctx.stroke(),ctx.beginPath(),ctx.lineWidth = 3 * a.zoom;
         ctx.moveTo(c.x, c.y),ctx.lineTo(b.x + 0.71 * e.x + 0.73 * h.x, b.y + 0.71 * e.y + 0.73 * h.y),ctx.lineTo(b.x + 0.73 * e.x + 0.77 * h.x, b.y + 0.73 * e.y + 0.77 * h.y),ctx.lineTo(b.x + 0.7 * e.x + 0.8 * h.x, b.y + 0.7 * e.y + 0.8 * h.y),ctx.stroke();
         if (!this.dead) {
             ctx.lineCap = "round";
-            var f = d.sub(b.add(e.scale(0.5)))
+            f = d.sub(b.add(e.scale(0.5)))
             , c = b.add(e.scale(0.3)).add(f.scale(0.25))
             , h = b.add(e.scale(0.4)).add(f.scale(0.05))
             , d = h.add(i)
@@ -223,10 +223,10 @@ export default class MountainBike extends Vehicle {
         }
     }
     snapshot() {
-        var oldGamepad = {}, powerups = [];
-        for (var i in this.oldGamepad)
+        let oldGamepad = {}, powerups = [];
+        for (let i in this.oldGamepad)
             oldGamepad[i] = this.oldGamepad[i];
-        for (var i in this.track.powerups)
+        for (let i in this.track.powerups)
             powerups.push(this.track.powerups[i].used);
         return {
             oldGamepad: oldGamepad,
@@ -250,7 +250,7 @@ export default class MountainBike extends Vehicle {
     }
     clone() {
         const t = new BMXBike(this.track, this.dir, this.checkpoints, this.ghost_data);
-        for (var e in t.masses) {
+        for (let e in t.masses) {
             t.masses[e] = this.masses[e].clone();
         }
         return t;

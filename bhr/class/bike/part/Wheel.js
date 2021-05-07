@@ -31,7 +31,7 @@ export default class Wheel extends Mass {
         // super.update(t);
     }
     clone() {
-        var a = new Wheel(this.pos, this.track);
+        let a = new Wheel(this.pos, this.track);
         a.old = this.old.clone();
         a.vel = this.vel.clone();
         a.motor = this.motor;

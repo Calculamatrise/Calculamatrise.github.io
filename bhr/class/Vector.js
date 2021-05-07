@@ -1,15 +1,13 @@
-import { canvas, track } from "../bootstrap.js";
-
 export default class Vector {
-    constructor(a, b) {
+    constructor(a = 0, b = 0) {
         this.x = a;
         this.y = b
     }
-    toPixel() {
-        return new Vector((this.x - track.camera.x) * track.zoom + canvas.width / 2,(this.y - track.camera.y) * track.zoom + canvas.height / 2)
+    toPixel(track) {
+        return new Vector((this.x - track.camera.x) * track.zoom + track.canvas.width / 2,(this.y - track.camera.y) * track.zoom + track.canvas.height / 2)
     }
-    adjustToCanvas() {
-        return new Vector((this.x - canvas.width / 2) / track.zoom + track.camera.x,(this.y - canvas.height / 2) / track.zoom + track.camera.y)
+    adjustToCanvas(track) {
+        return new Vector((this.x - track.canvas.width / 2) / track.zoom + track.camera.x, (this.y - track.canvas.height / 2) / track.zoom + track.camera.y)
     }
     copy(a) {
         this.x = a.x;
@@ -60,15 +58,15 @@ export default class Vector {
     lengthSquared() {
         return this.x * this.x + this.y * this.y
     }
-    distanceTo(a) {
-        var b = this.x - a.x,
-            a = this.y - a.y;
-        return Math.sqrt(b * b + a * a)
+    distanceTo(t) {
+        let e = this.x - t.x,
+            i = this.y - t.y;
+        return Math.sqrt(e * e + i * i)
     }
-    distanceToSquared(a) {
-        var b = this.x - a.x,
-            a = this.y - a.y;
-        return b * b + a * a
+    distanceToSquared(t) {
+        let e = this.x - t.x,
+            i = this.y - t.y;
+        return e * e + i * i
     }
     toString() {
         return Math.round(this.x).toString(32) + " " + Math.round(this.y).toString(32)

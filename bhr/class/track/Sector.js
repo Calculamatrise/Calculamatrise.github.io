@@ -5,23 +5,23 @@ export default class Sector {
         this.powerups = []
     }
     collide(a) {
-        for (var b = this.physics.length - 1; 0 <= b; b--) {
+        for (let b = this.physics.length - 1; 0 <= b; b--) {
             this.physics[b].collide(a);
         }
         if (!a.parent.dead) {
-            for (b = this.powerups.length - 1; 0 <= b; b--) {
+            for (let b = this.powerups.length - 1; 0 <= b; b--) {
                 this.powerups[b].collide(a);
             }
         }
         return this;
     }
     za() {
-        for (var a = 0, b = this.physics.length; a < b; a++) {
+        for (let a = 0, b = this.physics.length; a < b; a++) {
             this.physics[a].yb = !1;
         }
     }
     remove() {
-        for (var a = [], b = 0, c = this.physics.length; b < c; b++) {
+        for (let a = [], b = 0, c = this.physics.length; b < c; b++) {
             this.physics[b] && this.physics[b].Remove && a.push(this.physics.splice(b--, 1)[0]);
         }
         b = 0;
@@ -35,7 +35,7 @@ export default class Sector {
         return a
     }
     search(a, b) {
-        var c = 0, d, e, f = "sline" === b ? this.scenery: this.physics;
+        let c = 0, d, e, f = "sline" === b ? this.scenery: this.physics;
         for (d = f.length; c < d; c++) {
             if ((e = f[c]) && e.a.x === a.x && e.a.y === a.y && !e.ma) {
                 return e;

@@ -10,7 +10,7 @@ export default class UndoManager {
     }
     undo() {
         if (this.undoPosition >= 0) {
-            var a = this.undoStack[this.undoPosition--].undo;
+            let a = this.undoStack[this.undoPosition--].undo;
             if (typeof a == "function") {
                 a(this);
             }
@@ -19,7 +19,7 @@ export default class UndoManager {
     }
     redo() {
         if (this.undoPosition < this.undoStack.length - 1) {
-            var a = this.undoStack[++this.undoPosition].redo;
+            let a = this.undoStack[++this.undoPosition].redo;
             if (typeof a == "function") {
                 a(this);
             }

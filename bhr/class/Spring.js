@@ -13,13 +13,13 @@ export default class Spring {
         this.leff += (this.lrest - a - this.leff) / 5
     }
     rotate(a) {
-        var b = this.b.pos.sub(this.a.pos),
-            b = new Vector(-b.y / this.leff,b.x / this.leff);
+        let b = this.b.pos.sub(this.a.pos)
+        b = new Vector(-b.y / this.leff,b.x / this.leff);
         this.a.pos.addToSelf(b.scale(a));
         this.b.pos.addToSelf(b.scale(-a))
     }
     update() {
-        var a = this.b.pos.sub(this.a.pos),
+        let a = this.b.pos.sub(this.a.pos),
             b = a.getLength();
         if (1 > b)
             return this;
@@ -31,7 +31,7 @@ export default class Spring {
         return this
     }
     swap() {
-        var a = new Vector;
+        let a = new Vector;
         a.copy(this.a.pos);
         this.a.pos.copy(this.b.pos);
         this.b.pos.copy(a);
@@ -49,7 +49,7 @@ export default class Spring {
         return this.b.pos.sub(this.a.pos).getLength()
     }
     clone() {
-        var a = new Spring(this.a,this.b,this.track);
+        let a = new Spring(this.a,this.b,this.track);
         a.lrest = this.lrest;
         a.leff = this.leff;
         a.dampConstant= this.dampConstant;

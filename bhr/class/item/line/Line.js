@@ -17,7 +17,7 @@ export default class Line {
         t.stroke()
     }
     erase(t) {
-        var b = t.sub(this.a).dot(this.vector.oppositeScale(this.len)),
+        let b = t.sub(this.a).dot(this.vector.oppositeScale(this.len)),
             c = new Vector(0,0);
         if (b <= 0) {
             c.copy(this.a)

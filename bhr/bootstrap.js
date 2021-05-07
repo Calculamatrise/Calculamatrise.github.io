@@ -4,11 +4,10 @@ export const ctx = canvas.getContext("2d");
 import { Ride } from "./class/Ride.js";
 import Vector from "./class/Vector.js";
 import tool from "./constant/tool.js";
-import { Hb, records, charCount, code } from "./variable/var.js";
+import { records, charCount, code } from "./constant/variable.js";
 
-var track = null;
-var loop = null;
-var Z = !1;
+let loop = null;
+let Z = !1;
 
 export default window.Game = {
     defaults: {
@@ -36,7 +35,7 @@ export default window.Game = {
         canvas.style.display = "block";
         document.getElementById("track_menu").style.display = "none";
         if (code.value.includes("#")) {
-            var t = loop.track.editor;
+            let t = loop.track.editor;
             loop.close();
             loop.update.pop();
             loop.render.pop();
@@ -53,10 +52,10 @@ export default window.Game = {
     },
     saveRide: function() {
         if (loop.track.id === void 0) {
-            var a = new Date();
+            let a = new Date();
             !function(t, e) {
                 if (typeof navigator.msSaveBlob == "function") return navigator.msSaveBlob(t, e);
-                var saver = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+                let saver = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
                 saver.href = URL.createObjectURL(t);
                 saver.download = e;
                 document.body.appendChild(saver);
@@ -68,10 +67,10 @@ export default window.Game = {
     },
     saveGhost: function() {
         if (loop.track.id === void 0) {
-            var a = new Date();
+            let a = new Date();
             !function(t, e) {
                 if (typeof navigator.msSaveBlob == "function") return navigator.msSaveBlob(t, e);
-                var saver = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+                let saver = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
                 saver.href = URL.createObjectURL(t);
                 saver.download = e;
                 document.body.appendChild(saver);
@@ -91,7 +90,7 @@ export default window.Game = {
     }
 }
 
-export var track = Game.track;
+export let track = Game.track;
 
 code.oninput = (t) => {
     if (t.target.value.startsWith("GHOST:")) {
@@ -148,11 +147,11 @@ document.onkeydown = function(a) {
             break;
         case 109:
         case 189:
-            track.zoomOut();
+            track.zoom(-1);
             break;
         case 107:
         case 187:
-            track.zoomIn();
+            track.zoom();
             break;
         case 90:
             if (!track.cameraFocus) {
@@ -488,17 +487,16 @@ canvas.onmousedown = function(a) {
                 track.undo()
             }
     } else if (a.button === 2 && tool.selected !== "camera") {
-        var a = track.erase(tool.mouse.pos);
+        let a = track.erase(tool.mouse.pos);
         a.length && track.pushUndo(() => {
             track.addToSelf(a, !0);
         }, () => {
-            for (var b = 0, c = a.length; b < c; b++) {
+            for (let b = 0, c = a.length; b < c; b++) {
                 a[b].remove();
             }
         });
-        Hb = !0;
     } else {
-        var b;
+        let b;
         Z || tool.mouse.old.copy(tool.mouse.pos);
         switch (tool.selected) {
         case "boost":
@@ -506,11 +504,11 @@ canvas.onmousedown = function(a) {
             document.body.style.cursor = "crosshair";
             break;
         case "eraser":
-            var a = track.erase(tool.mouse.pos);
+            let a = track.erase(tool.mouse.pos);
             a.length && track.pushUndo(() => {
                 track.addToSelf(a, !0);
             }, () => {
-                for (var b = 0, c = a.length; b < c; b++) {
+                for (let b = 0, c = a.length; b < c; b++) {
                     a[b].remove();
                 }
             });
@@ -542,7 +540,7 @@ canvas.onmousedown = function(a) {
             track.cameraLock = !0
         }
         if (b !== void 0) {
-            var c = Math.floor(b.pos.x / track.scale)
+            let c = Math.floor(b.pos.x / track.scale)
             , d = Math.floor(b.pos.y / track.scale);
             track.grid[c] === void 0 && (track.grid[c] = []);
             track.grid[c][d] === void 0 && (track.grid[c][d] = new Sector);
@@ -560,7 +558,7 @@ document.onmousemove = function(a) {
     if (tool.selected !== "camera") {
         track.cameraFocus = !1;
     }
-    tool.mouse.pos = (new Vector(a.clientX - canvas.offsetLeft,a.clientY - canvas.offsetTop + window.pageYOffset)).adjustToCanvas();
+    tool.mouse.pos = (new Vector(a.clientX - canvas.offsetLeft,a.clientY - canvas.offsetTop + window.pageYOffset)).adjustToCanvas(track);
     if (tool.selected !== "eraser") {
         if (a.button !== 2) {
             tool.mouse.pos.x = Math.round(tool.mouse.pos.x / tool.grid) * tool.grid;
@@ -572,18 +570,18 @@ document.onmousemove = function(a) {
             track.camera.addToSelf(tool.mouse.old.sub(tool.mouse.pos)),
             tool.mouse.pos.copy(tool.mouse.old);
         } else if (tool.selected === "eraser" || window.BHR_RCE_ENABLED && a.button === 2) {
-            var a = track.erase(tool.mouse.pos);
+            let a = track.erase(tool.mouse.pos);
             if (a.length) {
                 track.pushUndo(() => {
                     track.addToSelf(a, !0);
                 }, () => {
-                    for (var b = 0, c = a.length; b < c; b++) {
+                    for (let b = 0, c = a.length; b < c; b++) {
                         a[b].remove();
                     }
                 });
             }
         } else if (!Z && "brush\\scenery brush".split(/\\/).includes(tool.selected) && tool.mouse.old.distanceTo(tool.mouse.pos) >= tool.brush.length) {
-            var b = track.addLine(tool.mouse.old, tool.mouse.pos, "brush" !== tool.selected);
+            let b = track.addLine(tool.mouse.old, tool.mouse.pos, "brush" !== tool.selected);
             track.pushUndo(function() {
                 b.remove()
             }, function() {
@@ -593,12 +591,10 @@ document.onmousemove = function(a) {
     }
 },
 canvas.onmouseup = function() {
-    var a, b, c, d;
-    if (Hb)
-        return Hb = !1;
+    let a, b, c, d;
     if (track.cameraLock)
         if ("line" === tool.selected || "scenery line" === tool.selected || "brush" === tool.selected || "scenery brush" === tool.selected) {
-            var e = track.addLine(tool.mouse.old, tool.mouse.pos, "line" !== tool.selected && "brush" !== tool.selected);
+            let e = track.addLine(tool.mouse.old, tool.mouse.pos, "line" !== tool.selected && "brush" !== tool.selected);
             track.pushUndo(function() {
                 e.remove()
             }, function() {
@@ -648,11 +644,11 @@ canvas.ondommousescroll = canvas.onmousewheel = (a) => {
         }
     } else {
         if (0 < a.detail || 0 > a.wheelDelta) {
-            track.zoomOut()
+            track.zoom(-1)
         } else if (0 > a.detail || 0 < a.wheelDelta) {
-            track.zoomIn()
+            track.zoom()
         };
     }
-    a = (new Vector(a.clientX - canvas.offsetLeft,a.clientY - canvas.offsetTop + window.pageYOffset)).adjustToCanvas();
+    a = (new Vector(a.clientX - canvas.offsetLeft,a.clientY - canvas.offsetTop + window.pageYOffset)).adjustToCanvas(track);
     track.cameraFocus || track.camera.addToSelf(tool.mouse.pos.sub(a))
 }

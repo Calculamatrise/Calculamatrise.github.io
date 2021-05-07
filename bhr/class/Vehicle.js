@@ -1,5 +1,5 @@
 import Vector from "./Vector.js";
-import { records } from "../variable/var.js";
+import { records } from "../constant/variable.js";
 
 export default class Vehicle {
     constructor(t) {
@@ -14,17 +14,17 @@ export default class Vehicle {
         this.powerupsEnabled = !0
     }
     createCosmetics() {
-        var t = null || this.firstPlayer && this.firstPlayer._user
+        let t = null || this.firstPlayer && this.firstPlayer._user
             , e = {head: "hat"} || t.cosmetics;
         this.cosmetics = e
     }
     trackComplete() {
-        var a = this.track;
+        let a = this.track;
         this.collide("hitTarget");
         if (this.pastCheckpoint & 2) {
             if (this.collide("hitGoal"),
             a.targets && a.firstPlayer.targetsCollected === a.targets && 0 < a.currentTime && (!a.time || this.time < a.time) && a.id !== void 0) {
-                for (var b = "", c, d = 0, e = records.length; d < e; d++) {
+                for (let b = "", c, d = 0, e = records.length; d < e; d++) {
                     for (c in records[d]) {
                         isNaN(c) || (b += c + " ");
                     }
@@ -47,23 +47,23 @@ export default class Vehicle {
             }
         } else if (this.pastCheckpoint & 1) {
             this.collide("hitCheckpoint");
-            for (var i in a.players) {
+            for (let i in a.players) {
                 a.players[i].checkpoints.push(a.players[i].snapshot())
             }
         }
         this.pastCheckpoint = 0
     }
     getStickMan() {
-        var a = {}
+        let a = {}
         , b = this.frontWheel.pos.sub(this.rearWheel.pos)
         , c = new Vector(b.y * this.dir,-b.x * this.dir);
         a.head = this.rearWheel.pos.add(b.scale(0.35)).add(this.head.pos.sub(this.frontWheel.pos.add(this.rearWheel.pos).scale(0.5)).scale(1.2));
         a.hand = a.shadowHand = this.rearWheel.pos.add(b.scale(0.8)).add(c.scale(0.68));
-        var d = a.head.sub(a.hand)
-        , d = new Vector(d.y * this.dir,-d.x * this.dir);
+        let d = a.head.sub(a.hand);
+        d = new Vector(d.y * this.dir,-d.x * this.dir);
         a.elbow = a.shadowElbow = a.head.add(a.hand).scale(0.5).add(d.scale(130 / d.lengthSquared()));
         a.hip = this.rearWheel.pos.add(b.scale(0.2)).add(c.scale(0.5));
-        var e = new Vector(6 * Math.cos(this.pedalSpeed),6 * Math.sin(this.pedalSpeed));
+        let e = new Vector(6 * Math.cos(this.pedalSpeed),6 * Math.sin(this.pedalSpeed));
         a.foot = this.rearWheel.pos.add(b.scale(0.4)).add(c.scale(0.05)).add(e);
         d = a.hip.sub(a.foot);
         d = new Vector(-d.y * this.dir,d.x * this.dir);
@@ -84,7 +84,7 @@ export default class Vehicle {
         return this.gamepad[a] == 1
     }
     update(t) {
-        var a = this.track.currentTime;
+        let a = this.track.currentTime;
         if (this.pastCheckpoint) {
             this.trackComplete()
         }
@@ -143,14 +143,14 @@ export default class Vehicle {
     collide(a) {
         if (this.checkpoints) {
             if (this.checkpoints[a]) {
-                for (var i in b) {
+                for (let i in b) {
                     this.checkpoints[i].apply(this, _slice.call(arguments, 1))
                 }
             }
         }
     }
     moveVehicle(a, b) {
-        for (var i = this.masses, s = i.length, n = s - 1; n >= 0; n--)
+        for (let i = this.masses, s = i.length, n = s - 1; n >= 0; n--)
             i[n].pos.x = i[n].pos.x + a,
             i[n].pos.y = i[n].pos.y + b,
             i[n].old.x = i[n].old.x + a,

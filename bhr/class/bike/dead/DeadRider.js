@@ -6,7 +6,7 @@ import { ctx } from "../../../bootstrap.js";
 export default class DeadRider {
     constructor(a, b, c) {
         this.dead = !0;
-        var vector = new Vector(0,0);
+        let vector = new Vector(0,0);
         this.dir = 1;
         this.ghost = c;
         this.masses = b;
@@ -34,33 +34,33 @@ export default class DeadRider {
             new Spring(this.hip,this.shadowKnee,this),
             new Spring(this.shadowKnee,this.shadowFoot,this)
         ];
-        for (var point in this.points) {
+        for (let point in this.points) {
             this.points[point].size = 3,
             this.points[point].friction = 0.05;
         }
         this.head.size = this.hip.size = 8;
-        for (var joint in this.joints) {
+        for (let joint in this.joints) {
             this.joints[joint].springConstant = 0.4,
             this.joints[joint].dampConstant= 0.7;
         }
-        for (var part in a) {
+        for (let part in a) {
             if (a.hasOwnProperty(part)) {
                 this[part].pos.copy(a[part])
             }
         }
     }
     draw() {
-        var a = this.track,
-            head = this.head.pos.toPixel(),
-            elbow = this.elbow.pos.toPixel(), 
-            hand = this.hand.pos.toPixel(), 
-            shadowElbow = this.shadowElbow.pos.toPixel(),
-            shadowHand = this.shadowHand.pos.toPixel(),
-            knee = this.knee.pos.toPixel(),
-            foot = this.foot.pos.toPixel(),
-            shadowKnee = this.shadowKnee.pos.toPixel(),
-            shadowFoot = this.shadowFoot.pos.toPixel(),
-            hip = this.hip.pos.toPixel();
+        let a = this.track,
+            head = this.head.pos.toPixel(this.track),
+            elbow = this.elbow.pos.toPixel(this.track), 
+            hand = this.hand.pos.toPixel(this.track), 
+            shadowElbow = this.shadowElbow.pos.toPixel(this.track),
+            shadowHand = this.shadowHand.pos.toPixel(this.track),
+            knee = this.knee.pos.toPixel(this.track),
+            foot = this.foot.pos.toPixel(this.track),
+            shadowKnee = this.shadowKnee.pos.toPixel(this.track),
+            shadowFoot = this.shadowFoot.pos.toPixel(this.track),
+            hip = this.hip.pos.toPixel(this.track);
         ctx.globalAlpha = this.ghost ? .5 : 1;
         ctx.lineWidth = 5 * a.zoom;
         ctx.strokeStyle = "rgba(0,0,0,0.5)";
@@ -74,27 +74,27 @@ export default class DeadRider {
         ctx.beginPath(),ctx.moveTo(head.x + 5 * a.zoom, head.y),ctx.arc(head.x, head.y, 5 * a.zoom, 0, 2 * Math.PI, !0),ctx.stroke()
     }
     update() {
-        for (var a = this.joints.length - 1; a >= 0; a--)
+        for (let a = this.joints.length - 1; a >= 0; a--)
             this.joints[a].update();
-        for (a = this.points.length - 1; a >= 0; a--)
+        for (let a = this.points.length - 1; a >= 0; a--)
             this.points[a].update()
     }
     setVelocity(a, b) {
         a.scaleSelf(0.7);
         b.scaleSelf(0.7);
-        var c, d, e, f;
+        let c, d, e, f;
         c = 0;
-        for (d = this.joints.length; c < d; c++)
+        for (let d = this.joints.length; c < d; c++)
             e = this.joints[c].getLength(),
             20 < e && (e = 20),
             this.joints[c].lrest = this.joints[c].leff = e;
-        for (c = 1; 5 > c; c++)
+        for (let c = 1; 5 > c; c++)
             this.joints[c].lrest = 13,
             this.joints[c].leff = 13;
         e = [this.head, this.elbow, this.shadowElbow, this.hand, this.shadowHand];
         f = [this.hip, this.knee, this.shadowKnee, this.foot, this.shadowFoot];
         c = 0;
-        for (d = e.length; c < d; c++)
+        for (let d = e.length; c < d; c++)
             e[c].old = e[c].pos.sub(a);
         c = 0;
         for (d = f.length; c < d; c++)

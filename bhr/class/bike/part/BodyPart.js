@@ -24,7 +24,7 @@ export default class BodyPart extends Mass {
         // super.update(t);
     }
     clone() {
-        var t = new BodyPart(this.pos, this.parent);
+        let t = new BodyPart(this.pos, this.parent);
         t.old = this.old.clone();
         t.vel = this.vel.clone();
         t.size = this.size;

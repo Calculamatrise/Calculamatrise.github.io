@@ -1,7 +1,6 @@
 import Vector from "../class/Vector.js";
 
-export var records = [{}, {}, {}, {}, {}],
-    Hb = !1,
+export const records = [{}, {}, {}, {}, {}],
     Lb = new Vector(40,50),
     Mb = new Vector(-40,10),
     charCount = document.getElementById("charcount"),

@@ -8,7 +8,7 @@ export default class Triangle extends Item {
         this.dir = new Vector(-Math.sin(c * Math.PI / 180), Math.cos(c * Math.PI / 180))
     }
     draw() {
-        var a = this.track,
+        let a = this.track,
             b = this.pos.toPixel();
         ctx.fillStyle = this.color;
         ctx.beginPath(),

@@ -19,11 +19,11 @@ export default class Explosion {
         this.head.vel.x = 20
     }
     draw() {
-        var a, b;
+        let a, b;
         if (0 < this.motor) {
             this.motor -= 10;
             b = this.pos.toPixel();
-            var e = b.x + this.motor / 2 * Math.cos(Math.random() * 2 * Math.PI)
+            let e = b.x + this.motor / 2 * Math.cos(Math.random() * 2 * Math.PI)
             , d = b.y + this.motor / 2 * Math.sin(Math.random() * 2 * Math.PI);
             ctx.fillStyle = "#ff0";
             ctx.beginPath(),ctx.moveTo(b.x + this.motor / 2 * Math.cos(Math.random() * 2 * Math.PI), d);
@@ -40,7 +40,7 @@ export default class Explosion {
             this.$a[a].draw()
     }
     update() {
-        for (var a = this.$a.length - 1; 0 <= a; a--)
+        for (let a = this.$a.length - 1; 0 <= a; a--)
             this.$a[a].update()
     }
 }
