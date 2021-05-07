@@ -5,6 +5,7 @@
         <link rel="icon" href="icon.png">
         <link href="/style.css" rel="stylesheet">
         <script type="text/javascript" src="script.js"></script>
+        <script async src="/script.js"></script>
     </head>
     <body>
         <header>
@@ -13,7 +14,9 @@
                 <input type="button" onclick="location.href='/rae/'" value="Rae Dashboard" class="button">
                 <input type="button" onclick="location.href='/contact/'" value="Contact" class="button">
             </div>
-            <div class="header-right"></div>
+            <div class="header-right">
+                <label class="switch-right"><input type="checkbox" id="dark"><span class="toggle"></span></label>
+            </div>
         </header>
         <footer></footer>
     </body>
