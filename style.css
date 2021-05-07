@@ -11,15 +11,22 @@ html {
 	font-family: Arial, helvetica, sans-serif;
 }
 
-header {
-	top: 0;
+header, footer {
     left: 0;
     width: 100vw;
     display: flex;
     padding: 10px;
     position: fixed;
-    background: #f5f5f5;
-    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+header {
+	top: 0;
+}
+
+footer {
+    bottom: 0;
+    padding: 50px;
 }
 
 .header-left {
@@ -33,16 +40,13 @@ header {
 body {
 	padding: 15px;
 	margin-top: 50px;
-	margine-bottom: 50px;
 }
 
 button, .button {
-    color: #333;
     width: 130px;
     height: 45px;
     border: none;
     overflow: hidden;
-    background: #f5f5f5;
 	display: inline-block;
 	text-decoration: none;
     transition: all 100ms;
@@ -50,14 +54,7 @@ button, .button {
 
 button:hover, .button:hover {
     cursor: pointer;
-    color: #1d1d1d;
-    background-color: #ccc;
     transition: all 50ms;
-}
-
-button:hover:active, .button:hover:active {
-    color: #ccc;
-    background-color: #444;
 }
 
 button:disabled, .button:disabled {
@@ -71,7 +68,6 @@ input[type="number"], input[type="text"] {
     width: 200px;
     border: none;
     border-radius: 2px;
-    background: #eee;
 }
 
 textarea {
@@ -79,7 +75,6 @@ textarea {
     width: 470px;
     border: none;
     border-radius: 2px;
-    background: #eee;
 }
 
 .dropdown {
@@ -91,8 +86,6 @@ textarea {
 	z-index: 1;
     display: none;
 	position: absolute;
-	background-color: #f5f5f5;
-    box-shadow: 1px 1px 20px 1px #aaa;
 }
 
 .abutton {
@@ -120,15 +113,56 @@ textarea {
     font-family: Helsinki;
 }
 
-footer {
-	left: 0;
-    bottom: 0;
-    height: 8vh;
-    width: 100vw;
-    display: flex;
-    line-height: 3;
+.switch-right {
+    top: 12.5px;
+    right: 10px;
     position: fixed;
-    text-align: center;
-    background: #f5f5f5;
-    border-top: 1px solid #ddd;
+    width: 60px;
+    height: 34px;
+}
+  
+.toggle {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+  
+.toggle:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+  
+input:checked + .toggle {
+    background-color: #2196F3;
+}
+
+input:focus + .toggle {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .toggle:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+.toggle {
+    border-radius: 34px;
+}
+
+.toggle:before {
+    border-radius: 50%;
 }

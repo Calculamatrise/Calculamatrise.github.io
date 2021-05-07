@@ -1,0 +1,38 @@
+header, footer {
+    background: #f5f5f5;
+}
+
+header {
+    border-bottom: 1px solid #ddd;
+}
+
+footer {
+    border-top: 1px solid #ddd;
+}
+
+button, .button {
+    color: #333;
+}
+
+button:hover, .button:hover {
+    color: #1d1d1d;
+    background-color: #ccc;
+}
+
+button:hover:active, .button:hover:active {
+    color: #ccc;
+    background-color: #444;
+}
+
+input[type="number"], input[type="text"] {
+    background: #eee;
+}
+
+textarea {
+    background: #eee;
+}
+
+#dropdown-content {
+	background-color: #f5f5f5;
+    box-shadow: 1px 1px 20px 1px #aaa;
+}

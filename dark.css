@@ -1,0 +1,44 @@
+html {
+    color: #f5f5f5;
+    background: #1d1d1d;
+}
+
+header, footer {
+    background: #2d2d2d;
+}
+
+header {
+    border-bottom: 1px solid #444;
+}
+
+footer {
+    border-top: 1px solid #444;
+}
+
+button, .button {
+    color: #ddd;
+    background: #2d2d2d;
+}
+
+button:hover, .button:hover {
+    color: #f5f5f5;
+    background: #333;
+}
+
+button:hover:active, .button:hover:active {
+    color: #fff;
+    background-color: #444;
+}
+
+input[type="number"], input[type="text"] {
+    background: #111;
+}
+
+textarea {
+    background: #111;
+}
+
+#dropdown-content {
+	background: #2d2d2d;
+    box-shadow: 1px 1px 20px 1px #555;
+}
