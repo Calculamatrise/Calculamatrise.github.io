@@ -1,10 +1,10 @@
-import Vector from "../Vector.js";
+import Vector from "../numeric/Vector.js";
 import Cell from "./cell/Cell.js";
 
 export default class Grid {
     constructor(cellSize, cellClass) {
         this.cells = new Map();
-        
+
         this.cellSize = cellSize;
         this.cellClass = cellClass;
     }
@@ -14,7 +14,7 @@ export default class Grid {
     }
 
     has(x, y) {
-        return !!this.cells?.has(this.getKey(x, y));
+        return !!this.cells.has(this.getKey(x, y));
     }
 
     cell(x, y) {
@@ -64,6 +64,12 @@ export default class Grid {
         return new Vector(Math.floor(vec.x / cellSize), Math.floor(vec.y / cellSize));
     }
 
+    /**
+     *
+     * @param {Vector} _from
+     * @param {Vector} _to
+     * @param {number} cellSize
+     */
     static spread(_from, _to, cellSize) {
         if (!Grid.spreadCache.has(cellSize)) {
             Grid.spreadCache.set(cellSize, new Map());

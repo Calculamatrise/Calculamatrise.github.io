@@ -1,8 +1,14 @@
-import SceneryLine from "../../item/line/SceneryLine.js";
-import SolidLine from "../../item/line/PhysicsLine.js";
 import Cell from "./Cell.js";
+import SceneryLine from "../../item/line/SceneryLine.js";
+import SolidLine from "../../item/line/SolidLine.js";
+import Entity from "../../entity/Entity.js";
+import Vector from "../../numeric/Vector.js";
 
 export default class PhysicsCell extends Cell {
+    /**
+     *
+     * @param {Entity} part
+     */
     touch(part) {
         for (let i = this.lines.length - 1; i >= 0; i--) {
             this.lines[i].touch(part);
@@ -36,6 +42,12 @@ export default class PhysicsCell extends Cell {
         }
     }
 
+    /**
+     *
+     * @param {Vector} eraserPoint
+     * @param {number} radius
+     * @returns []
+     */
     checkDelete(eraserPoint, radius, restrict) {
         let deleted = new Array();
 

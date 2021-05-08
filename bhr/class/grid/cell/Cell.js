@@ -1,6 +1,6 @@
 import SceneryLine from "../../item/line/SceneryLine.js";
-import SolidLine from "../../item/line/PhysicsLine.js";
 import Item from "../../item/Item.js";
+import SolidLine from "../../item/line/SolidLine.js";
 
 export default class Cell {
     constructor(x, y, size) {

@@ -1,29 +1,37 @@
 export default class UndoManager {
     constructor() {
-        this.undoStack = [];
-        this.undoPosition = 0
+        this.undoStack = new Array();
+        this.undoPosition = 0;
     }
-    push(a) {
-        this.undoStack.length = Math.min(this.undoStack.length, this.undoPosition + 1);
-        this.undoPosition = this.undoStack.push(a) - 1;
-        return this
-    }
-    undo() {
-        if (this.undoPosition >= 0) {
-            let a = this.undoStack[this.undoPosition--].undo;
-            if (typeof a == "function") {
-                a(this);
+
+    push(action) {
+        let lastActionPos = Math.min(this.undoStack.length, this.undoPosition + 1);
+        for (let actionPos in this.undoStack) {
+            if (actionPos >= lastActionPos) {
+                this.undoStack.splice(actionPos, 1);
             }
         }
-        return this
+        this.undoPosition = this.undoStack.push(action) - 1;
+        return this;
     }
+
+    undo() {
+        if (this.undoPosition >= 0 && this.undoStack.length) {
+            let undoAction = this.undoStack[this.undoPosition--].undo;
+            if (typeof undoAction === 'function') {
+                undoAction(this);
+            }
+        }
+        return this;
+    }
+
     redo() {
         if (this.undoPosition < this.undoStack.length - 1) {
-            let a = this.undoStack[++this.undoPosition].redo;
-            if (typeof a == "function") {
-                a(this);
+            let redoAction = this.undoStack[++this.undoPosition].redo;
+            if (typeof redoAction === 'function') {
+                redoAction(this);
             }
         }
-        return this
+        return this;
     }
 }

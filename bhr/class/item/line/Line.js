@@ -1,50 +1,96 @@
-import Vector from "../../Vector.js";
-import tool from "../../../constant/tool.js";
+import Item from "../Item.js";
+import Vector from "../../numeric/Vector.js";
+import Entity from "../../entity/Entity.js";
+import Grid from "../../grid/Grid.js";
+import PhysicsCell from "../../grid/cell/PhysicsCell.js";
 
-export default class Line {
-    constructor(t, e, i, s, n) {
-        this.a = t instanceof Vector ? t : new Vector(t, e);
-        this.b = e instanceof Vector ? e : new Vector(i, s);
-        this.vector = this.b.sub(this.a);
+export default class Line extends Item {
+    /**
+     *
+     * @param {Vector} pos
+     * @param {Vector} endPos
+     */
+    constructor(pos, endPos, track) {
+        super(pos, track);
+        /** @type {Vector} */
+        this.endPos = endPos;
+        /** @type {Vector} */
+        this.vector = this.endPos.sub(this.pos);
+        /** @type {number} */
         this.len = this.vector.getLength();
-        this.Remove = false;
-        this.track = n;
+        /** @type {boolean} */
+        this.touched = false;
+        /** @type {boolean} */
+        this.stringGot = false;
     }
-    draw(t, e, i) {
-        t.beginPath();
-        t.moveTo(this.a.x * this.track.zoomFactor - e, this.a.y * this.track.zoomFactor - i);
-        t.lineTo(this.b.x * this.track.zoomFactor - e, this.b.y * this.track.zoomFactor - i);
-        t.stroke()
-    }
-    erase(t) {
-        let b = t.sub(this.a).dot(this.vector.oppositeScale(this.len)),
-            c = new Vector(0,0);
-        if (b <= 0) {
-            c.copy(this.a)
-        } else if (b >= this.len) {
-            c.copy(this.b)
+
+    /**
+     *
+     * @param {Entity} part
+     */
+    touch(part) {}
+
+    /**
+     *
+     * @param {Vector} eraserPoint
+     * @param {number} radius
+     */
+    checkDelete(eraserPoint, radius) {
+        let eraserToPosDistance = eraserPoint.sub(this.pos);
+        let normalizedVector = this.vector.recipScale(this.len);
+        let normalizedDirection = eraserToPosDistance.dot(normalizedVector);
+        let posToCheck = new Vector();
+
+        if (normalizedDirection <= 0) {
+            posToCheck.set(this.pos);
+        } else if (normalizedDirection >= this.len) {
+            posToCheck.set(this.endPos);
         } else {
-            c.copy(this.a.add(this.vector.oppositeScale(this.len).scale(b)));
+            posToCheck.set(this.pos.add(normalizedVector.scale(normalizedDirection)));
         }
-        return t.sub(c).getLength() <= tool.eraser.size ? (this.remove(),
-        this) : !1
+
+        let eraserToPosToCheckDistance = eraserPoint.sub(posToCheck);
+
+        if (eraserToPosToCheckDistance.getLength() <= radius) {
+            this.removeFromTrack();
+            return this;
+        }
+
+        return null;
     }
-    remove() {
-        this.Remove = !0;
-        this.track.remove(this.a, this.b);
-        return this
+
+    /**
+     * @return {string}
+     */
+    getEnd() {
+        let end = ' ' + this.b.toString();
+        let gridCoords = Grid.gridCoords(this.endPos, this.grid.cellSize);
+        /** @type {PhysicsCell} */
+        let nextGrid = this.grid.cell(gridCoords.x, gridCoords.y);
+        let next = nextGrid.search(this.endPos, this.constructor);
+        if (next !== undefined) {
+            end += next.getEnd();
+        }
+
+        return end;
     }
-    xb() {
-        this.track.addLineInternal(this)
-    }
+
+    /**
+     * @returns {string}
+     */
     toString() {
-        return this.a + this.getEnd()
+        return this.pos.toString() + this.getEnd();
     }
-    toJSON(t) {
-        return {
-            type: t,
-            a: this.a.toJSON(),
-            b: this.b.toJSON()
-        }
-    } 
+
+    /**
+     * @param {CanvasRenderingContext2D} ctx
+     */
+    renderCache(ctx, offsetLeft, offsetTop, zoom) {
+        ctx.beginPath();
+        ctx.moveTo(this.pos.x * zoom - offsetLeft, this.pos.y * zoom - offsetTop);
+        ctx.lineTo(this.endPos.x * zoom - offsetLeft, this.endPos.y * zoom - offsetTop);
+        ctx.stroke();
+    }
+
+    render(ctx) {}
 }
