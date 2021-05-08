@@ -4,10 +4,10 @@ export default class Vector {
         this.y = b
     }
     toPixel(track) {
-        return new Vector((this.x - track.camera.x) * track.zoom + track.canvas.width / 2,(this.y - track.camera.y) * track.zoom + track.canvas.height / 2)
+        return new Vector((this.x - track.camera.x) * track.zoomFactor + track.canvas.width / 2,(this.y - track.camera.y) * track.zoomFactor + track.canvas.height / 2)
     }
     adjustToCanvas(track) {
-        return new Vector((this.x - track.canvas.width / 2) / track.zoom + track.camera.x, (this.y - track.canvas.height / 2) / track.zoom + track.camera.y)
+        return new Vector((this.x - track.canvas.width / 2) / track.zoomFactor + track.camera.x, (this.y - track.canvas.height / 2) / track.zoomFactor + track.camera.y)
     }
     copy(a) {
         this.x = a.x;

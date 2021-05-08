@@ -387,7 +387,7 @@ export default self = {
         draw() {
             ctx.fillStyle = "#ffb6c199";
             ctx.beginPath();
-            ctx.arc(self.mouse.pos.toPixel().x, self.mouse.pos.toPixel().y, (this.size - 1) * track.zoom, 0, 2 * Math.PI, !0);
+            ctx.arc(self.mouse.pos.toPixel().x, self.mouse.pos.toPixel().y, (this.size - 1) * track.zoomFactor, 0, 2 * Math.PI, !0);
             ctx.fill();
         }
     },

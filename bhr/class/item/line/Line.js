@@ -12,8 +12,8 @@ export default class Line {
     }
     draw(t, e, i) {
         t.beginPath();
-        t.moveTo(this.a.x * this.track.zoom - e, this.a.y * this.track.zoom - i);
-        t.lineTo(this.b.x * this.track.zoom - e, this.b.y * this.track.zoom - i);
+        t.moveTo(this.a.x * this.track.zoomFactor - e, this.a.y * this.track.zoomFactor - i);
+        t.lineTo(this.b.x * this.track.zoomFactor - e, this.b.y * this.track.zoomFactor - i);
         t.stroke()
     }
     erase(t) {

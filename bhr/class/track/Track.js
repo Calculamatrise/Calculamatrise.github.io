@@ -13,6 +13,7 @@ import RenderCell from "../grid/cell/RenderCell.js";
 import PhysicsCell from "../grid/cell/PhysicsCell.js";
 import { MAX_ZOOM, MIN_ZOOM, TRACK_DEFAULT } from "../../constant/TrackConstants.js";
 import { GRID_CELL_SIZE } from "../../constant/GridConstants.js";
+import Time from "../utils/Time.js";
 
 export default class Track {
     constructor(canvas, options = {}) {
@@ -28,11 +29,7 @@ export default class Track {
         this.origin = new Vector();
 
         this.grid = new Grid(GRID_CELL_SIZE, PhysicsCell);
-        this.sectors = new Grid(GRID_CELL_SIZE, PhysicsCell);
-
-        this.grid = new Grid(GRID_CELL_SIZE, RenderCell);
-        this.sectors = new Grid(GRID_CELL_SIZE, RenderCell);
-
+        this.cache = new Grid(GRID_CELL_SIZE, RenderCell);
 
         this.vehicle = "BMX";
         this.players = [];
@@ -57,7 +54,7 @@ export default class Track {
     }
     zoom(direction = 1) {
         this.zoomFactor = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, 10 * this.zoomFactor + 2 * direction) / 10)
-        this.sectors = {};
+        this.cache = new Grid(GRID_CELL_SIZE, RenderCell);;
     }
     switchBike() {
         this.vehicle = "BMX" === this.vehicle ? "MTB" : "BMX";
@@ -259,8 +256,8 @@ export default class Track {
                 if (this.grid[w] !== void 0 && this.grid[w][y] !== void 0) {
                     if (this.grid[w][y].physics.length > 0 || this.grid[w][y].scenery.length > 0) {
                         m[C = w + "_" + y] = 1;
-                        if (this.sectors[C] === void 0) {
-                            n = this.sectors[C] = document.createElement("canvas");
+                        if (this.cache[C] === void 0) {
+                            n = this.cache[C] = document.createElement("canvas");
                             n.width = this.scale * this.zoomFactor;
                             n.height = this.scale * this.zoomFactor;
                             let M = n.getContext("2d");
@@ -278,7 +275,7 @@ export default class Track {
                             for (x = this.grid[w][y].physics.length; n < x; n++)
                                 this.grid[w][y].physics[n].draw(M, w * this.scale * this.zoomFactor, y * this.scale * this.zoomFactor)
                         }
-                        ctx.drawImage(this.sectors[C], Math.floor(this.canvas.width / 2 - this.camera.x * this.zoomFactor + w * this.scale * this.zoomFactor), Math.floor(this.canvas.height / 2 - this.camera.y * this.zoomFactor + y * this.scale * this.zoomFactor))
+                        ctx.drawImage(this.cache[C], Math.floor(this.canvas.width / 2 - this.camera.x * this.zoomFactor + w * this.scale * this.zoomFactor), Math.floor(this.canvas.height / 2 - this.camera.y * this.zoomFactor + y * this.scale * this.zoomFactor))
                     }
                     ctx.strokeStyle = "#000";
                     n = 0;
@@ -288,143 +285,105 @@ export default class Track {
                 }
             }
         }
-        for (let X in this.sectors)
-            m[X] === void 0 && delete this.sectors[X];
-        if (250 !== this.canvas.width) {
-            if (tool.selected !== "camera" && !this.cameraFocus)
-                switch (tool.selected) {
-                    case "line":
-                    case "scenery line":
-                    case "brush":
-                    case "scenery brush":
-                        ctx.lineWidth = 1;
-                        ctx.strokeStyle = "#000";
-                        w = tool.mouse.pos.toPixel(this).x;
-                        y = tool.mouse.pos.toPixel(this).y;
-                        ctx.beginPath(),
-                        ctx.moveTo(w - 10, y),
-                        ctx.lineTo(w + 10, y),
-                        ctx.moveTo(w, y + 10),
-                        ctx.lineTo(w, y - 10),
-                        ctx.stroke();
-                        break;
-                    case "eraser":
-                        tool.eraser.draw();
-                        break;
-                    case "goal":
-                    case "checkpoint":
-                    case "bomb":
-                    case "slow-mo":
-                    case "antigravity":
-                    case "teleporter":
-                        ctx.fillStyle = tool.selected == "goal" ? "#ff0" : tool.selected == "checkpoint" ? "#00f" : tool.selected == "bomb" ? "#f00" : tool.selected == "slow-mo" ? "#eee" : tool.selected == "antigravity" ? "#0ff" : "#f0f";
-                        ctx.beginPath(),
-                        ctx.arc(tool.mouse.pos.toPixel(this).x, tool.mouse.pos.toPixel(this).y, 7 * this.zoomFactor, 0, 2 * Math.PI, !0),
-                        ctx.fill(),
-                        ctx.stroke();
-                        break;
-                    case "boost":
-                    case "gravity":
-                        ctx.beginPath(),
-                        ctx.fillStyle = tool.selected == "boost" ? "#ff0" : "#0f0",
-                        ctx.save();
-                        if (this.cameraLock) {
-                            ctx.translate(tool.mouse.old.toPixel(this).x, tool.mouse.old.toPixel(this).y),
-                            ctx.rotate(Math.atan2(-(tool.mouse.pos.x - tool.mouse.old.x), tool.mouse.pos.y - tool.mouse.old.y));
-                        } else {
-                            ctx.translate(tool.mouse.pos.toPixel(this).x, tool.mouse.pos.toPixel(this).y);
-                        }
-                        ctx.moveTo(-7 * this.zoomFactor, -10 * this.zoomFactor),
-                        ctx.lineTo(0, 10 * this.zoomFactor),
-                        ctx.lineTo(7 * this.zoomFactor, -10 * this.zoomFactor),
-                        ctx.lineTo(-7 * this.zoomFactor, -10 * this.zoomFactor),
-                        ctx.fill(),
-                        ctx.stroke(),
-                        ctx.restore()
-                }
-            ctx.beginPath();
-            ctx.fillStyle = "#ff0";
-            ctx.lineWidth = 1;
-            ctx.arc(40, 12, 3.5, 0, 2 * Math.PI, !0),
-            ctx.fill(),
-            ctx.stroke(),
-            ctx.beginPath();
-            ctx.lineWidth = 10;
-            ctx.strokeStyle = "#fff";
-            ctx.fillStyle = "#000";
-            let e = Math.floor(this.time / 6E4);
-            let h = Math.floor(this.time % 6E4 / 1E3);
-            if (e < 10) {
-                e = "0" + e;
-            }
-            if (h < 10) {
-                h = "0" + h;
-            }
-            let i = e + ":" + h + "." + Math.floor((this.time - 6E4 * e - 1E3 * h) / 100);
-            if (this.paused && !window.autoPause) {
-                i += " - Game paused";
-            } else if (this.firstPlayer && this.firstPlayer.dead) {
-                i = "Press ENTER to restart";
-                if (this.firstPlayer.checkpoints.length > 1) {
-                    i += " or BACKSPACE to cancel Checkpoint"
-                }
-            } else if (this.id === void 0) {
-                if (tool.grid === 10 && "line\\scenery line\\brush\\scenery brush".split(/\\/).includes(tool.selected)) {
-                    i += " - Grid ";
-                }
-                i += " - " + tool.selected;
-                if ("brush\\scenery brush".split(/\\/).includes(tool.selected)) {
-                    i += " ( size " + tool.brush.length + " )";
-                }
-            }
-            if (this.displayText) {
-                if (this.displayText[2] !== void 0) {
-                    if (!this.displayText[0] && !this.displayText[1]) {
-                        i += " - " + (this.paused ? "Unp" : "P") + "ause ( SPACE )";
-                    }
-                }
-            }
-            ctx.strokeText(i = ": " + this.firstPlayer.targetsCollected + " / " + this.targets + "  -  " + i, 50, 16);
-            ctx.fillText(i, 50, 16);
-            if (this.players.length > 1) {
-                for (let i = 1; i < this.players.length; i++) {
-                    ctx.fillStyle = "#aaa";
-                    ctx.textAlign = "right";
-                    ctx.strokeText(i = (this.players[i].name || "Ghost") + (this.players[i].targetsCollected === this.targets ? " finished!" : ": " + this.players[i].targetsCollected + " / " + this.targets), this.canvas.width - 7, 16);
-                    ctx.fillText(i, this.canvas.width - 7, 16);
-                    ctx.textAlign = "left";
-                    ctx.fillStyle = "#000";
-                }
-            }
-            if (this.displayText) {
-                if (this.displayText[2] !== void 0) {
-                    if (this.displayText[0]) {
-                        ctx.textAlign = "right";
-                        if (document.documentElement.offsetHeight <= window.innerHeight) {
-                            ctx.strokeText(this.displayText[2], this.canvas.width - 36, 15 + 25 * this.displayText[1]);
-                            ctx.fillText(this.displayText[2], this.canvas.width - 36, 15 + 25 * this.displayText[1]);
-                        } else {
-                            ctx.strokeText(this.displayText[2], this.canvas.width - 51, 15 + 25 * this.displayText[1]);
-                            ctx.fillText(this.displayText[2], this.canvas.width - 51, 15 + 25 * this.displayText[1]);
-                        }
-                        ctx.textAlign = "left";
+
+        if (tool.selected !== "camera" && !this.cameraFocus) {
+            switch (tool.selected) {
+                case "line":
+                case "scenery line":
+                case "brush":
+                case "scenery brush":
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = "#000";
+                    w = tool.mouse.pos.toPixel(this).x;
+                    y = tool.mouse.pos.toPixel(this).y;
+                    ctx.beginPath(),
+                    ctx.moveTo(w - 10, y),
+                    ctx.lineTo(w + 10, y),
+                    ctx.moveTo(w, y + 10),
+                    ctx.lineTo(w, y - 10),
+                    ctx.stroke();
+                    break;
+                case "eraser":
+                    tool.eraser.draw();
+                    break;
+                case "goal":
+                case "checkpoint":
+                case "bomb":
+                case "slow-mo":
+                case "antigravity":
+                case "teleporter":
+                    ctx.fillStyle = tool.selected == "goal" ? "#ff0" : tool.selected == "checkpoint" ? "#00f" : tool.selected == "bomb" ? "#f00" : tool.selected == "slow-mo" ? "#eee" : tool.selected == "antigravity" ? "#0ff" : "#f0f";
+                    ctx.beginPath(),
+                    ctx.arc(tool.mouse.pos.toPixel(this).x, tool.mouse.pos.toPixel(this).y, 7 * this.zoomFactor, 0, 2 * Math.PI, !0),
+                    ctx.fill(),
+                    ctx.stroke();
+                    break;
+                case "boost":
+                case "gravity":
+                    ctx.beginPath(),
+                    ctx.fillStyle = tool.selected == "boost" ? "#ff0" : "#0f0",
+                    ctx.save();
+                    if (this.cameraLock) {
+                        ctx.translate(tool.mouse.old.toPixel(this).x, tool.mouse.old.toPixel(this).y),
+                        ctx.rotate(Math.atan2(-(tool.mouse.pos.x - tool.mouse.old.x), tool.mouse.pos.y - tool.mouse.old.y));
                     } else {
-                        ctx.strokeText(this.displayText[2], 36, 15 + 25 * this.displayText[1]);
-                        ctx.fillText(this.displayText[2], 36, 15 + 25 * this.displayText[1]);
+                        ctx.translate(tool.mouse.pos.toPixel(this).x, tool.mouse.pos.toPixel(this).y);
                     }
-                }
+                    ctx.moveTo(-7 * this.zoomFactor, -10 * this.zoomFactor),
+                    ctx.lineTo(0, 10 * this.zoomFactor),
+                    ctx.lineTo(7 * this.zoomFactor, -10 * this.zoomFactor),
+                    ctx.lineTo(-7 * this.zoomFactor, -10 * this.zoomFactor),
+                    ctx.fill(),
+                    ctx.stroke(),
+                    ctx.restore()
             }
-            if (this.Ab) {
-                let b = (this.canvas.width - 250) / 2;
-                let c = (this.canvas.height - 150) / 2;
-                ctx.lineWidth = 1;
-                ctx.strokeStyle = "#fff";
-                ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-                ctx.fillRect(0, 0, this.canvas.width, c);
-                ctx.fillRect(0, c + 150, this.canvas.width, c);
-                ctx.fillRect(0, c, b, 150);
-                ctx.fillRect(b + 250, c, b, 150);
-                ctx.strokeRect(b, c, 250, 150);
+        }
+        ctx.beginPath();
+        ctx.fillStyle = "#ff0";
+        ctx.lineWidth = 1;
+        ctx.arc(40, 12, 3.5, 0, 2 * Math.PI, !0),
+        ctx.fill(),
+        ctx.stroke(),
+        ctx.beginPath();
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = "#fff";
+        ctx.fillStyle = "#000";
+        let i = "";
+        if (this.paused && !window.autoPause) {
+            i += " - Game paused";
+        } else if (this.firstPlayer.dead) {
+            i = "Press ENTER to restart" + (this.firstPlayer.checkpoints.length > 1 ? " or BACKSPACE to cancel Checkpoint" : "");
+        } else if (this.id === void 0) {
+            if (tool.grid === 10 && ["line", "scenery line", "brush", "scenery brush"].includes(tool.selected)) {
+                i += " - Grid ";
+            }
+            if (this.displayText[2] !== "Pause ( SPACE )") {
+                i += " - " + tool.selected;
+            }
+            if (["brush", "scenery brush"].includes(tool.selected)) {
+                i += " ( size " + tool.brush.length + " )";
+            }
+        }
+        ctx.fillText((this.firstPlayer.targetsCollected || 0) + " / " + this.targets + "  -  " + Time.format(this.time), 50, 15);
+        ctx.fillText(i, 120, 15);
+        if (this.players.length > 1) {
+            for (let i = 1; i < this.players.length; i++) {
+                ctx.fillStyle = "#aaa";
+                ctx.textAlign = "right";
+                ctx.fillText(this.players[i].name || "Ghost" + this.players[i].targetsCollected === this.targets ? " finished!" : (": " + this.players[i].targetsCollected + " / " + this.targets), this.canvas.width - 7, 16);
+                ctx.textAlign = "left";
+                ctx.fillStyle = "#000";
+            }
+        }
+        if (this.displayText) {
+            if (this.displayText[2] !== void 0) {
+                if (this.displayText[0]) {
+                    ctx.textAlign = "right";
+                    ctx.fillText(this.displayText[2], this.canvas.width - 36, 15 + 25 * this.displayText[1]);
+                } else {
+                    ctx.textAlign = "left";
+                    ctx.fillText((this.displayText[2] === "Pause ( SPACE )" ? " - " : "") + this.displayText[2], this.displayText[2] === "Pause ( SPACE )" ? this.paused ? 195 : 120 : 36, 15 + 25 * this.displayText[1]);
+                }
             }
         }
 
@@ -434,7 +393,7 @@ export default class Track {
             this.players[i].draw();
         }
         tool.draw.left;
-        if ("eraser\\brush\\scenery brush".split(/\\/).includes(tool.selected)) {
+        if (["eraser", "brush", "scenery brush"].includes(tool.selected)) {
             tool.draw.bottomLeft;
         }
         if (this.editor) {
@@ -575,7 +534,7 @@ export default class Track {
             this.grid[c] === void 0 && (this.grid[c] = {}),
             this.grid[c][d] === void 0 && (this.grid[c][d] = new Sector),
             a.hb ? this.grid[c][d].scenery.push(a) : this.grid[c][d].physics.push(a),
-            delete this.sectors[c + "_" + d]
+            delete this.cache[c + "_" + d]
     }
     read(a = "-18 1i 18 1i###BMX") {
         ctx.fillText("Loading track... Please wait.", 36, 16);
@@ -689,7 +648,7 @@ export default class Track {
             let h = Math.floor(c[e].x / this.scale),
                 i = Math.floor(c[e].y / this.scale),
                 d = d.concat(this.grid[h][i].remove());
-            delete this.sectors[h + "_" + i]
+            delete this.cache[h + "_" + i]
         }
         e = 0;
         for (f = d.length; e < f; e++)

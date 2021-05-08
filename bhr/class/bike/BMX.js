@@ -170,7 +170,7 @@ export default class BMX extends Vehicle {
     }
     draw() {
         let a, b, c, d,
-            e = this.track.zoom,
+            e = this.track.zoomFactor,
             f = this.dir,
             h = this.rearWheel.pos.toPixel(this.track),
             i = this.frontWheel.pos.toPixel(this.track);

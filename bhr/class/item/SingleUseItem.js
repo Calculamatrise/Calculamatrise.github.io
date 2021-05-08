@@ -8,7 +8,7 @@ export default class SingleUseItem extends Item {
     draw() {
         super.draw(this.used ? this.newColor : this.color);
         if (this.d) {
-            super.draw(this.used ? this.newColor : this.color, this.d.toPixel());
+            super.draw(this.used ? this.newColor : this.color, this.d.toPixel(this.track));
         }
     }
     collide(a) {

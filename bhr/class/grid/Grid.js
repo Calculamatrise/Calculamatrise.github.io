@@ -14,7 +14,7 @@ export default class Grid {
     }
 
     has(x, y) {
-        return !!this.cells.has(this.getKey(x, y));
+        return !!this.cells?.has(this.getKey(x, y));
     }
 
     cell(x, y) {

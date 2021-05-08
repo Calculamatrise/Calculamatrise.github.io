@@ -62,16 +62,16 @@ export default class DeadRider {
             shadowFoot = this.shadowFoot.pos.toPixel(this.track),
             hip = this.hip.pos.toPixel(this.track);
         ctx.globalAlpha = this.ghost ? .5 : 1;
-        ctx.lineWidth = 5 * a.zoom;
+        ctx.lineWidth = 5 * a.zoomFactor;
         ctx.strokeStyle = "rgba(0,0,0,0.5)";
         ctx.beginPath(),ctx.moveTo(head.x, head.y),ctx.lineTo(shadowElbow.x, shadowElbow.y),ctx.lineTo(shadowHand.x, shadowHand.y),ctx.moveTo(hip.x, hip.y),ctx.lineTo(shadowKnee.x, shadowKnee.y),ctx.lineTo(shadowFoot.x, shadowFoot.y),ctx.stroke();
         ctx.strokeStyle = "#000";
         ctx.beginPath(),ctx.moveTo(head.x, head.y),ctx.lineTo(elbow.x, elbow.y),ctx.lineTo(hand.x, hand.y),ctx.moveTo(hip.x, hip.y),ctx.lineTo(knee.x, knee.y),ctx.lineTo(foot.x, foot.y),ctx.stroke();
-        ctx.lineWidth = 8 * a.zoom;
+        ctx.lineWidth = 8 * a.zoomFactor;
         ctx.beginPath(),ctx.moveTo(hip.x, hip.y),ctx.lineTo(head.x, head.y),ctx.stroke();
         head.addToSelf(head.sub(hip).scale(0.25));
-        ctx.lineWidth = 2 * a.zoom;
-        ctx.beginPath(),ctx.moveTo(head.x + 5 * a.zoom, head.y),ctx.arc(head.x, head.y, 5 * a.zoom, 0, 2 * Math.PI, !0),ctx.stroke()
+        ctx.lineWidth = 2 * a.zoomFactor;
+        ctx.beginPath(),ctx.moveTo(head.x + 5 * a.zoomFactor, head.y),ctx.arc(head.x, head.y, 5 * a.zoomFactor, 0, 2 * Math.PI, !0),ctx.stroke()
     }
     update() {
         for (let a = this.joints.length - 1; a >= 0; a--)

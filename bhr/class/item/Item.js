@@ -1,4 +1,5 @@
 import Vector from "../Vector.js";
+import tool from "../../constant/tool.js";
 
 export default class Item {
     constructor(a, b, c) {
@@ -6,12 +7,12 @@ export default class Item {
         this.track = c;
         this.id = tool.powerups++
     }
-    draw(t = this.color, e = this.pos.toPixel()) {
+    draw(t = this.color, e = this.pos.toPixel(this.track)) {
         let i = this.track;
         ctx.fillStyle = t;
         ctx.beginPath();
-        ctx.moveTo(e.x + 7 * i.zoom, e.y);
-        ctx.arc(e.x, e.y, 7 * i.zoom, 0, 2 * Math.PI, !0);
+        ctx.moveTo(e.x + 7 * i.zoomFactor, e.y);
+        ctx.arc(e.x, e.y, 7 * i.zoomFactor, 0, 2 * Math.PI, !0);
         ctx.fill();
         ctx.stroke();
     }

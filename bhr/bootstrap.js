@@ -5,6 +5,8 @@ import { Ride } from "./class/Ride.js";
 import Vector from "./class/Vector.js";
 import tool from "./constant/tool.js";
 import { records, charCount, code } from "./constant/variable.js";
+import Target from "./class/item/Target.js";
+import Checkpoint from "./class/item/Checkpoint.js";
 
 let loop = null;
 let Z = !1;
@@ -379,7 +381,7 @@ canvas.onmousedown = function(a) {
                 track.lineShading ? (track.lineShading = !1,
                 track.displayText[2] = tool.descriptions.left[6] = "Enable line shading") : (track.lineShading = !0,
                 track.displayText[2] = tool.descriptions.left[6] = "Disable line shading");
-                track.sectors = [];
+                track.cache = [];
                 break;
             case 8:
                 if (document.fullscreenElement) {
@@ -543,7 +545,7 @@ canvas.onmousedown = function(a) {
             let c = Math.floor(b.pos.x / track.scale)
             , d = Math.floor(b.pos.y / track.scale);
             track.grid[c] === void 0 && (track.grid[c] = []);
-            track.grid[c][d] === void 0 && (track.grid[c][d] = new Sector);
+            track.grid[c][d] === void 0 && (track.grid[c][d] = new Vector);
             track.grid[c][d].powerups.push(b);
             track.pushUndo(function() {
                 b.remove()
@@ -591,7 +593,6 @@ document.onmousemove = function(a) {
     }
 },
 canvas.onmouseup = function() {
-    let a, b, c, d;
     if (track.cameraLock)
         if ("line" === tool.selected || "scenery line" === tool.selected || "brush" === tool.selected || "scenery brush" === tool.selected) {
             let e = track.addLine(tool.mouse.old, tool.mouse.pos, "line" !== tool.selected && "brush" !== tool.selected);
@@ -604,21 +605,22 @@ canvas.onmouseup = function() {
             tool.mouse.old.copy(tool.mouse.pos);
             track.teleporter.tpb(tool.mouse.old.x,tool.mouse.old.y);
             track.teleporter = undefined;
-        } else if ("boost" === tool.selected || "gravity" === tool.selected)
-            document.body.style.cursor = "none",
-            d = Math.round(180 * Math.atan2(-(tool.mouse.pos.x - tool.mouse.old.x), tool.mouse.pos.y - tool.mouse.old.y) / Math.PI),
-            c = "boost" === tool.selected ? new Boost(tool.mouse.old.x,tool.mouse.old.y,d,track) : new Gravity(tool.mouse.old.x,tool.mouse.old.y,d,track),
-            a = Math.floor(c.pos.x / track.scale),
-            b = Math.floor(c.pos.y / track.scale),
+        } else if ("boost" === tool.selected || "gravity" === tool.selected) {
+            document.body.style.cursor = "none";
+            let d = Math.round(180 * Math.atan2(-(tool.mouse.pos.x - tool.mouse.old.x), tool.mouse.pos.y - tool.mouse.old.y) / Math.PI);
+            let c = "boost" === tool.selected ? new Boost(tool.mouse.old.x,tool.mouse.old.y,d,track) : new Gravity(tool.mouse.old.x,tool.mouse.old.y,d,track);
+            let a = Math.floor(c.pos.x / track.scale);
+            let b = Math.floor(c.pos.y / track.scale);
             track.grid[a] === void 0 && (track.grid[a] = []),
-            track.grid[a][b] === void 0 && (track.grid[a][b] = new Sector),
+            track.grid[a][b] === void 0 && (track.grid[a][b] = new Vector),
             track.grid[a][b].powerups.push(c),
             track.pushUndo(function() {
                 c.remove()
             }, function() {
                 track.grid[a][b].powerups.push(c)
             })
-},
+        }
+}
 document.onmouseup = () => Z || (track.cameraLock = !1),
 canvas.oncontextmenu = (a) => a.preventDefault(),
 canvas.onmouseout = canvas.onmouseleave = () => document.body.style.cursor = "default",

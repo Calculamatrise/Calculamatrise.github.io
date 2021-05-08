@@ -17,7 +17,7 @@ export default class Shard {
     }
     draw() {
         let a = this.pos.toPixel(this.track),
-            b = this.size * this.track.zoom,
+            b = this.size * this.track.zoomFactor,
             c = this.shape[0] * b,
             d = a.x + c * Math.cos(this.rotation),
             e = 2;

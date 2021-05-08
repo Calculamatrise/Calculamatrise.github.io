@@ -9,7 +9,7 @@ export default class Triangle extends Item {
     }
     draw() {
         let a = this.track,
-            b = this.pos.toPixel();
+            b = this.pos.toPixel(this.track);
         ctx.fillStyle = this.color;
         ctx.beginPath(),
         ctx.save();
