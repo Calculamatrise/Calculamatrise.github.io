@@ -4,20 +4,195 @@
         <title>Rae</title>
         <link rel="icon" href="icon.png">
         <link href="/style.css" rel="stylesheet">
-        <script type="text/javascript" src="script.js"></script>
         <script async src="/script.js"></script>
+        <script async src="script.js"></script>
+        <style>
+            .tab {
+                overflow: hidden;
+                border: 1px solid #ccc;
+                background: #f1f1f1;
+            }
+
+            .content {
+                display: none;
+                margin-top: 20px;
+                margin-left: 5px;
+                width: 1200px;
+            }
+        </style>
     </head>
-    <body>
+    <body style="margin-top: 70px;">
         <header>
             <div class="header-left">
                 <input type="button" onclick="location.href='/'" value="Home" class="button" active="true">
-                <input type="button" onclick="location.href='/rae/'" value="Rae Dashboard" class="button">
+                <input type="button" onclick="window.open('https:\/\/github.com\/Calculamatrise\/rae.js')" value="Source Code" class="button">
                 <input type="button" onclick="location.href='/contact/'" value="Contact" class="button">
+                <input type="button" onclick="window.open('https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands')" value="Invite" class="button">
             </div>
             <div class="header-right">
                 <label class="switch-right"><input type="checkbox" id="dark"><span class="toggle"></span></label>
             </div>
         </header>
+        <div class="tabs">
+            <button class="tablinks" onclick="openDiv('description')">Description</button>
+            <button class="tablinks" onclick="openDiv('commands')">Commands</button>
+            <button class="tablinks" onclick="openDiv('usage')" disabled>Usage</button>
+            <button class="tablinks" onclick="openDiv('invite')">Invite Link</button>
+        </div>
+        <div class="content" id="description" style="display:block">
+            Rae is a multipurpose bot mainly used for music and moderation.
+            Rae has various features including global chat (cross-server communication), auto role and self roles.
+            There are also certain hidden features such as; temp-no-mic.
+            If you name one of your channels with that name, any message sent to that channel will be deleted within a minute of it being sent.
+        </div>
+        <div class="content" id="commands">
+            <table>
+                <tr>
+                    <th>Command</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td>afk</td>
+                    <td>Set an afk status. (displays when someone tries to ping you)</td>
+                </tr>
+                <tr>
+                    <td>avatar</td>
+                    <td>Get someone's avatar.. I guess</td>
+                </tr>
+                <tr>
+                    <td>back</td>
+                    <td>Goes back a song. If you're at the end of the queue, it'll start playing the last song.</td>
+                </tr>
+                <tr>
+                    <td>clear</td>
+                    <td>Purge command; bulk delete messages.</td>
+                </tr>
+                <tr>
+                    <td>confess</td>
+                    <td>Submit a confession.</td>
+                </tr>
+                <tr>
+                    <td>deafen</td>
+                    <td>Timed deafen.</td>
+                </tr>
+                <tr>
+                    <td>guild</td>
+                    <td>Configure guild settings and automation.</td>
+                </tr>
+                <tr>
+                    <td>guildinfo</td>
+                    <td>Get data from any guild via ID.</td>
+                </tr>
+                <tr>
+                    <td>hug</td>
+                    <td>Hug another member.</td>
+                </tr>
+                <tr>
+                    <td>invite</td>
+                    <td>Invite me to your server!</td>
+                </tr>
+                <tr>
+                    <td>kiss</td>
+                    <td>Kiss another member.</td>
+                </tr>
+                <tr>
+                    <td>loop</td>
+                    <td>Loop the current track or queue.</td>
+                </tr>
+                <tr>
+                    <td>mute</td>
+                    <td>Timed mute.</td>
+                </tr>
+                <tr>
+                    <td>pat</td>
+                    <td>Pat another member.</td>
+                </tr>
+                <tr>
+                    <td>pause</td>
+                    <td>Pause the moosic...</td>
+                </tr>
+                <tr>
+                    <td>play</td>
+                    <td>Play moosic from youtube.</td>
+                </tr>
+                <tr>
+                    <td>poke</td>
+                    <td>Poke another member.</td>
+                </tr>
+                <tr>
+                    <td>queue</td>
+                    <td>Tamper with the song queue.</td>
+                </tr>
+                <tr>
+                    <td>rail</td>
+                    <td>oop-</td>
+                </tr>
+                <tr>
+                    <td>random</td>
+                    <td>Randomize weapons or other things.</td>
+                </tr>
+                <tr>
+                    <td>repeat</td>
+                    <td>Repeat a song a set number of times.</td>
+                </tr>
+                <tr>
+                    <td>resume</td>
+                    <td>... resume moosic...</td>
+                </tr>
+                <tr>
+                    <td>seek</td>
+                    <td>Seek to a certain moment in a song.</td>
+                </tr>
+                <tr>
+                    <td>skip</td>
+                    <td>Skip the song that is currently playing.</td>
+                </tr>
+                <tr>
+                    <td>slap</td>
+                    <td>Slap another member.</td>
+                </tr>
+                <tr>
+                    <td>snipe</td>
+                    <td>Snipe a recently edited or deleted message.</td>
+                </tr>
+                <tr>
+                    <td>spam</td>
+                    <td>Spam another member.</td>
+                </tr>
+                <tr>
+                    <td>spank</td>
+                    <td>Spank another member. (WARNING: POTENTIALLY LEWD CONTENT)</td>
+                </tr>
+                <tr>
+                    <td>stop</td>
+                    <td>Stop the moosic and leave the voice channel.</td>
+                </tr>
+                <tr>
+                    <td>undeafen</td>
+                    <td>Undeafen a deafened user.</td>
+                </tr>
+                <tr>
+                    <td>unmute</td>
+                    <td>Unmute a muted user.</td>
+                </tr>
+                <tr>
+                    <td>user</td>
+                    <td>Add to a list of random usernames for a specified game.</td>
+                </tr>
+                <tr>
+                    <td>userinfo</td>
+                    <td>Gather data on a discord user.</td>
+                </tr>
+            </table>
+        </div>
+        <div class="content" id="usage">
+            unfinished.
+        </div>
+        <div class="content" id="invite">
+            <a href="https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands">
+                https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands
+            </a>
+        </div>
         <footer></footer>
     </body>
 </html>

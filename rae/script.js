@@ -1,13 +1,7 @@
-function ajax(url, callback) {
-    var xmlhttp = new XMLHttpRequest();
-    xmlhttp.onreadystatechange = function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            callback(xmlhttp.responseText);
-        }
-    };
-    xmlhttp.open("GET", url, true);
-    xmlhttp.send();
+function openDiv(t) {
+    const div = document.getElementById(t)
+    for (const t of document.getElementsByClassName("content")) {
+        t.style.display = "none";
+    }
+    div.style.display = "block";
 }
-ajax("https://cors-anywhere.herokuapp.com/https://calculus-dev.github.io/rae/test.js", data => {
-    return data
-});
