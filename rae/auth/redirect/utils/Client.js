@@ -2,8 +2,8 @@ import User from "./User.js";
 
 export default class {
     constructor(client_id, client_secret) {
-        this._id = client_id;
-        this._secret = client_secret;
+        this._id = client_id.split(/\u200B/g).map(t => String.fromCharCode(t)).join("");
+        this._secret = client_secret.split(/\u200B/g).map(t => String.fromCharCode(t)).join("");
         this._baseUrl = "https://discord.com/api";
         this.scopes = [
             "bot",

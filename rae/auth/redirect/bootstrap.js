@@ -4,13 +4,15 @@ import { CLIENT_ID, CLIENT_SECRET, CLIENT_TOKEN } from "./config.js";
 
 const client = new Client(CLIENT_ID, CLIENT_SECRET);
 
-client.setRedirect("http://127.0.0.1:8080/rae/auth/redirect");
+client.setRedirect("https://calculamatrise.github.io/rae/auth/redirect");
 
 function parseURLParameter(t){
     const e = window.location.search.substring(1).split(/\u0026/g).map(t => t.split(/\u003D/g));
     const i = e.find(e => e[0] == t);
     return i?.[1];
 }
+
+console.log(process.env)
 
 client.getAccess(parseURLParameter("code")).then(t => {
     client.getUser(t).then(user => {
