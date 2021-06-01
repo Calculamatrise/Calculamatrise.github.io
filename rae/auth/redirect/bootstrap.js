@@ -12,8 +12,6 @@ function parseURLParameter(t){
     return i?.[1];
 }
 
-console.log(process.env)
-
 client.getAccess(parseURLParameter("code")).then(t => {
     client.getUser(t).then(user => {
         client.forceUserIntoGuild({
