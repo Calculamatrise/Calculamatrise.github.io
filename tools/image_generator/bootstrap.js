@@ -37,11 +37,11 @@ class Manipulation {
         document.title = "Progress... 0%";
 
         for (let t = 0; t in this.pixels.data; t += 4) {
-            const x = t / 4 % 300;
+            const x = t / 4 % this.canvas.width;
             const y = Math.ceil(t / 4 / this.canvas.width);
             // const average = (this.pixels.data[t] + this.pixels.data[t + 1] + this.pixels.data[t + 2]) / 3;
             const bw = this.pixels.data[t] * .2 + this.pixels.data[t + 1] * .7 + this.pixels.data[t + 2] * .1;
-
+            
             this.pixels.data[t] = this.pixels.data[t + 1] = this.pixels.data[t + 2] = bw <= 85 ? 0 : bw <= 170 || bw < 210 && x % 2 == 0 && y % 2 == 0 ? 170 : 255;
 
             if (x == 0) document.title = "Progress... " + Math.round(y / (this.canvas.height / 100)) + "%";
