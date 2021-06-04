@@ -27,7 +27,7 @@ class Manipulation {
     }
     render() {
         this.canvas.width = size.checked ? this.image.width : 300;
-        this.canvas.height = size.checked ? this.canvas.height : 300;
+        this.canvas.height = size.checked ? this.image.height : 300;
         
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
@@ -41,7 +41,7 @@ class Manipulation {
             const bw = this.pixels.data[t] * .2 + this.pixels.data[t + 1] * .7 + this.pixels.data[t + 2] * .1;
 
             if (x >= canvas.width) {
-                document.title = "Progress... " + Math.round(y / 3) + "%";
+                document.title = "Progress... " + Math.round(y / (this.canvas.height / 100)) + "%";
                 x = 0;
                 y++;
             }
@@ -50,13 +50,12 @@ class Manipulation {
 
             if (this.pixels.data[t] > 210) continue;
 
-            const line = new Line({
+            new Line({
                 x: x,
                 y: y,
                 dx: x + 2,
                 dy: y + 2
-            });
-            line.filter({
+            }).filter({
                 solid: this.solid,
                 scenery: this.scenery,
                 type: this.pixels.data[t]
