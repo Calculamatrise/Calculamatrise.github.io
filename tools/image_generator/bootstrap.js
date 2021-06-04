@@ -35,19 +35,16 @@ class Manipulation {
         this.pixels = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
         document.title = "Progress... 0%";
-        
-        for (let t = 0, x = 0, y = 0; t in this.pixels.data; t += 4, x++) {
-            const average = (this.pixels.data[t] + this.pixels.data[t + 1] + this.pixels.data[t + 2]) / 3;
+
+        for (let t = 0; t in this.pixels.data; t += 4) {
+            const x = t / 4 % 300;
+            const y = Math.ceil(t / 4 / this.canvas.width);
+            // const average = (this.pixels.data[t] + this.pixels.data[t + 1] + this.pixels.data[t + 2]) / 3;
             const bw = this.pixels.data[t] * .2 + this.pixels.data[t + 1] * .7 + this.pixels.data[t + 2] * .1;
 
-            if (x >= canvas.width) {
-                document.title = "Progress... " + Math.round(y / (this.canvas.height / 100)) + "%";
-                x = 0;
-                y++;
-            }
-        
             this.pixels.data[t] = this.pixels.data[t + 1] = this.pixels.data[t + 2] = bw <= 85 ? 0 : bw <= 170 || bw < 210 && x % 2 == 0 && y % 2 == 0 ? 170 : 255;
 
+            if (x == 0) document.title = "Progress... " + Math.round(y / (this.canvas.height / 100)) + "%";
             if (this.pixels.data[t] > 210) continue;
 
             new Line({
@@ -109,4 +106,8 @@ image.onchange = function() {
     if (this.files.length < 1) return;
 
     Manipulation.fileReader.readAsDataURL(this.files[0]);
+}
+
+code.onclick = function() {
+    this.select();
 }
