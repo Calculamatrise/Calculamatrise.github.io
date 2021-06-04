@@ -1,59 +1,76 @@
-const ctx = canvas.getContext("2d");
+class Manipulation {
+    constructor({ image }) {
+        this.canvas = canvas;
+        this.ctx = this.canvas.getContext("2d");
 
-let solid = new Array();
-let scenery = new Array();
+        this.solid = new Array();
+        this.scenery = new Array();
 
-const reader = new FileReader();
-reader.onload = function() {
-    code.value = null;
-    
-    solid = new Array();
-    scenery = new Array();
+        this.image = new Image();
+        this.image.src = image;
+        this.image.crossOrigin = "Anonymous";
+        this.image.onload = () => this.render();
 
-    image.src = this.result;
-}
-
-const image = new Image();
-image.onload = function() {
-    canvas.width = size.checked ? this.width : 300;
-    canvas.height = size.checked ? this.height : 300;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
-
-	const pixelData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-	for (let t = 0, x = 0, y = 0; t in pixelData.data; t += 4, x++) {
-        const average = (pixelData.data[t] + pixelData.data[t + 1] + pixelData.data[t + 2]) / 3;
-		const bw = pixelData.data[t] * .2 + pixelData.data[t + 1] * .7 + pixelData.data[t + 2] * .1;
-
-        if (x >= canvas.width) x = 0, y++;
-
-        // document.title = "Progress... " + Math.round(t / 3) + "%";
-    
-		pixelData.data[t] = pixelData.data[t + 1] = pixelData.data[t + 2] = bw <= 85 ? 0 : bw <= 170 || bw < 210 && x % 2 == 0 && y % 2 == 0 ? 170 : 255;
-
-        if (pixelData.data[t] > 210) continue;
-
-        const line = new Line({
-            x: x,
-            y: y,
-            dx: x + 2,
-            dy: y + 2
-        });
-        line.filter(pixelData.data[t]);
+        this.pixels = this.ctx.createImageData(this.canvas.width, this.canvas.height);
     }
+    static get fileReader() {
+        this.reader = new FileReader();
+        this.reader.onload = function() {
+            code.value = null;
 
-    ctx.putImageData(pixelData, 0, 0);
+            new Manipulation({
+                image: this.result
+            });
+        }
 
-    code.value = solid.filter(t => t != null).map(t => t.encode.toString()).join(",") + "#" + scenery.filter(t => t != null).map(t => t.encode.toString()).join(",") + "#";
-}
-image.crossOrigin = "Anonymous";
+        return this.reader;
+    }
+    render() {
+        this.canvas.width = size.checked ? this.image.width : 300;
+        this.canvas.height = size.checked ? this.canvas.height : 300;
+        
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
 
-img.onchange = function() {
-    if (this.files.length < 1) return;
+        this.pixels = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
 
-    reader.readAsDataURL(this.files[0]);
+        document.title = "Progress... 0%";
+        
+        for (let t = 0, x = 0, y = 0; t in this.pixels.data; t += 4, x++) {
+            const average = (this.pixels.data[t] + this.pixels.data[t + 1] + this.pixels.data[t + 2]) / 3;
+            const bw = this.pixels.data[t] * .2 + this.pixels.data[t + 1] * .7 + this.pixels.data[t + 2] * .1;
+
+            if (x >= canvas.width) {
+                document.title = "Progress... " + Math.round(y / 3) + "%";
+                x = 0;
+                y++;
+            }
+        
+            this.pixels.data[t] = this.pixels.data[t + 1] = this.pixels.data[t + 2] = bw <= 85 ? 0 : bw <= 170 || bw < 210 && x % 2 == 0 && y % 2 == 0 ? 170 : 255;
+
+            if (this.pixels.data[t] > 210) continue;
+
+            const line = new Line({
+                x: x,
+                y: y,
+                dx: x + 2,
+                dy: y + 2
+            });
+            line.filter({
+                solid: this.solid,
+                scenery: this.scenery,
+                type: this.pixels.data[t]
+            });
+        }
+
+        this.ctx.putImageData(this.pixels, 0, 0);
+
+        document.title = "Ready... 100%";
+
+        code.value = this.solid.filter(t => t != null).map(t => t.encode.toString()).join(",") + "#" + this.scenery.filter(t => t != null).map(t => t.encode.toString()).join(",") + "#";
+        
+        return this;
+    }
 }
 
 class Line {
@@ -71,7 +88,7 @@ class Line {
 
         return this;
     }
-    filter(type) {
+    filter({ solid, scenery, type }) {
         const t = type ? scenery : solid;
         const e = t.findIndex(e => e && this.x == e.dx && this.y == e.dy);
         if (e >= 0) {
@@ -87,4 +104,10 @@ class Line {
     toString() {
         return this.x + " " + this.y + " " + this.dx + " " + this.dy;
     }
+}
+
+image.onchange = function() {
+    if (this.files.length < 1) return;
+
+    Manipulation.fileReader.readAsDataURL(this.files[0]);
 }
