@@ -36,78 +36,43 @@ class Manipulation {
 
         document.title = "Progress... 0%";
 
-        for (let t = 0; t in this.pixels.data; t += 4) {
-            const x = t / 4 % this.canvas.width;
-            const y = Math.ceil(t / 4 / this.canvas.width);
-            // const average = (this.pixels.data[t] + this.pixels.data[t + 1] + this.pixels.data[t + 2]) / 3;
-            const bw = this.pixels.data[t] * .2 + this.pixels.data[t + 1] * .7 + this.pixels.data[t + 2] * .1;
-            
-            this.pixels.data[t] = this.pixels.data[t + 1] = this.pixels.data[t + 2] = bw <= 85 ? 0 : bw <= 170 || bw < 210 && x % 2 == 0 && y % 2 == 0 ? 170 : 255;
+        for (let t = 0, x = 0, y = 0; t in this.pixels.data; t += 4, x++) {
+			const bw = this.pixels.data[t] * .2 + this.pixels.data[t + 1] * .7 + this.pixels.data[t + 2] * .1;
 
-            if (x == 0) document.title = "Progress... " + Math.round(y / (this.canvas.height / 100)) + "%";
-            if (this.pixels.data[t] > 210) continue;
+			if (x >= canvas.width) {
+				document.title = "Progress... " + Math.round(y / (this.canvas.height / 100)) + "%";
+				x = 0;
+				y++;
+			}
+		
+			this.pixels.data[t] = this.pixels.data[t + 1] = this.pixels.data[t + 2] = bw <= 85 ? 0 : bw <= 170 || bw < 210 && x % 2 == 0 && y % 2 == 0 ? 170 : 255;
 
-            new Line({
-                x: x,
-                y: y,
-                dx: x + 2,
-                dy: y + 2
-            }).filter({
-                solid: this.solid,
-                scenery: this.scenery,
-                type: this.pixels.data[t]
-            });
-        }
+			if (this.pixels.data[t] == 255) continue;
+
+			let type = this.pixels.data[t] ? this.scenery : this.solid;
+
+            let line = [
+                x.toString(32),
+                y.toString(32),
+                (x + 2).toString(32),
+                (y + 2).toString(32)
+            ];
+
+			const e = type.find(t => t && line[0] == t[2] && line[1] == t[3]);
+			if (e) {
+				e[2] = line[2];
+				e[3] = line[3]
+			} else {
+				type.push(line);
+			}
+		}
 
         this.ctx.putImageData(this.pixels, 0, 0);
 
         document.title = "Ready... 100%";
 
-        code.value = this.solid.filter(t => t != null).map(t => t.encode.toString()).join(",") + "#" + this.scenery.filter(t => t != null).map(t => t.encode.toString()).join(",") + "#";
+        code.value = this.solid.map(t => t.join(" ")).join(",") + "#" + this.scenery.map(t => t.join(" ")).join(",") + "#";
         
         return this;
     }
-}
-
-class Line {
-    constructor({ x, y, dx, dy }) {
-        this.x = x;
-        this.y = y;
-        this.dx = dx;
-        this.dy = dy;
-    }
-    get encode() {
-        this.x = parseInt(this.x).toString(32);
-        this.y = parseInt(this.y).toString(32);
-        this.dx = parseInt(this.dx).toString(32);
-        this.dy = parseInt(this.dy).toString(32);
-
-        return this;
-    }
-    filter({ solid, scenery, type }) {
-        const t = type ? scenery : solid;
-        const e = t.findIndex(e => e && this.x == e.dx && this.y == e.dy);
-        if (e >= 0) {
-            this.x = t[e].x;
-            this.y = t[e].y;
-            delete t[e];
-        }
-
-        t.push(this);
-
-        return this;
-    }
-    toString() {
-        return this.x + " " + this.y + " " + this.dx + " " + this.dy;
-    }
-}
-
-image.onchange = function() {
-    if (this.files.length < 1) return;
-
-    Manipulation.fileReader.readAsDataURL(this.files[0]);
-}
-
-code.onclick = function() {
-    this.select();
 }
