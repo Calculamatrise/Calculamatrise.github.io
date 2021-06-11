@@ -1,25 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Openrider</title>
+        <title>Black Hat Rider EE</title>
         <link rel="icon" href="/images/icons/icon_512.png">
         <link rel="stylesheet" href="/style.css">
-        <link rel="stylesheet" href="style.css">
         <script async type="module">
             import BHR from "./bootstrap.js";
-            let sampleTrack = '-18 1i 18 1i###';
-            BHR.game.ride({
-                trackCode: sampleTrack
-            });
+
+            BHR.ride();
         </script>
     </head>
     <body>
-        <h2 style="font-family: Arial, Helvetica, sans-serif; position: fixed; justify-content: center; display: flex; left: 39%; top: 10%;">Openrider by Tomiy and Polygon</h2>
         <div id="content">
-            <div id="game">
-                <div id="options"></div>
-                <canvas data-play="openrider"></canvas>
-            </div>
+            <canvas id="canvas" width="800" height="450" style="border: 1px solid black;"></canvas> 
         </div>
     </body>
 </html>
