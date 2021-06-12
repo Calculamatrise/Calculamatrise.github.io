@@ -1,16 +1,15 @@
 class Track {
     constructor(t) {
         t = t.split("#");
-        this.physics = t[0].length > 0 ? t[0].split(",").map(t => t.split(/\s/)) : [];
-        this.scenery = t[1].length > 0 ? t[1].split(",").map(t => t.split(/\s/)) : [];
+        this.physics = t[0].length > 0 ? t[0].split(",").map(t => t.split(/\s/).map(t => Track.decode(t))) : [];
+        this.scenery = t[1].length > 0 ? t[1].split(",").map(t => t.split(/\s/).map(t => Track.decode(t))) : [];
         this.powerups = t[2] || [];
         this.splitPowerups();
-        this.decodeTrack();
     }
-    encode(t) {
-        return parseInt(t).toString(32);
+    static encode(t) {
+        return (t).toString(32);
     }
-    decode(t) {
+    static decode(t) {
         return parseInt(t, 32);
     }
     splitPowerups() {
@@ -20,6 +19,7 @@ class Track {
             targets: [],
             boosters: [],
             slowmos: [],
+            checkpoints: [],
             bombs: [],
             gravity: [],
             antigravity: [],
@@ -34,107 +34,53 @@ class Track {
         for (const t of powerups) {
             switch(t[0]) {
                 case "T":
-                    this.powerups.targets.push(t);
+                    this.powerups.targets.push(t.map((t, e) => e > 0 ? Track.decode(t) : t));
                     break;
                 case "B":
-                    this.powerups.boosters.push(t);
+                    this.powerups.boosters.push(t.map((t, e) => e > 0 ? Track.decode(t) : t));
                     break;
                 case "S":
-                    this.powerups.slowmos.push(t);
+                    this.powerups.slowmos.push(t.map((t, e) => e > 0 ? Track.decode(t) : t));
+                    break;
+                case "C":
+                    this.powerups.checkpoints.push(t.map((t, e) => e > 0 ? Track.decode(t) : t));
                     break;
                 case "O":
-                    this.powerups.bombs.push(t);
+                    this.powerups.bombs.push(t.map((t, e) => e > 0 ? Track.decode(t) : t));
                     break;
                 case "G":
-                    this.powerups.gravity.push(t);
+                    this.powerups.gravity.push(t.map((t, e) => e > 0 ? Track.decode(t) : t));
                     break;
                 case "A":
-                    this.powerups.antigravity.push(t);
+                    this.powerups.antigravity.push(t.map((t, e) => e > 0 ? Track.decode(t) : t));
                     break;
                 case "W":
-                    this.powerups.teleporters.push(t);
+                    this.powerups.teleporters.push(t.map((t, e) => e > 0 ? Track.decode(t) : t));
                     break;
                 case "V":
                     switch(t[3]) {
                         case "1":
-                            this.powerups.vehicles.heli.push(t);
+                            this.powerups.vehicles.heli.push(t.map((t, e) => (e > 0 && e < 3) ? Track.decode(t) : t));
                             break;
                         case "2":
-                            this.powerups.vehicles.truck.push(t);
+                            this.powerups.vehicles.truck.push(t.map((t, e) => (e > 0 && e < 3) ? Track.decode(t) : t));
                             break;
                         case "3":
-                            this.powerups.vehicles.balloon.push(t);
+                            this.powerups.vehicles.balloon.push(t.map((t, e) => (e > 0 && e < 3) ? Track.decode(t) : t));
                             break;
                         case "4":
-                            this.powerups.vehicles.blob.push(t);
+                            this.powerups.vehicles.blob.push(t.map((t, e) => (e > 0 && e < 3) ? Track.decode(t) : t));
                             break;
                     }
-            }
-        }
-    }
-    decodeTrack() {
-        for (const t of this.physics) {
-            for (const e in t) {
-                t[e] = this.decode(t[e]);
-            }
-        }
-        for (const t of this.scenery) {
-            for (const e of t) {
-                t[e] = this.decode(t[e]);
-            }
-        }
-        for (const t in this.powerups) {
-            if (t != "vehicles") {
-                for (const e of this.powerups[t]) {
-                    for (let i = 1; i < e.length; i++) {
-                        e[i] = this.decode(e[i]);
-                    }
-                }
-            } else {
-                for (const e in this.powerups[t]) {
-                    for (const i of this.powerups[t][e]) {
-                        for (let s = 1; s < i.length - 2; s++) {
-                            i[s] = this.decode(i[s]);
-                        }
-                    }
-                }
             }
         }
     }
     encodeTrack() {
-        for (const t of this.physics) {
-            for (const e in t) {
-                t[e] = this.encode(t[e]);
-            }
-        }
-        this.physics = this.physics.map(t => t.join(" ")).join(",");
-        for (const t of this.scenery) {
-            for (const e in t) {
-                t[e] = this.encode(t[e]);
-            }
-        }
-        this.scenery = this.scenery.map(t => t.join(" ")).join(",");
-        for (const t in this.powerups) {
-            if (t != "vehicles") {
-                for (const e of this.powerups[t]) {
-                    for (let i = 1; i < e.length; i++) {
-                        e[i] = this.encode(e[i]);
-                    }
-                }
-            } else {
-                for (const e in this.powerups[t]) {
-                    for (const i of this.powerups[t][e]) {
-                        for (let s = 1; s < i.length - 2; s++) {
-                            i[s] = this.encode(i[s]);
-                        }
-                    }
-                }
-            }
-        }
-        if (!this.powerups?.vehicles) return;
+        this.physics = this.physics.map(t => t.map(t => Track.encode(t)).join(" ")).join(",");
+        this.scenery = this.scenery.map(t => t.map(t => Track.encode(t)).join(" ")).join(",");
         this.powerups = Object.assign(this.powerups.vehicles, this.powerups);
         delete this.powerups.vehicles;
-        this.powerups = Object.values(this.powerups).map(t => t.map(t => t.join(" ")).join(",")).join(",").replace(/,+/g, ",");
+        this.powerups = Object.values(this.powerups).map(t => t.map(t => t.map((t, e, i) => (i[0] == "V" ? (e > 0 && e < 3) : e > 0) ? Track.encode(t) : t).join(" ")).join(",")).join(",").replace(/,+/g, ",");
     }
     condense() {
         let t = this.physics;
@@ -195,25 +141,22 @@ class Track {
     }
 }
 
-function execute() {
+move.onclick = function() {
     let t = new Track(input.value);
     t.move(parseInt(travelDistanceX.value), parseInt(travelDistanceY.value));
 
     return input.value = t.code;
 }
-
-move.onclick = execute;
-input.onclick = input.select;
-
 copy.onclick = function() {
     input.select();
     document.execCommand("copy");
 }
+input.onclick = input.select;
 
 document.onkeypress = t => {
     switch(t.key) {
         case "Enter":
-            execute();
+            move.onclick();
             break;
         case "c":
             copy.onclick();
