@@ -33,11 +33,8 @@ export default class {
         this.guilds = new Map();
         this.connections = new Map();
     }
-    async ajax(options, callback = () => {}) {
+    async ajax({ url, method, headers = {}, body = {} }, callback = () => {}) {
         return await new Promise((resolve, reject) => {
-            const params = new URLSearchParams();
-            options.body && Object.entries(options.body).map(([t, e]) => params.append(t, e));
-
             const xmlhttp = new XMLHttpRequest();
             xmlhttp.onreadystatechange = function() {
                 if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -45,9 +42,9 @@ export default class {
                     resolve(JSON.parse(xmlhttp.responseText));
                 }
             }
-            xmlhttp.open(options.method, this._baseUrl + options.url, true);
-            options.headers && Object.entries(options.headers).map(([t, e]) => xmlhttp.setRequestHeader(t, e));
-            xmlhttp.send(options.headers["Content-Type"] == "application/json" ? JSON.stringify(options.body) : params);
+            xmlhttp.open(method, this._baseUrl + url, true);
+            headers && Object.entries(headers).map(([t, e]) => xmlhttp.setRequestHeader(t, e));
+            xmlhttp.send(headers["Content-Type"] == "application/json" ? JSON.stringify(body) : new URLSearchParams(body));
         });
     }
     setScopes(...scopes) {

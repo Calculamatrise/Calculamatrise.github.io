@@ -78,6 +78,7 @@ class Track {
     encodeTrack() {
         this.physics = this.physics.map(t => t.map(t => Track.encode(t)).join(" ")).join(",");
         this.scenery = this.scenery.map(t => t.map(t => Track.encode(t)).join(" ")).join(",");
+        if (!this.powerups || !this.powerups.vehicles) return;
         this.powerups = Object.assign(this.powerups.vehicles, this.powerups);
         delete this.powerups.vehicles;
         this.powerups = Object.values(this.powerups).map(t => t.map(t => t.map((t, e, i) => (i[0] == "V" ? (e > 0 && e < 3) : e > 0) ? Track.encode(t) : t).join(" ")).join(",")).join(",").replace(/,+/g, ",");
