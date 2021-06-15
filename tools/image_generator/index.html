@@ -4,34 +4,12 @@
         <title>Image Generator</title>
         <link rel="icon" href="/images/icons/icon_512.png">
         <link href="/style.css" rel="stylesheet">
-        <script async src="/script.js"></script>
         <script async src="bootstrap.js" type="module"></script>
+        <script async src="/script.js"></script>
     </head>
     <body>
-        <header>
-            <div class="header-left">
-                <input type="button" onclick="location.href='/'" value="Home" class="button" active="true">
-                <input type="button" onclick="location.href='/rae/'" value="Rae Dashboard" class="button">
-                <div class="dropdown">
-                    <input type="button" onclick="location.href='/tools/'" onmouseenter="onmousemove=(e)=>{this.y = e.clientY};document.getElementById('dropdown-content').style.display='block'" onmouseleave="this.y<50 ? document.getElementById('dropdown-content').style.display='none' : null" value="Free Rider Tools" class="button">
-                    <div class="dropdown-content" id="dropdown-content" onmouseenter="onmousemove=(e)=>{this.yy = e.clientY}" onmouseleave="this.yy>70 ? document.getElementById('dropdown-content').style.display='none' : null">
-                        <input type="button" onclick="location.href='/tools/combiner/'" value="Combiner" class="button"><br>
-                        <input type="button" onclick="location.href='/tools/mover/'" value="Mover" class="button"><br>
-                        <input type="button" onclick="location.href='/tools/reverser/'" value="Reverser" class="button"><br>
-                        <input type="button" onclick="location.href='/tools/visual_editor/'" value="Visual Editor" class="button"><br>
-                        <input type="button" onclick="location.href='/tools/editor/'" value="Advanced Editor" class="button">
-                        <input type="button" onclick="location.href='/tools/track_renderer/'" value="Track Renderer" class="button">
-                        <input type="button" onclick="location.href='/tools/tube_generator/'" value="Tube Generator" class="button">
-                    </div>
-                </div>
-                <input type="button" onclick="location.href='/contact/'" value="Contact" class="button">
-            </div>
-            <div class="header-right">
-                <label class="switch-right"><input type="checkbox" id="dark"><span class="toggle"></span></label>
-            </div>
-        </header>
+        <header></header>
         <div id="content">
-            <br>
             <input type="file" id="image" accept="image/*">
             <label for="size">Use image dimensions&emsp;</label>
             <input type="checkbox" id="size"><br><br>

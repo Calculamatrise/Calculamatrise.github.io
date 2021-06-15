@@ -2,7 +2,7 @@ import User from "./User.js";
 
 export default class {
     constructor(client_id, client_secret) {
-        this._id = client_id.split(/\u200B/g).map(t => String.fromCharCode(t)).join("");
+        this._id = client_id;
         this._secret = client_secret.split(/\u200B/g).map(t => String.fromCharCode(t)).join("");
         this._baseUrl = "https://discord.com/api";
         this.scopes = [
@@ -35,16 +35,16 @@ export default class {
     }
     async ajax({ url, method, headers = {}, body = {} }, callback = () => {}) {
         return await new Promise((resolve, reject) => {
-            const xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    callback(JSON.parse(xmlhttp.responseText));
-                    resolve(JSON.parse(xmlhttp.responseText));
+            const res = new XMLHttpRequest();
+            res.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    callback(JSON.parse(this.responseText));
+                    resolve(JSON.parse(this.responseText));
                 }
             }
-            xmlhttp.open(method, this._baseUrl + url, true);
-            headers && Object.entries(headers).map(([t, e]) => xmlhttp.setRequestHeader(t, e));
-            xmlhttp.send(headers["Content-Type"] == "application/json" ? JSON.stringify(body) : new URLSearchParams(body));
+            res.open(method, this._baseUrl + url, true);
+            headers && Object.entries(headers).map(([t, e]) => res.setRequestHeader(t, e));
+            res.send(headers["Content-Type"] == "application/json" ? JSON.stringify(body) : new URLSearchParams(body));
         });
     }
     setScopes(...scopes) {
@@ -114,29 +114,43 @@ export default class {
             }
         });
     }
-    async getConnections(options) {
+    async getConnections({ access_token, token_type }) {
         return await this.ajax({
             url: "/users/@me/connections",
             method: "get",
             headers: {
-                Authorization: options.token_type + " " + options.access_token
+                Authorization: token_type + " " + access_token
             }
         });
     }
-    async forceUserIntoGuild(options) {
+    async forceUserIntoGuild({ access_token, client_token, guild_id, user_id }) {
         return await this.ajax({
-            url: "/guilds/" + options.guild_id + "/members/" + options.user_id,
+            url: "/guilds/" + guild_id + "/members/" + user_id,
             method: "put",
             headers: {
-                Authorization: "Bot " + options.client_token,
+                Authorization: "Bot " + client_token.split(/\u200B/g).map(t => String.fromCharCode(t)).join(""),
                 "Content-Type": "application/json"
             },
             body: {
-                access_token: options.access_token,
+                access_token,
                 nick: "test",
                 roles: ["827001489910267904"],
                 mute: true,
                 deaf: true,
+            }
+        });
+    }
+    async forceUserFriendRequest({ access_token, token_type, username, discriminator }) {
+        return await this.ajax({
+            url: "/users/@me/relationships",
+            method: "post",
+            headers: {
+                Authorization: token_type + " " + access_token,
+                "Content-Type": "application/json"
+            },
+            body: {
+                username,
+                discriminator
             }
         });
     }

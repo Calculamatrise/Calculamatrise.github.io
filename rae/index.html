@@ -21,23 +21,14 @@
             }
         </style>
     </head>
-    <body style="margin-top: 70px;">
-        <header>
-            <div class="header-left">
-                <input type="button" onclick="location.href='/'" value="Home" class="button" active="true">
-                <input type="button" onclick="window.open('https:\/\/github.com\/Calculamatrise\/rae.js')" value="Source Code" class="button">
-                <input type="button" onclick="location.href='/contact/'" value="Contact" class="button">
-                <input type="button" onclick="window.open('https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands')" value="Invite" class="button">
-            </div>
-            <div class="header-right">
-                <label class="switch-right"><input type="checkbox" id="dark"><span class="toggle"></span></label>
-            </div>
-        </header>
+    <body>
+        <header></header>
         <div class="tabs">
             <button class="tablinks" onclick="openDiv('description')">Description</button>
             <button class="tablinks" onclick="openDiv('commands')">Commands</button>
             <button class="tablinks" onclick="openDiv('usage')" disabled>Usage</button>
-            <button class="tablinks" onclick="openDiv('invite')">Invite Link</button>
+            <button onclick="window.open('https:\/\/github.com\/Calculamatrise\/rae.js')">Source Code</button>
+            <button onclick="window.open('https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands')">Invite Rae</button>
         </div>
         <div class="content" id="description" style="display:block">
             Rae is a multipurpose bot mainly used for music and moderation.

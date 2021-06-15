@@ -1,8 +1,5 @@
-import Client from "./utils/Client.js";
-
-import { CLIENT_ID, CLIENT_SECRET, CLIENT_TOKEN } from "./config.js";
-
-const client = new Client(CLIENT_ID, CLIENT_SECRET);
+import { client } from "../../../auth/discord/redirect/bootstrap.js";
+import { CLIENT_TOKEN } from "../auth/discord/redirect/config.js";
 
 client.setRedirect("https://calculamatrise.github.io/rae/auth/redirect");
 
