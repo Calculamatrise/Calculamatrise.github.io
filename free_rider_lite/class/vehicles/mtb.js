@@ -239,13 +239,13 @@ export default class extends Vehicle {
     }
     drawBikeFrame(old = this, alpha = this.player._opacity) {
         var t = this.scene
-          , frontWheel = new s(old.frontWheel.pos.x, old.frontWheel.pos.y)
-          , rearWheel = new s(old.rearWheel.pos.x, old.rearWheel.pos.y)
-          , head = new s(old.head.pos.x, old.head.pos.y)
-          , e = frontWheel.toScreen(t)
-          , i = rearWheel.toScreen(t)
-          , n = head.toScreen(t)
-          , r = t.camera.zoom
+            , frontWheel = new s(old.frontWheel.pos.x, old.frontWheel.pos.y)
+            , rearWheel = new s(old.rearWheel.pos.x, old.rearWheel.pos.y)
+            , head = new s(old.head.pos.x, old.head.pos.y)
+            , e = frontWheel.toScreen(t)
+            , i = rearWheel.toScreen(t)
+            , n = head.toScreen(t)
+            , r = t.camera.zoom
             , o = t.game.canvas.getContext("2d")
             , a = alpha
             , h = e.sub(i)
@@ -254,7 +254,7 @@ export default class extends Vehicle {
         i.addOut(c, c),
         n.subOut(c, c),
         o.globalAlpha = a,
-        o.strokeStyle = window.lite.getVar("custom-colour") || window.lite.getVar("dark") ? "#fdfdfd" : "#000",
+        o.strokeStyle = window.lite.getVar("custom-colour") || (window.lite.getVar("dark") ? "#fdfdfd" : "#000"),
         o.lineWidth = 3 * r,
         o.lineCap = "round",
         o.lineJoin = "round",
@@ -279,7 +279,7 @@ export default class extends Vehicle {
         o.fill(),
         o.stroke(),
         o.beginPath(),
-        o.strokeStyle = window.lite.getVar("custom-colour") || window.lite.getVar("dark") ? "#fdfdfd" : "#000",
+        o.strokeStyle = window.lite.getVar("custom-colour") || (window.lite.getVar("dark") ? "#fdfdfd" : "#000"),
         o.lineWidth = 5 * r,
         o.moveTo(i.x, i.y),
         o.lineTo(i.x + .4 * h.x + .05 * l.x, i.y + .4 * h.y + .05 * l.y),
@@ -289,7 +289,7 @@ export default class extends Vehicle {
         o.stroke(),
         o.beginPath(),
         o.lineWidth = 2 * r,
-        o.strokeStyle = window.lite.getVar("custom-colour") || window.lite.getVar("dark") ? "#fdfdfd" : "#000",
+        o.strokeStyle = window.lite.getVar("custom-colour") || (window.lite.getVar("dark") ? "#fdfdfd" : "#000"),
         o.moveTo(i.x + .72 * h.x + .64 * c.x, i.y + .72 * h.y + .64 * c.y),
         o.lineTo(i.x + .43 * h.x + .05 * l.x, i.y + .43 * h.y + .05 * l.y),
         o.stroke(),

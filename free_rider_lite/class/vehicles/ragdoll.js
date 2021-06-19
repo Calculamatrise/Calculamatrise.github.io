@@ -1,4 +1,4 @@
-import s from "../math/cartesian.js";
+import Vector from "../math/cartesian.js";
 import n from "./mass.js";
 import r from "./spring.js";
 import Vehicle from "./vehicle.js";
@@ -7,7 +7,7 @@ export default class extends Vehicle {
     constructor(t, e) {
         super();
         this.parent = e;
-        var i, o, a, h, l, c, u, p, d, f, v = [], g = [], m = new s(0,0);
+        var i, o, a, h, l, c, u, p, d, f, v = [], g = [], m = new Vector(0,0);
         i = new n(m, e),
         o = new n(m, e),
         a = new n(m, e),
@@ -165,7 +165,7 @@ export default class extends Vehicle {
               , i = v.add(e.factor(.15 * this.dir)).add(t.factor(-.05))
               , s = v.add(e.factor(-.35 * this.dir)).add(t.factor(.15));
             d.beginPath(),
-            d.arc(v.x, v.y, 5 * p, 0, 2 * PI, !1),
+            d.arc(v.x, v.y, 5 * p, 0, 2 * Math.PI, !1),
             d.moveTo(i.x, i.y),
             d.lineTo(s.x, s.y),
             d.lineWidth = 2 * p,
