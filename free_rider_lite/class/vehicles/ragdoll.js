@@ -90,23 +90,22 @@ export default class extends Vehicle {
             s[n].vel.y += 1 * (Math.random() - Math.random())
     }
     draw() {
-        var t = this.head
-            , e = this.waist
-            , i = this.lElbow
-            , s = this.rElbow
-            , n = this.rHand
-            , r = this.lHand
-            , o = this.lKnee
-            , a = this.rKnee
-            , h = this.lFoot
-            , l = this.rFoot
-            , c = this.parent.scene
-            , u = c.camera
-            , p = u.zoom
-            , d = c.game.canvas.getContext("2d")
-            , f = (this.dir,
-        this.parent.alpha);
-        d.strokeStyle = "rgba(0,0,0," + f + ")",
+        var t = this.head,
+            e = this.waist,
+            i = this.lElbow,
+            s = this.rElbow,
+            n = this.rHand,
+            r = this.lHand,
+            o = this.lKnee,
+            a = this.rKnee,
+            h = this.lFoot,
+            l = this.rFoot,
+            c = this.parent.scene,
+            u = c.camera,
+            p = u.zoom,
+            d = c.game.canvas.getContext("2d"),
+            f = this.parent.alpha || 1;
+        d.strokeStyle = lite.getVar("dark") ? "rgba(255,255,255," + .5 * f + ")" : "rgba(0,0,0," + .5 * f + ")",
         d.lineWidth = 5 * p,
         d.lineCap = "round",
         d.lineJoin = "round";
@@ -118,7 +117,7 @@ export default class extends Vehicle {
         var m = r.pos.toScreen(c);
         d.lineTo(m.x, m.y),
         d.stroke(),
-        d.strokeStyle = "rgba(0,0,0," + .5 * f + ")",
+        d.strokeStyle = lite.getVar("dark") ? "rgba(255,255,255," + f + ")" : "rgba(0,0,0," + f + ")",
         d.beginPath(),
         d.moveTo(v.x, v.y);
         var y = s.pos.toScreen(c);
@@ -126,7 +125,7 @@ export default class extends Vehicle {
         var w = n.pos.toScreen(c);
         d.lineTo(w.x, w.y),
         d.stroke(),
-        d.strokeStyle = "rgba(0,0,0," + f + ")",
+        d.strokeStyle = lite.getVar("dark") ? "rgba(255,255,255," + f + ")" : "rgba(0,0,0," + f + ")",
         d.lineWidth = 8 * p,
         d.beginPath(),
         d.moveTo(v.x, v.y);
@@ -145,7 +144,7 @@ export default class extends Vehicle {
         var C = T.toScreen(c);
         d.lineTo(C.x, C.y),
         d.stroke(),
-        d.strokeStyle = "rgba(0,0,0," + .5 * f + ")",
+        d.strokeStyle = lite.getVar("dark") ? "rgba(255,255,255," + .5 * f + ")" : "rgba(0,0,0," + .5 * f + ")",
         d.lineWidth = 5 * p,
         d.beginPath(),
         d.moveTo(x.x, x.y);
@@ -169,7 +168,7 @@ export default class extends Vehicle {
             d.moveTo(i.x, i.y),
             d.lineTo(s.x, s.y),
             d.lineWidth = 2 * p,
-            d.strokeStyle = "#000000",
+            d.strokeStyle = lite.getVar("dark") ? "#fdfdfd" : "#000",
             d.stroke()
         } else {
             var D = GameInventoryManager.getItem(this.parent.cosmetics.head)

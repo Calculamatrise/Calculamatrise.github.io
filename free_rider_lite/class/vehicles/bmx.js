@@ -314,13 +314,14 @@ export default class extends Vehicle {
         var k = e.add(o.factor(.86)).add(a.factor(.5))
         , S = e.add(o.factor(.82)).add(a.factor(.65))
         , P = e.add(o.factor(.78)).add(a.factor(.67));
-        if (u.moveTo(C.x, C.y),
+        u.moveTo(C.x, C.y),
         u.lineTo(k.x, k.y),
         u.lineTo(S.x, S.y),
         u.lineTo(P.x, P.y),
         u.stroke(),
-        old.crashed) {
-            old.ragdoll.draw && old.ragdoll.draw();
+        u.strokeStyle = window.lite.getVar("dark") ? "#fdfdfd" : "#000";
+        if (old.crashed) {
+            old.ragdoll.draw();
         } else {
             a = n.sub(e.add(o.factor(.5)));
             var M = p.add(o.factor(-.1)).add(a.factor(.3))

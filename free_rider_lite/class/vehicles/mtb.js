@@ -316,11 +316,12 @@ export default class extends Vehicle {
         o.beginPath(),
         o.lineWidth = 1 * r;
         var u = new s(6 * Math.cos(this.pedala) * r,6 * Math.sin(this.pedala) * r);
-        if (o.moveTo(i.x + .43 * h.x + .05 * l.x + u.x, i.y + .43 * h.y + .05 * l.y + u.y),
+        o.moveTo(i.x + .43 * h.x + .05 * l.x + u.x, i.y + .43 * h.y + .05 * l.y + u.y),
         o.lineTo(i.x + .43 * h.x + .05 * l.x - u.x, i.y + .43 * h.y + .05 * l.y - u.y),
         o.stroke(),
-        old.crashed)
-            old.ragdoll.draw && old.ragdoll.draw();
+        o.strokeStyle = window.lite.getVar("dark") ? "#fdfdfd" : "#000";
+        if (old.crashed)
+            old.ragdoll.draw();
         else {
             h.factorOut(.5, l),
             i.addOut(l, l),
@@ -361,7 +362,7 @@ export default class extends Vehicle {
             var T = y.factor(.12);
             T.x = v.x + T.x + c.x * (50 / w),
             T.y = v.y + T.y + c.y * (50 / w),
-            o.strokeStyle = window.lite.getVar("dark") ? "#fdfdfd" : "rgba(0,0,0," + .5 * a + ")",
+            o.strokeStyle = window.lite.getVar("dark") ? "#fdfdfda5" : "rgba(0,0,0," + .5 * a + ")",
             o.lineWidth = 6 * r,
             o.beginPath(),
             o.moveTo(v.x, v.y),

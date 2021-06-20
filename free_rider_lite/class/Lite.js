@@ -166,7 +166,7 @@ export default window.lite = new class Lite {
         ctx.stroke();
     }
     saveToLocalStorage() {
-        var lite = JSON.stringify({
+        const lite = JSON.stringify({
             vars: this.vars
         });
         localStorage.setItem("lite", lite)
@@ -175,8 +175,8 @@ export default window.lite = new class Lite {
         return localStorage.lite ? JSON.parse(localStorage.lite).vars[t] : this.vars[t]
     }
     setVar(t, e) {
-        if(typeof this.vars[t] == "object") {
-            for(var i in e) {
+        if (typeof this.vars[t] == "object") {
+            for (const i in e) {
                 this.vars[t][i] = e[i]
             }
         } else {
@@ -271,24 +271,24 @@ export default window.lite = new class Lite {
                 bottom:0;left:0;
                 z-index:11
             }
-            .lite.settings input{
+            .lite.settings input {
                 height:auto
             }
-            .lite.hacker-mode-text{
+            .lite.hacker-mode-text {
                 font-family:monospace;
                 line-height:20pt
             }
-            #color{
+            #color {
                 border:none;
                 background-color:#ffffff00;
                 font-size:13px;
                 font-family:roboto_medium,Arial,Helvetica,sans-serif;
                 color:#1b5264
             }
-            #color:hover{
+            #color:hover {
                 cursor:pointer
             }
-            .lite.settings .option{
+            .lite.settings .option {
                 padding:8px;
                 border:none;
                 background-color:#ffffff00;
@@ -301,25 +301,33 @@ export default window.lite = new class Lite {
                 background:#f0f7ff;
                 border-radius: 8px
             }
-            input[type="checkbox"] {
+            .lite.settings .option input[type="checkbox"] {
                 transform: scale(.85) rotate(90deg);
                 transition: all .2s;
             }
-            input[type="checkbox"]:not(:checked):before {
-                transform: scale(0) rotate(90deg);
-                transition: all .1s;
-            }
-            input[type="checkbox"]:not(:checked):after {
-                transform: scale(0) rotate(90deg);
-                transition: all .1s;
-            }
-            input[type="checkbox"]:checked {
+            .lite.settings .option input[type="checkbox"]:checked {
                 transform: scale(1) rotate(0);
                 transition: all .2s;
+            }
+            .lite.settings .option input[type="color"] {
+                -webkit-appearance: none;
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                box-sizing: border-box;
+                border-radius: 4px;
+                padding: 0;
+                width: 13px;
+                height: 13px;
+                background: #000
+            }
+            .lite.settings .option input[type="color"]::-webkit-color-swatch-wrapper {
+                padding: 0;
+            }
+            .lite.settings .option input[type="color"]::-webkit-color-swatch {
+                border: none;
             }`
         }));
         document.body.appendChild(Object.assign(document.createElement("div"), {
-            className: "lite icon",
+            className: "lite icon", //fed7d7  fb3737
             onclick: () => {
                 var t = e => {
                     s.contains(e.target) || (document.removeEventListener("click", t),
@@ -337,24 +345,32 @@ export default window.lite = new class Lite {
             <div class="option"><input title="Enables an input display" type="checkbox" id="di" ${this.getVar("di") ? "checked" : ""}> Input display</div>
             <div class="option"><input title="Displays featured ghosts on the leaderboard" type="checkbox" id="feats" ${this.getVar("feats") ? "checked" : ""}> Feat. ghosts</div>
             <div class="option"><input title="Change grid style" type="checkbox" id="isometric" ${this.getVar("isometric") ? "checked" : ""}> Isometric grid</div>
-            <div class="option"><input title="Customize your bike frame" type="color" id="custom-colour" value="${this.getVar("custom-colour") || "#000"}"> Custom bike colour</div><br>`
+            <div class="option"><input title="Customize your bike frame" type="color" id="custom-colour" value="${this.getVar("custom-colour") || "#000"}" style="background: ${this.getVar("custom-colour") || "#000"}"> Custom bike colour</div><br>`
         });
         for (const t in this.vars) {
-            if (t == "custom-colour") continue;
             if (s.querySelector("#" + t)) {
-                s.querySelector("#" + t).parentElement.onclick = s.querySelector("#" + t).parentNode.onclick = s.querySelector("#" + t).onchange = () => {
-                    s.querySelector("#" + t).checked = !s.querySelector("#" + t).checked;
+                if (t == "custom-colour") {
+                    s.querySelector("#" + t).parentElement.onclick = s.querySelector("#" + t).onchange = () => {
+                        s.querySelector("#" + t).style.background = s.querySelector("#" + t).value || "#000",
+                        this.setVar(t, s.querySelector("#" + t).value),
+                        s.querySelector("#custom-colour").click()
+                    }
+                    continue;
+                }
+                s.querySelector("#" + t).parentElement.onclick = s.querySelector("#" + t).onchange = () => {
+                    s.querySelector("#" + t).checked = !s.querySelector("#" + t).checked,
                     this.setVar(t, !this.getVar(t));
-                    if (t == "dark") GameManager.game.currentScene.track.undraw()
+                    if (t == "dark")
+                        GameManager.game.currentScene.track.undraw(),
+                        GameInventoryManager.redraw()
                 }
                 s.querySelector("#" + t).onclick = () => {
                     this.setVar(t, !this.getVar(t));
-                    if (t == "dark") GameManager.game.currentScene.track.undraw()
+                    if (t == "dark")
+                        GameManager.game.currentScene.track.undraw(),
+                        GameInventoryManager.redraw()
                 }
             }
-        }
-        s.querySelector("#custom-colour").onchange = t => {
-            this.setVar("custom-colour", t.target.value);
         }
     }
 }
