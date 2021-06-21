@@ -103,7 +103,7 @@ class Track {
         }
         this.scenery = s;
     }
-    move(t, e) {
+    move(t = 0, e = 0) {
         for (const i of this.physics) {
             for (let s = 0, n = 1; s < i.length; s += 2, n += 2) {
                 i[s] += t;
