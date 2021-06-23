@@ -1,4 +1,4 @@
-export default window.lite = new class Lite {
+window.lite = new class Lite {
     constructor() {
         this.vars = localStorage.lite ? JSON.parse(localStorage.lite).vars : {
             "canvas-rider": false,
@@ -19,7 +19,7 @@ export default window.lite = new class Lite {
                 title: "Canvas rider",
                 description: "Custom rider cosmetic",
                 get checked() {
-                    return window.lite && window.lite.getVar("canvas-rider") ? "checked" : "";
+                    return window.lite && lite.getVar("canvas-rider") ? "checked" : "";
                 }
             },
             {
@@ -54,6 +54,7 @@ export default window.lite = new class Lite {
             }
         ]
         this.inject(),
+        this.initCustomization(),
         this.saveToLocalStorage(),
         this.checkForUpdate()
     }
@@ -88,7 +89,7 @@ export default window.lite = new class Lite {
                     l=.17*e;
                     v.save(),
                     v.scale(l,l),
-                    v.strokeStyle = window.lite.getVar("dark") ? "#fdfdfd" : "#000";
+                    v.strokeStyle = lite.getVar("dark") ? "#fdfdfd" : "#000";
                     v.fillStyle = "#ffffff00";
                     v.lineCap = "round";
                     v.lineWidth = 11.5;
@@ -120,6 +121,12 @@ export default window.lite = new class Lite {
             }),
             type: "1"
         }
+    }
+    initCustomization() {
+        if (!location.pathname.match(/^\/customization/gi)) return;
+        fetch("https://raw.githubusercontent.com/Calculamatrise/Calculamatrise.github.io/master/header.html").then(t => t.text()).then(t => {
+            document.querySelector("#content").innerHTML = t;
+        });
     }
     drawInputDisplay(canvas = document.createElement('canvas')) {
         var gamepad = GameManager.game.currentScene.playerManager._players[GameManager.game.currentScene.camera.focusIndex]._gamepad.downButtons;
