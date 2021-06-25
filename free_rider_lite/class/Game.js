@@ -112,11 +112,3 @@ window.Game = class {
         this.width = null
     }
 }
-
-document.onload = function() {
-    setTimeout(() => {
-        if (!GameManager.game) {
-            GameManager.loadGame()
-        }
-    }, 500);
-}
