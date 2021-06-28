@@ -27,30 +27,6 @@ export default class Manipulation {
         }
         this.ctx.putImageData(this.pixels, 0, 0);
     }
-    recurse(t, e, i = 0) {
-        let s = 2;
-        if (this.pixels.data[t + 4] == e) {
-            s += this.s(t + 4, e);
-        }
-        return s;
-    }
-    addLine({ t, x, ix, iy, dx, ay }) {
-        if (this.pixels.data[t + 4] == 0) {
-            // if (this.pixels.data[t - 4] == 0) return;
-            // else if (this.pixels.data[t + 4] == 0) {
-            //     dx += this.recurse(t + 4, this.pixels.data, 0);
-            // }
-            this.physics.push([ix, iy, dx, iy], [ix, ay, dx, ay]);
-        } else {
-            // if (this.pixels.data[t - 4] == 170) return;
-            // // e = this.scenery.find(t => t[2] == ix && t[3] == iy);
-            // // if (e) e[2] = dx;
-            // else if (this.pixels.data[t + 4] == 170) {
-            //     dx += this.recurse(t + 4, this.pixels.data, 170);
-            // }
-            this.scenery.push([ix, iy, dx, iy], [ix, ay, dx, ay]);
-        }
-    }
     render() {
         this.canvas.width = size.checked ? this.image.width : 300;
         this.canvas.height = size.checked ? this.image.height : 300;

@@ -22,7 +22,7 @@ onmessage = function(t) {
                         if (t.data.args.pixels.data[e + 4] == 0) {
                             for (let i = x; i < t.data.args.canvas.width; i++) {
                                 let s = (i + y * t.data.args.canvas.width) * 4;
-                                if (t.data.args.pixels.data[s + 4] != 0) {
+                                if (t.data.args.pixels.data[s] != 0) {
                                     dx = i * 2;
                                     break;
                                 }
@@ -34,7 +34,7 @@ onmessage = function(t) {
                         if (t.data.args.pixels.data[e + 4] == 170) {
                             for (let i = x; i < t.data.args.canvas.width; i++) {
                                 let s = (i + y * t.data.args.canvas.width) * 4;
-                                if (t.data.args.pixels.data[s + 4] != 170) {
+                                if (t.data.args.pixels.data[s] != 170) {
                                     dx = i * 2;
                                     break;
                                 }
