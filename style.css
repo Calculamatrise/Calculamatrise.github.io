@@ -166,3 +166,18 @@ input:checked + .toggle:before {
 .toggle:before {
     border-radius: 50%;
 }
+
+.progress-bar-container {
+    border-radius: 30px;
+    width: 470px;
+    height: 1vh;
+}
+
+.progress-bar {
+    background: #2196F3;
+    border-radius: 30px;
+    text-align: center;
+    font-size: xx-small;
+    width: 0%;
+    height: 1vh;
+}

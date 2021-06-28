@@ -44,3 +44,7 @@ textarea {
 	background: #2d2d2d;
     box-shadow: 1px 1px 20px 1px #555;
 }
+
+.progress-bar-container {
+    background: #191919;
+}
