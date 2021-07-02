@@ -8,40 +8,22 @@ onmessage = function(t) {
         break;
 
         case "render":
-            for (let y = 0, iy, ay; y < t.data.args.canvas.height; y++) {
-                for (let x = 0, ix, dx; x < t.data.args.canvas.width; x++) {
-                    let e = (x + y * t.data.args.canvas.width) * 4;
-
+            for (let y = 0, iy; y < t.data.args.canvas.height; y++) {
+                for (let x = 0, ix, dx, e; x < t.data.args.canvas.width; x++) {
+                    e = (x + y * t.data.args.canvas.width) * 4;
                     ix = x * 2;
                     iy = y * 2;
                     dx = ix + 2;
-                    ay = iy - 1;
-        
-                    if (t.data.args.pixels.data[e] == 0) {
-                        if (t.data.args.pixels.data[e - 4] == 0) continue;
-                        if (t.data.args.pixels.data[e + 4] == 0) {
-                            for (let i = x; i < t.data.args.canvas.width; i++) {
-                                let s = (i + y * t.data.args.canvas.width) * 4;
-                                if (t.data.args.pixels.data[s] != 0) {
-                                    dx = i * 2;
-                                    break;
-                                }
-                            }
+
+                    if (t.data.args.pixels.data[e] == 255 || t.data.args.pixels.data[e - 4] == t.data.args.pixels.data[e] && Math.floor((e - 4) / t.data.args.canvas.width / 4) == y) continue;
+                    for (let i = x + 1, s; i < t.data.args.canvas.width; i++) {
+                        s = (i + y * t.data.args.canvas.width) * 4;
+                        if (i >= t.data.args.canvas.width - 1 || t.data.args.pixels.data[s] != t.data.args.pixels.data[e]) {
+                            dx = (i - 1) * 2;
+                            break;
                         }
-                        t.data.args.physics += `${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${ay.toString(32)} ${dx.toString(32)} ${ay.toString(32)},`;
-                    } else if (t.data.args.pixels.data[e] == 170) {
-                        if (t.data.args.pixels.data[e - 4] == 170) continue;
-                        if (t.data.args.pixels.data[e + 4] == 170) {
-                            for (let i = x; i < t.data.args.canvas.width; i++) {
-                                let s = (i + y * t.data.args.canvas.width) * 4;
-                                if (t.data.args.pixels.data[s] != 170) {
-                                    dx = i * 2;
-                                    break;
-                                }
-                            }
-                        }
-                        t.data.args.scenery += `${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${ay.toString(32)} ${dx.toString(32)} ${ay.toString(32)},`;
                     }
+                    t.data.args[t.data.args.pixels.data[e] == 0 ? "physics" : "scenery"] += `${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${(iy + 2).toString(32)} ${dx.toString(32)} ${(iy + 2).toString(32)},`;
                 }
                 postMessage({
                     cmd: "progress",

@@ -36,22 +36,22 @@ class Track {
     rotate(x = 0) {
         x *= Math.PI / 180;
         for (const t of this.black) {
-            for (let e = 0; e < t.length; e += 2) {
-                t[e] = Math.round(t[e] * Math.cos(x) + t[e + 1] * Math.sin(x));
-                t[e + 1] = Math.round(t[e + 1] * Math.cos(x) + t[e] * Math.sin(x));
+            for (let e = 0, i = t[e]; e < t.length; e += 2) {
+                t[e] = Math.cos(x) * i + Math.sin(x) * t[e + 1];
+                t[e + 1] = -Math.sin(x) * i + Math.cos(x) * t[e + 1];
             }
         }
         for (const t of this.grey) {
-            for (let e = 0; e < t.length; e += 2) {
-                t[e] = Math.round(t[e] * Math.cos(x) + t[e + 1] * Math.sin(x));
-                t[e + 1] = Math.round(t[e + 1] * Math.cos(x) + t[e] * Math.sin(x));
+            for (let e = 0, i = t[e]; e < t.length; e += 2) {
+                t[e] = Math.cos(x) * i + Math.sin(x) * t[e + 1];
+                t[e + 1] = -Math.sin(x) * i + Math.cos(x) * t[e + 1];
             }
         }
         for (const t of this.powerups) {
-            for (let e = 0; e < t.length; e += 2) {
+            for (let e = 0, i = t[e]; e < t.length; e += 2) {
                 if (t[0] == "V" && e > 2) continue;
-                t[e] = Math.round(t[e] * Math.cos(x) + t[e + 1] * Math.sin(x));
-                t[e + 1] = Math.round(t[e + 1] * Math.cos(x) + t[e] * Math.sin(x));
+                t[e] = Math.cos(x) * i + Math.sin(x) * t[e + 1];
+                t[e + 1] = -Math.sin(x) * i + Math.cos(x) * t[e + 1];
             }
         }
         return this;
