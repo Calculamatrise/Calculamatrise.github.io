@@ -1,9 +1,9 @@
 <div class="header-left">
     <input type="button" onclick="location.href='/'" value="Home" class="button" active="true">
     <input type="button" onclick="location.href='/rae/'" value="Rae Dashboard" class="button">
-    <div class="dropdown">
-        <input type="button" onclick="location.href='/tools/'" onmouseenter="onmousemove=(e)=>{this.y = e.clientY};document.getElementById('dropdown-content').style.display='block'" onmouseleave="this.y<50 ? document.getElementById('dropdown-content').style.display='none' : null" value="Free Rider Tools" class="button">
-        <div class="dropdown-content" id="dropdown-content" onmouseenter="onmousemove=(e)=>{this.yy = e.clientY}" onmouseleave="this.yy>70 ? document.getElementById('dropdown-content').style.display='none' : null">
+    <div class="dropdown" onmouseenter="document.querySelector('#dropdown-content').style.display = 'block'" onmouseleave="document.querySelector('#dropdown-content').style.display = 'none'">
+        <input type="button" onclick="location.href='/tools/'" value="Free Rider Tools" class="button">
+        <div class="dropdown-content" id="dropdown-content">
             <input type="button" onclick="location.href='/tools/combiner/'" value="Combiner" class="button"><br>
             <input type="button" onclick="location.href='/tools/mover/'" value="Mover" class="button"><br>
             <input type="button" onclick="location.href='/tools/reverser/'" value="Reverser" class="button"><br>
