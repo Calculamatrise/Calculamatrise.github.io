@@ -234,7 +234,7 @@ window.lite = new class Lite {
     moveTrack() {
         const x = parseInt(moveX.value) || 0;
         const y = parseInt(moveY.value) || 0;
-        const code = GameManager.game.currentScene.track.getCode().split("#").map(t => t?.split(/\u002C+/g));
+        const code = GameManager.game.currentScene.track.getCode().split("#").map(t => t && t.split(/\u002C+/g));
         const black = code[0].map(t => t.split(/\s+/g).map(t => Lite.decode(t))) || [];
         const grey = code[1].map(t => t.split(/\s+/g).map(t => Lite.decode(t))) || [];
         const powerups = code[2].map(t => t.split(/\s+/g).map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? Lite.decode(t) : t)) || [];
@@ -260,7 +260,7 @@ window.lite = new class Lite {
         GameManager.game.currentScene.importCode = black.map(t => t.map(t => Lite.encode(t)).join(" ")).join(",") + "#" + grey.map(t => t.map(t => Lite.encode(t)).join(" ")).join(",") + "#" + powerups.map(t => t.map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? Lite.encode(t) : t)).map(t => t.join(" ")).join(",");
     }
     checkForUpdate() {
-        fetch("https://calculamatrise.github.io/free_rider_lite/version.json").then(r => r.json()).then(json => {
+        fetch("https://calculamatrise.github.io/free_rider_lite/details.json").then(r => r.json()).then(json => {
             if (json.version > "4.0.2" && this.getVar("update").dismissed != !0) {
                 this.setVar("update", {
                     uptodate: !0
