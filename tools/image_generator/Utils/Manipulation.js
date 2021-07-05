@@ -148,7 +148,7 @@ export default class Manipulation {
 
         const worker = new Worker("./worker.js");
         worker.onmessage = t => {
-            switch (t.data.cmd) {
+            switch(t.data.cmd) {
                 case "filter":
                     this.ctx.putImageData(t.data.args.pixels, 0, 0);
                 break;
