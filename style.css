@@ -3,10 +3,6 @@
     src: url(../fonts/helsinki.ttf);
 }
 
-* {
-	box-sizing: border-box;
-}
-
 html {
 	font-family: Arial, helvetica, sans-serif;
 }
@@ -40,6 +36,13 @@ footer {
 body {
 	padding: 15px;
 	margin-top: 7vh;
+}
+
+div.content {
+    height: 80vh;
+    padding: 1%;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 button, .button {
@@ -180,4 +183,29 @@ input:checked + .toggle:before {
     font-size: xx-small;
     width: 0%;
     height: 1vh;
+}
+
+#messages {
+    box-shadow: 0 0 3px #ddd;
+    flex-direction: column;
+    margin-bottom: 10px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    height: 70vh;
+    width: auto;
+}
+
+.message span.content {
+    display: inline-block;
+    border-radius: 20px;
+    margin-bottom: 2px;
+    padding: 10px;
+}
+
+.message span.author {
+    display: inline-block;
+    margin-bottom: 2px;
+    padding: 10px;
 }

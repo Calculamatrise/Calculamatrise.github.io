@@ -7,7 +7,7 @@
         <meta property="og:image" content="/images/icons/icon_512.png">
         <meta name="description" content="Super sketchy self-deleting chat every five seconds website.">
         <meta name="author" content="Calculamatrise">
-        <script async src="/script.js"></script>
+        <script src="/script.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-database.js"></script>
         <script async>
@@ -33,7 +33,7 @@
                 }
 
                 firebase.database().ref("messages").push().set({
-                    author: localStorage.getItem("user") || "Anonymous",
+                    author: sessionStorage.getItem("user") || "Anonymous",
                     content: t
                 });
                 message.value = null;
@@ -46,7 +46,7 @@
             }
 
             firebase.database().ref("messages").on("child_added", function(snapshot) {
-                const html = snapshot.val().author == localStorage.getItem("user") ? `<div class="message" data-id="${snapshot.key}" style="float: right; margin-left: 10vw"><div class="author">${snapshot.val().author}</div><div class="content" onclick="deleteMessage(this.parentElement)" onmouseenter="this.oldHTML = this.innerHTML, this.innerHTML = 'Delete', this.style.cursor = 'pointer'" onmouseleave="this.innerHTML = this.oldHTML">${snapshot.val().content}</div></div>` : `<div class="message"><div class="content">${snapshot.val().content}</div><div class="author">${snapshot.val().author}</div></div>`;
+                const html = snapshot.val().author == sessionStorage.getItem("user") ? `<div class="message" data-id="${snapshot.key}" style="float: right; margin-left: 10vw"><span class="author">${snapshot.val().author}</span><span class="content" onclick="deleteMessage(this.parentElement)" onmouseenter="this.oldHTML = this.innerHTML, this.innerHTML = 'Delete', this.style.cursor = 'pointer'" onmouseleave="this.innerHTML = this.oldHTML">${snapshot.val().content}</span></div>` : `<div class="message"><span class="content">${snapshot.val().content}</span><span class="author">${snapshot.val().author}</span></div>`;
                 messages.innerHTML += html;
                 messages.scrollTop = messages.scrollHeight;
                 function deleteMessage() {
@@ -62,20 +62,20 @@
             });
 
             document.onkeydown = function() {
+                if (document.activeElement == user) return;
                 message.focus();
             }
         </script>
     </head>
     <body>
-        <header></header>
         <div class="content">
             <div id="messages"></div>
             <div class="ui">
                 <input type="text" id="message" class="message-content" placeholder="Message..." onkeyup="event.key == 'Enter' && sendMessage(this.value)" autocomplete="off">
                 <button class="button" onclick="sendMessage(message.value)">Send</button>
+                <input type="text" id="user" style="float: right;" onfocusout="sessionStorage.setItem('user', this.value.replace(/[^\w]/g, ''))" value="Anonymous">
                 <p id="error" style="display: none;"></p>
             </div>
         </div>
-        <footer></footer>
     </body>
 </html>

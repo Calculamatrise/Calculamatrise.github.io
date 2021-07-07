@@ -41,3 +41,7 @@ textarea {
 .progress-bar-container {
     background: #f9f9f9;
 }
+
+.message span.content {
+    background-color: #ddd
+}
