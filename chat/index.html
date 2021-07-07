@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sketchy self-deleting Chat</title>
+        <link rel="icon" href="https://calculamatrise.github.io/images/icons/icon_512.png">
+        <link rel="stylesheet" href="styles/index.css">
+        <link rel="stylesheet" href="styles/light.css">
+        <meta property="og:image" content="https://calculamatrise.github.io/images/icons/icon_512.png">
+        <meta name="description" content="Super sketchy self-deleting chat every five seconds website.">
+        <meta name="author" content="Calculamatrise">
+        <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-database.js"></script>
+        <script async>
+            firebase.initializeApp({
+                apiKey: "AIzaSyBKSDPvJP1RSaAAuMz0UqGW4TvAX74Sv24",
+                authDomain: "testchat6y.firebaseapp.com",
+                projectId: "testchat6y",
+                storageBucket: "testchat6y.appspot.com",
+                messagingSenderId: "924140897231",
+                appId: "1:924140897231:web:7c5810a5a8f92ca8f0c8ba",
+                measurementId: "G-570GK1ETQG"
+            });
+
+            function sendMessage(t) {
+                if (t.length < 1) {
+                    error.innerHTML = "Message cannot be empty.";
+                    error.style.display = "block";
+                    setTimeout(() => {
+                        error.style.display = "none";
+                    }, 3000);
+                    
+                    return;
+                }
+
+                firebase.database().ref("messages").push().set({
+                    author: localStorage.getItem("user") || "Anonymous",
+                    content: t
+                });
+                message.value = null;
+            }
+
+            function deleteMessage(t) {
+                const message_id = t.getAttribute("data-id");
+                firebase.database().ref("messages").child(message_id).remove();
+                t.remove();
+            }
+
+            firebase.database().ref("messages").on("child_added", function(snapshot) {
+                const html = snapshot.val().author == localStorage.getItem("user") ? `<div class="message" data-id="${snapshot.key}" style="float: right; margin-left: 10vw"><div class="author">${snapshot.val().author}</div><div class="content" onclick="deleteMessage(this.parentElement)" onmouseenter="this.oldHTML = this.innerHTML, this.innerHTML = 'Delete', this.style.cursor = 'pointer'" onmouseleave="this.innerHTML = this.oldHTML">${snapshot.val().content}</div></div>` : `<div class="message"><div class="content">${snapshot.val().content}</div><div class="author">${snapshot.val().author}</div></div>`;
+                messages.innerHTML += html;
+                messages.scrollTop = messages.scrollHeight;
+                function deleteMessage() {
+                    snapshot.getRef().remove();
+                    messages.innerHTML = messages.innerHTML.replace(html, "");
+                }
+                setTimeout(deleteMessage, 5000);
+            });
+
+            firebase.database().ref("messages").on("child_removed", function(snapshot) {
+                const child = [...document.getElementsByClassName("message")].find(t => t.firstChild.innerText == snapshot.val().author && t.lastChild.innerText == snapshot.val().content);
+                child && child.remove();
+            });
+
+            document.onkeydown = function() {
+                message.focus();
+            }
+        </script>
+    </head>
+    <body>
+        <div class="content">
+            <div id="messages"></div>
+            <div class="ui">
+                <input type="text" id="message" class="message-content" placeholder="Message..." onkeyup="event.key == 'Enter' && sendMessage(this.value)" autocomplete="off">
+                <button class="button" onclick="sendMessage(message.value)">Send</button>
+                <p id="error" style="display: none;"></p>
+            </div>
+        </div>
+    </body>
+</html>
