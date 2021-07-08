@@ -25,7 +25,7 @@ button:hover:active, .button:hover:active {
     background-color: #444;
 }
 
-input[type="number"], input[type="text"] {
+input, input:not([type="checkbox"]), input:not([type="color"]), input:not([type="image"]), input:not([type="image"]) {
     background: #eee;
 }
 
@@ -40,6 +40,10 @@ textarea {
 
 .progress-bar-container {
     background: #f9f9f9;
+}
+
+#messages {
+    border: 1px solid #ddd;
 }
 
 .message span.content {

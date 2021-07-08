@@ -1,17 +1,18 @@
 const params = new URLSearchParams(location.search);
 const room_id = params.get("room");
-if (room_id) {
-    firebase.initializeApp({
-        apiKey: "AIzaSyDVnRMClAPCDp2b3N_iAISRbInKIC80Y6w",
-        authDomain: "calculamatrise.firebaseapp.com",
-        projectId: "calculamatrise",
-        storageBucket: "calculamatrise.appspot.com",
-        messagingSenderId: "372669898445",
-        appId: "1:372669898445:web:0445eea48a0bb5b3ca1384",
-        measurementId: "G-TM55QBK8QC"
-    });
+firebase.initializeApp({
+    apiKey: "AIzaSyDVnRMClAPCDp2b3N_iAISRbInKIC80Y6w",
+    authDomain: "calculamatrise.firebaseapp.com",
+    projectId: "calculamatrise",
+    storageBucket: "calculamatrise.appspot.com",
+    messagingSenderId: "372669898445",
+    appId: "1:372669898445:web:0445eea48a0bb5b3ca1384",
+    measurementId: "G-TM55QBK8QC"
+});
 
-    firebase.database().ref(room_id).child("messages").on("child_added", function(snapshot) {
+const ref = firebase.database().ref(room_id);
+if (room_id) {
+    ref.child("messages").on("child_added", function(snapshot) {
         const html = snapshot.val().author == sessionStorage.getItem("user") ? `<div class="message" data-id="${snapshot.key}" style="float: right; margin-left: 10vw"><span class="author">${snapshot.val().author}</span><span class="content" onclick="deleteMessage(this.parentElement)" onmouseenter="this.oldHTML = this.innerHTML, this.innerHTML = 'Delete', this.style.cursor = 'pointer'" onmouseleave="this.innerHTML = this.oldHTML">${snapshot.val().content}</span></div>` : `<div class="message"><span class="content">${snapshot.val().content}</span><span class="author">${snapshot.val().author}</span></div>`;
         messages.innerHTML += html;
         messages.scrollTop = messages.scrollHeight;
@@ -22,8 +23,8 @@ if (room_id) {
         setTimeout(deleteMessage, 5000);
     });
 
-    firebase.database().ref(room_id).child("messages").on("child_removed", function(snapshot) {
-        const child = [...document.getElementsByClassName("message")].find(t => t.firstChild.innerText == snapshot.val().author && t.lastChild.innerText == snapshot.val().content);
+    ref.child("messages").on("child_removed", function(snapshot) {
+        const child = [...document.getElementsByClassName("message")].find(t => t.firstChild.innerText == snapshot.val().author && (t.lastChild.innerText == snapshot.val().content || t.lastChild.innerText.toLowerCase() == "delete"));
         child && child.remove();
     });
 
@@ -65,7 +66,7 @@ function sendMessage(t) {
         return;
     }
 
-    firebase.database().ref(room_id).child("messages").push().set({
+    ref.child("messages").push().set({
         author: sessionStorage.getItem("user") || "Anonymous",
         content: t
     });
@@ -74,6 +75,5 @@ function sendMessage(t) {
 
 function deleteMessage(t) {
     const message_id = t.getAttribute("data-id");
-    firebase.database().ref(room_id).child("messages").child(message_id).remove();
-    t.remove();
+    ref.child("messages").child(message_id).remove();
 }

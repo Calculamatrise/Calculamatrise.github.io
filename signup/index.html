@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Sign up - Calculamatrise</title>
+        <link rel="icon" href="/images/icons/icon_512.png">
+        <link rel="stylesheet" href="/style.css">
+        <meta property="og:image" content="/images/icons/icon_512.png">
+		<meta name="description" content="A programmer's home.">
+		<meta name="author" content="Calculus">
+        <script async src="/script.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-database.js"></script>
+        <script src="script.js"></script>
+    </head>
+    <body>
+        <div class="content" style="text-align: center;">
+            <input type="text" id="user" placeholder="Username"><br>
+            <input type="email" id="email" placeholder="E-Mail"><br>
+            <input type="password" id="pass" placeholder="Password"><br><br>
+            <button class="button" onclick="createAccount()">Create Account</button>
+            <p id="error" style="display: none;"></p>
+        </div>
+    </body>
+</html>

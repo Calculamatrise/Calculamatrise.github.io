@@ -65,7 +65,7 @@ button:disabled, .button:disabled {
     opacity: 0.5;
 }
 
-input[type="number"], input[type="text"] {
+input, input:not([type="checkbox"]), input:not([type="color"]), input:not([type="image"]), input:not([type="image"]) {
     text-align: center;
     height: 45px;
     width: 200px;
@@ -186,7 +186,6 @@ input:checked + .toggle:before {
 }
 
 #messages {
-    box-shadow: 0 0 3px #ddd;
     flex-direction: column;
     margin-bottom: 10px;
     overflow-x: hidden;
