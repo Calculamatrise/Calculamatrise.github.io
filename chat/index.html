@@ -10,62 +10,7 @@
         <script src="/script.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-database.js"></script>
-        <script async>
-            firebase.initializeApp({
-                apiKey: "AIzaSyBKSDPvJP1RSaAAuMz0UqGW4TvAX74Sv24",
-                authDomain: "testchat6y.firebaseapp.com",
-                projectId: "testchat6y",
-                storageBucket: "testchat6y.appspot.com",
-                messagingSenderId: "924140897231",
-                appId: "1:924140897231:web:7c5810a5a8f92ca8f0c8ba",
-                measurementId: "G-570GK1ETQG"
-            });
-
-            function sendMessage(t) {
-                if (t.length < 1) {
-                    error.innerHTML = "Message cannot be empty.";
-                    error.style.display = "block";
-                    setTimeout(() => {
-                        error.style.display = "none";
-                    }, 3000);
-                    
-                    return;
-                }
-
-                firebase.database().ref("messages").push().set({
-                    author: sessionStorage.getItem("user") || "Anonymous",
-                    content: t
-                });
-                message.value = null;
-            }
-
-            function deleteMessage(t) {
-                const message_id = t.getAttribute("data-id");
-                firebase.database().ref("messages").child(message_id).remove();
-                t.remove();
-            }
-
-            firebase.database().ref("messages").on("child_added", function(snapshot) {
-                const html = snapshot.val().author == sessionStorage.getItem("user") ? `<div class="message" data-id="${snapshot.key}" style="float: right; margin-left: 10vw"><span class="author">${snapshot.val().author}</span><span class="content" onclick="deleteMessage(this.parentElement)" onmouseenter="this.oldHTML = this.innerHTML, this.innerHTML = 'Delete', this.style.cursor = 'pointer'" onmouseleave="this.innerHTML = this.oldHTML">${snapshot.val().content}</span></div>` : `<div class="message"><span class="content">${snapshot.val().content}</span><span class="author">${snapshot.val().author}</span></div>`;
-                messages.innerHTML += html;
-                messages.scrollTop = messages.scrollHeight;
-                function deleteMessage() {
-                    snapshot.getRef().remove();
-                    messages.innerHTML = messages.innerHTML.replace(html, "");
-                }
-                setTimeout(deleteMessage, 5000);
-            });
-
-            firebase.database().ref("messages").on("child_removed", function(snapshot) {
-                const child = [...document.getElementsByClassName("message")].find(t => t.firstChild.innerText == snapshot.val().author && t.lastChild.innerText == snapshot.val().content);
-                child && child.remove();
-            });
-
-            document.onkeydown = function() {
-                if (document.activeElement == user) return;
-                message.focus();
-            }
-        </script>
+        <script async src="script.js"></script>
     </head>
     <body>
         <div class="content">
@@ -73,7 +18,8 @@
             <div class="ui">
                 <input type="text" id="message" class="message-content" placeholder="Message..." onkeyup="event.key == 'Enter' && sendMessage(this.value)" autocomplete="off">
                 <button class="button" onclick="sendMessage(message.value)">Send</button>
-                <input type="text" id="user" style="float: right;" onfocusout="sessionStorage.setItem('user', this.value.replace(/[^\w]/g, ''))" value="Anonymous">
+                <button class="button" onclick="message.value = new URLSearchParams(location.search).get('room'), message.select(), document.execCommand('copy'), message.value = null">Copy Room ID</button>
+                <input type="text" id="user" style="float: right;" onfocusout="this.value.toLowerCase() != 'Anonymous' && sessionStorage.setItem('user', this.value.replace(/[^\w]/g, ''))" value="Anonymous">
                 <p id="error" style="display: none;"></p>
             </div>
         </div>
