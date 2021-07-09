@@ -1,0 +1,49 @@
+<DOCTYPE html>
+<html>
+	<head>
+		<title>Visual Track Editor</title>
+		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="/style.css">
+		<script async src="/script.js"></script>
+		<script async src="script.js"></script>
+    </head>
+    <body>
+		<div class="content">
+			<select id="tool">
+				<optgroup label="Tools">
+					<option>Move</option>
+					<option disabled>Eraser</option>
+				</optgroup>
+				<optgroup label="Shapes">
+					<option selected>Line</option>
+					<option>Box</option>
+					<option>Circle</option>
+					<option>Filled Box</option>
+					<option>Filled Circle</option>
+				</optgroup>
+				<optgroup label="Powerups">
+					<option>Star</option>
+					<option disabled>Boost</option>
+					<option disabled>Gravity</option>
+					<option>Slow Motion</option>
+					<option>Bomb</option>
+					<option>Checkpoint</option>
+					<option>Anti-Gravity</option>
+				</optgroup>
+			</select>
+			<input type="radio" id="black" name="mode" checked>
+			<label for="black">Physics</label>
+			<input type="radio" id="gray" name="mode">
+			<label for="gray">Scenery</label>
+			<button id="import">Import</button>
+			<button id="export">Export</button>
+			<button id="clear">Clear</button>
+			<br><br>
+			<canvas id="view"></canvas>
+			<br><br>
+			Characters: <span id="chars"></span>
+			<br><br>
+			<textarea id="code" style="width: 725px;" readonly>##</textarea>
+		</div>
+	</body>
+</html>

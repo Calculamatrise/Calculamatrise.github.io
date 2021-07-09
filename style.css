@@ -44,6 +44,14 @@ div.content {
     overflow-y: auto;
 }
 
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]) {
+    text-align: center;
+    height: 45px;
+    width: 200px;
+    border: none;
+    border-radius: 2px;
+}
+
 button, .button {
     width: 130px;
     height: 45px;
@@ -64,14 +72,6 @@ button:disabled, .button:disabled {
     opacity: 0.5;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]) {
-    text-align: center;
-    height: 45px;
-    width: 200px;
-    border: none;
-    border-radius: 2px;
-}
-
 textarea {
     height: 400px;
     width: 470px;
@@ -84,7 +84,7 @@ textarea {
   	display: inline-block;
 }
 
-#dropdown-content {
+.dropdown-content {
 	z-index: 1;
     display: none;
 	position: absolute;

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Track Combiner - Calculamatrise</title>
+        <link rel="icon" href="/images/icons/icon_512.png">
+        <link href="/style.css" rel="stylesheet">
+        <script src="/script.js"></script>
+        <script async src="script.js"></script>
+    </head>
+    <body>
+        <div id="content">
+            <button class="button" onclick="run()">Combine</button>
+            <button class="button" onclick="copy()">Copy</button>
+            <button class="button" onclick="add()">Add Track</button>
+            <br><br>
+            <textarea id="input1" onclick="this.select()" spellcheck="false" placeholder="Track 1" style="width: 230px; height: 65px;"></textarea>
+            <textarea id="input2" onclick="this.select()" spellcheck="false" placeholder="Track 2" style="width: 230px; height: 65px;"></textarea>
+            <br>
+            <textarea id="output" onclick="this.select()" placeholder="Combined Track" readonly></textarea>
+        </div>
+    </body>
+</html>
