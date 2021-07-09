@@ -22,7 +22,7 @@ header {
 
 footer {
     bottom: 0;
-    padding: 40px;
+    height: 5vh;
 }
 
 .header-left {
@@ -34,14 +34,13 @@ footer {
 }
 
 body {
-	padding: 15px;
-	margin-top: 7vh;
+	margin-top: 8vh;
 }
 
 div.content {
     height: 80vh;
     padding: 1%;
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: auto;
 }
 
@@ -65,7 +64,7 @@ button:disabled, .button:disabled {
     opacity: 0.5;
 }
 
-input, input:not([type="checkbox"]), input:not([type="color"]), input:not([type="image"]), input:not([type="image"]) {
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]) {
     text-align: center;
     height: 45px;
     width: 200px;

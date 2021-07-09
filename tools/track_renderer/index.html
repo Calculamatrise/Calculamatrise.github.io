@@ -5,15 +5,17 @@
         <link rel="icon" href="/images/icons/icon_512.png">
         <link href="/style.css" rel="stylesheet">
         <script async src="/script.js"></script>
-        <script async src="./script.js"></script>
+        <script async src="script.js"></script>
     </head>
     <body>
-        <input type="text" placeholder="Track ID" id="input">
-        <input type="button" value="Generate" id="run">
+        <div class="content">
+            <canvas id="canvas"></canvas>
+            <br>
+            <input type="text" placeholder="Track ID" id="input">
+            <button class="button" id="run">Generate</button>
 
-        <input type="checkbox" id="invert">
-        <label for="invert">Invert Colours</label>
-
-        <canvas id="canvas" width="1920px" height="1080px"></canvas>
+            <input type="checkbox" id="invert">
+            <label for="invert">Invert Colours</label>
+        </div>
     </body>
 </html>
