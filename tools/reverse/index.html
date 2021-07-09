@@ -4,84 +4,16 @@
         <link rel="icon" href="/images/icons/icon_512.png">
         <link rel="stylesheet" href="/style.css">
         <script async src="/script.js"></script>
+        <script async src="script.js"></script>
     </head>
     <body>
         <input type="radio" name="option" id="vertical" checked="checked">Vertical</input>
         <input type="radio" name="option" id="horizontal">Horizontal</input>
         <br><br>
-        <input id="input" class="a"></input>
+        <input id="input" onclick="this.select()" class="a"></input>
         <button onclick="generate()" class="newbutton">Generate</button>
         <button onclick="copy()" class="button">Copy Code</button>
         <br><br>
-        <textarea id=output rows=20 cols=52 class="a" output="test"></textarea>
-        <script type="text/javascript">
-            this.input = document.getElementById("input");
-            this.output = document.getElementById("output");
-            this.blackSegments = {};
-            this.graySegments = {};
-            this.powerupInstance = {};
-            this.generate = function() {
-                this.code = input.value.split("#");
-                this.black = code[0];
-                this.gray = code[1];
-                this.powerups = code[2];
-                this.newSegmentsBlack = black.split(",");
-                this.newSegmentsGray = gray.split(",");
-                this.newPowerups = powerups.split(",");
-                newSegmentsBlack.forEach(segment => {
-                    blackSegments[segment] = segment.split(" ")
-                });
-                newSegmentsGray.forEach(segment => {
-                    graySegments[segment] = segment.split(" ")
-                });
-                newPowerups.forEach(powerup => {
-                    powerupInstance[powerup] = powerup.split(" ")
-                });
-                black = "";
-                gray = "";
-                powerups = "";
-                for(var i in blackSegments){
-                    blackSegments[i].filter((x, i) => document.getElementById("horizontal").checked ? i % 2 == 0 : i % 2).forEach(x=>{
-                        if(blackSegments[i][blackSegments[i].indexOf(x)].indexOf("-") == 0){
-                            blackSegments[i][blackSegments[i].indexOf(x)] = x.split("-").join("")
-                        } else {
-                            blackSegments[i][blackSegments[i].indexOf(x)] = "-" + x
-                        }
-                    });
-                    black += blackSegments[i].join(" ") + ",";
-                }
-                for(var i in graySegments){
-                    graySegments[i].filter((x, i) => document.getElementById("horizontal").checked ? i % 2 == 0 : i % 2).forEach(x=>{
-                        if(graySegments[i][graySegments[i].indexOf(x)].indexOf("-") == 0){
-                            graySegments[i][graySegments[i].indexOf(x)] = x.split("-").join("")
-                        } else {
-                            graySegments[i][graySegments[i].indexOf(x)] = "-" + x
-                        }
-                    });
-                    gray += graySegments[i].join(" ") + ",";
-                }
-                output.value = (black ? (black.endsWith(",") ? black.slice(0,-1) : black) : "") + "#" + (gray ? (gray.endsWith(",") ? gray.slice(0,-1) : gray) : "") + "#" + (powerups ? powerups : "");
-                output.select();
-            }
-
-            this.copy = function() {
-                output.select();
-                document.execCommand('copy');
-            }
-
-            input.addEventListener('click',function() {
-                input.select();
-            });
-
-            output.addEventListener('click',function() {
-                output.select();
-            });
-
-            window.addEventListener('keydown',function(e) {
-                var key = e.keyCode || e.which;
-                if (key == 13) generate();
-                if (key == 67) copy();
-            });
-        </script>
+        <textarea id="output" onclick="this.select()" rows="20" cols="52" class="a"></textarea>
     </body>
 </html>
