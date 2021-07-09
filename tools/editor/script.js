@@ -1,9 +1,9 @@
 class Track {
     constructor(t) {
-        t = t.split("#").map(t => t?.split(/\u002C+/g));
-        this.black = t[0].map(t => t.split(/\s+/g).map(t => Track.decode(t))) || [];
-        this.grey = t[1].map(t => t.split(/\s+/g).map(t => Track.decode(t))) || [];
-        this.powerups = t[2].map(t => t.split(/\s+/g).map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? Track.decode(t) : t)) || [];
+        t = t.split("#").map(t => t?.split(/\u002C+/g)?.map(t => t.split(/\s+/g)));
+        this.black = t[0] ? t[0].map(t => t.map(t => Track.decode(t)).filter(t => !isNaN(t))) : [];
+        this.grey = t[1] ? t[1].map(t => t.map(t => Track.decode(t)).filter(t => !isNaN(t))) : [];
+        this.powerups = t[2] ? t[2].map(t => t.map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? Track.decode(t) : t)) : [];
     }
     static decode(t) {
         return parseInt(t, 32);
@@ -34,6 +34,7 @@ class Track {
         return this;
     }
     rotate(x = 0) {
+        if (x == 0) return this;
         x *= Math.PI / 180;
         for (const t of this.black) {
             for (let e = 0, i = t[e]; e < t.length; e += 2) {
