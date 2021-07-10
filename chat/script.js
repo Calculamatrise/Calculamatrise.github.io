@@ -13,14 +13,9 @@ firebase.initializeApp({
 const ref = firebase.database().ref(room_id);
 if (room_id) {
     ref.child("messages").on("child_added", function(snapshot) {
-        const html = snapshot.val().author == sessionStorage.getItem("user") ? `<div class="message" data-id="${snapshot.key}" style="float: right; margin-left: 10vw"><span class="author">${snapshot.val().author}</span><span class="content" onclick="deleteMessage(this.parentElement)" onmouseenter="this.oldHTML = this.innerHTML, this.innerHTML = 'Delete', this.style.cursor = 'pointer'" onmouseleave="this.innerHTML = this.oldHTML">${snapshot.val().content}</span></div>` : `<div class="message"><span class="content">${snapshot.val().content}</span><span class="author">${snapshot.val().author}</span></div>`;
-        messages.innerHTML += html;
+        messages.innerHTML += snapshot.val().author == sessionStorage.getItem("user") ? `<div class="message" data-id="${snapshot.key}" style="float: right; margin-left: 10vw"><span class="author">${snapshot.val().author}</span><span class="content" onclick="deleteMessage(this.parentElement)" onmouseenter="this.oldHTML = this.innerHTML, this.innerHTML = 'Delete', this.style.cursor = 'pointer'" onmouseleave="this.innerHTML = this.oldHTML">${snapshot.val().content}</span></div>` : `<div class="message"><span class="content">${snapshot.val().content}</span><span class="author">${snapshot.val().author}</span></div>`;
         messages.scrollTop = messages.scrollHeight;
-        function deleteMessage() {
-            snapshot.getRef().remove();
-            messages.innerHTML = messages.innerHTML.replace(html, "");
-        }
-        setTimeout(deleteMessage, 5000);
+        setTimeout(snapshot.getRef().remove, 5000);
     });
 
     ref.child("messages").on("child_removed", function(snapshot) {

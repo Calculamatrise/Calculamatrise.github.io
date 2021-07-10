@@ -101,17 +101,11 @@ export default class extends Tool {
     }
     rotateSelected() {
         const x = (this.travelDistance || 0) * Math.PI / 180;
-        var selectedSectors = this.selectedSectors;
+        let selectedSectors = this.selectedSectors;
         this.selectedSectors = [];
         for (const i of selectedSectors) {
-            if (i.p2) {
-                i.p1.x = Math.round(i.p1.x * Math.cos(x) + i.p1.y * Math.sin(x));
-                i.p1.y = Math.round(i.p1.y * Math.cos(x) + i.p1.x * Math.sin(x));
-                i.p2.x = Math.round(i.p2.x * Math.cos(x) + i.p2.y * Math.sin(x));
-                i.p2.y = Math.round(i.p2.y * Math.cos(x) + i.p2.x * Math.sin(x));
-                if (!i.name) {
-                    this.selectedSectors.push(this.scene.track[i.type == "physics" ? "addPhysicsLine" : "addSceneryLine"](i.p1.x, i.p1.y, i.p2.x, i.p2.y));
-                }
+            if (i.p2 && !i.name) {
+                this.selectedSectors.push(this.scene.track[i.type == "physics" ? "addPhysicsLine" : "addSceneryLine"](Math.cos(x) * i.p1.x + Math.sin(x) * i.p1.y, -Math.sin(x) * i.p1.x + Math.cos(x) * i.p1.y, Math.cos(x) * i.p2.x + Math.sin(x) * i.p2.y, -Math.sin(x) * i.p2.x + Math.cos(x) * i.p2.y));
                 i.removeAllReferences();
             }
         }
