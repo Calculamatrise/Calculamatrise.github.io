@@ -26,7 +26,7 @@ self.addEventListener("fetch", async e => {
 
 async function cacheFirst(req) {
     const cached = await caches.open("static").then(cache => cache.match(req))
-    return cached || fetch(req);
+    return cached || await fetch(req);
 }
 
 async function networkAndCache(req) {
