@@ -10,8 +10,8 @@ firebase.initializeApp({
     measurementId: "G-TM55QBK8QC"
 });
 
-const ref = firebase.database().ref(room_id);
 if (room_id) {
+    const ref = firebase.database().ref(room_id);
     ref.child("messages").on("child_added", function(snapshot) {
         messages.innerHTML += snapshot.val().author == sessionStorage.getItem("user") ? `<div class="message" data-id="${snapshot.key}" style="float: right; margin-left: 10vw"><span class="author">${snapshot.val().author}</span><span class="content" onclick="deleteMessage(this.parentElement)" onmouseenter="this.oldHTML = this.innerHTML, this.innerHTML = 'Delete', this.style.cursor = 'pointer'" onmouseleave="this.innerHTML = this.oldHTML">${snapshot.val().content}</span></div>` : `<div class="message"><span class="content">${snapshot.val().content}</span><span class="author">${snapshot.val().author}</span></div>`;
         messages.scrollTop = messages.scrollHeight;
@@ -28,6 +28,29 @@ if (room_id) {
     document.onkeydown = function() {
         if (document.activeElement == user) return;
         message.focus();
+    }
+
+    function sendMessage(t) {
+        if (t.length < 1) {
+            error.innerHTML = "Message cannot be empty.";
+            error.style.display = "block";
+            setTimeout(() => {
+                error.style.display = "none";
+            }, 3000);
+            
+            return;
+        }
+    
+        ref.child("messages").push().set({
+            author: sessionStorage.getItem("user") || "Anonymous",
+            content: t
+        });
+        message.value = null;
+    }
+    
+    function deleteMessage(t) {
+        const message_id = t.getAttribute("data-id");
+        ref.child("messages").child(message_id).remove();
     }
 } else {
     const content = document.querySelector(".content");
@@ -48,27 +71,4 @@ if (room_id) {
             return location.href += "?room=" + Math.floor(Math.random() * 1e16).toString(36)
         }
     }));
-}
-
-function sendMessage(t) {
-    if (t.length < 1) {
-        error.innerHTML = "Message cannot be empty.";
-        error.style.display = "block";
-        setTimeout(() => {
-            error.style.display = "none";
-        }, 3000);
-        
-        return;
-    }
-
-    ref.child("messages").push().set({
-        author: sessionStorage.getItem("user") || "Anonymous",
-        content: t
-    });
-    message.value = null;
-}
-
-function deleteMessage(t) {
-    const message_id = t.getAttribute("data-id");
-    ref.child("messages").child(message_id).remove();
 }
