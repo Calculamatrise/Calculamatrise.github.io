@@ -8,6 +8,21 @@ export default class Manipulation {
         this.image.crossOrigin = "Anonymous";
         this.image.onload = () => this.render();
 
+        this.worker = new Worker("./worker.js");
+        this.worker.onmessage = ({ data }) => {
+            switch(data.cmd) {
+                case "progress":
+                    document.title = "Progress... " + data.args.value;
+                    progress.innerText = data.args.innerText || data.args.value;
+                    progress.style.width = data.args.value;
+                break;
+
+                case "render":
+                    code.value = `${data.args.physics}#${data.args.scenery}#`;
+                break;
+            }
+        }
+
         this.pixels = this.ctx.createImageData(this.canvas.width, this.canvas.height);
     }
     static get fileReader() {
@@ -17,7 +32,6 @@ export default class Manipulation {
                 image: this.result
             });
         }
-
         return this.reader;
     }
     static filter(pixels) {
@@ -50,22 +64,7 @@ export default class Manipulation {
         this.ctx.putImageData(Manipulation.filter(this.pixels), 0, 0);
         invert.checked && this.ctx.putImageData(Manipulation.invert(this.pixels), 0, 0);
 
-        const worker = new Worker("./worker.js");
-        worker.onmessage = ({ data }) => {
-            switch(data.cmd) {
-                case "progress":
-                    document.title = "Progress... " + data.args.value;
-                    progress.innerText = data.args.innerText || data.args.value;
-                    progress.style.width = data.args.value;
-                break;
-
-                case "render":
-                    document.title = "Ready!";
-                    code.value = data.args.physics + "#" + data.args.scenery + "#";
-                break;
-            }
-        }
-        worker.postMessage({
+        this.worker.postMessage({
             cmd: "render",
             args: {
                 canvas: {
