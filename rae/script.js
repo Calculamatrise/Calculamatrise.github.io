@@ -1,7 +1,4 @@
 function openDiv(t) {
-    const div = document.getElementById(t)
-    for (const t of document.getElementsByClassName("content")) {
-        t.style.display = "none";
-    }
-    div.style.display = "block";
+    [...document.querySelectorAll(".tab-content")].forEach(t => t.style.display = "none");
+    document.getElementById(t).style.display = "block";
 }

@@ -2,6 +2,7 @@
     "name": "Calculamatrise",
     "short_name": "Calculus",
     "start_url": "/",
+    "display": "minimal-ui",
     "icons": [
         {
             "src": "icons/manifest-icon-192.png",
@@ -16,8 +17,7 @@
             "purpose": "maskable any"
         }
     ],
-    "theme_color": "#2D2D2D",
     "background_color": "#F1F1F1",
-    "display": "minimal-ui",
-    "orientation": "portrait"
+    "orientation": "portrait",
+    "theme_color": "#2D2D2D"
 }

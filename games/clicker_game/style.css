@@ -1,0 +1,41 @@
+html {
+    color: #cccccc;
+    font-family: roboto_condensed_bold, Arial, Helvetica, sans-serif;
+    text-shadow: 1px 1px 0 #333;
+    background: #7289da;
+    font-weight: bold;
+}
+
+canvas {
+    border: 5px solid  #777777
+}
+
+#display {
+    font-size: 100px;
+    text-align: center;
+    margin-top: 100px;
+}
+
+#display::selection {
+    display: none;
+}
+
+#level {
+    font-size: 100px;
+    text-align: center;
+    margin-top: 100px;
+}
+
+#level::selection {
+    display: none;
+}
+
+#prestige {
+    font-size: 100px;
+    text-align: center;
+    margin-top: 100px;
+}
+
+#prestige::selection {
+    display: none;
+}
