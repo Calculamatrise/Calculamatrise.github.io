@@ -261,7 +261,7 @@ window.lite = new class Lite {
     }
     checkForUpdate() {
         fetch("https://calculamatrise.github.io/free_rider_lite/details.json").then(r => r.json()).then(json => {
-            if (json.version > "4.0.2" && this.getVar("update").dismissed != !0) {
+            if (json.version > sessionStorage.getItem("lite_version") && this.getVar("update").dismissed != !0) {
                 this.setVar("update", {
                     uptodate: !0
                 });
