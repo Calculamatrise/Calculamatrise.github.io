@@ -1,5 +1,3 @@
-import "../../libs/lodash.js";
-
 import o from "../math/bresenham.js";
 import s from "../math/cartesian.js";
 import n from "../sector/physicsline.js";
@@ -276,7 +274,7 @@ export default class {
           , c = !1;
         if (void 0 === n[o] && (n[o] = []),
         void 0 === n[o][h]) {
-            var u = new a(o,h,this);
+            var u = new a(o, h, this);
             n[o][h] = u,
             c = u
         }
