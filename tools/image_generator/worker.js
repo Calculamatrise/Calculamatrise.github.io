@@ -1,5 +1,10 @@
 onmessage = function({ data }) {
     switch(data.cmd) {
+        case "move":
+            data.args.physics = data.args.physics.split(/\u002C/g).map(t => t.split(/\s/g).map((t, e) => (parseInt(t, 32) + data.args[e % 2 == 0 ? "x" : "y"]).toString(32)).join(" ")).join(" ");
+            data.args.scenery = data.args.scenery.split(/\u002C/g).map(t => t.split(/\s/g).map((t, e) => (parseInt(t, 32) + data.args[e % 2 == 0 ? "x" : "y"]).toString(32)).join(" ")).join(" ");
+        break;
+
         case "render":
             for (let y = 0, iy; y < data.args.canvas.height; y++) {
                 for (let x = 0, ix, dx, e; x < data.args.canvas.width; x++) {
