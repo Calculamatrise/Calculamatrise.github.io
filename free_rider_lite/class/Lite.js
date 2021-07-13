@@ -1,25 +1,31 @@
+const defaults = {
+    cr: false,
+    cc: false,
+    dark: false,
+    di: true,
+    feats: true,
+    isometric: false,
+    cloud: {
+        dismissed: false,
+        notification: sessionStorage.getItem("lite_version")
+    },
+    update: {
+        dismissed: false,
+        uptodate: false
+    }
+};
+
 window.lite = new class Lite {
     constructor() {
-        this.vars = localStorage.lite ? JSON.parse(localStorage.lite).vars : {
-            "canvas-rider": false,
-            "custom-colour": false,
-            dark: false,
-            di: true,
-            feats: true,
-            isometric: false,
-            update: {
-                dismissed: false,
-                uptodate: false
-            }
-        }
+        this.vars = localStorage.lite ? JSON.parse(localStorage.lite).vars : defaults,
         this.ui = [
             {
-                id: "canvas-rider",
+                id: "cr",
                 type: "checkbox",
                 title: "Canvas rider",
                 description: "Custom rider cosmetic",
                 get checked() {
-                    return window.lite && lite.getVar("canvas-rider") ? "checked" : "";
+                    return window.lite && lite.getVar("cr") ? "checked" : "";
                 }
             },
             {
@@ -47,12 +53,12 @@ window.lite = new class Lite {
                 description: "Change grid style"
             },
             {
-                id: "custom-colour",
+                id: "cc",
                 type: "color",
                 title: "Custom bike colour",
                 description: "Customize your bike frame"
             }
-        ]
+        ],
         this.inject(),
         this.initCustomization(),
         this.saveToLocalStorage(),
@@ -124,9 +130,8 @@ window.lite = new class Lite {
     }
     initCustomization() {
         if (!location.pathname.match(/^\/customization/gi)) return;
-        fetch("https://raw.githubusercontent.com/Calculamatrise/Calculamatrise.github.io/master/header.html").then(t => t.text()).then(t => {
-            document.querySelector("#content").innerHTML = t;
-        });
+        document.querySelector("#content").innerHTML = null;
+        fetch("https://raw.githubusercontent.com/Calculamatrise/Calculamatrise.github.io/master/header.html").then(t => t.text()).then(t => document.querySelector("#content").innerHTML = t);
     }
     drawInputDisplay(canvas = document.createElement('canvas')) {
         var gamepad = GameManager.game.currentScene.playerManager._players[GameManager.game.currentScene.camera.focusIndex]._gamepad.downButtons;
@@ -210,7 +215,7 @@ window.lite = new class Lite {
         ctx.stroke();
     }
     saveToLocalStorage() {
-        localStorage.setItem("lite", JSON.stringify({ vars: this.vars }))
+        localStorage.setItem("lite", JSON.stringify({ vars: Object.assign(defaults, this.vars) }))
     }
     getVar(t) {
         return localStorage.lite ? JSON.parse(localStorage.lite).vars[t] : this.vars[t]
@@ -369,6 +374,13 @@ window.lite = new class Lite {
                 background:#f0f7ff;
                 cursor:pointer
             }
+            .lite.settings .lite-notification {
+                font-family:roboto_medium,Arial,Helvetica,sans-serif;
+                display: inline-block;
+            }
+            .lite.settings .lite-notification.new {
+                color: #ff0000
+            }
             .lite.settings .lite-content {
                 font-size:13px;
                 padding: 5px
@@ -411,6 +423,32 @@ window.lite = new class Lite {
                 border: none;
             }`
         }));
+        let s = Object.assign(document.createElement("div"), {
+            className: "lite settings",
+            innerHTML: `<p style="text-align: center;"><b>Mod</b> <i>Settings</i></p><br>
+            <div class="lite-tabs">
+                <button class="tablinks" name="options" onclick="[...document.querySelectorAll('.lite.settings .lite-content')].forEach(t => t.style.display = 'none'), document.getElementById('lite-options').style.display = 'block'">Options</button>
+                <button class="tablinks" name="changes" onclick="[...document.querySelectorAll('.lite.settings .lite-content')].forEach(t => t.style.display = 'none'), document.getElementById('lite-changes').style.display = 'block', this.lastElementChild.style.display = 'none', lite.setVar('cloud', { dismissed: true, notification: '4.0.22' })">
+                    Changes
+                    <p class="lite-notification new" style="display: ${(!this.getVar("cloud").dismissed && this.getVar("cloud").notification <= "4.0.22") ? "inline-block" : "none"}">NEW!</p>
+                </button>
+            </div>
+            <div class="lite-content" id="lite-options">
+                <div class="option" title="Custom rider cosmetic"><input type="checkbox" id="cr" ${this.getVar("cr") ? "checked" : ""}> Canvas rider</div>
+                <div class="option" title="Toggle dark mode"><input type="checkbox" id="dark" ${this.getVar("dark") ? "checked" : ""}> Dark mode</div>
+                <div class="option" title="Toggle an input display"><input type="checkbox" id="di" ${this.getVar("di") ? "checked" : ""}> Input display</div>
+                <div class="option" title="Displays featured ghosts on the leaderboard"><input type="checkbox" id="feats" ${this.getVar("feats") ? "checked" : ""}> Feat. ghosts</div>
+                <div class="option" title="Change grid style"><input type="checkbox" id="isometric" ${this.getVar("isometric") ? "checked" : ""}> Isometric grid</div>
+                <div class="option" title="Customize your bike frame"><input type="color" id="cc" value="${this.getVar("cc") || "#000000"}" style="background: ${this.getVar("cc") || "#000000"}"> Custom bike colour</div>
+            </div>
+            <div class="lite-content" id="lite-changes" style="display:none">
+                <ul>
+                    <li title="Mostly unnoticeable changes.">
+                        Minor changes and improvements
+                    </li>
+                </ul>
+            </div>`
+        });
         document.body.appendChild(Object.assign(document.createElement("div"), {
             className: "lite icon", //fed7d7  fb3737
             onclick: () => {
@@ -423,44 +461,15 @@ window.lite = new class Lite {
                 }))
             }
         }));
-        var s = Object.assign(document.createElement("div"), {
-            className: "lite settings",
-            innerHTML: `<p style="text-align: center;"><b>Mod</b> <i>Settings</i></p><br>
-            <div class="lite-tabs">
-                <button class="tablinks" onclick="[...document.querySelectorAll('.lite.settings .lite-content')].forEach(t => t.style.display = 'none'), document.getElementById('lite-options').style.display = 'block'">Options</button>
-                <button class="tablinks" onclick="[...document.querySelectorAll('.lite.settings .lite-content')].forEach(t => t.style.display = 'none'), document.getElementById('lite-changes').style.display = 'block'">Changes</button>
-            </div>
-            <div class="lite-content" id="lite-options">
-                <div class="option" title="Custom rider cosmetic"><input type="checkbox" id="canvas-rider" ${this.getVar("canvas-rider") ? "checked" : ""}> Canvas rider</div>
-                <div class="option" title="Toggle dark mode"><input type="checkbox" id="dark" ${this.getVar("dark") ? "checked" : ""}> Dark mode</div>
-                <div class="option" title="Toggle an input display"><input type="checkbox" id="di" ${this.getVar("di") ? "checked" : ""}> Input display</div>
-                <div class="option" title="Displays featured ghosts on the leaderboard"><input type="checkbox" id="feats" ${this.getVar("feats") ? "checked" : ""}> Feat. ghosts</div>
-                <div class="option" title="Change grid style"><input type="checkbox" id="isometric" ${this.getVar("isometric") ? "checked" : ""}> Isometric grid</div>
-                <div class="option" title="Customize your bike frame"><input type="color" id="custom-colour" value="${this.getVar("custom-colour") || "#000000"}" style="background: ${this.getVar("custom-colour") || "#000000"}"> Custom bike colour</div>
-            </div>
-            <div class="lite-content" id="lite-changes" style="display:none">
-                <ul>
-                    <li title="This would occur when collecting a checkpoint whilst dying.">
-                        Fixed death glitch
-                    </li>
-                    <li title="This would only occur in the editor.">
-                        Fixed inability to switch between vehicles
-                    </li>
-                    <li title="A flaw in my code allowed deleted lines to reoccur on the track.">
-                        Fixed the select tool
-                    </li>
-                </ul>
-            </div>`
-        });
         for (const t in this.vars) {
             if (s.querySelector("#" + t)) {
-                if (t == "custom-colour") {
+                if (t == "cc") {
                     s.querySelector("#" + t).parentElement.onclick = s.querySelector("#" + t).onchange = () => {
                         s.querySelector("#" + t).style.background = s.querySelector("#" + t).value || "#000000",
                         this.setVar(t, s.querySelector("#" + t).value),
-                        s.querySelector("#custom-colour").click()
+                        s.querySelector("#cc").click()
                     }
-                    continue;
+                    continue
                 }
                 s.querySelector("#" + t).parentElement.onclick = s.querySelector("#" + t).onclick = () => {
                     s.querySelector("#" + t).checked = !s.querySelector("#" + t).checked,
