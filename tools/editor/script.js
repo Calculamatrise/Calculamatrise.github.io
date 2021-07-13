@@ -1,6 +1,6 @@
 class Track {
     constructor(t) {
-        t = t.split("#").map(t => t?.split(/\u002C+/g)?.map(t => t.split(/\s+/g)));
+        t = t.split("#").map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
         this.black = t[0] ? t[0].map(t => t.map(t => Track.decode(t)).filter(t => !isNaN(t))) : [];
         this.grey = t[1] ? t[1].map(t => t.map(t => Track.decode(t)).filter(t => !isNaN(t))) : [];
         this.powerups = t[2] ? t[2].map(t => t.map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? Track.decode(t) : t)) : [];

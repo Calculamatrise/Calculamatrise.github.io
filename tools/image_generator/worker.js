@@ -3,6 +3,7 @@ onmessage = function({ data }) {
         case "move":
             data.args.physics = data.args.physics.split(/\u002C/g).map(t => t.split(/\s/g).map((t, e) => (parseInt(t, 32) + data.args[e % 2 == 0 ? "x" : "y"]).toString(32)).join(" ")).join(" ");
             data.args.scenery = data.args.scenery.split(/\u002C/g).map(t => t.split(/\s/g).map((t, e) => (parseInt(t, 32) + data.args[e % 2 == 0 ? "x" : "y"]).toString(32)).join(" ")).join(" ");
+            data.args.powerups = data.args.powerups.split(/\u002C/g).map(t => t.split(/\s/g).map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? (parseInt(t, 32) + data.args[e % 2 == 0 ? "x" : "y"]).toString(32) : t).join(" ")).join(",");
         break;
 
         case "render":

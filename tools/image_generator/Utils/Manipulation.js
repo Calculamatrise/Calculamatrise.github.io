@@ -27,8 +27,7 @@ export default class Manipulation {
         this.worker.onmessage = ({ data }) => {
             switch(data.cmd) {
                 case "move":
-                    console.log(data.args.physics)
-                    code.value = `${data.args.physics}#${data.args.scenery}#`;
+                    code.value = data.args.physics + "#" + data.args.scenery + "#" + data.args.powerups;
                 break;
 
                 case "progress":
