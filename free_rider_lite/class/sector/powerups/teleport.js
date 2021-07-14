@@ -19,7 +19,7 @@ export default class extends Powerup {
     hit = !1;
     x = 0;
     y = 0;
-    name = "slowmo";
+    name = "teleport";
     recorded = !1;
     erase(t, e) {
         var i = !1;

@@ -59,16 +59,10 @@ window.lite = new class Lite {
                 description: "Customize your bike frame"
             }
         ],
+        this.saveToLocalStorage(),
         this.inject(),
         this.initCustomization(),
-        this.saveToLocalStorage(),
         this.checkForUpdate()
-    }
-    static encode(t) {
-        return t.toString(32);
-    }
-    static decode(t) {
-        return parseInt(t, 32);
     }
     get head() {
         return {

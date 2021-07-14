@@ -42,6 +42,7 @@ export default class extends Tool {
         let selectedSegments = this.selectedSegments;
         this.selectedSegments = [];
         for (const i of selectedSegments) {
+            console.log(i)
             if (i.p2) {
                 switch(a) {
                     case "ArrowUp":
@@ -61,25 +62,21 @@ export default class extends Tool {
                         i.p2.x += this.travelDistance;
                         break;
                 }
-                if (i.name) {
-                    this.selectedSegments.push(this.scene.track.addPowerup(i));
-                } else {
-                    this.selectedSegments.push(this.scene.track[i.type == "physics" ? "addPhysicsLine" : "addSceneryLine"](i.p1.x, i.p1.y, i.p2.x, i.p2.y));
-                }
+                this.selectedSegments.push(this.scene.track[i.type == "physics" ? "addPhysicsLine" : "addSceneryLine"](i.p1.x, i.p1.y, i.p2.x, i.p2.y));
                 i.removeAllReferences();
             } else {
                 switch(a) {
                     case "ArrowUp":
-                        i.y-= this.travelDistance;
+                        i.y -= this.travelDistance;
                         break;
                     case "ArrowDown":
-                        i.y+= this.travelDistance;
+                        i.y += this.travelDistance;
                         break;
                     case "ArrowLeft":
-                        i.x-= this.travelDistance;
+                        i.x -= this.travelDistance;
                         break;
                     case "ArrowRight":
-                        i.x+= this.travelDistance;
+                        i.x += this.travelDistance;
                 }
                 this.selectedSegments.push(this.scene.track.addPowerup(i));
             }
