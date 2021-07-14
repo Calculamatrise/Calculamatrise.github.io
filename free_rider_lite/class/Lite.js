@@ -129,13 +129,27 @@ window.lite = new class Lite {
         }
     }
     initCustomization() {
+        if (location.pathname.match(/^\/u/gi)) {
+            fetch(location.href + "?ajax=true").then(t => t.json()).then(t => {
+                if (!document.querySelector(".friend-list.friends-all.active")) return;
+                for (const e of [...document.querySelector(".friend-list.friends-all.active").children]) {
+                    if (e.querySelector(".friend-list-item-date")) return;
+                    try {
+                        e.querySelector(".friend-list-item-info").appendChild(Object.assign(document.createElement("div"), {
+                            className: "friend-list-item-date",
+                            innerText: t.friends.friends_data.find(i => i.d_name == e.querySelector(".friend-list-item-name.bold").innerText).activity_time_ago
+                        }));
+                    } catch(e) {}
+                }
+            });
+        }
         if (!location.pathname.match(/^\/customization/gi)) return;
         document.querySelector("#content").innerHTML = null;
         fetch("https://raw.githubusercontent.com/Calculamatrise/Calculamatrise.github.io/master/header.html").then(t => t.text()).then(t => document.querySelector("#content").innerHTML = t);
     }
     drawInputDisplay(canvas = document.createElement('canvas')) {
-        var gamepad = GameManager.game.currentScene.playerManager._players[GameManager.game.currentScene.camera.focusIndex]._gamepad.downButtons;
-        var ctx = canvas.getContext('2d');
+        const gamepad = GameManager.game.currentScene.playerManager._players[GameManager.game.currentScene.camera.focusIndex]._gamepad.downButtons;
+        const ctx = canvas.getContext('2d');
         ctx.lineJoin = "round";
         ctx.lineCap = "round";
         ctx.lineWidth = 5;
@@ -237,19 +251,19 @@ window.lite = new class Lite {
         }
     }
     moveTrack() {
-        const x = parseInt(moveX.value) || 0;
-        const y = parseInt(moveY.value) || 0;
-        const code = GameManager.game.currentScene.track.getCode().split("#").map(t => t && t.split(/\u002C+/g));
-        const black = code[0].map(t => t.split(/\s+/g).map(t => Lite.decode(t))) || [];
-        const grey = code[1].map(t => t.split(/\s+/g).map(t => Lite.decode(t))) || [];
-        const powerups = code[2].map(t => t.split(/\s+/g).map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? Lite.decode(t) : t)) || [];
-        for (const t of black) {
+        const x = parseInt(moveX.value) | 0;
+        const y = parseInt(moveY.value) | 0;
+        const code = GameManager.game.currentScene.track.getCode().split("#").map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
+        const physics = code[0].map(t => t.map(t => parseInt(t, 32))) || [];
+        const scenery = code[1].map(t => t.map(t => parseInt(t, 32))) || [];
+        const powerups = code[2].map(t => t.map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? parseInt(t, 32) : t)) || [];
+        for (const t of physics) {
             for (let e = 0; e < t.length; e += 2) {
                 t[e] += x;
                 t[e + 1] += y;
             }
         }
-        for (const t of grey) {
+        for (const t of scenery) {
             for (let e = 0; e < t.length; e += 2) {
                 t[e] += x;
                 t[e + 1] += y;
@@ -262,7 +276,7 @@ window.lite = new class Lite {
                 t[e + 1] += y;
             }
         }
-        GameManager.game.currentScene.importCode = black.map(t => t.map(t => Lite.encode(t)).join(" ")).join(",") + "#" + grey.map(t => t.map(t => Lite.encode(t)).join(" ")).join(",") + "#" + powerups.map(t => t.map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? Lite.encode(t) : t)).map(t => t.join(" ")).join(",");
+        GameManager.game.currentScene.importCode = physics.map(t => t.map(t => t.toString(32)).join(" ")).join(",") + "#" + scenery.map(t => t.map(t => t.toString(32)).join(" ")).join(",") + "#" + powerups.map(t => t.map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? t.toString(32) : t)).map(t => t.join(" ")).join(",");
     }
     checkForUpdate() {
         fetch("https://calculamatrise.github.io/free_rider_lite/details.json").then(r => r.json()).then(json => {
@@ -316,169 +330,79 @@ window.lite = new class Lite {
         return element;
     }
     inject() {
-        document.head.appendChild(Object.assign(document.createElement("style"), {
-            type: "text/css",
-            innerHTML: `.lite.icon {
-                background-image:url(https://i.imgur.com/bNBqU1b.png);
-                margin:7px;
-                width:32px;
-                height:32px;
-                position:fixed;
-                bottom:40px;
-                left:0;
-                z-index:10
-            }
-            .lite.icon:hover {
-                opacity:0.4;
-                cursor:pointer
-            }
-            .lite.settings {
-                font-family: Arial;
-                background-color:#fff;
-                border:1px solid grey;
-                line-height:normal;
-                padding:14px;
-                position:fixed;
-                bottom:0;left:0;
-                z-index:11
-            }
-            .lite.settings input {
-                height:auto
-            }
-            .lite.hacker-mode-text {
-                font-family:monospace;
-                line-height:20pt
-            }
-            #color {
-                border:none;
-                background-color:#ffffff00;
-                font-size:13px;
-                font-family:roboto_medium,Arial,Helvetica,sans-serif;
-                color:#1b5264
-            }
-            #color:hover {
-                cursor:pointer
-            }
-            .lite.settings .lite-tabs {
-                font-family:roboto_medium,Arial,Helvetica,sans-serif;
-                margin-bottom: 10px;
-                text-align: center;
-                font-size:13px;
-            }
-            .lite.settings .lite-tabs .tablinks {
-                background: white;
-                color:#1b5264;
-                border: none;
-            }
-            .lite.settings .lite-tabs .tablinks:hover {
-                background:#f0f7ff;
-                cursor:pointer
-            }
-            .lite.settings .lite-notification {
-                font-family:roboto_medium,Arial,Helvetica,sans-serif;
-                display: inline-block;
-            }
-            .lite.settings .lite-notification.new {
-                color: #ff0000
-            }
-            .lite.settings .lite-content {
-                font-size:13px;
-                padding: 5px
-            }
-            .lite.settings .option {
-                padding:8px;
-                border:none;
-                background-color:#ffffff00;
-                font-size:13px;
-                font-family:roboto_medium,Arial,Helvetica,sans-serif;
-                color:#1b5264
-            }
-            .lite.settings .option:hover, .lite.settings .option:hover * {
-                background:#f0f7ff;
-                border-radius: 8px;
-                cursor:pointer
-            }
-            .lite.settings .option input[type="checkbox"] {
-                transform: scale(.85) rotate(90deg);
-                transition: all .2s;
-            }
-            .lite.settings .option input[type="checkbox"]:checked {
-                transform: scale(1) rotate(0);
-                transition: all .2s;
-            }
-            .lite.settings .option input[type="color"] {
-                -webkit-appearance: none;
-                border: 1px solid rgba(0, 0, 0, 0.2);
-                box-sizing: border-box;
-                border-radius: 4px;
-                padding: 0;
-                width: 13px;
-                height: 13px;
-                background: #000000
-            }
-            .lite.settings .option input[type="color"]::-webkit-color-swatch-wrapper {
-                padding: 0;
-            }
-            .lite.settings .option input[type="color"]::-webkit-color-swatch {
-                border: none;
-            }`
+        document.head.appendChild(Object.assign(document.createElement("link"), {
+            href: `chrome-extension://eoobfbpaidheakijfedonmpjolfmebjn/overlay/style.css`/*"https://calculamatrise.github.io/free_rider_lite/overlay/style.css"*/,
+            rel: "stylesheet"
         }));
-        let s = Object.assign(document.createElement("div"), {
-            className: "lite settings",
-            innerHTML: `<p style="text-align: center;"><b>Mod</b> <i>Settings</i></p><br>
-            <div class="lite-tabs">
-                <button class="tablinks" name="options" onclick="[...document.querySelectorAll('.lite.settings .lite-content')].forEach(t => t.style.display = 'none'), document.getElementById('lite-options').style.display = 'block'">Options</button>
-                <button class="tablinks" name="changes" onclick="[...document.querySelectorAll('.lite.settings .lite-content')].forEach(t => t.style.display = 'none'), document.getElementById('lite-changes').style.display = 'block', this.lastElementChild.style.display = 'none', lite.setVar('cloud', { dismissed: true, notification: '4.0.22' })">
-                    Changes
-                    <p class="lite-notification new" style="display: ${(!this.getVar("cloud").dismissed && this.getVar("cloud").notification <= "4.0.22") ? "inline-block" : "none"}">NEW!</p>
-                </button>
-            </div>
-            <div class="lite-content" id="lite-options">
-                <div class="option" title="Custom rider cosmetic"><input type="checkbox" id="cr" ${this.getVar("cr") ? "checked" : ""}> Canvas rider</div>
-                <div class="option" title="Toggle dark mode"><input type="checkbox" id="dark" ${this.getVar("dark") ? "checked" : ""}> Dark mode</div>
-                <div class="option" title="Toggle an input display"><input type="checkbox" id="di" ${this.getVar("di") ? "checked" : ""}> Input display</div>
-                <div class="option" title="Displays featured ghosts on the leaderboard"><input type="checkbox" id="feats" ${this.getVar("feats") ? "checked" : ""}> Feat. ghosts</div>
-                <div class="option" title="Change grid style"><input type="checkbox" id="isometric" ${this.getVar("isometric") ? "checked" : ""}> Isometric grid</div>
-                <div class="option" title="Customize your bike frame"><input type="color" id="cc" value="${this.getVar("cc") || "#000000"}" style="background: ${this.getVar("cc") || "#000000"}"> Custom bike colour</div>
-            </div>
-            <div class="lite-content" id="lite-changes" style="display:none">
-                <ul>
-                    <li title="Mostly unnoticeable changes.">
-                        Minor changes and improvements
-                    </li>
-                </ul>
-            </div>`
-        });
+        document.body.appendChild(Object.assign(document.createElement("div"), {
+            className: "lite overlay",
+            innerHTML: `<div class="content">
+                <p style="text-align: center;"><b>Free Rider Lite</b></p><br>
+                <div class="lite-tabs">
+                    <button class="tablinks" name="options" onclick="[...document.querySelectorAll('.lite.overlay .lite-content')].forEach(t => t.style.display = 'none'), document.querySelector('.lite.overlay .lite-content.options').style.display = 'block'">Options</button>
+                    <button class="tablinks" name="changes" onclick="[...document.querySelectorAll('.lite.overlay .lite-content')].forEach(t => t.style.display = 'none'), document.querySelector('.lite.overlay .lite-content.changes').style.display = 'block', this.lastElementChild.style.display = 'none', lite.setVar('cloud', { dismissed: true, notification: '4.0.22' })">
+                        Changes
+                        <p class="lite-notification new" style="display: ${(!this.getVar("cloud").dismissed && this.getVar("cloud").notification <= "4.0.22") ? "inline-block" : "none"}">NEW!</p>
+                    </button>
+                </div>
+                <div class="lite-content options">
+                    <div class="option" title="Custom rider cosmetic"><input type="checkbox" id="cr" ${this.getVar("cr") ? "checked" : ""}> Canvas rider</div>
+                    <div class="option" title="Toggle dark mode"><input type="checkbox" id="dark" ${this.getVar("dark") ? "checked" : ""}> Dark mode</div>
+                    <div class="option" title="Toggle an input display"><input type="checkbox" id="di" ${this.getVar("di") ? "checked" : ""}> Input display</div>
+                    <div class="option" title="Displays featured ghosts on the leaderboard"><input type="checkbox" id="feats" ${this.getVar("feats") ? "checked" : ""}> Feat. ghosts</div>
+                    <div class="option" title="Change grid style"><input type="checkbox" id="isometric" ${this.getVar("isometric") ? "checked" : ""}> Isometric grid</div>
+                    <div class="option" title="Customize your bike frame"><input type="color" id="cc" value="${this.getVar("cc") || "#000000"}" style="background: ${this.getVar("cc") || "#000000"}"> Custom bike colour</div>
+                </div>
+                <div class="lite-content changes" style="display:none">
+                    <ul>
+                        <li title="Normally, you could only see them from your own.">
+                            Added the ability to see the last time a user has logged in from other's friends lists
+                        </li>
+                    </ul>
+                </div>
+            </div>`,
+            onmouseover(event) {
+                this.style.cursor = this == event.target ? "pointer" : "default";
+            },
+            onclick(event) {
+                this == event.target && (this.style.display = "none")
+            }
+        }));
         document.body.appendChild(Object.assign(document.createElement("div"), {
             className: "lite icon", //fed7d7  fb3737
-            onclick: () => {
-                document.body.appendChild(s),
-                setTimeout(() => document.addEventListener("click", function t(e) {
-                    if (!this.querySelector(".lite.settings").contains(e.target)) {
-                        this.removeEventListener("click", t),
-                        this.body.removeChild(this.querySelector(".lite.settings"))
-                    }
-                }))
+            onclick() {
+                document.querySelector(".lite.overlay").style.display = document.querySelector(".lite.overlay").style.display == "block" ? "none" : "block";
             }
         }));
         for (const t in this.vars) {
-            if (s.querySelector("#" + t)) {
+            let element = document.querySelector("#" + t);
+            if (element) {
                 if (t == "cc") {
-                    s.querySelector("#" + t).parentElement.onclick = s.querySelector("#" + t).onchange = () => {
-                        s.querySelector("#" + t).style.background = s.querySelector("#" + t).value || "#000000",
-                        this.setVar(t, s.querySelector("#" + t).value),
-                        s.querySelector("#cc").click()
+                    element.parentElement.onclick = element.onchange = () => {
+                        element.style.background = element.value || "#000000",
+                        this.setVar(t, element.value),
+                        document.querySelector("#cc").click()
                     }
                     continue
                 }
-                s.querySelector("#" + t).parentElement.onclick = s.querySelector("#" + t).onclick = () => {
-                    s.querySelector("#" + t).checked = !s.querySelector("#" + t).checked,
+                element.parentElement.onclick = element.onclick = () => {
+                    element.checked = !element.checked,
                     this.setVar(t, !this.getVar(t));
                     if (t == "dark")
                         GameManager.game.currentScene.track.undraw(),
                         GameInventoryManager.redraw()
                 }
             }
+        }
+        let loc = location.pathname;
+        window.onclick = () => {
+            if (location.pathname != loc) {
+                this.initCustomization();
+                loc = location.pathname;
+            }
+        }
+        window.onpopstate = () => {
+            this.initCustomization();
         }
     }
 }
