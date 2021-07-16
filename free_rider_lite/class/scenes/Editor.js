@@ -1,7 +1,5 @@
 import b from "../controls/pause.js";
-import _ from "../controls/phone.js";
 import T from "../controls/redoundo.js";
-import x from "../controls/tablet.js";
 import p from "../tools/brushtool.js";
 import l from "../tools/cameratool.js";
 import c from "../tools/curvetool.js";
@@ -26,7 +24,6 @@ export default class {
     constructor(t) {
         this.game = t;
         this.assets = t.assets;
-        this.stage = t.stage;
         this.settings = t.settings;
         this.sound = new C(this);
         this.mouse = new s(this);
@@ -46,12 +43,11 @@ export default class {
         this.oldState = this.setStateDefaults();
         this.restart();
         this.initializeAnalytics();
-        this.stage.addEventListener("stagemousedown", this.tapToStartOrRestart.bind(this));
-        lite && this.injectLiteFeatures();
+        window.addEventListener("mousedown", this.tapToStartOrRestart.bind(this));
+        this.injectLiteFeatures();
     }
     game = null;
     assets = null;
-    stage = null;
     canvas = null;
     settings = null;
     camera = null;
@@ -76,54 +72,42 @@ export default class {
     controls = null;
     verified = !1;
     injectLiteFeatures() {
-        var it = setInterval(() => {
-            if (document.getElementsByClassName('bottomToolOptions_straightline').length > 0) {
-                document.getElementsByClassName('bottomToolOptions_straightline')[0].after(Object.assign(document.createElement("div"), {
+        let it = setInterval(() => {
+            if (this.game.gameContainer.querySelector('.bottomToolOptions_straightline')) {
+                this.game.gameContainer.querySelector('.bottomToolOptions_straightline').after(Object.assign(document.createElement("div"), {
                     id: "trackMover",
-                    className: "bottomToolOptions",
+                    className: "bottomMenu-button bottomMenu-button-left bottomMenu-button",
                     title: "Move your track quickly and easily",
-                    innerHTML: `<a onClick="window.lite.moveTrack()">Move Track</a>
-                    &emsp;<input type="number" id="moveX" placeholder="Position X"></input>
-                    &emsp;<input type="number" id="moveY" placeholder="Position Y"></input>`
-                }));
-                document.body.appendChild(Object.assign(document.createElement("script"), {
-                    innerHTML: `([...document.querySelectorAll('input')]).forEach(n => {
-                        n.addEventListener('keydown', e => e.stopPropagation());
-                        n.addEventListener('keyup', e => e.stopPropagation());
-                        n.addEventListener('keypress', e => e.stopPropagation());
-                    });`
+                    innerHTML: `<span class="name">Move Track</span>
+                    &emsp;<input type="number" id="moveX" placeholder="Position X" onkeydown="event.stopPropagation()" onkeypress="event.stopPropagation()" onkeyup="event.stopPropagation()"></input>
+                    &emsp;<input type="number" id="moveY" placeholder="Position Y" onkeydown="event.stopPropagation()" onkeypress="event.stopPropagation()" onkeyup="event.stopPropagation()"></input>`,
+                    onclick() {
+                        lite.setVar("move", !lite.getVar("move"));
+                        // lite.moveTrack()
+                    }
                 }));
                 clearInterval(it);
             }
-        })
-        var st = document.createElement('div');
-        st.className = 'sideButton sideButton-bottom sideButton_selectTool';
-        st.onclick = () => {
-            this.toolHandler.setTool('select'),
-            st.className = 'sideButton sideButton-bottom sideButton_selectTool active';
-        }
-        st.innerHTML = `<div style="width:40px;height:40px;display:flex"><img src="https://i.imgur.com/FLP6RhL.png" style="display:inline-flex;margin:auto;width:30px;height:30px;justify-content:center;align-items:center;float:center"></img></div>`;
-        var ith = setInterval(() => {
-            if(document.getElementsByClassName('sideButton').length > 0) {
-                [...document.getElementsByClassName('sideButton')].forEach(e => {
-                    e.onclick = () => {
-                        if(!['sideButton sideButton-bottom sideButton_selectTool'].includes(e.className)) {
-                            st.className = 'sideButton sideButton-bottom sideButton_selectTool';
-                        } else {
-                            this.toolHandler.setTool('select'),
-                            st.className = 'sideButton sideButton-bottom sideButton_selectTool active';
-                        }
+        });
+        let is = setInterval(() => {
+            if (this.game.gameContainer.querySelector(".sideButton_cameraTool")) {
+                this.game.gameContainer.querySelector(".sideButton_cameraTool").after(Object.assign(document.createElement('div'), {
+                    className: "sideButton sideButton-bottom sideButton_selectTool",
+                    innerHTML: `<span style="width:44px;height:44px;display:flex"><img src="https://i.imgur.com/FLP6RhL.png" style="display:inline-flex;margin:auto;width:30px;height:30px;"></span>`,
+                    onclick() {
+                        GameManager.game.currentScene.toolHandler.setTool('select'),
+                        this.className = 'sideButton sideButton-bottom sideButton_selectTool active';
+                        [...document.getElementsByClassName('sideButton')].forEach(e => {
+                            if (e.className.includes("sideButton sideButton-bottom sideButton_selectTool active")) return;
+                            e.onclick = () => {
+                                this.className = 'sideButton sideButton-bottom sideButton_selectTool';
+                            }
+                        });
                     }
-                })
-                clearInterval(ith)
-            }
-        })
-        var is = setInterval(() => {
-            if (document.querySelector(".sideButton_cameraTool")) {
-                document.querySelector(".sideButton_cameraTool").after(st),
+                })),
                 clearInterval(is)
             }
-        })
+        });
     }
     getCanvasOffset() {
         var t = {
@@ -165,10 +149,6 @@ export default class {
         this.playerManager.addPlayer(e)
     }
     createControls() {
-        "tablet" === this.settings.controls && (this.controls = new x(this),
-        this.controls.hide()),
-        "phone" === this.settings.controls && (this.controls = new _(this),
-        this.controls.hide()),
         this.redoundoControls = new T(this),
         this.pauseControls = new b(this)
     }
@@ -234,9 +214,8 @@ export default class {
         this.vehicleTimer.update(),
         (this.importCode || this.clear) && this.createTrack(),
         this.isStateDirty() && this.updateState(),
-        this.stage.clear(),
+        this.game.canvas.getContext("2d").clearRect(0, 0, this.game.canvas.width, this.game.canvas.height),
         this.draw(),
-        this.stage.update(),
         this.camera.updateZoom()
     }
     isStateDirty() {
@@ -308,9 +287,7 @@ export default class {
     }
     toggleFullscreen() {
         if (this.settings.embedded) {
-            var t = this.settings
-                , e = t.basePlatformUrl + "/t/" + t.track.url;
-            window.open(e)
+            window.open(this.settings.basePlatformUrl + "/t/" + this.settings.track.url)
         } else
             this.settings.fullscreenAvailable && (this.settings.fullscreen = this.state.fullscreen = !this.settings.fullscreen)
     }
@@ -325,14 +302,17 @@ export default class {
         this.track.draw(),
         this.drawPlayers(),
         this.controls && this.controls.isVisible() !== !1 || this.toolHandler.draw(),
+        this.redoundoControls.draw(),
+        this.pauseControls.draw(),
         this.state.loading && this.loadingcircle.draw(),
-        this.message.draw()
+        this.message.draw(),
+        this.score.draw(),
+        this.vehicleTimer.draw()
     }
     getAvailableTrackCode() {
-        var t = this.settings
-            , e = !1;
-        return t.importCode && "false" !== t.importCode ? (e = t.importCode,
-        t.importCode = null) : this.importCode && (e = this.importCode,
+        let e = !1;
+        return this.settings.importCode && "false" !== this.settings.importCode ? (e = this.settings.importCode,
+        this.settings.importCode = null) : this.importCode && (e = this.importCode,
         this.importCode = null),
         e
     }
@@ -544,7 +524,6 @@ export default class {
         this.game = null,
         this.assets = null,
         this.settings = null,
-        this.stage = null,
         this.track = null,
         this.state = null,
         this.stopAudio()

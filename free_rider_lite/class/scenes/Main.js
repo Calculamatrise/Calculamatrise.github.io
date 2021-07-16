@@ -1,9 +1,7 @@
 import k from "../../libs/lodash.js";
 import b from "../controls/fullscreen.js";
 import w from "../controls/pause.js";
-import y from "../controls/phone.js";
 import T from "../controls/settings.js";
-import m from "../controls/tablet.js";
 import u from "../tools/cameratool.js";
 import c from "../tools/toolhandler.js";
 import f from "../tracks/track.js";
@@ -25,7 +23,6 @@ export default class {
     constructor(t) {
         this.game = t;
         this.assets = t.assets;
-        this.stage = t.stage;
         this.settings = t.settings;
         this.sound = new x(this);
         this.mouse = new s(this);
@@ -50,12 +47,11 @@ export default class {
         this.setStartingVehicle();
         this.restart();
         this.initializeAnalytics();
-        this.stage.addEventListener("stagemousedown", this.tapToStartOrRestart.bind(this));
-        lite && this.injectLiteFeatures();
+        window.addEventListener("mousedown", this.tapToStartOrRestart.bind(this));
+        this.injectLiteFeatures();
     }
     game = null;
     assets = null;
-    stage = null;
     settings = null;
     camera = null;
     score = null;
@@ -119,10 +115,6 @@ export default class {
         }
     }
     createControls() {
-        "tablet" === this.settings.controls && (this.controls = new m(this),
-        this.controls.hide()),
-        "phone" === this.settings.controls && (this.controls = new y(this),
-        this.controls.hide()),
         this.pauseControls = new w(this),
         this.settings.fullscreenAvailable && (this.fullscreenControls = new b(this)),
         this.settingsControls = new T(this)
@@ -265,9 +257,8 @@ export default class {
         this.updateScore(),
         this.vehicleTimer.update(),
         this.isStateDirty() && this.updateState(),
-        this.stage.clear(),
+        this.game.canvas.getContext("2d").clearRect(0, 0, this.game.canvas.width, this.game.canvas.height),
         this.draw(),
-        this.stage.update(),
         this.camera.updateZoom()) : this.importCode && this.createTrack()
     }
     isStateDirty() {
@@ -342,8 +333,15 @@ export default class {
         this.track.draw(),
         this.drawPlayers(),
         this.controls && this.controls.isVisible() !== !1 || this.toolHandler.draw(),
+        this.pauseControls.draw(),
+        this.fullscreenControls.draw(),
+        this.settingsControls.draw(),
         this.loading && this.loadingcircle.draw(),
-        this.message.draw()
+        this.message.draw(),
+        this.score.draw(),
+        this.campaignScore.draw(),
+        this.raceTimes.draw(),
+        this.vehicleTimer.draw()
     }
     redraw() {
         this.track.undraw(),
@@ -627,7 +625,6 @@ export default class {
         this.game = null,
         this.assets = null,
         this.settings = null,
-        this.stage = null,
         this.track = null,
         this.state = null,
         this.stopAudio()

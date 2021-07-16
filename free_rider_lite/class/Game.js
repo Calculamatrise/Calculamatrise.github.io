@@ -9,7 +9,6 @@ window.Game = class {
         this.assets = e,
         this.settings = i,
         this.initCanvas(),
-        this.initStage(),
         this.setSize(),
         this.switchScene(t),
         this.setSize(),
@@ -19,7 +18,6 @@ window.Game = class {
     tickCount = 0;
     currentScene = null;
     assets = null;
-    stage = null;
     canvas = null;
     stats = null;
     width = 0;
@@ -29,14 +27,6 @@ window.Game = class {
     initCanvas() {
         this.gameContainer = document.getElementById(this.settings.defaultContainerID),
         this.gameContainer.appendChild(this.canvas = document.createElement("canvas"));
-    }
-    initStage() {
-        this.stage = new createjs.Stage(this.canvas);
-        this.stage.autoClear = !1,
-        createjs.Touch.enable(this.stage),
-        this.stage.enableMouseOver(30),
-        this.stage.mouseMoveOutside = !0,
-        this.stage.preventSelection = !1;
     }
     setSize() {
         let t = window.innerHeight,
@@ -87,12 +77,6 @@ window.Game = class {
         this.currentScene = null,
         this.assets = null,
         this.settings = null,
-        this.stage.autoClear = !0,
-        this.stage.removeAllChildren(),
-        this.stage.update(),
-        this.stage.enableDOMEvents(!1),
-        this.stage.removeAllEventListeners(),
-        this.stage = null,
         this.canvas.parentNode.removeChild(this.canvas),
         this.canvas = null,
         this.tickCount = null,
