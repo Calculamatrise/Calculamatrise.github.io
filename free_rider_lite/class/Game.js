@@ -38,11 +38,11 @@ window.Game = class {
         if (this.currentScene) {
             t -= this.currentScene.getCanvasOffset().height
         }
-        var n = 1;
+        let n = 1;
         void 0 !== window.devicePixelRatio && (n = window.devicePixelRatio),
         this.settings.lowQualityMode && (n = 1);
-        var r = e * n
-            , o = t * n;
+        let r = e * n,
+            o = t * n;
         (r !== this.width || o !== this.height) && (this.width = r,
         this.height = o,
         this.canvas.width = r,

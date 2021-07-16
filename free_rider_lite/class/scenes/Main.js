@@ -47,7 +47,6 @@ export default class {
         this.setStartingVehicle();
         this.restart();
         this.initializeAnalytics();
-        window.addEventListener("mousedown", this.tapToStartOrRestart.bind(this));
         this.injectLiteFeatures();
     }
     game = null;
@@ -97,16 +96,6 @@ export default class {
             width: 0
         };
         return t
-    }
-    tapToStartOrRestart() {
-        if (this.settings.mobile) {
-            var t = this.playerManager.firstPlayer;
-            if (t && t._crashed && !this.state.paused) {
-                var e = t.getGamepad();
-                e.setButtonDown("enter")
-            } else
-                this.play()
-        }
     }
     analytics = null;
     initializeAnalytics() {
@@ -339,7 +328,7 @@ export default class {
         this.loading && this.loadingcircle.draw(),
         this.message.draw(),
         this.score.draw(),
-        this.campaignScore.draw(),
+        this.campaignScore && this.campaignScore.draw(),
         this.raceTimes.draw(),
         this.vehicleTimer.draw()
     }
