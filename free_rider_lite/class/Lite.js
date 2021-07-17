@@ -1,26 +1,5 @@
-const defaults = {
-    cr: false,
-    cc: false,
-    dark: false,
-    di: true,
-    di_size: 10,
-    feats: true,
-    isometric: false,
-    move: false,
-    snapshots: 10,
-    cloud: {
-        dismissed: false,
-        notification: sessionStorage.getItem("lite_version")
-    },
-    update: {
-        dismissed: false,
-        uptodate: false
-    }
-};
-
 window.lite = new class Lite {
     constructor() {
-        this._vars = localStorage.lite ? JSON.parse(localStorage.lite).vars : defaults,
         this.icon = document.createElement("div"),
         this.interface = document.createElement("div"),
         this.stylesheet = document.createElement("link"),
@@ -28,10 +7,27 @@ window.lite = new class Lite {
         this.createIcon(),
         this.createInterface(),
         this.createStyleSheet(),
-        this.saveToLocalStorage(),
         this.init(),
         this.initCustomization(),
         this.checkForUpdate()
+    }
+    defaults = {
+        cr: false,
+        cc: false,
+        dark: false,
+        di: true,
+        di_size: 10,
+        feats: true,
+        isometric: false,
+        snapshots: 10,
+        cloud: {
+            dismissed: false,
+            notification: sessionStorage.getItem("lite_version")
+        },
+        update: {
+            dismissed: false,
+            uptodate: false
+        }
     }
     get head() {
         return {
@@ -92,14 +88,12 @@ window.lite = new class Lite {
         }
     }
     get vars() {
-        return localStorage.lite ? JSON.parse(localStorage.lite).vars : defaults;
+        if (!localStorage.getItem("lite")) this.vars = this.defaults;
+        return JSON.parse(localStorage.getItem("lite")).vars;
     }
-    get variables() {
-        return JSON.parse(localStorage.lite).vars;
-    }
-    set variables(t) {
+    set vars(t) {
         localStorage.setItem("lite", JSON.stringify({
-            vars: Object.assign(defaults, t)
+            vars: Object.assign(this.defaults, t)
         }));
     }
     init() {
@@ -179,7 +173,7 @@ window.lite = new class Lite {
             <div class="lite-tabs">
                 <button class="tablinks" name="options" onclick="[...document.querySelectorAll('.lite.overlay .lite-content')].forEach(t => t.style.display = 'none'), document.querySelector('.lite.overlay .lite-content.options').style.display = 'block'">Options</button>
                 <button class="tablinks" name="options" onclick="[...document.querySelectorAll('.lite.overlay .lite-content')].forEach(t => t.style.display = 'none'), document.querySelector('.lite.overlay .lite-content.advanced').style.display = 'block'">Advanced Options</button>
-                <button class="tablinks" name="changes" onclick="[...document.querySelectorAll('.lite.overlay .lite-content')].forEach(t => t.style.display = 'none'), document.querySelector('.lite.overlay .lite-content.changes').style.display = 'block', this.lastElementChild.style.display = 'none', lite.setVar('cloud', { dismissed: true, notification: '4.0.22' })">
+                <button class="tablinks" name="changes" onclick="[...document.querySelectorAll('.lite.overlay .lite-content')].forEach(t => t.style.display = 'none'), document.querySelector('.lite.overlay .lite-content.changes').style.display = 'block', this.lastElementChild.style.display = 'none', lite.setVar('cloud', { dismissed: true, notification: sessionStorage.getItem('lite_version') })">
                     Changes
                     <p class="lite-notification new" style="display: ${(!this.getVar("cloud").dismissed && this.getVar("cloud").notification <= "4.0.23") ? "inline-block" : "none"}">NEW!</p>
                 </button>
@@ -195,6 +189,7 @@ window.lite = new class Lite {
             <div class="lite-content advanced" style="display:none">
                 <div class="option" title="Change the size of the input display"><span class="name" style="background-color:rgba(0,0,0,0)">Input display size (${this.getVar("di_size") || "10"})</span><br><input type="range" id="di_size" min="1" max="10" value="${this.getVar("di_size") || "10"}" style="padding:0"></div>
                 <div class="option" title="Change the number of snaphsots shown on checkpoints"><span class="name" style="background-color:rgba(0,0,0,0)">Snapshot Count (${this.getVar("snapshots") || "10"})</span><br><input type="range" id="snapshots" min="0" max="15" value="${this.getVar("snapshots") || "10"}" style="padding:0"></div>
+                <div class="option" title="Change the number of snaphsots shown on checkpoints" onclick="lite.vars = lite.defaults, GameManager.game && GameManager.game.currentScene.redraw()">Reset settings</div>
             </div>
             <div class="lite-content changes" style="display:none">
                 <ul>
@@ -303,23 +298,13 @@ window.lite = new class Lite {
         ctx.lineTo(offset.x + 11.5 * size, offset.y + 6.2 * size);
         ctx.stroke();
     }
-    saveToLocalStorage() {
-        localStorage.setItem("lite", JSON.stringify({
-            vars: Object.assign(defaults, this._vars)
-        }));
-    }
     getVar(t) {
         return this.vars[t]
     }
     setVar(t, e) {
-        if (typeof this._vars[t] == "object") {
-            for (const i in e) {
-                this._vars[t][i] = e[i]
-            }
-        } else {
-            this._vars[t] = e
-        }
-        this.saveToLocalStorage()
+        this.vars = Object.assign(this.vars, {
+            [t]: typeof this.vars[t] == "object" ? Object.assign(this.vars[t], e) : e
+        })
     }
     checkForUpdate() {
         fetch("https://calculamatrise.github.io/free_rider_lite/details.json").then(r => r.json()).then(json => {
@@ -329,47 +314,15 @@ window.lite = new class Lite {
                 });
             }
             if (this.getVar("update").uptodate != !1) {
-                const element = document.body;
-                element.innerHTML += `<div class="mod-update-notification" id="update-notice" style="width:100%;height:50px;background-color:#2bb82b;color:#fff;position:fixed;top:0;z-index:1002;text-align:center;line-height:46px;cursor:pointer">A new version of Free Rider Lite is available!&nbsp;&nbsp;&nbsp;<button onclick="window.location.href='https://chrome.google.com/webstore/detail/mmmpacciomidmplocdcaheednkepbdkb'" id="update-button" style="height: 30px;background-color: #27ce35;border: none;border-radius: 4px;color: #fff">Update</button>&nbsp;<button class="mod-dismiss-button" id="dismiss-notice" style="height:30px;background-color:#27ce35;border:none;border-radius:4px;color: #fff">Dismiss</button></div>`;
-                document.getElementById('dismiss-notice').onclick = () => {
-                    this.setVar("update", {
+                document.body.innerHTML += `<div class="mod-update-notification" id="update-notice" style="width:100%;height:50px;background-color:#2bb82b;color:#fff;position:fixed;top:0;z-index:1002;text-align:center;line-height:46px;cursor:pointer">A new version of Free Rider Lite is available!&nbsp;&nbsp;&nbsp;<button onclick="window.location.href='https://chrome.google.com/webstore/detail/mmmpacciomidmplocdcaheednkepbdkb'" id="update-button" style="height: 30px;background-color: #27ce35;border: none;border-radius: 4px;color: #fff">Update</button>&nbsp;<button class="mod-dismiss-button" id="dismiss-notice" style="height:30px;background-color:#27ce35;border:none;border-radius:4px;color: #fff">Dismiss</button></div>`;
+                document.getElementById('dismiss-notice').onclick = document.getElementById('update-button').onclick = function() {
+                    lite.setVar("update", {
                         uptodate: !1,
                         dismissed: !0
                     });
-                    document.getElementById('update-notice').style.display = "none";
-                };
-                document.getElementById('update-button').onclick = () => {
-                    this.setVar("update", {
-                        uptodate: !1,
-                        dismissed: !0
-                    });
-                    document.getElementById('update-notice').style.display = "none";
-                };
+                    this.style.display = "none";
+                }
             }
         });
-    }
-    createOption({ checked, description, id, onclick, title, type }) {
-        const element = Object.assign(document.createElement("div"), {
-            className: "option",
-            innerHTML: " " + title,
-            onclick: onclick || (t => {
-                t.target.firstChild && (t.target.firstChild.checked = !t.target.firstChild.checked);
-                if (type == "color")
-                    this.setVar(id, t.target.firstChild ? t.target.firstChild.value : t.target.value);
-                else
-                    this.setVar(id, !this.getVar(id));
-                if (id == "dark")
-                    GameManager.game.currentScene.track.undraw(),
-                    GameInventoryManager.redraw()
-            })
-        });
-        element.prepend(Object.assign(document.createElement("input"), {
-            type,
-            id,
-            title: description,
-            checked: checked || false,
-            onclick: element.onclick
-        }));
-        return element;
     }
 }
