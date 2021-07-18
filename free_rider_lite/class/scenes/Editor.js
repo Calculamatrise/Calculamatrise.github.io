@@ -71,6 +71,7 @@ export default class {
     controls = null;
     verified = !1;
     injectLiteFeatures() {
+        if (!this.game) return;
         let it = setInterval(() => {
             if (this.game.gameContainer.querySelector('.bottomToolOptions_straightline')) {
                 this.game.gameContainer.querySelector('.bottomToolOptions_straightline').after(Object.assign(document.createElement("div"), {
