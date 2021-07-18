@@ -65,7 +65,6 @@ export default class {
     dialogOptions = !1;
     importCode = !1;
     clear = !1;
-    moving = !1;
     redoundoControls = null;
     pauseControls = null;
     inFocus = !0;

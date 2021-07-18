@@ -7,8 +7,8 @@ export default class {
         this.container = {
             scaleX: this.scene.game.pixelRatio / 2.5,
             scaleY: this.scene.game.pixelRatio / 2.5,
-            x: 80 * this.scene.game.pixelRatio / 2.5,
-            y: 15 * this.scene.game.pixelRatio / 2.5
+            x: 40 * this.scene.game.pixelRatio / 2.5,
+            y: 105 * this.scene.game.pixelRatio / 2.5
         }
     }
     container = null;
@@ -25,12 +25,16 @@ export default class {
     }
     addRace(t, e) {
         if (this.raceCount < this.maxRaces) {
-            this.scene.settings.mobile ? this.container.x = e * this.mobileRaceXOffset : (this.container.x = -2, this.container.y = e * this.raceYOffset),
+            this.container.y += this.scene.campaignScore ? this.scene.campaignScore.container.y / 2.5 : 0;
             this.raceList.push({
                 alpha: this.raceOpacity,
                 char: t.user.d_name.charAt(0),
                 color: t.user.color,
-                time: format(parseInt(t.race.run_ticks) / this.scene.settings.drawFPS * 1e3)
+                time: format(parseInt(t.race.run_ticks) / this.scene.settings.drawFPS * 1e3),
+                offset: {
+                    x: 0,
+                    y: (parseInt(e)) * 20
+                }
             });
             this.raceCount++
         }
@@ -55,14 +59,14 @@ export default class {
             ctx.globalAlpha = this.raceList[t].alpha;
             ctx.fillStyle = this.raceList[t].color;
             ctx.beginPath();
-            ctx.arc(this.container.x + 15, this.container.y + 12 + ((t + 1) * 2), 8, 0, 2 * Math.PI);
+            ctx.arc(this.container.x + this.raceList[t].offset.x, this.container.y + this.raceList[t].offset.y, 8, 0, 2 * Math.PI);
             ctx.closePath();
             ctx.fill();
             ctx.fillStyle = lite.getVar("dark") ? "#fdfdfd" : "#000000";
             ctx.font = "10px helsinki";
-            ctx.fillText(this.raceList[t].char, this.container.x + 15, this.container.y + 16 + ((t + 1) * 2));
+            ctx.fillText(this.raceList[t].char, this.container.x + this.raceList[t].offset.x, this.container.y + this.raceList[t].offset.y + 4);
             ctx.font = "12.5px helsinki";
-            ctx.fillText(this.raceList[t].time, this.container.x + 50, this.container.y + 16 + ((t + 1) * 2));
+            ctx.fillText(this.raceList[t].time, this.container.x + this.raceList[t].offset.x + 35, this.container.y + this.raceList[t].offset.y + 4);
             ctx.globalAlpha = 1;
         }
     }

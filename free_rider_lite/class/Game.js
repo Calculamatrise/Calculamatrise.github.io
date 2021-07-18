@@ -24,6 +24,9 @@ window.Game = class {
     height = 0;
     fullscreen = !1;
     onStateChange = null;
+    static init() {
+        GameManager.init(GameManager.scene, GameManager.settings || GameSettings);
+    }
     initCanvas() {
         this.gameContainer = document.getElementById(this.settings.defaultContainerID),
         this.gameContainer.appendChild(this.canvas = document.createElement("canvas"));
@@ -84,3 +87,5 @@ window.Game = class {
         this.width = null
     }
 }
+
+Game.init();

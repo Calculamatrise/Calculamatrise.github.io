@@ -299,7 +299,7 @@ window.lite = new class Lite {
         ctx.stroke();
     }
     getVar(t) {
-        return this.vars[t]
+        return this.vars[t] || null
     }
     setVar(t, e) {
         this.vars = Object.assign(this.vars, {
