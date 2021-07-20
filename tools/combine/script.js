@@ -10,7 +10,7 @@ function add() {
         spellcheck: false,
         onclick: function() {
             this.select()
-        }
+        } 
     });
     inputs[inputs.length - 1].after(e);
     inputs.push(e);
@@ -20,7 +20,7 @@ function run() {
     let physics = "", scenery = "", powerups = "";
     inputs.forEach(i => {
         physics += (i.value.split("#")[0] || "") + (i.value.split("#")[0] ? "," : "")
-        grey += (i.value.split("#")[1] || "") + (i.value.split("#")[1] ? "," : "")
+        scenery += (i.value.split("#")[1] || "") + (i.value.split("#")[1] ? "," : "")
         powerups += (i.value.split("#")[2] || "") + (i.value.split("#")[2] ? "," : "")
     });
     output.value = physics.replace(/,$/g, "") + "#" + scenery.replace(/,$/g, "") + "#" + powerups.replace(/,$/g, "");
