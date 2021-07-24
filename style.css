@@ -82,33 +82,21 @@ textarea {
 .dropdown {
   	position: relative;
   	display: inline-block;
+    transition: all 10s;
 }
 
-.dropdown-content {
+.dropdown:hover .dropdown-content {
+    height: auto;
+    max-height: 100vw;
+    transition: max-height .25s ease-in;
+}
+
+.dropdown .dropdown-content {
 	z-index: 1;
-    display: none;
+    max-height: 0;
+    overflow: hidden;
 	position: absolute;
-}
-
-.abutton {
-	position: relative;
-	transition: all 0.4s;
-}
-
-.abutton:hover:before {
-	top: 0;
-	bottom: auto;
-    height: 100%;
-}
-
-.abutton:before {
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	height: 0;
-	width: 100%;
-	z-index: -1;
-	transition: all 0.4s;
+    transition: max-height .15s ease-out;
 }
 
 .title {

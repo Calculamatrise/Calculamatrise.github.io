@@ -32,7 +32,7 @@ textarea {
     background: #eee;
 }
 
-.dropdown-content {
+.dropdown .dropdown-content {
     background-color: #f5f5f5;
     box-shadow: 1px 1px 20px 1px #aaa;
 }
