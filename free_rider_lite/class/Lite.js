@@ -4,6 +4,7 @@ window.lite = new class Lite {
         this.interface = document.createElement("div"),
         this.stylesheet = document.createElement("link"),
         document.body = document.body || document.documentElement,
+        this.vars = Object.assign(this.defaults, this.vars);
         this.createIcon(),
         this.createInterface(),
         this.createStyleSheet(),
@@ -28,6 +29,9 @@ window.lite = new class Lite {
             dismissed: false,
             uptodate: false
         }
+    }
+    static createElement(t, e) {
+        return Object.assign(document.createElement(t), e)
     }
     get head() {
         return {
