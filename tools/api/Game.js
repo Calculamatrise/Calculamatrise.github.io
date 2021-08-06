@@ -18,9 +18,7 @@ export default class {
         this.powerups = {};
 
         this.zoom = 1;
-
         this.item_id = 0;
-
         this.toolHandler = {
             selected: "physics",
             tools: [
@@ -30,9 +28,6 @@ export default class {
             ]
         }
 
-        this.fps = 60;
-        this.ms = 1000 / this.fps;
-        this.lastTime = -1;
         this.frame = null;
 
         requestAnimationFrame(this.tick.bind(this));
@@ -50,11 +45,6 @@ export default class {
     }
     tick(time) {
         this.frame = requestAnimationFrame(this.tick.bind(this)),
-        this.delta = time - this.lastTime;
-        if (this.delta < (1000 / this.fps)) {
-            return;
-        }
-        //this.update(),
         this.draw();
     }
     onmousedown(t) {
@@ -110,16 +100,6 @@ export default class {
             this.powerups[t].draw(this.ctx);
         }
         this.ctx.restore();
-    }
-    update() {
-        if (this.mouse.down) {
-            switch(this.toolHandler.selected) {
-                case "physics":
-                    this.toolHandler.touching = true;
-                    console.log(this);
-                break;
-            }
-        }
     }
     close() {
         cancelAnimationFrame(this.frame);
