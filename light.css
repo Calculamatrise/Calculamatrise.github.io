@@ -1,5 +1,19 @@
+::-webkit-scrollbar-track {
+    background-color: #eeeeee;
+    border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #cccccc;
+    border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #bbbbbb;
+}
+
 header, footer {
-    background: #f5f5f5;
+    background-color: #f5f5f5;
 }
 
 header {
@@ -10,35 +24,46 @@ footer {
     border-top: 1px solid #ddd;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]) {
-    background: #f5f5f5;
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]), textarea {
+    background-color: #e8e8e8;
+}
+
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]):hover, textarea:hover {
+    background-color: #e4e4e4;
+    color: #1d1d1d;
+}
+
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]):focus, textarea:focus {
+    background-color: #dddddd;
+    color: #000000;
 }
 
 button, .button {
+    background-color: #d4d4d4;
     color: #333;
+}
+
+button.header.button {
     background-color: #f5f5f5;
 }
 
-button:hover, .button:hover {
+button:hover, .button:hover, .header.button:hover {
+    background-color: #bbbbbb;
     color: #1d1d1d;
-    background-color: #ccc;
 }
 
-button:hover:active, .button:hover:active {
-    background-color: #bbb;
-}
-
-textarea {
-    background: #eee;
+button:active, .button:active, .header.button:active {
+    background-color: #aaaaaa;
+    color: #000000;
 }
 
 .dropdown .dropdown-content {
-    background-color: #f5f5f5;
     box-shadow: 1px 1px 20px 1px #aaa;
+    background-color: #f5f5f5;
 }
 
 .progress-bar-container {
-    background: #f9f9f9;
+    background-color: #f9f9f9;
 }
 
 #messages {

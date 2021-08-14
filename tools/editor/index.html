@@ -12,21 +12,21 @@
     </head>
     <body>
 		<div class="content">
-			<textarea id="input" placeholder="Track..." spellcheck="false"></textarea>
+			<textarea id="input" placeholder="Track Code" spellcheck="false"></textarea>
 			<br><br>
-			<input type="number" id="move_x" placeholder="Move x" step="1">
-			<input type="number" id="move_y" placeholder="Move y" step="1">
+			<input type="number" id="moveX" placeholder="Move x" step="1">
+			<input type="number" id="moveY" placeholder="Move y" step="1">
 			<br>
-			<input type="number" id="scale_x" placeholder="Scale x" step="any">
-			<input type="number" id="scale_y" placeholder="Scale y" step="any">
+			<input type="number" id="scaleX" placeholder="Scale x" step="any">
+			<input type="number" id="scaleY" placeholder="Scale y" step="any">
 			<br>
-			<input type="number" id="rotate" placeholder="Rotation factor" step="any">
+			<input type="number" id="rotate" placeholder="Rotation factor" title="Format: 90°" step="any">
 			<br><br>
 			<button id="transform">Transform</button>
 			<button id="copy">Copy</button>
 			Chars: <span id="chars">0</span>k
 			<br><br>
-			<textarea id="output" cols="30" rows="10" placeholder="Result..." spellcheck="false" readonly></textarea>
+			<textarea id="output" cols="30" rows="10" placeholder="Result" spellcheck="false" readonly></textarea>
 		</div>
 	</body>
 </html>

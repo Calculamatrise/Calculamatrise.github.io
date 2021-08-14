@@ -1,10 +1,24 @@
+::-webkit-scrollbar-track {
+    background-color: #111111;
+    border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #333333;
+    border-radius: 30px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #444444;
+}
+
 html {
+    background-color: #1d1d1d;
     color: #f5f5f5;
-    background: #1d1d1d;
 }
 
 header, footer {
-    background: #2d2d2d;
+    background-color: #2d2d2d;
 }
 
 header {
@@ -15,37 +29,42 @@ footer {
     border-top: 1px solid #444;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]) {
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]), textarea {
+    background-color: #2d2d2d;
     color: #f5f5f5;
-    background: #2d2d2d;
+}
+
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]):hover, textarea:hover {
+    background-color: #303030;
+    color: #fdfdfd;
+}
+
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]):focus, textarea:focus {
+    background-color: #333333;
+    color: #ffffff;
 }
 
 button, .button {
-    color: #eee;
-    background: #2d2d2d;
+    background-color: #2d2d2d;
+    color: #eeeeee;
 }
 
 button:hover, .button:hover {
+    background-color: #444444;
     color: #f5f5f5;
-    background: #444;
 }
 
 button:hover:active, .button:hover:active {
     background-color: #555;
 }
 
-textarea {
-    color: #f5f5f5;
-    background: #2d2d2d;
-}
-
 .dropdown .dropdown-content {
-	background: #2d2d2d;
+	background-color: #2d2d2d;
     box-shadow: 1px 1px 20px 1px #555;
 }
 
 .progress-bar-container {
-    background: #191919;
+    background-color: #191919;
 }
 
 #messages {
@@ -53,5 +72,5 @@ textarea {
 }
 
 .message span.content {
-    background: #444
+    background-color: #444
 }

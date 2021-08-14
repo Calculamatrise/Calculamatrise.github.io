@@ -1,97 +1,231 @@
 class Track {
     constructor(t) {
-        t = t.split("#").map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
-        this.black = t[0] ? t[0].map(t => t.map(t => Track.decode(t)).filter(t => !isNaN(t))) : [];
-        this.grey = t[1] ? t[1].map(t => t.map(t => Track.decode(t)).filter(t => !isNaN(t))) : [];
-        this.powerups = t[2] ? t[2].map(t => t.map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? Track.decode(t) : t)) : [];
-    }
-    static decode(t) {
-        return parseInt(t, 32);
-    }
-    static encode(t) {
-        return t.toString(32);
+        t = t.split(/\u0023/g).map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
+        this._physics = t[0] ? t[0].map(t => t.map(t => parseInt(t, 32)).filter(t => !isNaN(t))) : [],
+        this._scenery = t[1] ? t[1].map(t => t.map(t => parseInt(t, 32)).filter(t => !isNaN(t))) : [],
+        this._powerups = {
+            targets: [],
+            boosters: [],
+            gravity: [],
+            slowmos: [],
+            bombs: [],
+            checkpoints: [],
+            antigravity: [],
+            teleporters: [],
+            vehicles: {
+                heli: [],
+                truck: [],
+                balloon: [],
+                blob: [],
+                glider: []
+            }
+        }
+
+        this.worker = new Worker("worker.js");
+        this.worker.onmessage = ({ data }) => {
+            switch(data.cmd) {
+                case "move":
+                case "rotate":
+                case "rotateClockwise":
+                case "rotateCounterclockwise":
+                case "scale":
+                    this.physics = data.args.physics,
+                    this.scenery = data.args.scenery,
+                    this.powerups = data.args.powerups,
+                    output.value = this.code,
+                    chars.innerText = output.value.length.toString().slice(0, -3) || 0,
+                    output.select();
+                break;
+            }
+        }
+
+        for (const e of t[2]) {
+            switch(e[0]) {
+                case "T":
+                    this._powerups.targets.push(e.slice(1).map(t => parseInt(t, 32)));
+                break;
+                
+                case "B":
+                    this._powerups.boosters.push(e.slice(1).map(t => parseInt(t, 32)));
+                break;
+
+                case "G":
+                    this._powerups.gravity.push(e.slice(1).map(t => parseInt(t, 32)));
+                break;
+
+                case "S":
+                    this._powerups.slowmos.push(e.slice(1).map(t => parseInt(t, 32)));
+                break;
+
+                case "O":
+                    this._powerups.bombs.push(e.slice(1).map(t => parseInt(t, 32)));
+                break;
+
+                case "C":
+                    this._powerups.checkpoints.push(e.slice(1).map(t => parseInt(t, 32)));
+                break;
+
+                case "A":
+                    this._powerups.antigravity.push(e.slice(1).map(t => parseInt(t, 32)));
+                break;
+
+                case "W":
+                    this._powerups.teleporters.push(e.slice(1).map(t => parseInt(t, 32)));
+                break;
+
+                case "V":
+                    switch(e[3]) {
+                        case "1":
+                            this._powerups.vehicles.heli.push(e.slice(1).map(t => parseInt(t, 32)));
+                        break;
+
+                        case "2":
+                            this._powerups.vehicles.truck.push(e.slice(1).map(t => parseInt(t, 32)));
+                        break;
+
+                        case "3":
+                            this._powerups.vehicles.balloon.push(e.slice(1).map(t => parseInt(t, 32)));
+                        break;
+
+                        case "4":
+                            this._powerups.vehicles.blob.push(e.slice(1).map(t => parseInt(t, 32)));
+                        break;
+
+                        case "5":
+                            this._powerups.vehicles.glider.push(e.slice(1).map(t => parseInt(t, 32)));
+                        break;
+                    }
+                break;
+            }
+        }
     }
     move(x = 0, y = 0) {
-        for (const t of this.black) {
-            for (let e = 0; e < t.length; e += 2) {
-                t[e] += x;
-                t[e + 1] += y;
+        this.worker.postMessage({
+            cmd: "move",
+            args: {
+                physics: this._physics,
+                scenery: this._scenery,
+                powerups: this._powerups,
+                x, y
             }
-        }
-        for (const t of this.grey) {
-            for (let e = 0; e < t.length; e += 2) {
-                t[e] += x;
-                t[e + 1] += y;
-            }
-        }
-        for (const t of this.powerups) {
-            for (let e = 1; e < t.length; e += 2) {
-                if (t[0] == "V" && e > 2) continue;
-                t[e] += x;
-                t[e + 1] += y;
-            }
-        }
+        });
         return this;
     }
     rotate(x = 0) {
-        if (x == 0) return this;
-        x *= Math.PI / 180;
-        for (const t of this.black) {
-            for (let e = 0, i = t[e]; e < t.length; e += 2) {
-                t[e] = Math.cos(x) * i + Math.sin(x) * t[e + 1];
-                t[e + 1] = -Math.sin(x) * i + Math.cos(x) * t[e + 1];
+        let rotationFactor = x;
+        x *= -Math.PI / 180;
+        this.worker.postMessage({
+            cmd: "rotate",
+            args: {
+                physics: this._physics,
+                scenery: this._scenery,
+                powerups: this._powerups,
+                rotationFactor,
+                x
             }
-        }
-        for (const t of this.grey) {
-            for (let e = 0, i = t[e]; e < t.length; e += 2) {
-                t[e] = Math.cos(x) * i + Math.sin(x) * t[e + 1];
-                t[e + 1] = -Math.sin(x) * i + Math.cos(x) * t[e + 1];
-            }
-        }
-        for (const t of this.powerups) {
-            for (let e = 0, i = t[e]; e < t.length; e += 2) {
-                if (t[0] == "V" && e > 2) continue;
-                t[e] = Math.cos(x) * i + Math.sin(x) * t[e + 1];
-                t[e + 1] = -Math.sin(x) * i + Math.cos(x) * t[e + 1];
-            }
-        }
+        });
         return this;
     }
     scale(x = 1, y = 1) {
-        for (const t of this.black) {
-            for (let e = 0; e < t.length; e += 2) {
-                t[e] *= x;
-                t[e + 1] *= y;
+        this.worker.postMessage({
+            cmd: "scale",
+            args: {
+                physics: this._physics,
+                scenery: this._scenery,
+                powerups: this._powerups,
+                x, y
             }
-        }
-        for (const t of this.grey) {
-            for (let e = 0; e < t.length; e += 2) {
-                t[e] *= x;
-                t[e + 1] *= y;
-            }
-        }
-        for (const t of this.powerups) {
-            for (let e = 1; e < t.length; e += 2) {
-                if (t[0] == "V" && e > 2) continue;
-                t[e] *= x;
-                t[e + 1] *= y;
-            }
-        }
+        });
         return this;
     }
-    get export() {
-        return this.black.map(t => t.map(t => Track.encode(t)).join(" ")).join(",") + "#" + this.grey.map(t => t.map(t => Track.encode(t)).join(" ")).join(",") + "#" + this.powerups.map(t => t.map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? Track.encode(t) : t)).map(t => t.join(" ")).join(",");
+    set physics(t) {
+        return this._physics = t;
+    }
+    set scenery(t) {
+        return this._scenery = t;
+    }
+    set powerups(t) {
+        return this._powerups = t;
+    }
+    get physics() {
+        return this._physics.map(t => t.map(t => t.toString(32)).join(" ")).join(",");
+    }
+    get scenery() {
+        return this._scenery.map(t => t.map(t => t.toString(32)).join(" ")).join(",");
+    }
+    get powerups() {
+        let powerups = "";
+        for (const t in this._powerups) {
+            switch(t) {
+                case "targets":
+                    for (const e of this._powerups[t]) {
+                        powerups += `T ${e.map(t => t.toString(32)).join(" ")},`;
+                    }
+                break;
+                
+                case "boosters":
+                    for (const e of this._powerups[t]) {
+                        powerups += `B ${e.map(t => t.toString(32)).join(" ")},`;
+                    }
+                break;
+
+                case "gravity":
+                    for (const e of this._powerups[t]) {
+                        powerups += `G ${e.map(t => t.toString(32)).join(" ")},`;
+                    }
+                break;
+
+                case "slowmos":
+                    for (const e of this._powerups[t]) {
+                        powerups += `S ${e.map(t => t.toString(32)).join(" ")},`;
+                    }
+                break;
+                
+                case "bombs":
+                    for (const e of this._powerups[t]) {
+                        powerups += `O ${e.map(t => t.toString(32)).join(" ")},`;
+                    }
+                break;
+
+                case "checkpoints":
+                    for (const e of this._powerups[t]) {
+                        powerups += `C ${e.map(t => t.toString(32)).join(" ")},`;
+                    }
+                break;
+
+                case "antigravity":
+                    for (const e of this._powerups[t]) {
+                        powerups += `A ${e.map(t => t.toString(32)).join(" ")},`;
+                    }
+                break;
+
+                case "teleporters":
+                    for (const e of this._powerups[t]) {
+                        powerups += `W ${e.map(t => t.toString(32)).join(" ")},`;
+                    }
+                break;
+
+                case "vehicles":
+                    for (const e in this._powerups[t]) {
+                        for (const i of this._powerups[t][e]) {
+                            powerups += `V ${i.map(t => t.toString(32)).join(" ")},`;
+                        }
+                    }
+                break;
+            }
+        }
+        return powerups;
+    }
+    get code() {
+        return this.physics + "#" + this.scenery + "#" + this.powerups;
     }
 }
 
 transform.onclick = function() {
-    const track = new Track(input.value)
-        .move(parseInt(move_x.value) || 0, parseInt(move_y.value) || 0)
-        .scale(parseInt(scale_x.value) || 1, parseInt(scale_y.value) || 1)
-        .rotate(parseInt(rotate.value) || 0);
-    output.value = track.export;
-    chars.innerText = output.value.length.toString().slice(0, -3) || 0;
-    output.select();
+    new Track(input.value)
+        .move(parseInt(moveX.value) | 0, parseInt(moveY.value) | 0)
+        .scale(parseInt(scaleX.value) | 1, parseInt(scaleY.value) | 1)
+        .rotate(parseInt(rotate.value) | 0);
 }
 
 copy.onclick = function() {

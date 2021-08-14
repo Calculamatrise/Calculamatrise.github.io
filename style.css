@@ -3,6 +3,11 @@
     src: url(../fonts/helsinki.ttf);
 }
 
+::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+}
+
 html {
 	font-family: Arial, helvetica, sans-serif;
 }
@@ -45,11 +50,15 @@ div.content {
 }
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]) {
+    border-radius: 2px;
     text-align: center;
     height: 45px;
     width: 200px;
     border: none;
-    border-radius: 2px;
+}
+
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]):focus, textarea:focus {
+    outline: none;
 }
 
 button, .button {
@@ -73,10 +82,15 @@ button:disabled, .button:disabled {
 }
 
 textarea {
+    border-radius: 2px;
+    padding: 10px;
     height: 400px;
     width: 470px;
     border: none;
-    border-radius: 2px;
+}
+
+textarea::placeholder {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .dropdown {
