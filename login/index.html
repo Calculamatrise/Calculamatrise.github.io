@@ -7,17 +7,11 @@
         <meta property="og:image" content="/images/icons/icon_512.png">
 		<meta name="description" content="A programmer's home.">
 		<meta name="author" content="Calculus">
-        <script async src="/script.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-database.js"></script>
-        <script src="script.js"></script>
+        <script defer src="/script.js"></script>
     </head>
     <body>
         <div class="content" style="text-align: center;">
-            <input type="text" id="user" placeholder="Username or E-Mail"><br>
-            <input type="password" id="pass" placeholder="Password"><br><br>
-            <button class="button" onclick="login()">Login</button>
-            <p id="error" style="display: none;"></p>
+            <button class="button" onclick="location.assign(`https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&redirect_uri=${encodeURIComponent(`${location.origin}/auth/discord/redirect/`)}&response_type=code&scope=identify%20guilds.join%20guilds%20rpc`)">Login</button>
         </div>
     </body>
 </html>

@@ -3,9 +3,8 @@
     <head>
         <title>Rae</title>
         <link rel="icon" href="icon.png">
-        <link rel="stylesheet" href="/style.css">
-        <script src="/script.js"></script>
-        <script async src="script.js"></script>
+        <script async src="/script.js"></script>
+        <script defer src="script.js"></script>
         <style>
             .tab {
                 overflow: hidden;
@@ -19,22 +18,170 @@
                 margin-left: 5px;
                 width: 1200px;
             }
+
+            table tr td:nth-child(1):hover,
+            table tr td:nth-child(2):hover {
+                cursor: pointer;
+            }
+
+            div span.mention {
+                background-color: rgba(88, 101, 242, .3);
+                border-radius: 3px;
+                font-weight: bold;
+                font-size: 16px;
+                padding: 0 2px;
+                color: #dee0fc;
+            }
+
+            div span.mention:hover {
+                background-color: rgba(88, 101, 242);
+                cursor: pointer;
+                padding: 0 2px;
+                color: #ffffff;
+            }
+
+            div span.mention:before {
+                content: "@";
+            }
+
+            div.example {
+                background-color: #40444B;
+                max-width: fit-content;
+                font-family: Whitney;
+                margin-bottom: 4px;
+                color: #dcddde;
+                min-width: 97.5%;
+                padding: 10px;
+            }
+
+            div.example span.pill {
+                background-color: #18191c;
+                max-width: fit-content;
+                font-family: Whitney;
+                border-radius: 5px;
+                color: #dcddde;
+                padding: 2px 5px;
+            }
+
+            div.response {
+                background-color: #36393F;
+                max-width: fit-content;
+                font-family: Whitney;
+                margin-bottom: 4px;
+                min-width: 97.5%;
+                color: #dcddde;
+                padding: 8px;
+            }
+
+            div.response:hover {
+                background-color: #32353B;
+            }
+
+            div.response img.image {
+                vertical-align: middle;
+                object-fit: cover;
+                max-height: 300px;
+                max-width: 300px;
+                width: 100%;
+            }
+
+            div.response.ephemeral {
+                background-color: #373B48;
+                border-left: 2px solid #5865F2;
+            }
+
+            div.response.ephemeral:hover {
+                background-color: #393D52;
+            }
+
+            div.response.followUp.ephemeral {
+                background-color: #49443C;
+                border-left: 2px solid #FAA81A;
+            }
+
+            div.response.followUp.ephemeral:hover {
+                background-color: #46423C;
+            }
+
+            div.response .avatar-small, div.example .avatar-small {
+                display: inline-block;
+                vertical-align: top;
+                border-radius: 30px;
+                max-height: 30px;
+                max-width: 30px;
+            }
+
+            div.response .message-content, div.example .message-content {
+                vertical-align: middle;
+                display: inline-block;
+                padding-right: 10px;
+            }
+
+            div.tab-content div.command {
+                background-color: #36393F;
+                margin-bottom: 15px;
+                border-radius: 2px;
+                max-width: 70%;
+                padding: 15px;
+            }
+
+            button.discord {
+                max-height: fit-content;
+                max-width: fit-content;
+                margin: 4px 8px 4px 0;
+                border-radius: 5px;
+                padding: 2px 16px;
+                font-size: 14px;
+                color: #ffffff;
+            }
+
+            button.discord:hover {
+                cursor: pointer;
+            }
+
+            button.discord.PRIMARY {
+                background-color: #4278ed;
+            }
+
+            button.discord.PRIMARY:hover {
+                background-color: #3561c0;
+            }
+
+            button.discord.SECONDARY {
+                background-color: #5e5e5e;
+            }
+
+            button.discord.SECONDARY:hover {
+                background-color: #474747;
+            }
+
+            button.discord.DANGER {
+                background-color: #ED4245;
+            }
+
+            button.discord.DANGER:hover {
+                background-color: #C03537;
+            }
         </style>
+        <link rel="stylesheet" href="/style.css">
     </head>
     <body>
         <div class="content">
             <div class="tabs">
                 <button class="tablinks" onclick="openDiv('description')">Description</button>
                 <button class="tablinks" onclick="openDiv('commands')">Commands</button>
-                <button class="tablinks" onclick="openDiv('usage')" disabled>Usage</button>
+                <button class="tablinks" onclick="openDiv('usage')">Usage</button>
                 <button onclick="window.open('https:\/\/github.com\/Calculamatrise\/rae.js')">Source Code</button>
                 <button onclick="window.open('https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands')">Invite Rae</button>
             </div>
             <div class="tab-content" id="description" style="display:block">
-                Rae is a multipurpose bot mainly used for music and moderation.
-                Rae has various features including global chat (cross-server communication), auto role and self roles.
-                There are also certain hidden features such as; temp-no-mic.
-                If you name one of your channels with that name, any message sent to that channel will be deleted within a minute of it being sent.
+                <h4>
+                    Rae is a multipurpose bot mainly used for music and moderation.
+                    Rae has various features including global chat (cross-server communication), auto role and self roles.
+                    There are also certain hidden features such as; temp-no-mic.
+                    If you name one of your channels with that name, any message sent to that channel will be deleted within a
+                    minute of it being sent.
+                </h4>
             </div>
             <div class="tab-content" id="commands">
                 <table>
@@ -45,6 +192,10 @@
                     <tr>
                         <td>afk</td>
                         <td>Set an afk status. (displays when someone tries to ping you)</td>
+                    </tr>
+                    <tr>
+                        <td>anagramatize</td>
+                        <td>Anagramatize a word of your choice!</td>
                     </tr>
                     <tr>
                         <td>avatar</td>
@@ -87,10 +238,6 @@
                         <td>Kiss another member.</td>
                     </tr>
                     <tr>
-                        <td>loop</td>
-                        <td>Loop the current track or queue.</td>
-                    </tr>
-                    <tr>
                         <td>mute</td>
                         <td>Timed mute.</td>
                     </tr>
@@ -116,23 +263,11 @@
                     </tr>
                     <tr>
                         <td>rail</td>
-                        <td>oop-</td>
-                    </tr>
-                    <tr>
-                        <td>random</td>
-                        <td>Randomize weapons or other things.</td>
-                    </tr>
-                    <tr>
-                        <td>repeat</td>
-                        <td>Repeat a song a set number of times.</td>
+                        <td>oop- <span class="warning" style="float: right; padding-right: 5px;">MATURE CONTENT</span></td>
                     </tr>
                     <tr>
                         <td>resume</td>
-                        <td>... resume moosic...</td>
-                    </tr>
-                    <tr>
-                        <td>seek</td>
-                        <td>Seek to a certain moment in a song.</td>
+                        <td>Resume the currently paused track.</td>
                     </tr>
                     <tr>
                         <td>skip</td>
@@ -152,7 +287,7 @@
                     </tr>
                     <tr>
                         <td>spank</td>
-                        <td>Spank another member. (WARNING: POTENTIALLY LEWD CONTENT)</td>
+                        <td>Spank another member. <span class="warning" style="float: right; padding-right: 5px;">MATURE CONTENT</span></td>
                     </tr>
                     <tr>
                         <td>stop</td>
@@ -167,20 +302,318 @@
                         <td>Unmute a muted user.</td>
                     </tr>
                     <tr>
-                        <td>user</td>
-                        <td>Add to a list of random usernames for a specified game.</td>
-                    </tr>
-                    <tr>
                         <td>userinfo</td>
                         <td>Gather data on a discord user.</td>
                     </tr>
                 </table>
             </div>
             <div class="tab-content" id="usage">
-                unfinished.
+                <div id="afk" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/afk <span class="pill">status: Out buying milk at the grocery store. I'll be back later!</span></div>
+                    </div>
+                    <div class="response ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">I've set your afk: Out buying milk at the grocery store. I'll be back later!</div>
+                    </div>
+                    <div class="response followUp ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content" style="white-space: pre-line;">Welcome back <span class="mention">Calculamatrise</span>,<br>I've removed your AFK.</div>
+                    </div>
+                </div>
+                <div id="anagramatize" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/anagramatize <span class="pill">word: Calculamatrise</span></div>
+                    </div>
+                    <div class="response ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">Tlamacairscelu</div>
+                    </div>
+                </div>
+                <div id="avatar" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/avatar <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
+                    </div>
+                    <div class="response ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="image">
+                    </div>
+                </div>
+                <div id="back" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/back</div>
+                    </div>
+                    <div class="response ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">I've gone back a track in the queue. <br>
+                            <button class="discord PRIMARY">Back</button>
+                            <button class="discord PRIMARY">Pause</button>
+                            <button class="discord PRIMARY">Skip</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="clear" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/clear <span class="pill">messages: 50</span></div>
+                    </div>
+                    <div class="response ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">Successfully cleared 50 messages.</div>
+                    </div>
+                </div>
+                <div id="confess" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/confess <span class="pill">confession: I'm an extremely skilled programmer!</span> <span class="pill">attachment:</span> Optional <span class="pill">anonymous:</span> Optional</div>
+                    </div>
+                    <div class="response ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">Your confession has successfully been submitted to <b>confessions</b></div>
+                    </div>
+                </div>
+                <div id="deafen" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/deafen <span class="pill">user:<span class="mention">Calculamatrise</span></span> <span class="pill">time: 10 seconds</span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content"><b>Calculamatrise#2780</b> was deafened for 60000 miliseconds. <br><button class="discord SECONDARY">Undeafen</button></div>
+                    </div>
+                </div>
+                <div id="guild" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/guild <span class="pill">category:</span> <span class="pill">action:</span> <span class="pill">input:</span></div>
+                    </div>
+                </div>
+                <div id="guildinfo" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/guildinfo <span class="pill">id:</span> Optional</div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.discordapp.com/attachments/683489290634002604/876364408778022943/unknown.png" class="image">
+                    </div>
+                </div>
+                <div id="hug" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/hug <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.nekos.life/hug/hug_075.gif" class="image">
+                    </div>
+                </div>
+                <div id="invite" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/invite</div>
+                    </div>
+                    <div class="response ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">Here you are! <br><button class="discord SECONDARY">Invite</button></div>
+                    </div>
+                </div>
+                <div id="kiss" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/kiss <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.nekos.life/kiss/kiss_113.gif" class="image">
+                    </div>
+                </div>
+                <div id="mute" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/mute <span class="pill">user: <span class="mention">Calculamatrise</span></span> <span class="pill">time: 10 seconds</span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content"><b>Calculamatrise#2780</b> was muted for 60000 miliseconds. <br><button class="discord SECONDARY">Unmute</button></div>
+                    </div>
+                </div>
+                <div id="pat" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/pat <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.nekos.life/pat/pat_042.gif" class="image">
+                    </div>
+                </div>
+                <div id="pause" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/pause</div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">I've paused the current track. <br>
+                            <button class="discord PRIMARY">Back</button>
+                            <button class="discord PRIMARY">Play</button>
+                            <button class="discord PRIMARY">Skip</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="play" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/play <span class="pill">song: Cupid's Chokehold slowed</span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.discordapp.com/attachments/683489290634002604/876371878883786812/unknown.png" class="image">
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.discordapp.com/attachments/683489290634002604/876371999902019624/unknown.png" class="image">
+                    </div>
+                </div>
+                <div id="poke" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/avatar <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.nekos.life/poke/poke_011.gif" class="image">
+                    </div>
+                </div>
+                <div id="queue" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/queue <span class="pill">action:</span></div>
+                    </div>
+                </div>
+                <div id="rail" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/rail <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content"><p class="warning">MATURE CONTENT</p></div>
+                    </div>
+                </div>
+                <div id="resume" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/resume</div>
+                    </div>
+                    <div class="response ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">I've resumed the current track. <br>
+                            <button class="discord PRIMARY">Back</button>
+                            <button class="discord PRIMARY">Pause</button>
+                            <button class="discord PRIMARY">Skip</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="skip" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/skip</div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">I've skipped the current track. <br>
+                            <button class="discord PRIMARY">Back</button>
+                            <button class="discord PRIMARY">Pause</button>
+                            <button class="discord PRIMARY">Skip</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="slap" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/slap <span class="pill">user:</span> <span class="mention">Calculamatrise</span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.nekos.life/slap/slap_003.gif" class="image">
+                    </div>
+                </div>
+                <div id="snipe" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/snipe <span class="pill">type:</span> <span class="pill">channel:</span> <span class="pill">user:</span></div>
+                    </div>
+                </div>
+                <div id="spam" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/spam <span class="pill">user: <span class="mention">Calculamatrise</span></span> +1 <span class="pill">message:</span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-conent">Oh no! You can't use this command. It was made specifically for Gabrielle :)</div>
+                    </div>
+                </div>
+                <div id="spank" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/spank</div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content"><p class="warning">MATURE CONTENT</p></div>
+                    </div>
+                </div>
+                <div id="stop" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/stop</div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content">I've stopped playing music.</div>
+                    </div>
+                </div>
+                <div id="undeafen" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/undeafen <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content"><b>Calculamatrise#2780</b> has been undeafened. <br><button class="discord SECONDARY">Deafen Again</button></div>
+                    </div>
+                </div>
+                <div id="unmute" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/unmute <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <div class="message-content"><b>Calculamatrise#2780</b> has been unmuted. <br><button class="discord SECONDARY">Mute Again</button></div>
+                    </div>
+                </div>
+                <div id="userinfo" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/userinfo <span class="pill">user: <span class="mention">Calculus</span></span></div>
+                    </div>
+                    <div class="response ephemeral">
+                        <img src="/rae/icon.png" class="avatar-small">
+                        <img src="https://cdn.discordapp.com/attachments/683489290634002604/876376470405128223/unknown.png" class="image">
+                    </div>
+                </div>
             </div>
             <div class="tab-content" id="invite">
-                <a href="https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands">
+                <a
+                    href="https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands">
                     https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands
                 </a>
             </div>

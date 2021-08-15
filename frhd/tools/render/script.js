@@ -1,4 +1,4 @@
-const ctx = canvas.getContext("2d");
+ctx = canvas.getContext("2d");
 function t(e) {
     let code = e.code.split("#");
     let physics = code[0].split(",").map(t => t.split(/\s/).map(t => parseInt(t, 32)));

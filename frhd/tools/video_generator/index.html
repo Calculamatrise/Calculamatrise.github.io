@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Image Generator - Calculamatrise</title>
+        <title>Video Generator - Calculamatrise</title>
         <link rel="icon" href="/images/icons/icon_512.png">
         <link rel="stylesheet" href="/style.css">
-        <script src="/script.js"></script>
+        <script async src="/script.js"></script>
         <script async src="bootstrap.js" type="module"></script>
     </head>
     <body>
         <div class="content">
-            <input type="file" id="image" accept="image/*">
+            <input type="file" id="input" accept="video/*">
+            <video id="video" controls="true" style="display: none;" muted></video>
             <label for="invert">Invert Colours&emsp;</label>
             <input type="checkbox" id="invert"><br><br>
-            <textarea id="code" placeholder="Result" cols="30" rows="10" onclick="this.select()" readonly></textarea>
+            <canvas id="canvas" width="720" height="480"></canvas>
             <div class="progress-bar-container">
                 <div class="progress-bar" id="progress"></div>
             </div><br>
-            <canvas id="canvas"></canvas>
+            <textarea id="code" placeholder="Result" value="" cols="30" rows="10" onclick="this.select()" readonly></textarea>
         </div>
     </body>
 </html>

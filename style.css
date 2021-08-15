@@ -1,6 +1,12 @@
 @font-face {
+    font-family: Whitney;
+    font-weight: 300;
+    src: url(/fonts/whitney.woff) format("woff")
+}
+
+@font-face {
     font-family: Helsinki;
-    src: url(../fonts/helsinki.ttf);
+    src: url(/fonts/helsinki.ttf);
 }
 
 ::-webkit-scrollbar {
@@ -163,6 +169,19 @@ input:checked + .toggle:before {
     transform: translateX(26px);
 }
 
+table tr th {
+    text-align: left;
+}
+
+table tr td:nth-child(1) {
+    padding: 10px;
+}
+
+table tr td:nth-child(2) {
+    padding: 10px;
+    opacity: .6;
+}
+
 .toggle {
     border-radius: 34px;
 }
@@ -208,4 +227,8 @@ input:checked + .toggle:before {
     display: inline-block;
     margin-bottom: 2px;
     padding: 10px;
+}
+
+.warning {
+    font-weight: bold;
 }

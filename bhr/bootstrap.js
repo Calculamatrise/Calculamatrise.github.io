@@ -92,6 +92,12 @@ export default window.Game = {
             document.onkeyup = this.defaults.keyup,
             this.defaults = !1
         }
+    },
+    close() {
+        this.attach(),
+        document.onmousemove = document.onmouseup = null;
+        canvas.oncontextmenu = canvas.onmousedown = canvas.onmouseenter = canvas.onmouseleave = canvas.onmousemove = canvas.onmouseup = canvas.onmousewheel = null;
+        loop.close();
     }
 }
 

@@ -1,4 +1,4 @@
-let inputs = [
+inputs = [
     document.getElementById("input1"),
     document.getElementById("input2")
 ];
