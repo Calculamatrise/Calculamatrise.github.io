@@ -20,7 +20,7 @@ export default class {
     constructor(t) {
         this.grid = {};
         this.scale = 100;
-        this.canvas = canvas;
+        this.canvas = document.querySelector("#canvas");
         this.sectors = {};
         this.zoom = 0.6;
         this.currentTime = 0;

@@ -1,4 +1,4 @@
-class Track {
+export default class {
     constructor(t) {
         t = t.split(/\u0023/g).map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
         this._physics = t[0] ? t[0].map(t => t.map(t => parseInt(t, 32)).filter(t => !isNaN(t))) : [],
@@ -109,7 +109,7 @@ class Track {
     emit(event, ...args) {
         event = this._events.get(event);
         if (!event || typeof event !== "function")
-            throw new Error("INVALID_FUNCTION");
+            return new Error("INVALID_FUNCTION");
         return event(...args);
     }
     move(x = 0, y = 0) {
@@ -223,32 +223,4 @@ class Track {
     get code() {
         return this.physics + "#" + this.scenery + "#" + this.powerups;
     }
-}
-
-transform.onclick = function() {
-    const track = new Track(input.value)
-        .move(parseInt(moveX.value) | 0, parseInt(moveY.value) | 0);
-    track.on("moved", function() {
-        track.scale(parseInt(scaleX.value) | 1, parseInt(scaleY.value) | 1);
-    });
-    track.on("scaled", function() {
-        track.rotate(parseInt(rotate.value) | 0);
-    });
-    chars.innerText = output.value.length.toString().slice(0, -3) || 0,
-    output.select();
-}
-
-copy.onclick = function() {
-    output.select();
-    document.execCommand('copy');
-}
-
-input.onclick = output.onclick = function() {
-    this.select();
-}
-
-window.onkeydown = function(e) {
-    let key = e.keyCode || e.which;
-    if (key == 13) transform.onclick();
-    if (key == 67) copy.onclick();
 }

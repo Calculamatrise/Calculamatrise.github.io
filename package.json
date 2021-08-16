@@ -1,0 +1,23 @@
+{
+  "name": "calculamatrise",
+  "version": "1.0.0",
+  "main": "bootstrap.js",
+  "type": "module",
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "build": "node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Calculamatrise/Calculamatrise.github.io.git"
+  },
+  "keywords": [],
+  "author": "Calculamatrise",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Calculamatrise/Calculamatrise.github.io/issues"
+  },
+  "homepage": "https://Calculamatrise.github.io/"
+}

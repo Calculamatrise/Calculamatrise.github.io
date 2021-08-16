@@ -2,8 +2,8 @@ self.addEventListener("install", e => {
     e.waitUntil(caches.open("static").then(cache => {
         cache.addAll([
             "/index.html",
-            "/header.html",
-            "/footer.html",
+            "/nav.html",
+            "/head.html",
             "/style.css",
             "/light.css",
             "/dark.css"

@@ -1,7 +1,14 @@
 @font-face {
     font-family: Whitney;
     font-weight: 300;
-    src: url(/fonts/whitney.woff) format("woff")
+    src: url(/fonts/whitney.woff) format("woff");
+}
+
+@font-face {
+    font-family: 'Monaco';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Monaco'), url('/fonts/Monaco.woff') format('woff');
 }
 
 @font-face {
@@ -14,34 +21,84 @@
     width: 10px;
 }
 
+::-webkit-scrollbar-corner {
+    display: none;
+}
+
 html {
 	font-family: Arial, helvetica, sans-serif;
+    border-bottom-width: 8vh;
+    border-bottom-style: solid;
+    box-sizing: border-box;
+    min-height: 100%;
 }
 
-header, footer {
+nav {
+    top: 0;
     left: 0;
-    width: 100vw;
-    display: flex;
+    width: 100%;
     padding: 10px;
     position: fixed;
-    text-align: center;
+    display: flex;
 }
 
-header {
-	top: 0;
+div.code-block {
+    background-color: #282C34;
+    border-radius: 10px;
+    font-family: monospace;
+    line-height: 1.5;
+    overflow-x: auto;
+    overflow-y: auto;
+    font-size: 14px;
+    min-width: 50vw;
+    padding: 20px;
+    min-width: 50vw;
+    color: #ABB2BF;
+    max-height: 500px;
 }
 
-footer {
-    bottom: 0;
-    height: 5vh;
+div.code-block span.indent {
+    text-indent: 5em;
+}
+
+div.code-block span.constant {
+    color: #E5C07B;
+}
+
+div.code-block span.parameter {
+    font-style: italic;
+}
+
+div.code-block span.variable, div.code-block span.property {
+    color: #E06C75;
+}
+
+div.code-block span.function, div.code-block span.method {
+    color: #4FAFE3;
+}
+
+div.code-block span.keyword {
+    color: #C678DD;
+}
+
+div.code-block span.string {
+    color: #98C379;
+}
+
+div.code-block span.number {
+    color: #D19A58;
 }
 
 .header-left {
-    display: flex;
+    display: inline-flex;
 }
 
 .header-right {
-    display: flex;
+    vertical-align: middle;
+    margin-right: 25px;
+    position: absolute;
+    height: 45px;
+    right: 0;
 }
 
 body {
@@ -123,52 +180,6 @@ textarea::placeholder {
     font-family: Helsinki;
 }
 
-.switch-right {
-    top: 12.5px;
-    right: 10px;
-    position: fixed;
-    width: 60px;
-    height: 34px;
-}
-  
-.toggle {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-  
-.toggle:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-}
-  
-input:checked + .toggle {
-    background-color: #2196F3;
-}
-
-input:focus + .toggle {
-    box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .toggle:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-}
-
 table tr th {
     text-align: left;
 }
@@ -180,14 +191,6 @@ table tr td:nth-child(1) {
 table tr td:nth-child(2) {
     padding: 10px;
     opacity: .6;
-}
-
-.toggle {
-    border-radius: 34px;
-}
-
-.toggle:before {
-    border-radius: 50%;
 }
 
 .progress-bar-container {

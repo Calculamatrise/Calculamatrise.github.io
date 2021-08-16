@@ -1,169 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Rae</title>
-        <link rel="icon" href="icon.png">
-        <script async src="/script.js"></script>
-        <script defer src="script.js"></script>
-        <style>
-            .tab {
-                overflow: hidden;
-                border: 1px solid #ccc;
-                background: #f1f1f1;
-            }
-
-            .tab-content {
-                display: none;
-                margin-top: 20px;
-                margin-left: 5px;
-                width: 1200px;
-            }
-
-            table tr td:nth-child(1):hover,
-            table tr td:nth-child(2):hover {
-                cursor: pointer;
-            }
-
-            div span.mention {
-                background-color: rgba(88, 101, 242, .3);
-                border-radius: 3px;
-                font-weight: bold;
-                font-size: 16px;
-                padding: 0 2px;
-                color: #dee0fc;
-            }
-
-            div span.mention:hover {
-                background-color: rgba(88, 101, 242);
-                cursor: pointer;
-                padding: 0 2px;
-                color: #ffffff;
-            }
-
-            div span.mention:before {
-                content: "@";
-            }
-
-            div.example {
-                background-color: #40444B;
-                max-width: fit-content;
-                font-family: Whitney;
-                margin-bottom: 4px;
-                color: #dcddde;
-                min-width: 97.5%;
-                padding: 10px;
-            }
-
-            div.example span.pill {
-                background-color: #18191c;
-                max-width: fit-content;
-                font-family: Whitney;
-                border-radius: 5px;
-                color: #dcddde;
-                padding: 2px 5px;
-            }
-
-            div.response {
-                background-color: #36393F;
-                max-width: fit-content;
-                font-family: Whitney;
-                margin-bottom: 4px;
-                min-width: 97.5%;
-                color: #dcddde;
-                padding: 8px;
-            }
-
-            div.response:hover {
-                background-color: #32353B;
-            }
-
-            div.response img.image {
-                vertical-align: middle;
-                object-fit: cover;
-                max-height: 300px;
-                max-width: 300px;
-                width: 100%;
-            }
-
-            div.response.ephemeral {
-                background-color: #373B48;
-                border-left: 2px solid #5865F2;
-            }
-
-            div.response.ephemeral:hover {
-                background-color: #393D52;
-            }
-
-            div.response.followUp.ephemeral {
-                background-color: #49443C;
-                border-left: 2px solid #FAA81A;
-            }
-
-            div.response.followUp.ephemeral:hover {
-                background-color: #46423C;
-            }
-
-            div.response .avatar-small, div.example .avatar-small {
-                display: inline-block;
-                vertical-align: top;
-                border-radius: 30px;
-                max-height: 30px;
-                max-width: 30px;
-            }
-
-            div.response .message-content, div.example .message-content {
-                vertical-align: middle;
-                display: inline-block;
-                padding-right: 10px;
-            }
-
-            div.tab-content div.command {
-                background-color: #36393F;
-                margin-bottom: 15px;
-                border-radius: 2px;
-                max-width: 70%;
-                padding: 15px;
-            }
-
-            button.discord {
-                max-height: fit-content;
-                max-width: fit-content;
-                margin: 4px 8px 4px 0;
-                border-radius: 5px;
-                padding: 2px 16px;
-                font-size: 14px;
-                color: #ffffff;
-            }
-
-            button.discord:hover {
-                cursor: pointer;
-            }
-
-            button.discord.PRIMARY {
-                background-color: #4278ed;
-            }
-
-            button.discord.PRIMARY:hover {
-                background-color: #3561c0;
-            }
-
-            button.discord.SECONDARY {
-                background-color: #5e5e5e;
-            }
-
-            button.discord.SECONDARY:hover {
-                background-color: #474747;
-            }
-
-            button.discord.DANGER {
-                background-color: #ED4245;
-            }
-
-            button.discord.DANGER:hover {
-                background-color: #C03537;
-            }
-        </style>
+        <title>Rae - Calculamatrise</title>
+        <link rel="icon" href="/rae/favicon.ico">
+        <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="/style.css">
+        <meta name="author" content="Calculamatrise">
+        <meta name="title" property="og:title" content="Rae">
+        <meta name="description" property="og:description" content="A discord bot.">
+        <meta property="og:image" content="/rae/favicon.ico">
+        <meta property="og:url" content="https://calculamatrise.github.io/rae/">
+        <script src="/bootstrap.js" type="module"></script>
+        <script defer src="script.js"></script>
     </head>
     <body>
         <div class="content">
@@ -183,7 +31,7 @@
                     minute of it being sent.
                 </h4>
             </div>
-            <div class="tab-content" id="commands">
+            <div class="tab-content" id="commands" style="display:none">
                 <table>
                     <tr>
                         <th>Command</th>
@@ -307,7 +155,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="tab-content" id="usage">
+            <div class="tab-content" id="usage" style="display:none">
                 <div id="afk" class="command">
                     <div class="example">
                         <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
@@ -611,7 +459,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-content" id="invite">
+            <div class="tab-content" id="invite" style="display:none">
                 <a
                     href="https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands">
                     https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands

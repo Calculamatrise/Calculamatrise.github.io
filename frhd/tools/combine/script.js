@@ -18,6 +18,10 @@ function add() {
 
 function run() {
     let physics = "", scenery = "", powerups = "";
+    if (!inputs[0] || !inputs[1]) {
+        inputs[0] = document.getElementById("input1"),
+        inputs[1] = document.getElementById("input2")
+    }
     inputs.forEach(i => {
         physics += (i.value.split("#")[0] || "") + (i.value.split("#")[0] ? "," : "")
         scenery += (i.value.split("#")[1] || "") + (i.value.split("#")[1] ? "," : "")

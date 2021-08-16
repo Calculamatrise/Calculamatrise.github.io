@@ -1,4 +1,4 @@
-class Segment {
+export default class {
     constructor(last) {
         const random = this.randomize(last);
         this.id = random.id;
@@ -131,36 +131,3 @@ class Segment {
         ];
     }
 }
-
-function generate() {
-	const segments = new Array();
-
-    let segment_one = new Segment();
-    segments.push(segment_one);
-
-	for (let i = 0; i < input.value; i++) {
-        segments.push(segment_one = new Segment(segment_one));
-	}
-
-    let black = segments.map(t => t.code).join(",");
-
-	output.value = (black || "") + "##";
-	output.select();
-}
-
-function copy() {
-	output.select();
-	document.execCommand("copy");
-}
-
-input.addEventListener("click", input.select);
-output.addEventListener("click", output.select);
-window.addEventListener("keydown", function(e) {
-    switch(e.keyCode) {
-        case 13:
-            return generate();
-        
-        case 67:
-            return copy();
-    }
-});

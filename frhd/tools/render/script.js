@@ -1,5 +1,5 @@
-ctx = canvas.getContext("2d");
 function t(e) {
+    let ctx = document.querySelector("canvas").getContext("2d");
     let code = e.code.split("#");
     let physics = code[0].split(",").map(t => t.split(/\s/).map(t => parseInt(t, 32)));
     let scenery = code[1].split(",").map(t => t.split(/\s/).map(t => parseInt(t, 32)));
@@ -33,9 +33,4 @@ function t(e) {
             ctx.stroke();
         }
     }
-}
-run.onclick = function() {
-    document.body.append(Object.assign(document.createElement("script"), {
-        src: "https://cdn.freeriderhd.com/free_rider_hd/tracks/prd/" + input.value + "/track-data-v1.js"
-    }));
 }

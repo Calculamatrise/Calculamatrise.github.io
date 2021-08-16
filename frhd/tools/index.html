@@ -1,60 +1,45 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Free Rider Tools</title>
-        <link rel="icon" href="images/icons/icon_128.png">
+        <title>Tools - FRHD</title>
+        <link rel="icon" href="/frhd/favicon.ico">
         <link rel="stylesheet" href="/style.css">
-        <style>
-            #div-left {
-                float: left;
-            }
-
-            #div-right {
-                float: right;
-            }
-
-            #new {
-                background-image: url(https://imgur.com/7bZP6pv.png);
-                background-repeat: no-repeat;
-                background-position: 5px 2px;
-            }
-        </style>
-    <script async src="/script.js"></script>
+        <script src="/bootstrap.js" type="module"></script>
     </head>
     <body>
         <div class="content">
             <div id="tabs">
-                <div id="div-left">
+                <div style="float: left;">
                     <h2 class="title">Tools</h2>
-                    <form action="mover/" target="_blank">
-                        <button type="submit" class="button_main">Track Mover</button>
+                    <form action="./move/" target="_blank">
+                        <button type="submit" class="button_main">Mover</button>
                     </form>
                     <br>
-                    <form action="combiner/" target="_blank">
-                        <button type="submit" class="button_main">Track Combiner</button>
+                    <form action="./combine/" target="_blank">
+                        <button type="submit" class="button_main">Combiner</button>
                     </form>
                     <br>
-                    <form action="reverser/" target="_blank">
-                        <button type="submit" class="button_main">Track Reverser</button>
+                    <form action="./reverse/" target="_blank">
+                        <button type="submit" class="button_main">Reverser</button>
                     </form>
                     <br>
-                    <form action="editor/" target="_blank">
-                        <button type="submit" class="abutton">Editor Tool</button>
+                    <form action="./editor/" target="_blank">
+                        <button type="submit" class="abutton">Advanced Editor</button>
                     </form>
                     <br>
-                    <form action="visual_editor/" target="_blank">
+                    <form action="./api/" target="_blank">
                         <button type="submit" class="button_main">Visual Editor</button>
                     </form>
                     <br>
-                    <form action="track_renderer/" target="_blank">
+                    <form action="./rendere/" target="_blank">
                         <button type="submit" class="abutton">Track Renderer</button>
                     </form>
                     <br>
-                    <form action="tube_generator/" target="_blank">
+                    <form action="./tube_generator/" target="_blank">
                         <button type="submit" class="button_main">Tube Generator</button>
                     </form>
                 </div>
-                <div id="div-right">
+                <div style="float: right;">
                     <h2 class="title">Editors</h2>
                     <form action="https://blackhatrider.github.io/editor/" target="_blank">
                         <button type="submit" class="button_main">BHR Editor</button>
