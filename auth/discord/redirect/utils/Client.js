@@ -65,7 +65,7 @@ export default class {
                 grant_type: "authorization_code",
                 code,
                 redirect_uri: this.redirectUri,
-                scope: "identify guilds guilds.join rpc"
+                scope: this.scope.join(" ")
             },
             method: "post"
         }).then(t => {

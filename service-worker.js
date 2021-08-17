@@ -37,15 +37,15 @@ self.addEventListener("fetch", function(event) {
         break;
 
         case "post":
-            let headers = event.request.headers;
-            event.request.json().then(console.log)
-            event.respondWith(new Response(JSON.stringify({
-                yups: "yum"
-            }), {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            }));
+            // let headers = event.request.headers;
+            // event.request.json().then(console.log)
+            // event.respondWith(new Response(JSON.stringify({
+            //     yups: "yum"
+            // }), {
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     }
+            // }));
         break;
     }
 });

@@ -120,7 +120,10 @@ router.get("/games/clicker/", function() {
 router.get("/auth/discord/redirect/", function() {
     this.setTitle("Redirecting - Calculamatrise");
     this.setIcon("/favicon.ico");
-    this.addScripts("/auth/discord/redirect/bootstrap.js");
+    this.addScripts({
+        src: "bootstrap.js",
+        type: "module"
+    });
 });
 
 router.get("/contact/", function() {
