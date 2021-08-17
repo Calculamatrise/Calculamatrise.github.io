@@ -38,6 +38,10 @@ export default class {
             });
         }
 
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/service-worker.js");
+        }
+
         this.#emit("ready");
     }
     createElement(t, e = {}) {

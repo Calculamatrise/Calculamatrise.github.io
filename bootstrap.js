@@ -2,10 +2,6 @@ import Router from "./router.js";
 
 const router = new Router();
 
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/service-worker.js");
-}
-
 router.get("/", function() {
     this.setTitle("Headquarters - Calculamatrise");
     this.setIcon("/favicon.ico");
@@ -130,6 +126,11 @@ router.get("/auth/discord/redirect/", function() {
 router.get("/contact/", function() {
     this.setTitle("Contact - Calculamatrise");
     this.setIcon("/favicon.ico");
+});
+
+router.get("/offline/", function() {
+    this.setTitle("Offline - Calculamatrise");
+    this.setIcon("/favicon-disabled.ico");
 });
 
 router.get("/*", function() {
