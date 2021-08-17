@@ -2,6 +2,10 @@ import Router from "./router.js";
 
 const router = new Router();
 
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js");
+}
+
 router.get("/", function() {
     this.setTitle("Headquarters - Calculamatrise");
     this.setIcon("/favicon.ico");

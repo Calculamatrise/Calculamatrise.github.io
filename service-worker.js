@@ -17,10 +17,24 @@ self.addEventListener("activate", e => {
 });
 
 self.addEventListener("fetch", async e => {
-    if (new URL(e.request.url).origin == location.origin) {
-        e.respondWith(cacheFirst(e.request));
-    } else {
-        e.respondWith(networkAndCache(e.request));
+    switch(e.request.method.toLowerCase()) {
+        case "get":
+            if (new URL(e.request.url).origin == location.origin) {
+                return e.respondWith(cacheFirst(e.request));
+            } else {
+                return e.respondWith(networkAndCache(e.request));
+            }
+        break;
+
+        case "post":
+            e.respondWith(new Response(JSON.stringify({
+                yups: "test"
+            }), {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }));
+        break;
     }
 });
 
