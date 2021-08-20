@@ -4,12 +4,10 @@ const router = new Router();
 
 router.get("/", function() {
     this.setTitle("Headquarters - Calculamatrise");
-    this.setIcon("/favicon.ico");
 });
 
 router.get("/login/", function() {
     this.setTitle("Login - Calculamatrise");
-    this.setIcon("/favicon.ico");
 });
 
 router.get("/rae/", function() {
@@ -21,7 +19,6 @@ router.get("/rae/", function() {
 
 router.get("/frhd/api/docs/", function() {
     this.setTitle("Documentation - FRHD API");
-    this.setIcon("/favicon.ico");
 });
 
 router.get("/frhd/tools/", function() {
@@ -31,7 +28,6 @@ router.get("/frhd/tools/", function() {
 
 router.get("/frhd/tools/api/", function() {
     this.setTitle("Visual Editor - Tools");
-    this.setIcon("/favicon.ico");
     this.addScripts({
         src: "bootstrap.js",
         type: "module"
@@ -40,13 +36,11 @@ router.get("/frhd/tools/api/", function() {
 
 router.get("/frhd/tools/combine/", function() {
     this.setTitle("Combine - Tools");
-    this.setIcon("/favicon.ico");
     this.addScripts("script.js");
 });
 
 router.get("/frhd/tools/editor/", function() {
     this.setTitle("Advanced Editor - Tools");
-    this.setIcon("/favicon.ico");
     this.addScripts({
         src: "bootstrap.js",
         type: "module"
@@ -55,13 +49,11 @@ router.get("/frhd/tools/editor/", function() {
 
 router.get("/frhd/tools/image_generator/", function() {
     this.setTitle("Image Generator - Tools");
-    this.setIcon("/favicon.ico");
     this.addScripts("bootstrap.js");
 });
 
 router.get("/frhd/tools/move/", function() {
     this.setTitle("Move - Tools");
-    this.setIcon("/favicon.ico");
     this.addScripts({
         src: "bootstrap.js",
         type: "module"
@@ -70,19 +62,16 @@ router.get("/frhd/tools/move/", function() {
 
 router.get("/frhd/tools/render/", function() {
     this.setTitle("Render - Tools");
-    this.setIcon("/favicon.ico");
     this.addScripts("script.js");
 });
 
 router.get("/frhd/tools/reverse/", function() {
     this.setTitle("Reverse - Tools");
-    this.setIcon("/favicon.ico");
     this.addScripts("script.js");
 });
 
 router.get("/frhd/tools/tube_generator/", function() {
     this.setTitle("Tube Generator - Tools");
-    this.setIcon("/favicon.ico");
     this.addScripts({
         src: "bootstrap.js",
         type: "module"
@@ -91,13 +80,11 @@ router.get("/frhd/tools/tube_generator/", function() {
 
 router.get("/frhd/tools/video_generator/", function() {
     this.setTitle("Video Generator - Tools");
-    this.setIcon("/favicon.ico");
     this.addScripts("bootstrap.js");
 });
 
 router.get("/games/bhr/", function() {
     this.setTitle("Black Hat Rider Experiment");
-    this.setIcon("/favicon.ico");
     this.addScripts({
         innerHTML: `
             import BHR from "/games/bhr/bootstrap.js";
@@ -110,7 +97,6 @@ router.get("/games/bhr/", function() {
 
 router.get("/games/clicker/", function() {
     this.setTitle("Clicker");
-    this.setIcon("/favicon.ico");
     this.addScripts({
         src: "/games/clicker/script.js",
         type: "module"
@@ -119,7 +105,6 @@ router.get("/games/clicker/", function() {
 
 router.get("/auth/discord/redirect/", function() {
     this.setTitle("Redirecting - Calculamatrise");
-    this.setIcon("/favicon.ico");
     this.addScripts({
         src: "bootstrap.js",
         type: "module"
@@ -128,7 +113,6 @@ router.get("/auth/discord/redirect/", function() {
 
 router.get("/contact/", function() {
     this.setTitle("Contact - Calculamatrise");
-    this.setIcon("/favicon.ico");
 });
 
 router.get("/offline/", function() {
@@ -137,7 +121,7 @@ router.get("/offline/", function() {
 });
 
 router.get("/*", function() {
-    this.setTitle("Page not found");
+    this.setTitle("Page not found - Calculamatrise");
     this.setIcon("/favicon-disabled.ico");
 });
 
