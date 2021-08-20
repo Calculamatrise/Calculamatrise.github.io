@@ -5,7 +5,7 @@
         <link rel="icon" href="/favicon.ico">
         <link rel="stylesheet" href="/style.css">
         <script src="/bootstrap.js" type="module"></script>
-        <script async src="bootstrap.js" type="module"></script>
+        <script defer src="bootstrap.js" type="module"></script>
     </head>
     <body>
         <div class="content">
@@ -16,7 +16,7 @@
             <input type="number" id="travelDistanceX" placeholder="X Axis">
             <button id="move">Move</button><br>
             <input type="number" id="travelDistanceY" placeholder="Y Axis">
-            <button id="copy" class="button">Copy</button>
+            <button onclick="input.select(), document.execCommand('copy');">Copy</button>
         </div>
     </body>
 </html>

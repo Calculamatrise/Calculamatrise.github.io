@@ -1,8 +1,8 @@
 export default class {
-    constructor(t) {
-        t = t.split(/\u0023/g).map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
-        this._physics = t[0] ? t[0].map(t => t.map(t => parseInt(t, 32)).filter(t => !isNaN(t))) : [],
-        this._scenery = t[1] ? t[1].map(t => t.map(t => parseInt(t, 32)).filter(t => !isNaN(t))) : [],
+    constructor(worker) {
+        let code = (input.value || "-18 1i 18 1i##").split(/\u0023/g).map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
+        this._physics = code[0] ? code[0].map(t => t.map(t => parseInt(t, 32)).filter(t => !isNaN(t))) : [],
+        this._scenery = code[1] ? code[1].map(t => t.map(t => parseInt(t, 32)).filter(t => !isNaN(t))) : [],
         this._powerups = {
             targets: [],
             boosters: [],
@@ -23,7 +23,7 @@ export default class {
         this._events = new Map();
         this.readyCount = 0;
 
-        this.worker = new Worker("worker.js");
+        this.worker = worker;
         this.worker.onmessage = ({ data }) => {
             this._physics = data.args.physics,
             this._scenery = data.args.scenery,
@@ -43,7 +43,7 @@ export default class {
             }
         }
 
-        for (const e in t[2]) {
+        for (const e in code[2]) {
             switch(e) {
                 case "T":
                     this._powerups.targets.push(e.slice(1).map(t => parseInt(t, 32)));

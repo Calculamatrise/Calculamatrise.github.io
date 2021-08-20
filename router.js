@@ -115,13 +115,16 @@ export default class {
         }
     }
     removeTempContent() {
-        for (const style of this.view.styles) {
+        for (const style of this.view.styles)
+            style.parentElement.removeChild(style),
             style.remove();
-        }
 
-        for (const script of this.view.scripts) {
+        for (const script of this.view.scripts)
+            script.parentElement.removeChild(script),
             script.remove();
-        }
+
+        this.view.styles = [];
+        this.view.scripts = [];
     }
     replaceContent(t) {
         let content = document.querySelector(".content");

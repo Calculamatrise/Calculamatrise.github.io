@@ -8,10 +8,11 @@
 		<meta name="description" content="Manipulate a track to your liking.">
 		<meta name="author" content="Calculus">
 		<script src="/bootstrap.js" type="module"></script>
+		<script src="bootstrap.js" type="module"></script>
     </head>
     <body>
 		<div class="content">
-			<textarea id="input" placeholder="Track Code" spellcheck="false"></textarea>
+			<textarea id="input" onclick="this.select()" placeholder="Track Code" spellcheck="false"></textarea>
 			<br><br>
 			<input type="number" id="moveX" placeholder="Move x" step="1">
 			<input type="number" id="moveY" placeholder="Move y" step="1">
@@ -22,10 +23,11 @@
 			<input type="number" id="rotate" placeholder="Rotation factor" title="Format: 90°" step="any">
 			<br><br>
 			<button id="transform">Transform</button>
-			<button id="copy">Copy</button>
+			<button onclick="output.select();
+			document.execCommand('copy');">Copy</button>
 			Chars: <span id="chars">0</span>k
 			<br><br>
-			<textarea id="output" cols="30" rows="10" placeholder="Result" spellcheck="false" readonly></textarea>
+			<textarea id="output" onclick="this.select()" cols="30" rows="10" placeholder="Result" spellcheck="false" readonly></textarea>
 		</div>
 	</body>
 </html>

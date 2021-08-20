@@ -57,12 +57,18 @@ export default class {
     get scripts() {
         return this.#scripts;
     }
+    set scripts(scripts) {
+        return this.#scripts = scripts;
+    }
     set script(script) {
         this.#scripts.push(script);
         return this.#scripts;
     }
     get styles() {
         return this.#styles;
+    }
+    set styles(styles) {
+        return this.#styles = styles;
     }
     set style(style) {
         this.#styles.push(style);

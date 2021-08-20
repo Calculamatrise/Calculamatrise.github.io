@@ -12,7 +12,6 @@ router.get("/login/", function() {
 
 router.get("/rae/", function() {
     this.setTitle("Rae - Calculamatrise");
-    this.setIcon("/rae/favicon.ico");
     this.addStyles("/rae/style.css");
     this.addScripts("/rae/script.js");
 });
@@ -23,7 +22,6 @@ router.get("/frhd/api/docs/", function() {
 
 router.get("/frhd/tools/", function() {
     this.setTitle("Tools - FRHD");
-    this.setIcon("/frhd/favicon.ico");
 });
 
 router.get("/frhd/tools/api/", function() {

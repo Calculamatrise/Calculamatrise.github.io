@@ -1,24 +1,11 @@
 export default class {
-    constructor(t) {
-        t = t.split("#").map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
-        this._physics = t[0];
-        this._scenery = t[1];
-        this._powerups = t[2];
+    constructor(worker) {
+        let code = (input.value || "-18 1i 18 1i##").split("#").map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
+        this._physics = code[0];
+        this._scenery = code[1];
+        this._powerups = code[2];
 
-        this.worker = new Worker("./worker.js");
-        this.worker.onmessage = ({ data }) => {
-            switch(data.cmd) {
-                case "move":
-                    input.value = data.args.physics + "#" + data.args.scenery + "#" + data.args.powerups;
-                break;
-
-                case "progress":
-                    document.title = "Progress... " + data.args.value;
-                    progress.innerText = data.args.innerText || data.args.value;
-                    progress.style.width = data.args.value;
-                break;
-            }
-        }
+        this.worker = worker;
     }
     move(t = 0, e = 0) {
         this.worker.postMessage({
@@ -31,6 +18,8 @@ export default class {
                 y: e | 0
             }
         });
+        
+        return this;
     }
     get code() {
         return this.physics + "#" + this.scenery + "#" + this.powerups;
