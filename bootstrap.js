@@ -12,6 +12,7 @@ router.get("/login/", function() {
 
 router.get("/rae/", function() {
     this.setTitle("Rae - Calculamatrise");
+    this.setIcon("/rae/favicon.ico");
     this.addStyles("/rae/style.css");
     this.addScripts("/rae/script.js");
 });
