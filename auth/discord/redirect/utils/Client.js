@@ -9,31 +9,35 @@ export default class {
     #token_ = null;
     #accessToken_ = null;
     #refreshToken_ = null;
-    #events_ = new Map();
-    async ajax({ host, method = "GET", path, headers = { "Content-Type": "application/x-www-form-urlencoded" }, body }, callback = t => t) {
-        return await new Promise(function(resolve, reject) {
-            const res = new XMLHttpRequest();
-            res.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    resolve(callback(JSON.parse(this.responseText)));
+    #events = new Map();
+    ajax({ host, method = "GET", path, headers = { "Content-Type": "application/x-www-form-urlencoded" }, body }, callback = t => t) {
+        return new Promise(function(resolve, reject) {
+            try {
+                const res = new XMLHttpRequest();
+                res.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        resolve(callback(JSON.parse(this.responseText)));
+                    }
                 }
+                res.open(method, `https://${host || "discord.com"}/api${path}`, true);
+                for (const t in headers)
+                    res.setRequestHeader(t, headers[t]);
+                res.send(new URLSearchParams(body));
+            } catch(e) {
+                return reject(e);
             }
-            res.open(method, `https://${host || "discord.com"}${path}`, true);
-            for (const t in headers)
-                res.setRequestHeader(t, headers[t]);
-            res.send(new URLSearchParams(body));
         });
     }
     on(event, func = function() {}) {
         if (!event || typeof event !== "string")
             throw new Error("INVALID_EVENT");
-        this.#events_.set(event, func.bind(this));
+        this.#events.set(event, func.bind(this));
         return this;
     }
     emit(event, ...args) {
         if (!event || typeof event !== "string")
             throw new Error("INVALID_EVENT");
-        event = this.#events_.get(event);
+        event = this.#events.get(event);
         if (!event && typeof event !== "function")
             throw new Error("INVALID_FUNCTION");
         return event(...args);
@@ -53,9 +57,9 @@ export default class {
         this.emit("ready");
         return this;
     }
-    async requestToken(code) {
-        return await this.ajax({
-            path: "/api/oauth2/token",
+    requestToken(code) {
+        return this.ajax({
+            path: "/oauth2/token",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
@@ -75,9 +79,9 @@ export default class {
             return t;
         });
     }
-    async refreshToken() {
-        return await this.ajax({
-            path: "/api/oauth2/token",
+    refreshToken() {
+        return this.ajax({
+            path: "/oauth2/token",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
@@ -96,9 +100,25 @@ export default class {
             return t;
         });
     }
-    async getUser() {
-        return await this.ajax({
-            path: "/api/users/@me",
+    addMember({ guildId, userId, deaf, mute, nickname, roles, accessToken }) {
+        return this.ajax({
+            path: `/guilds/${guildId}/members/${userId}`,
+			headers: {
+                authorization: "Bot " + this.#botToken
+            },
+            body: {
+                deaf,
+                mute,
+                nick: nickname,
+                roles,
+                access_token: accessToken,
+            },
+            method: "put"
+		});
+    }
+    getUser() {
+        return this.ajax({
+            path: "/users/@me",
             headers: {
                 "Authorization": `${this.tokenType} ${this.#accessToken_}`,
                 "Content-Type": "application/json"
@@ -111,9 +131,9 @@ export default class {
             return t;
         });
     }
-    async getGuilds() {
-        return await this.ajax({
-            path: "/api/users/@me/guilds",
+    getGuilds() {
+        return this.ajax({
+            path: "/users/@me/guilds",
             headers: {
                 "Authorization": `${this.tokenType} ${this.#accessToken_}`,
                 "Content-Type": "application/json"
@@ -126,9 +146,9 @@ export default class {
             return t;
         });
     }
-    async getConnections() {
-        return await this.ajax({
-            path: "/api/users/@me/connections",
+    getConnections() {
+        return this.ajax({
+            path: "/users/@me/connections",
             headers: {
                 "Authorization": `${this.tokenType} ${this.#accessToken_}`,
                 "Content-Type": "application/json"
