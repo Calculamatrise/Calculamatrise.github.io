@@ -25,21 +25,21 @@ nav {
     border-bottom: 1px solid #ddd;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]), textarea {
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]), textarea {
     background-color: #e8e8e8;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]):hover, textarea:hover {
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):hover, textarea:hover {
     background-color: #e4e4e4;
     color: #1d1d1d;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]):focus, textarea:focus {
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):focus, textarea:focus {
     background-color: #dddddd;
     color: #000000;
 }
 
-button, .button {
+button, .button, ::-webkit-file-upload-button {
     background-color: #d4d4d4;
     color: #333;
 }
@@ -48,12 +48,12 @@ button.header.button {
     background-color: #f5f5f5;
 }
 
-button:hover, .button:hover, .header.button:hover {
+button:hover, .button:hover, .header.button:hover, ::-webkit-file-upload-button:hover {
     background-color: #bbbbbb;
     color: #1d1d1d;
 }
 
-button:active, .button:active, .header.button:active {
+button:active, .button:active, .header.button:active, ::-webkit-file-upload-button:hover {
     background-color: #aaaaaa;
     color: #000000;
 }

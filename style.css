@@ -112,7 +112,7 @@ div.content {
     overflow-y: auto;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]) {
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]) {
     border-radius: 2px;
     text-align: center;
     height: 45px;
@@ -120,11 +120,15 @@ input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="
     border: none;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="image"]):not([type="radio"]):focus, textarea:focus {
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="radio"]):focus, textarea:focus {
     outline: none;
 }
 
-button, .button {
+input[type="file"] {
+    width: 230px;
+}
+
+button, .button, ::-webkit-file-upload-button {
     width: 130px;
     height: 45px;
     border: none;
@@ -134,12 +138,12 @@ button, .button {
     transition: all 100ms;
 }
 
-button:hover, .button:hover {
+button:hover, .button:hover, ::-webkit-file-upload-button:hover {
     cursor: pointer;
     transition: all 50ms;
 }
 
-button:disabled, .button:disabled {
+button:disabled, .button:disabled, ::-webkit-file-upload-button:disabled {
     cursor: default;
     opacity: 0.5;
 }
