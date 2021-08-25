@@ -1,3 +1,9 @@
+:root {
+    --text: rgb(0, 0, 0);
+    --background: rgb(255, 255, 255);
+    --border-color: rgb(245, 245, 245);
+}
+
 ::-webkit-scrollbar-track {
     background-color: #eeeeee;
     border-radius: 30px;
@@ -16,10 +22,6 @@
     background-color: #aaaaaa;
 }
 
-html {
-    border-bottom-color: #f5f5f5;
-}
-
 nav {
     background-color: #f5f5f5;
     border-bottom: 1px solid #ddd;
@@ -36,7 +38,6 @@ input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):focus, textarea:focus {
     background-color: #dddddd;
-    color: #000000;
 }
 
 button, .button, ::-webkit-file-upload-button {
@@ -55,14 +56,9 @@ button:hover, .button:hover, .header.button:hover, ::-webkit-file-upload-button:
 
 button:active, .button:active, .header.button:active, ::-webkit-file-upload-button:hover {
     background-color: #aaaaaa;
-    color: #000000;
 }
 
-table tr td:nth-child(1) {
-    background-color: #e8e8e8;
-}
-
-table tr td:nth-child(2) {
+table tr td:nth-child(1), table tr td:nth-child(2) {
     background-color: #e8e8e8;
 }
 

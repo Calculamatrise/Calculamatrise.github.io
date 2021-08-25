@@ -16,6 +16,12 @@
     src: url(/fonts/helsinki.ttf);
 }
 
+html {
+    background-color: var(--background);
+    border-bottom-color: var(--border-color);
+    color: var(--text);
+}
+
 ::-webkit-scrollbar {
     height: 10px;
     width: 10px;
@@ -40,6 +46,28 @@ nav {
     padding: 10px;
     position: fixed;
     display: flex;
+    justify-content: space-between;
+}
+
+.header-left {
+    display: inline-flex;
+    width: clamp(10px, 500px, 50%);
+}
+
+.header-right {
+    display: inline-flex;
+    width: clamp(10px, 500px, 50%);
+    justify-content: flex-end;
+}
+
+body {
+	margin-top: 8vh;
+}
+
+div.content {
+    padding: 1%;
+    overflow-x: auto;
+    overflow-y: auto;
 }
 
 div.code-block {
@@ -87,29 +115,6 @@ div.code-block span.string {
 
 div.code-block span.number {
     color: #D19A58;
-}
-
-.header-left {
-    display: inline-flex;
-}
-
-.header-right {
-    vertical-align: middle;
-    margin-right: 25px;
-    position: absolute;
-    height: 45px;
-    right: 0;
-}
-
-body {
-	margin-top: 8vh;
-}
-
-div.content {
-    height: 80vh;
-    padding: 1%;
-    overflow-x: auto;
-    overflow-y: auto;
 }
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]) {
