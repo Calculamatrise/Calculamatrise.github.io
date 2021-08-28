@@ -8,6 +8,40 @@
     <body>
         <div class="content">
             <h2>Discord</h2>
+            <div class="message">
+                <input type="text" placeholder="Discord Tag" class="discord-tag"><br><br>
+                <textarea placeholder="Message" class="content" style="width: 185px; height: 40px; font-family: Arial, Helvetica, sans-serif;"></textarea>
+                <p class="error" style="color: red;"></p>
+                <button style="width: 205px;" onclick="
+                    const message = document.querySelector('.message');
+                    const { value: author } = message.querySelector('.discord-tag');
+                    const { value: content } = message.querySelector('.content');
+                    const error = message.querySelector('.error');
+                    if (!author.match(/.+#\d+/gi)) {
+                        error.innerHTML = 'Invalid discord tag, Please try again.';
+                    } else if (content.length < 1) {
+                        error.innerHTML = 'Cannot send an empty message, Please try again.';
+                    } else {
+                        error.innerHTML = '';
+                        fetch('https:\/\/canary.discord.com/api/webhooks/858780674449342475/HyGcfmVO_l8J2uDze_ke8FfzzFrU48MT3UZr1xLJO05xCG9qEMImL3ewQwRBu5I5BILH', {
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                username: document.querySelector('.message .discord-tag').value,
+                                avatar_url: '',
+                                content: document.querySelector('.message .content').value,
+                                tts: false
+                            }),
+                            method: 'POST'
+                        }).catch(function(response) {
+                            console.log(response)
+                            return error.innerHTML = response.message;
+                        });
+                    }
+                ">Send</button>
+            </div>
+            <br>
             <input class="button" style="width: 220px; opacity: .5;" value="Calculamatrise#2780" readonly>
             <button onclick="window.open('https:\/\/discord.gg\/mDvh7V7AK3')">Join Discord</button>
 
