@@ -14,23 +14,22 @@
                 <p class="error" style="color: red;"></p>
                 <button style="width: 205px;" onclick="
                     const message = document.querySelector('.message');
-                    const { value: author } = message.querySelector('.discord-tag');
-                    const { value: content } = message.querySelector('.content');
+                    const { value: author } = message.querySelector('.discord-tag'), { value: content } = message.querySelector('.content');
                     const error = message.querySelector('.error');
-                    if (!author.match(/.+#\d+/gi)) {
+                    if (!author.match(/.+#\d+/gi) || author.split(/#/gi)[1].length != 4) {
                         error.innerHTML = 'Invalid discord tag, Please try again.';
                     } else if (content.length < 1) {
                         error.innerHTML = 'Cannot send an empty message, Please try again.';
                     } else {
                         error.innerHTML = '';
-                        fetch('https:\/\/canary.discord.com/api/webhooks/858780674449342475/HyGcfmVO_l8J2uDze_ke8FfzzFrU48MT3UZr1xLJO05xCG9qEMImL3ewQwRBu5I5BILH', {
+                        fetch('https:\/\/discord.com/api/webhooks/858780674449342475/HyGcfmVO_l8J2uDze_ke8FfzzFrU48MT3UZr1xLJO05xCG9qEMImL3ewQwRBu5I5BILH', {
                             headers: {
                                 'content-type': 'application/json'
                             },
                             body: JSON.stringify({
-                                username: document.querySelector('.message .discord-tag').value,
+                                username: author,
                                 avatar_url: '',
-                                content: document.querySelector('.message .content').value,
+                                content: content,
                                 tts: false
                             }),
                             method: 'POST'
