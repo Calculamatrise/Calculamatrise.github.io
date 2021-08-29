@@ -122,6 +122,10 @@ div.split-input {
     width: fit-content;
 }
 
+div.split-input * {
+    display: inline-block;
+}
+
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]) {
     border-radius: 2px;
     text-align: center;
