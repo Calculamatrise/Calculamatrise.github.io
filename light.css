@@ -27,16 +27,16 @@ nav {
     border-bottom: 1px solid #ddd;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]), textarea {
+div.split-input, input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]), textarea {
     background-color: #e8e8e8;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):hover, textarea:hover {
+div.split-input:hover input, input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):hover, textarea:hover {
     background-color: #e4e4e4;
     color: #1d1d1d;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):focus, textarea:focus {
+div.split-input:focus input, input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):focus, textarea:focus {
     background-color: #dddddd;
 }
 

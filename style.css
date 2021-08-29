@@ -117,6 +117,11 @@ div.code-block span.number {
     color: #D19A58;
 }
 
+div.split-input {
+    border-radius: 2px;
+    width: fit-content;
+}
+
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]) {
     border-radius: 2px;
     text-align: center;

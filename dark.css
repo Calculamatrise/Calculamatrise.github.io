@@ -27,7 +27,7 @@ nav {
     border-bottom: 1px solid #444;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]), textarea {
+div.split-input, input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]), textarea {
     background-color: #2d2d2d;
     color: #f5f5f5;
 }

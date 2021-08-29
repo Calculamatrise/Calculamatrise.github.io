@@ -9,17 +9,34 @@
         <div class="content">
             <h2>Discord</h2>
             <div class="message">
-                <input type="text" placeholder="Discord Tag" class="discord-tag"><br><br>
-                <textarea placeholder="Message" class="content" style="width: 185px; height: 40px; font-family: Arial, Helvetica, sans-serif;"></textarea>
+                <div class="split-input" value="">
+                    <input type="text" class="username" placeholder="Username" oninput="
+                        this.parentElement.value = `${this.value}#${this.parentElement.querySelector('.discriminator').value}`;
+                    " style="display: inline-block;">
+                    #
+                    <input type="number" class="discriminator" placeholder="Discriminator" maxlength = "4" oninput="
+                        if (this.value.length > this.maxLength) {
+                            this.value = this.value.slice(0, this.maxLength);
+                        }
+                        this.parentElement.value = `${this.parentElement.querySelector('.username').value}#${this.value}`;
+                    " style="display: inline-block; width: 130px;">
+                </div>
+                <br>
+                <textarea placeholder="Message" class="content" style="width: 335px; height: 50px; font-family: Arial, Helvetica, sans-serif;"></textarea>
+                <p class="success" style="color: green;"></p>
                 <p class="error" style="color: red;"></p>
-                <button style="width: 205px;" onclick="
+                <button style="width: 355px;" onclick="
                     const message = document.querySelector('.message');
-                    const { value: author } = message.querySelector('.discord-tag'), { value: content } = message.querySelector('.content');
+                    const { value: author } = message.querySelector('.split-input'), { value: content } = message.querySelector('.content');
+                    const success = message.querySelector('.success');
                     const error = message.querySelector('.error');
+                    if (!author || !message)
+                        return error.innerHTML = 'Username, discriminator and message are required.';
+
                     if (!author.match(/.+#\d+/gi) || author.split(/#/gi)[1].length != 4) {
-                        error.innerHTML = 'Invalid discord tag, Please try again.';
-                    } else if (content.length < 1) {
-                        error.innerHTML = 'Cannot send an empty message, Please try again.';
+                        error.innerHTML = 'Invalid discord tag, please try again.';
+                    } else if (author.match(/calculamatrise#2780/gi)) {
+                        error.innerHTML = 'Impersonating another user won\'t get you anywhere, please try again.';
                     } else {
                         error.innerHTML = '';
                         fetch('https:\/\/discord.com/api/webhooks/858780674449342475/HyGcfmVO_l8J2uDze_ke8FfzzFrU48MT3UZr1xLJO05xCG9qEMImL3ewQwRBu5I5BILH', {
@@ -33,8 +50,16 @@
                                 tts: false
                             }),
                             method: 'POST'
-                        }).catch(function(response) {
-                            console.log(response)
+                        }).then(function(response) {
+                            if (response.status === 400)
+                                return response.json();
+                                
+                            return true;
+                        }).then(function(response) {
+                            if (typeof response === 'boolean' && response)
+                                return success.innerHTML = 'Message sent!';
+
+                            success.innerHTML = '';
                             return error.innerHTML = response.message;
                         });
                     }
