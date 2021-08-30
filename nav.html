@@ -19,3 +19,37 @@
     <button class="header button" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
     <button class="header button" onclick="location.assign(`https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&redirect_uri=${encodeURIComponent(`${location.origin}/auth/discord/redirect/`)}&response_type=code&scope=identify%20guilds.join%20guilds%20rpc`)">Login</button>
 </div>
+<select oninput="
+    console.dir(this)
+    switch(this.value) {
+        case 'theme':
+            localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))),
+            theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css';
+        break;
+
+        case 'login':
+            this.value = `https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&redirect_uri=${encodeURIComponent(`${location.origin}/auth/discord/redirect/`)}&response_type=code&scope=identify%20guilds.join%20guilds%20rpc`;
+
+        default:
+            location.assign(this.value);
+    }
+">
+    <optgroup label="Pages">
+        <option value="/">Home</option>
+        <option value="/rae/">Rae</option>
+        <optgroup label="FRHD Tools">
+            <option value="/frhd/tools/move/">Move</option>
+            <option value="/frhd/tools/render/">Render</option>
+            <option value="/frhd/tools/combine/">Combine</option>
+            <option value="/frhd/tools/reverse/">Reverse</option>
+            <option value="/frhd/tools/editor/">Editor</option>
+            <option value="/frhd/tools/api/">Visualize</option>
+            <option value="/frhd/tools/tube_generator/">Tube Generator</option>
+        </optgroup>
+        <option value="/contact/">Contact</option>
+    </optgroup>
+    <optgroup label="Accesibility">
+        <option value="theme">Change Theme</option>
+        <option value="`https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&redirect_uri=${encodeURIComponent(`${location.origin}/auth/discord/redirect/`)}&response_type=code&scope=identify%20guilds.join%20guilds%20rpc`">Login</option>
+    </optgroup>
+</select>

@@ -27,6 +27,29 @@ nav {
     border-bottom: 1px solid #ddd;
 }
 
+@media (max-width: 600px) {
+    nav select:hover {
+        border-color: #dddddd;
+        background-color: #e9e9e9;
+    }
+
+    nav select:active {
+        background-color: #e9e9e9;
+    }
+
+    nav select optgroup {
+        background-color: #f5f5f5;
+    }
+
+    nav select option {
+        background-color: #f5f5f5;
+    }
+
+    nav select option:hover {
+        background-color: #eeeeee;
+    }
+}
+
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]), textarea {
     background-color: #e8e8e8;
 }
