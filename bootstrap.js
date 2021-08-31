@@ -148,8 +148,8 @@ fetch("/nav.html").then(t => t.text()).then(t => {
 // });
 
 document.addEventListener("DOMContentLoaded", function() {
-    this.body.addEventListener("click", function(e) {
-        const href = e.target.getAttribute("data-view");
+    this.body.addEventListener("click", function(event) {
+        const href = event.target.getAttribute("data-view");
         if (href) {
             // router.navigate(href);
             location.assign(href);
@@ -157,4 +157,13 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// window.addEventListener("popstate", router.init.bind(router));
+// let pathname = location.pathname;
+
+// window.addEventListener("hashchange", function(state) {
+//     pathname = this.location.pathname;
+// });
+
+// window.addEventListener("popstate", function(state) {
+//     if (this.location.pathname !== pathname)
+//         router.init.bind(router);
+// });

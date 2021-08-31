@@ -1,9 +1,7 @@
 import View from "./view.js";
 
 export default class {
-    constructor(...routes) {
-        this.routes = Array.isArray(arguments[0]) ? arguments[0] : routes;
-
+    constructor() {
         this.view = new View();
         this.view.on("ready", this.init.bind(this));
     }
@@ -11,12 +9,14 @@ export default class {
     on(event, func = function() {}) {
         if (!event || typeof event !== "string")
             throw new Error("INVALID_EVENT");
+
         this.#events_.set(event, func.bind(this));
         return this;
     }
     get(pathname, func = function() {}) {
         if (!pathname || typeof pathname !== "string")
             return new Error("INVALID_EVENT");
+
         this.#events_.set(pathname, func.bind(this));
         return this;
     }
@@ -24,8 +24,10 @@ export default class {
         let global;
         if (!event || typeof event !== "string")
             return new Error("INVALID_EVENT");
+
         if (event.includes("/*"))
             global = true;
+            
         event = this.#events_.get(event);
         if (!event && !global)
             event = this.#events_.get("/*");
