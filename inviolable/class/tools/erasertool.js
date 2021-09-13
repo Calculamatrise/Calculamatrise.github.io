@@ -54,7 +54,7 @@ export default class extends Tool {
         t.lineWidth = 1,
         t.fillStyle = inviolable.storage.get("dark") ? "rgba(33,33,33,0.8)" : "rgba(255,255,255,0.8)",
         t.fill(),
-        t.strokeStyle = inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+        t.strokeStyle = inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
         t.stroke()
     }
     setOption(t, e) {

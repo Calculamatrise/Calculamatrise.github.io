@@ -62,7 +62,7 @@ export default class {
             ctx.arc(this.container.x + this.raceList[t].offset.x, this.container.y + this.raceList[t].offset.y, 8, 0, 2 * Math.PI);
             ctx.closePath();
             ctx.fill();
-            ctx.fillStyle = inviolable.storage.get("dark") ? "#fdfdfd" : "#000000";
+            ctx.fillStyle = inviolable.storage.get("dark") ? "#FBFBFB" : "#000000";
             ctx.font = "10px helsinki";
             ctx.fillText(this.raceList[t].char, this.container.x + this.raceList[t].offset.x, this.container.y + this.raceList[t].offset.y + 4);
             ctx.font = "12.5px helsinki";

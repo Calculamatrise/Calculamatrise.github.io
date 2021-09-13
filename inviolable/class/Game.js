@@ -1,5 +1,6 @@
 import "../libs/createjs.js";
 import "./Inviolable.js";
+//import("https://calculamatrise.github.io/inviolable/class/Inviolable.js");
 
 import Editor from "./scenes/Editor.js";
 import Main from "./scenes/Main.js";
@@ -59,7 +60,7 @@ window.Game = class {
     }
     update() {
         this.currentScene.update(),
-        this.canvas.style.background = inviolable.storage.get("dark") ? "#1d1d1d" : "#fff",
+        this.canvas.style.background = inviolable.storage.get("dark") ? "#1B1B1B" : "#fff",
         inviolable.storage.get("di") && inviolable.drawInputDisplay(this.canvas),
         this.tickCount++
     }

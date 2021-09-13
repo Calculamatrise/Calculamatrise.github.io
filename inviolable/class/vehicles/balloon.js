@@ -130,7 +130,7 @@ export default class extends Vehicle {
         t.closePath(),
         t.stroke()),
         t.beginPath(),
-        t.fillStyle = inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+        t.fillStyle = inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
         t.moveTo(i.x + .1 * l, i.y + .1 * h),
         t.lineTo(i.x - .1 * l, i.y - .1 * h),
         t.lineTo(i.x - .22 * r - .1 * l, i.y - .22 * o - .1 * h),

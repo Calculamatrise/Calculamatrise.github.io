@@ -172,7 +172,7 @@ export default class extends Vehicle {
             , f = (p[1].pos.y - p[0].pos.y) * i
             , v = (.5 * (p[0].pos.x + p[1].pos.x) - .5 * (p[2].pos.x + p[3].pos.x)) * i
             , g = (.5 * (p[0].pos.y + p[1].pos.y) - .5 * (p[2].pos.y + p[3].pos.y)) * i;
-        t.strokeStyle = window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+        t.strokeStyle = window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
         t.lineWidth = 3 * i,
         t.lineCap = "round",
         t.lineJoin = "round";
@@ -239,12 +239,12 @@ export default class extends Vehicle {
         t.fillStyle = "#888888",
         t.fill(),
         t.lineWidth = 5.9 * n,
-        t.strokeStyle = window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+        t.strokeStyle = window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
         t.closePath(),
         t.stroke(),
         t.beginPath(),
         t.lineWidth = 2 * n,
-        t.strokeStyle = window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+        t.strokeStyle = window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
         a = 0,
         s += 3 * n; a++ < 8; )
             t.moveTo(e + s * Math.cos(r + 6.283 * a / 8), i + s * Math.sin(r + 6.283 * a / 8)),
@@ -253,7 +253,7 @@ export default class extends Vehicle {
         t.closePath(),
         t.beginPath(),
         t.lineWidth = 2 * n,
-        t.strokeStyle = window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+        t.strokeStyle = window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
         a = 0,
         s += -9 * n; a++ < 5; )
             t.moveTo(e + s * Math.cos(r + 6.283 * a / 5), i + s * Math.sin(r + 6.283 * a / 5)),

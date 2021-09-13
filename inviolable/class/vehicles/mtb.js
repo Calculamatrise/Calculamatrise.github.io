@@ -254,7 +254,7 @@ export default class extends Vehicle {
         i.addOut(c, c),
         n.subOut(c, c),
         o.globalAlpha = a,
-        o.strokeStyle = window.inviolable.storage.get("cc") || (window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000"),
+        o.strokeStyle = window.inviolable.storage.get("cc") || (window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000"),
         o.lineWidth = 3 * r,
         o.lineCap = "round",
         o.lineJoin = "round",
@@ -279,7 +279,7 @@ export default class extends Vehicle {
         o.fill(),
         o.stroke(),
         o.beginPath(),
-        o.strokeStyle = window.inviolable.storage.get("cc") || (window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000"),
+        o.strokeStyle = window.inviolable.storage.get("cc") || (window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000"),
         o.lineWidth = 5 * r,
         o.moveTo(i.x, i.y),
         o.lineTo(i.x + .4 * h.x + .05 * l.x, i.y + .4 * h.y + .05 * l.y),
@@ -289,7 +289,7 @@ export default class extends Vehicle {
         o.stroke(),
         o.beginPath(),
         o.lineWidth = 2 * r,
-        o.strokeStyle = window.inviolable.storage.get("cc") || (window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000"),
+        o.strokeStyle = window.inviolable.storage.get("cc") || (window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000"),
         o.moveTo(i.x + .72 * h.x + .64 * c.x, i.y + .72 * h.y + .64 * c.y),
         o.lineTo(i.x + .43 * h.x + .05 * l.x, i.y + .43 * h.y + .05 * l.y),
         o.stroke(),
@@ -319,7 +319,7 @@ export default class extends Vehicle {
         o.moveTo(i.x + .43 * h.x + .05 * l.x + u.x, i.y + .43 * h.y + .05 * l.y + u.y),
         o.lineTo(i.x + .43 * h.x + .05 * l.x - u.x, i.y + .43 * h.y + .05 * l.y - u.y),
         o.stroke(),
-        o.strokeStyle = window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000";
+        o.strokeStyle = window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000";
         if (self.crashed)
             self.ragdoll.draw && self.ragdoll.draw();
         else {
@@ -375,7 +375,7 @@ export default class extends Vehicle {
             o.lineTo(T.x, T.y),
             o.stroke(),
             o.lineWidth = 6 * r,
-            o.strokeStyle = window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000000",
+            o.strokeStyle = window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000000",
             o.beginPath(),
             o.moveTo(f.x, f.y),
             o.lineTo(x.x, x.y),

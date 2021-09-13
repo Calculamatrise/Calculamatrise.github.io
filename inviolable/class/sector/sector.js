@@ -127,7 +127,7 @@ export default class {
         this.drawLines(this.sceneryLines, this.scene.camera.zoom, ctx),
         ctx.stroke(),
         ctx.beginPath(),
-        ctx.strokeStyle = inviolable.storage.get("dark") ? "#fdfdfd" : this.settings.physicsLineColor,
+        ctx.strokeStyle = inviolable.storage.get("dark") ? "#FBFBFB" : this.settings.physicsLineColor,
         this.drawLines(this.physicsLines, this.scene.camera.zoom, ctx),
         ctx.stroke(),
         this.settings.developerMode && (ctx.beginPath(),

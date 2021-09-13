@@ -132,8 +132,8 @@ export default class extends Vehicle {
                 , a = new n(e[3].pos.x, e[3].pos.y).toScreen(i);
             t.globalAlpha = alpha,
             t.beginPath(),
-            t.strokeStyle = inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
-            t.fillStyle = inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+            t.strokeStyle = inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
+            t.fillStyle = inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
             t.lineWidth = 20 * s,
             t.lineCap = "round",
             t.moveTo(m.x, m.y),

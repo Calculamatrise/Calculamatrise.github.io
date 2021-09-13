@@ -116,7 +116,7 @@ export default class extends Tool {
             var s = this.p1.getAngleInDegrees(this.p2);
             s = s.toFixed(2);
             var n = this.game.pixelRatio;
-            t.fillStyle = window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+            t.fillStyle = window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
             t.font = 8 * n + "pt arial",
             t.fillText("" + s + "°", i.x + 10, i.y + 10),
             t.strokeText("" + s + "°", i.x + 10, i.y + 10)

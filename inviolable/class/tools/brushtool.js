@@ -144,7 +144,7 @@ export default class extends Tool {
             i = this.options.breakLength,
             s = this.options.trailSpeed,
             n = this.game.pixelRatio;
-        t.fillStyle = window.inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+        t.fillStyle = window.inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
         t.font = 12 * n + "pt arial",
         t.fillText(e, 10 * n, 20 * n),
         t.font = 8 * n + "pt arial",

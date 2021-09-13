@@ -55,6 +55,11 @@ export default class extends EventEmitter {
         this.mouseWheelListener = this.onMouseWheel
     }
     onMouseDown(t) {
+        if (t.ctrlKey) {
+            this.scene.toolHandler.lastTool = this.scene.toolHandler.currentTool,
+            this.scene.toolHandler.setTool("select");
+        }
+
         this.analytics.clicks++,
         2 === t.button ? this.secondaryTouch.down === !1 && (this.updatePosition(t, this.secondaryTouch),
         this.secondaryTouch.down = !0) : this.touch.down === !1 && (this.updatePosition(t, this.touch),

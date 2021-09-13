@@ -16,15 +16,27 @@ function merge(original, object) {
 
 export default class {
     constructor({ name, defaults }) {
-        if (name !== void 0 && typeof name === "string" || typeof name === "number")
+        if (name !== void 0 && typeof name === "string" || typeof name === "number") {
             this.$name = name;
+        }
 
         this.$defaults = defaults;
+
+        if (typeof this.createIcon === "function") {
+            this.icon = document.body.appendChild(this.constructor.createElement("div", this.createIcon()));
+        }
+
+        if (typeof this.createInterface === "function") {
+            this.interface = document.body.appendChild(this.constructor.createElement("div", this.createInterface()));
+        }
     }
     $name = "default";
     $defaults = {};
-    static createElement(t, e) {
-        return Object.assign(document.createElement(t), e);
+    get scene() {
+        if ((window || {}).hasOwnProperty("GameManager") && typeof window.GameManager.game === "object")
+            return window.GameManager.game.currentScene;
+
+        return null;
     }
     get storage() {
         localStorage.getItem(this.$name) ?? (this.storage = this.$defaults);
@@ -80,5 +92,8 @@ export default class {
         localStorage.setItem(this.$name, JSON.stringify(JSON.parse(localStorage.getItem(this.$name)) ? merge(JSON.parse(localStorage.getItem(this.$name)), items) : items));
 
         return this.storage;
+    }
+    static createElement(t, e) {
+        return Object.assign(document.createElement(t), e);
     }
 }

@@ -168,7 +168,7 @@ export default class extends Vehicle {
             d.moveTo(i.x, i.y),
             d.lineTo(s.x, s.y),
             d.lineWidth = 2 * p,
-            d.strokeStyle = inviolable.storage.get("dark") ? "#fdfdfd" : "#000",
+            d.strokeStyle = inviolable.storage.get("dark") ? "#FBFBFB" : "#000",
             d.stroke()
         } else {
             var D = GameInventoryManager.getItem(this.parent.cosmetics.head)

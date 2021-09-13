@@ -98,41 +98,18 @@ export default class {
         });
         let ie = setInterval(() => {
             if (this.game.gameContainer.querySelector(".sideButton_cameraTool") && !this.game.gameContainer.querySelector(".sideButton-bottom.sideButton_selectTool")) {
-                this.game.gameContainer.querySelector(".sideButton_cameraTool").after(Object.assign(document.createElement('div'), {
-                    className: "sideButton sideButton-bottom sideButton_selectTool",
-                    innerHTML: `<span style="width:44px;height:44px;display:flex"><img src="https://i.imgur.com/FLP6RhL.png" style="display:inline-flex;margin:auto;width:30px;height:30px;"></span>`,
-                    onclick() {
-                        GameManager.game.currentScene.toolHandler.setTool('select'),
-                        this.className = 'sideButton sideButton-bottom sideButton_selectTool active';
-                        [...document.getElementsByClassName('sideButton')].forEach(e => {
-                            if (e.className.includes("sideButton sideButton-bottom sideButton_selectTool active")) return;
-                            e.onclick = () => {
-                                this.className = 'sideButton sideButton-bottom sideButton_selectTool';
-                            }
-                        });
+                [...document.getElementsByClassName('sideButton')].forEach(e => {
+                    e.onclick = () => {
+                        if (e.classList.contains("active")) {
+                            setTimeout(() => {
+                                e.classList.remove("active");
+                                
+                                this.toolHandler.setTool("select");
+                            });
+                        }
                     }
-                }))
-                //clearInterval(ie)
-            }
-        });
-        setInterval(() => {
-            if (this.game.gameContainer.querySelector(".editorgui_icons.editorgui_icons-blob") && !this.game.gameContainer.querySelector(".icons-glider")) {
-                this.game.gameContainer.querySelector(".editorgui_icons.editorgui_icons-blob").parentElement.after(Object.assign(document.createElement('div'), {
-                    className: "sideButton sideButton_powerupTool",
-                    innerHTML: `<span style="width:44px;height:44px;display:flex" class="icons-glider"><img src="https://calculamatrise.github.io/free_rider_lite/assets/media/glider.png" style="display:inline-flex;margin:auto;width:32px;height:32px;"></span>`,
-                    onclick() {
-                        GameManager.game.currentScene.toolHandler.setTool("vehiclepowerup"),
-                        GameManager.game.currentScene.toolHandler.tools.vehiclepowerup.setOption("selected", "glider"),
-                        GameManager.game.gameContainer.querySelector(".sideButton.sideButton_powerupTool.active") && (GameManager.game.gameContainer.querySelector(".sideButton.sideButton_powerupTool.active").className = "sideButton sideButton_powerupTool"),
-                        this.className = "sideButton sideButton_powerupTool active";
-                        [...document.querySelectorAll(".sideButton.sideButton_powerupTool")].forEach(e => {
-                            if (e.className.includes("sideButton sideButton_powerupTool active")) return;
-                            e.onclick = () => {
-                                this.className = 'sideButton sideButton_powerupTool';
-                            }
-                        });
-                    }
-                }))
+                });
+                clearInterval(ie)
             }
         });
     }
@@ -256,39 +233,39 @@ export default class {
         this.score.update()
     }
     buttonDown(t) {
-        var e = this.camera;
-        switch (this.state.playing = !0,
-        t) {
-        case "up":
-        case "down":
-        case "left":
-        case "right":
-            e.focusOnMainPlayer();
-            break;
-        case "change_camera":
-            e.focusOnNextPlayer();
-            break;
-        case "pause":
-            this.state.paused = !this.state.paused;
-            break;
-        case "settings":
-            this.command("dialog", "settings");
-            break;
-        case "change_vehicle":
-            this.toggleVehicle(),
-            this.stateChanged();
-            break;
-        case "zoom_increase":
-            e.increaseZoom(),
-            this.stateChanged();
-            break;
-        case "zoom_decrease":
-            e.decreaseZoom(),
-            this.stateChanged();
-            break;
-        case "fullscreen":
-            this.toggleFullscreen(),
-            this.stateChanged()
+        let e = this.camera;
+        this.state.playing = !0;
+        switch (t) {
+            case "up":
+            case "down":
+            case "left":
+            case "right":
+                e.focusOnMainPlayer();
+                break;
+            case "change_camera":
+                e.focusOnNextPlayer();
+                break;
+            case "pause":
+                this.state.paused = !this.state.paused;
+                break;
+            case "settings":
+                this.command("dialog", "settings");
+                break;
+            case "change_vehicle":
+                this.toggleVehicle(),
+                this.stateChanged();
+                break;
+            case "zoom_increase":
+                e.increaseZoom(),
+                this.stateChanged();
+                break;
+            case "zoom_decrease":
+                e.decreaseZoom(),
+                this.stateChanged();
+                break;
+            case "fullscreen":
+                this.toggleFullscreen(),
+                this.stateChanged()
         }
     }
     toggleFullscreen() {
