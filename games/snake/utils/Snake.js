@@ -7,6 +7,7 @@ export default class {
 		this.parent = parent;
 		
 		this.id = id;
+		this.dead = false;
 		this.consumed = 0;
 		
 		this.consumable = new Consumable();
@@ -19,6 +20,7 @@ export default class {
 	}
 	init(parent) {
 		this.dead = false;
+		this.consumed = 0;
 		this.orientation = Math.ceil(Math.random() * 4);
 		
 		this.parts = Array.from({ length: 5 }, function(item, index) {
