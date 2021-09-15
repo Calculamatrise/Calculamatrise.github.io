@@ -1,0 +1,30 @@
+canvas#view {
+	border: 1px solid var(--text);
+	height: 500px;
+	width: 500px;
+}
+
+.container {
+	position: relative;
+	display: inline-flex;
+}
+
+.container div#overlay {
+	transform: translate(-50%, -50%);
+	background-color: #00000099;
+	justify-content: center;
+	text-align: center;
+	position: absolute;
+	display: none;
+	height: 100%;
+	width: 100%;
+	z-index: 1;
+	left: 50%;
+	top: 50%;
+}
+
+.container div#overlay div#settings {
+	margin-bottom: 8.25rem;
+	margin-top: 8.25rem;
+	padding: 6rem;
+}
