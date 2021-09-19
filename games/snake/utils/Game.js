@@ -36,7 +36,7 @@ export default class {
 			})
 		];
 		
-		this.fps = 15;
+		this.fps = 20;
 		this.delta = null;
 		this.lastTime = -1;
 		this.lastFrame = null;
@@ -85,7 +85,7 @@ export default class {
 	}
 	update(time) {
 		this.lastFrame = requestAnimationFrame(this.update.bind(this));
-		this.delta = time - this.lastTime;
+		this.delta = (time - this.lastTime) / 1000;
 		
 		for (const player of this.players) {
 			if (player.dead) {
@@ -95,13 +95,12 @@ export default class {
 				return;
 			}
 
-			if (this.delta < 1000 / this.fps) {
+			if (this.delta * 1000 <= 1000 / this.fps)
 				continue;
-			}
 
 			this.lastTime = time;
 				
-			player.move(player.orientation);
+			player.move(this.delta);
 		}
 		
 		this.draw();

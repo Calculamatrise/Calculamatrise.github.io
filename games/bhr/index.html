@@ -1,19 +1,31 @@
-<!DOCTYPE html>
 <html>
     <head>
-        <title>Black Hat Rider EE</title>
-        <link rel="icon" href="/favicon.ico">
-        <link rel="stylesheet" href="/style.css">
-        <script src="/bootstrap.js" type="module"></script>
-        <script async type="module">
-            import BHR from "./bootstrap.js";
-
-            BHR.ride();
-        </script>
+        <link rel="stylesheet" href="style.css">
+        <script type="module" src="bootstrap.js"></script>
     </head>
     <body>
-        <div class="content">
-            <canvas id="canvas" width="800" height="450" style="border: 1px solid black; background: white;"></canvas> 
+        <canvas id="view" width="800" height="450"></canvas>
+        <div id="track_menu" style="display:none">
+            <div class="span12" id="charcount">Trackcode - CTRL + V to paste</div>
+            <input id="trackcode" style="width:528px" spellcheck="false" oninput="
+                if (event.target.value.startsWith('GHOST:')) {
+                    document.querySelector('#track_menu').style.display = 'none';
+                    document.querySelector('#view').style.display = 'block';
+                    game.watchGhost(event.target.value);
+                } else {
+                    game.loadRide(event.target.value);
+                }
+            ">
         </div>
+        <script type="module">
+            game.init();
+            
+            let e = e => e.stopPropagation();
+            [...document.querySelectorAll("input"), ...document.querySelectorAll("textarea")].forEach(n => {
+                n.addEventListener("keydown", e);
+                n.addEventListener("keyup", e);
+                n.addEventListener("keypress", e);
+            });
+        </script>
     </body>
 </html>

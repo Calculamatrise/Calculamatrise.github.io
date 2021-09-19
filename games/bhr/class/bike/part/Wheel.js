@@ -11,31 +11,31 @@ export default class Wheel extends Mass {
         this.motor = 0;
         this.pedalSpeed = 0;
     }
-    drive(t) {
-        this.pos.addToSelf(t.scale(this.motor * this.parent.parent.dir));
-        if (this.parent.parent.gamepad.isButtonDown("down")) {
-            this.pos.addToSelf(t.scale(0.3 * -t.dot(this.vel)));
+    drive(a) {
+        this.pos.addToSelf(a.scale(this.motor * this.parent.dir));
+        if (this.brake) {
+            this.pos.addToSelf(a.scale(0.3 * -a.dot(this.vel)));
         }
-        this.pedalSpeed = t.dot(this.vel) / this.size;
-        this.touching = true;
+        this.pedalSpeed = a.dot(this.vel) / this.size;
+        this.touching = !0
     }
-    update() {
+    update(delta) {
         this.vel.addToSelf(this.parent.parent.gravity).scaleSelf(.99);
         this.pos.addToSelf(this.vel);
-        this.touching = false;
+        this.touching = !1;
         if (this.collide) {
             this.parent.parent.track.collide(this);
         }
         this.vel = this.pos.sub(this.old);
         this.old.copy(this.pos);
-        this.real = this.pos;
         // super.update(t);
     }
     clone() {
-        const wheel = new Wheel(this.pos, this.track);
+        const wheel = new Wheel(this.pos, this.parent, this.size);
         wheel.old = this.old.clone();
         wheel.vel = this.vel.clone();
         wheel.motor = this.motor;
-        return wheel;
+        
+        return wheel
     }
 }

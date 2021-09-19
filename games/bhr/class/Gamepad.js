@@ -1,118 +1,96 @@
 export default class {
-    constructor() {
-        this.t = 0;
-        this.e = 0;
-        this.i = 0;
-        this.s = 0;
-        this.n = 0;
-        this.old = {
-            t: 0,
-            e: 0,
-            i: 0,
-            s: 0,
-            n: 0,
-            get up() {
-                return this.t;
-            },
-            get down() {
-                return this.e;
-            },
-            get left() {
-                return this.i;
-            },
-            get right() {
-                return this.s;
-            },
-            get z() {
-                return this.n;
-            },
-            set up(t) {
-                return this.t = t;
-            },
-            set down(t) {
-                return this.e = t;
-            },
-            set left(t) {
-                return this.i = t;
-            },
-            set right(t) {
-                return this.s = t;
-            },
-            set z(t) {
-                return this.n = t;
-            }
-        }
+    constructor(parent) {
+        this.parent = parent;
+
+        this.downKeys = new Map();
     }
-    isButtonDown(t) {
-        switch(t) {
-            case "up":
-                return this.t;
-            case "down":
-                return this.e;
-            case "left":
-                return this.i;
-            case "right":
-                return this.s;
-            case "z":
-                return this.n;
-        }
+    #events = new Map();
+    #records = [
+        {},
+        {},
+        {},
+        {},
+        {}
+    ]
+    get records() {
+        return this.#records;
     }
-    setButtonDown(t) {
-        switch(t) {
-            case "up":
-                return this.t = 1;
-            case "down":
-                return this.e = 1;
-            case "left":
-                return this.i = 1;
-            case "right":
-                return this.s = 1;
-            case "z":
-                return this.n = 1;
-        }
+    #emit(event, ...args) {
+        if (this.#events.has(event))
+            return !!this.#events.get(event)(...args);
+
+        return null;
     }
-    setButtonUp(t) {
-        switch(t) {
-            case "up":
-                return this.t = 0;
-            case "down":
-                return this.e = 0;
-            case "left":
-                return this.i = 0;
-            case "right":
-                return this.s = 0;
-            case "z":
-                return this.n = 0;
-        }
+    on(event, func = function() {}) {
+		return !!this.#events.set(event, func);
+	}
+    init() {
+        window.addEventListener("keydown", this.keydown.bind(this));
+        window.addEventListener("keypress", this.keypress.bind(this));
+		window.addEventListener("keyup", this.keyup.bind(this));
+    }
+	keydown(event) {
+		event.preventDefault();
+
+        const key = event.key.replace(/^(arrowleft|a)$/gi, 0)
+            .replace(/^(arrowright|d)$/gi, 1)
+            .replace(/^(arrowup|w)$/gi, 2)
+            .replace(/^(arrowdown|s)$/gi, 3)
+            .replace(/^z$/gi, 4);
+
+        if (this.downKeys.has(event.key))
+            return;
+
+        this.downKeys.set(event.key, true);
+
+        if (this.#records.hasOwnProperty(key.toLowerCase()))
+            this.#records[key.toLowerCase()][this.parent.track.currentTime] = 1;
+
+		return this.#emit("keydown", event.key);
+	}
+    keypress(event) {
+        event.preventDefault();
+        
+        return this.#emit("keypress", event.key, event.keyCode);
+    }
+	keyup(event) {
+		event.preventDefault();
+
+        const key = event.key.replace(/^(arrowleft|a)$/gi, 0)
+            .replace(/^(arrowright|d)$/gi, 1)
+            .replace(/^(arrowup|w)$/gi, 2)
+            .replace(/^(arrowdown|s)$/gi, 3)
+            .replace(/^z$/gi, 4);
+
+        this.downKeys.delete(event.key);
+
+        if (this.#records.hasOwnProperty(key.toLowerCase()))
+            this.#records[key.toLowerCase()][this.parent.track.currentTime] = 1;
+		
+		return this.#emit("keyup", event.key);
+	}
+    snapshot() {
+        return this.records;
+    }
+    restore(records) {
+        if (typeof records !== "object")
+            return null;
+            
+        this.#records = records;
     }
     reset() {
-        this.t = 0;
-        this.e = 0;
-        this.i = 0;
-        this.s = 0;
-        this.n = 0;
-        this.old.t = 0;
-        this.old.e = 0;
-        this.old.i = 0;
-        this.old.s = 0;
-        this.old.n = 0;
+        this.downKeys = new Map();
+        this.#records = [
+            {},
+            {},
+            {},
+            {},
+            {}
+        ]
     }
-    get up() {
-        return this.t;
-    }
-    get down() {
-        return this.e;
-    }
-    get left() {
-        return this.i;
-    }
-    get right() {
-        return this.s;
-    }
-    get z() {
-        return this.n;
-    }
-    set z(t) {
-        this.n = t;
+    close() {
+        window.removeEventListener("keydown", this.keydown.bind(this));
+        window.removeEventListener("keypress", this.keypress.bind(this));
+		window.removeEventListener("keyup", this.keyup.bind(this));
     }
 }

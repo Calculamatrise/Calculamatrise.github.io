@@ -1,5 +1,3 @@
-import Shard from "../../effect/Shard.js";
-import Ragdoll from "./Ragdoll.js";
 import Mass from "./Mass.js";
 
 export default class BodyPart extends Mass {
@@ -11,26 +9,10 @@ export default class BodyPart extends Mass {
         this.collide = !0;
     }
     drive(t) {
-        this.parent.parent.dead = !0;
-        this.parent.rearWheel.motor = 0;
-        this.parent.rearWheel.brake = !1;
-        this.parent.frontWheel.brake = !1;
-        this.parent.head.collide = !1;
-        for (const t of this.parent.parent.track.players) {
-            if (t.dead) {
-                //this.parent.track.players[t] = new DeadBike(this, this.getStickMan(), this.parent.track, this.parent.checkpoints);
-                t.rider = new Ragdoll(this.parent.getStickMan(), this.parent.parent.track, this.parent.parent.ghost, this.parent);
-                t.rider.setVelocity(this.vel, this.parent.rearWheel.vel);
-                t.rider.dir = this.parent.parent.dir;
-                t.rider.gravity = this.parent.parent.gravity;
-                t.hat = new Shard(this.pos.clone(), this.parent.parent);
-                t.hat.vel = this.vel.clone();
-                t.hat.size = 10;
-                t.hat.da = .1;
-            }
-        }
+        this.pos.addToSelf(t.scale(-t.dot(this.vel) * this.friction));
+        this.touching = !0
     }
-    update(t) {
+    update(delta) {
         this.vel.addToSelf(this.parent.parent.gravity).scaleSelf(.99);
         this.pos.addToSelf(this.vel);
         this.touching = !1;
@@ -42,11 +24,11 @@ export default class BodyPart extends Mass {
         // super.update(t);
     }
     clone() {
-        var t = new BodyPart(this.pos, this.parent);
-        t.old = this.old.clone();
-        t.vel = this.vel.clone();
-        t.size = this.size;
-        t.friction = this.friction;
-        return t;
+        const bodyPart = new BodyPart(this.pos, this.parent, this.size);
+        bodyPart.old = this.old.clone();
+        bodyPart.vel = this.vel.clone();
+        bodyPart.friction = this.friction;
+
+        return bodyPart;
     }
 }

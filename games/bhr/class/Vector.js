@@ -1,15 +1,31 @@
-import { track } from "../bootstrap.js";
+import { canvas } from "../bootstrap.js";
 
 export default class Vector {
-    constructor(a = 0, b = 0) {
-        this.x = a;
-        this.y = b
+    constructor(x = 0, y = 0) {
+        if (typeof x === "object") {
+            if (x.hasOwnProperty("x")) {
+                this.x = parseFloat(x.x);
+            }
+
+            if (x.hasOwnProperty("y")) {
+                this.y = parseFloat(x.y);
+            }
+        } else {
+            this.x = parseFloat(x);
+            this.y = parseFloat(y);
+        }
+    }
+    get length() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+    get absolute() {
+        return this.toPixel();
     }
     toPixel() {
-        return new Vector((this.x - track.camera.x) * track.zoom + canvas.width / 2,(this.y - track.camera.y) * track.zoom + canvas.height / 2)
+        return new Vector((this.x - window.game.track.camera.x) * window.game.track.zoom + canvas.width / 2, (this.y - window.game.track.camera.y) * window.game.track.zoom + canvas.height / 2);
     }
     toCanvas() {
-        return new Vector((this.x - canvas.width / 2) / track.zoom + track.camera.x,(this.y - canvas.height / 2) / track.zoom + track.camera.y)
+        return new Vector(Math.round((this.x - canvas.width / 2) / window.game.track.zoom + window.game.track.camera.x), Math.round((this.y - canvas.height / 2) / window.game.track.zoom + window.game.track.camera.y));
     }
     copy(a) {
         this.x = a.x;
@@ -31,9 +47,6 @@ export default class Vector {
         this.y *= a;
         return this
     }
-    clone() {
-        return new Vector(this.x,this.y)
-    }
     add(a) {
         return new Vector(this.x + a.x,this.y + a.y)
     }
@@ -49,9 +62,6 @@ export default class Vector {
     dot(a) {
         return this.x * a.x + this.y * a.y
     }
-    getLength() {
-        return Math.sqrt(this.x * this.x + this.y * this.y)
-    }
     lengthSquared() {
         return this.x * this.x + this.y * this.y
     }
@@ -64,6 +74,9 @@ export default class Vector {
         var b = this.x - a.x,
             a = this.y - a.y;
         return b * b + a * a
+    }
+    clone() {
+        return new Vector(this.x,this.y)
     }
     toString() {
         return Math.round(this.x).toString(32) + " " + Math.round(this.y).toString(32)
