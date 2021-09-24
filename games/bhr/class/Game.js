@@ -30,11 +30,12 @@ export default class {
         this.mouse.on("mousedown", this.mouseDown.bind(this));
         this.mouse.on("mousemove", this.mouseMove.bind(this));
         this.mouse.on("mouseup", this.mouseUp.bind(this));
+        this.mouse.on("mousewheel", this.scroll.bind(this));
 
         this.fps = 25;
-        this.lastTime = -1;
-        this.lastFrame = null;
     }
+    lastTime = null;
+    lastFrame = null;
     get theme() {
         this.canvas.style.backgroundColor = JSON.parse(localStorage.getItem("dark")) ?? window.matchMedia("(prefers-color-scheme: dark)").matches ? "#1B1B1B" : "white";
         return {
@@ -67,7 +68,7 @@ export default class {
         this.track.cameraFocus = false;
         if (this.mouse.real.x / 25 < 1 && [0, 1, 2, 4, 6, 7, 12, 13, 15, 16, 17].includes(Math.floor(this.mouse.real.y / 25))) {
             this.track.cameraLock = false;
-            switch (Math.floor(this.mouse.real.y / 25) + 1) {
+            switch(Math.floor(this.mouse.real.y / 25) + 1) {
                 case 1:
                     this.track.paused = !this.track.paused;
                     break;
@@ -401,7 +402,7 @@ export default class {
                 this.track.zoomIn()
             };
         }
-        y = (new Vector(event.clientX - this.canvas.offsetLeft, event.clientY - this.canvas.offsetTop + window.pageYOffset)).toCanvas();
+        let y = new Vector(event.clientX - this.canvas.offsetLeft, event.clientY - this.canvas.offsetTop + window.pageYOffset).toCanvas();
         this.track.cameraFocus || this.track.camera.addToSelf(this.mouse.position.sub(y))
     }
     render(time) {

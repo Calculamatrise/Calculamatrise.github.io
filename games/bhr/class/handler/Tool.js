@@ -1,21 +1,23 @@
 import { ctx } from "../../bootstrap.js";
 
-import Antigravity from "../item/Antigravity.js";
+import Camera from "../tools/Camera.js";
 
 export default class {
     constructor(parent) {
         this.track = parent;
 
         this.selected = "camera";
-        this.setTool("Antigravity", new Antigravity());
     }
     old = "camera";
-    #tools = {}
+    selected = "camera";
+    #tools = {
+        camera: new Camera()
+    }
     get currentTool() {
         return this.#tools[this.selected];
     }
-    setTool(name, value) {
-        this.#tools[name] = value;
+    setTool(name) {
+        this.selected = name;
     }
     draw() {
         for (let i = 0; i < 200; i += 25) {

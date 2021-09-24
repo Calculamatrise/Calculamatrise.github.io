@@ -1,4 +1,5 @@
 import Vector from "../Vector.js";
+
 import { ctx } from "../../bootstrap.js";
 
 export default class Shard {
@@ -17,17 +18,20 @@ export default class Shard {
     }
     draw() {
         var a = this.pos.toPixel(),
-            b = this.size * this.track.zoom,
-            c = this.shape[0] * b,
-            d = a.x + c * Math.cos(this.rotation),
-            c = a.y + c * Math.sin(this.rotation),
-            e = 2;
-        for (ctx.beginPath(),ctx.moveTo(d, c),ctx.fillStyle = this.parent.track.parent.theme.dark ? "#FBFBFB" : "#000000"; 8 > e; e++)
-            c = this.shape[e - 1] * b / 2,
+            b = this.shape[0] * this.size * this.track.zoom,
+            d = a.x + b * Math.cos(this.rotation),
+            c = a.y + b * Math.sin(this.rotation);
+        ctx.save();
+        ctx.beginPath(),
+        ctx.moveTo(d, c),
+        ctx.fillStyle = this.parent.track.parent.theme.dark ? "#FBFBFB" : "#000000";
+        for (let e = 2; 8 > e; e++)
+            c = this.shape[e - 1] * this.size * this.track.zoom / 2,
             d = a.x + c * Math.cos(this.rotation + 6.283 * e / 8),
             c = a.y + c * Math.sin(this.rotation + 6.283 * e / 8),
             ctx.lineTo(d, c);
-        ctx.fill()
+        ctx.fill();
+        ctx.restore();
     }
     drive(a) {
         this.pedalSpeed = a.dot(this.vel) / this.size;

@@ -4,6 +4,7 @@ import Vector from "./Vector.js";
 import MTB from "./bike/MTB.js";
 import BMX from "./bike/BMX.js";
 import Ragdoll from "./bike/part/Ragdoll.js";
+import Explosion from "./effect/Explosion.js";
 import Shard from "./effect/Shard.js";
 
 const bike = {
@@ -30,6 +31,7 @@ export default class Player {
     slow = false;
     dead = false;
     ragdoll = null;
+    explosion = null;
     powerupsEnabled = true;
     targetsCollected = 0;
     powerupsConsumed = 0;
@@ -37,9 +39,7 @@ export default class Player {
         return !!this.ghostData;
     }
     createCosmetics() {
-        this.cosmetics = this._user !== void 0 ? this._user.cosmetics :  {
-            head: "hat"
-        }
+        this.cosmetics = this._user != void 0 ? this._user.cosmetics : { head: "hat" }
     }
     createVehicle(vehicle = "BMX") {
         this.vehicle = new bike[vehicle](this);
@@ -54,6 +54,9 @@ export default class Player {
         this.hat.vel = this.vehicle.head.vel.clone();
         this.hat.size = 10;
         this.hat.rotationFactor = .1;
+    }
+    createExplosion() {
+        this.explosion = new Explosion(this.vehicle.head.pos, this.gravity, this.track);
     }
     getStickMan() {
         var a = {}
@@ -77,10 +80,14 @@ export default class Player {
         return a
     }
     draw() {
-        this.vehicle.draw();
-        if (this.dead) {
-            this.ragdoll.draw();
-            this.hat.draw();
+        if (this.explosion ?? false) {
+            this.explosion.draw();
+        } else {
+            this.vehicle.draw();
+            if (this.dead) {
+                this.ragdoll.draw();
+                this.hat.draw();
+            }
         }
     }
     update(delta) {
@@ -130,10 +137,14 @@ export default class Player {
             }
         }
 
-        this.vehicle.update(delta);
-        if (this.dead) {
-            this.ragdoll.update();
-            this.hat.update();
+        if (this.explosion ?? false) {
+            this.explosion.update();
+        } else {
+            this.vehicle.update(delta);
+            if (this.dead) {
+                this.ragdoll.update();
+                this.hat.update();
+            }
         }
     }
     updateControls(key) {
@@ -234,6 +245,7 @@ export default class Player {
         this.slow = false;
         this.dead = false;
         this.ragdoll = null;
+        this.explosion = null;
         this.powerupsEnabled = !0;
         this.targetsCollected = 0;
         this.powerupsConsumed = 0;

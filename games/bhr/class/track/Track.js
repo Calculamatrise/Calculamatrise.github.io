@@ -243,20 +243,51 @@ export default class Track {
             ctx.restore();
         }
 
-        for (const line of this.scenery) {
-            if (!line.removed)       
-                line.draw(ctx);
-        }
-
-        for (const line of this.physics) {
-            if (!line.removed) {       
-                line.draw(ctx);
+        let i = new Vector().toCanvas(this.parent.canvas)
+        , l = new Vector(this.parent.canvas.width, this.parent.canvas.height).toCanvas(this.parent.canvas);
+        i.x = Math.floor(i.x / this.scale);
+        i.y = Math.floor(i.y / this.scale);
+        l.x = Math.floor(l.x / this.scale);
+        l.y = Math.floor(l.y / this.scale);
+        var m = [], n, x, w, y, C;
+        for (w = i.x; w <= l.x; w++) {
+            for (y = i.y; y <= l.y; y++) {
+                if (this.grid[w] !== void 0 && this.grid[w][y] !== void 0) {
+                    if (0 < this.grid[w][y].physics.length || 0 < this.grid[w][y].scenery.length) {
+                        m[C = w + "_" + y] = 1;
+                        if (this.sectors[C] === void 0) {
+                            n = this.sectors[C] = document.createElement("canvas");
+                            n.width = this.scale * this.zoom;
+                            n.height = this.scale * this.zoom;
+                            var M = n.getContext("2d");
+                            M.lineCap = "round";
+                            M.lineWidth = Math.max(2 * this.zoom, 0.5);
+                            M.strokeStyle = "#aaa";
+                            n = 0;
+                            for (x = this.grid[w][y].scenery.length; n < x; n++)
+                                this.grid[w][y].scenery[n].draw(M, w * this.scale * this.zoom, y * this.scale * this.zoom);
+                            
+                            M.strokeStyle = "#000";
+                            this.lineShading && (M.shadowOffsetX = M.shadowOffsetY = 2,
+                            M.shadowBlur = Math.max(2, 10 * this.zoom),
+                            M.shadowColor = "#000");
+                            n = 0;
+                            for (x = this.grid[w][y].physics.length; n < x; n++)
+                                this.grid[w][y].physics[n].draw(M, w * this.scale * this.zoom, y * this.scale * this.zoom)
+                        }
+                        ctx.drawImage(this.sectors[C], Math.floor(this.parent.canvas.width / 2 - this.camera.x * this.zoom + w * this.scale * this.zoom), Math.floor(this.parent.canvas.height / 2 - this.camera.y * this.zoom + y * this.scale * this.zoom))
+                    }
+                    ctx.strokeStyle = "#000";
+                    n = 0;
+                    for (x = this.grid[w][y].powerups.length; n < x; n++) {
+                        this.grid[w][y].powerups[n].draw();
+                    }
+                }
             }
         }
 
-        for (const item of this.powerups) {
-            item.draw();
-        }
+        for (var X in this.sectors)
+            m[X] === void 0 && delete this.sectors[X];
 
         if (this.toolHandler.selected !== "camera" && !this.cameraFocus) {
             ctx.save();
@@ -333,7 +364,7 @@ export default class Track {
         let h = Math.floor(this.currentTime % 6E4 / 1E3);
         let c = Math.floor((this.currentTime - 6E4 * e - 1E3 * h) / 100);
 
-        let i = "";
+        i = "";
         10 > e && (e = "0" + e);
         10 > h && (h = "0" + h);
         i = e + ":" + h + "." + c;
