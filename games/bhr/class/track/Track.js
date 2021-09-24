@@ -262,15 +262,15 @@ export default class Track {
                             var M = n.getContext("2d");
                             M.lineCap = "round";
                             M.lineWidth = Math.max(2 * this.zoom, 0.5);
-                            M.strokeStyle = "#aaa";
+                            M.strokeStyle = this.parent.theme.dark ? "#999999" : "#AAAAAA";
                             n = 0;
                             for (x = this.grid[w][y].scenery.length; n < x; n++)
                                 this.grid[w][y].scenery[n].draw(M, w * this.scale * this.zoom, y * this.scale * this.zoom);
                             
-                            M.strokeStyle = "#000";
+                            M.strokeStyle = this.parent.theme.dark ? "#FFFFFF" : "#000000";
                             this.lineShading && (M.shadowOffsetX = M.shadowOffsetY = 2,
                             M.shadowBlur = Math.max(2, 10 * this.zoom),
-                            M.shadowColor = "#000");
+                            M.shadowColor = this.parent.theme.dark ? "#FFFFFF" : "#000000");
                             n = 0;
                             for (x = this.grid[w][y].physics.length; n < x; n++)
                                 this.grid[w][y].physics[n].draw(M, w * this.scale * this.zoom, y * this.scale * this.zoom)
