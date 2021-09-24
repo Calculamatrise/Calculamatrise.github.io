@@ -56,6 +56,7 @@ export default class {
     }
 	mouseup(event) {
 		event.preventDefault();
+
         this.down = false;
 		
 		return this.#emit("mouseup", event);

@@ -15,7 +15,7 @@ import Antigravity from "./item/Antigravity.js";
 import Slowmo from "./item/Slowmo.js";
 import Teleporter from "./item/Teleporter.js";
 
-let Z = false, Hb = false;
+let Z = false, Hb = false, older = null;
 
 export default class {
     constructor(canvas) {
@@ -266,6 +266,7 @@ export default class {
                     this.track.cameraLock = true;
                     break;
             }
+            
             if (x !== void 0) {
                 let c = Math.floor(x.pos.x / this.track.scale)
                 , d = Math.floor(x.pos.y / this.track.scale);
@@ -338,6 +339,7 @@ export default class {
         }
     }
     mouseUp(event) {
+        console.log(this.mouse.old, this.mouse.position)
         if (!Z)
             this.track.cameraLock = false;
 
@@ -345,13 +347,8 @@ export default class {
             return Hb = false;
 
         //if (this.track.cameraLock) {
-            if ("line" === this.track.toolHandler.selected || "scenery line" === this.track.toolHandler.selected || "brush" === this.track.toolHandler.selected || "scenery brush" === this.track.toolHandler.selected) {
-                let e = this.track.addLine(this.mouse.old, this.mouse.position, "line" !== this.track.toolHandler.selected && "brush" !== this.track.toolHandler.selected);
-                // this.track.pushUndo(function() {
-                //     e.remove()
-                // }, function() {
-                //     e.xb()
-                // })
+            if (["line", "scenery line", "brush", "scenery brush"].includes(this.track.toolHandler.selected)) {
+                this.track.addLine(this.mouse.old, this.mouse.position, "line" !== this.track.toolHandler.selected && "brush" !== this.track.toolHandler.selected);
             } else if ("teleporter" === this.track.toolHandler.selected) {
                 this.mouse.old.copy(this.mouse.position);
                 if (this.track.teleporter) {
@@ -360,19 +357,16 @@ export default class {
                 }
             } else if (this.canvas.style.cursor === "crosshair" && ["boost", "gravity"].includes(this.track.toolHandler.selected)) {
                 this.canvas.style.cursor = "none";
+
                 let d = Math.round(180 * Math.atan2(-(this.mouse.position.x - this.mouse.old.x), this.mouse.position.y - this.mouse.old.y) / Math.PI);
                 let c = "boost" === this.track.toolHandler.selected ? new Boost(this.mouse.old.x,this.mouse.old.y,d, this.track) : new Gravity(this.mouse.old.x,this.mouse.old.y,d, this.track);
                 let y = Math.floor(c.pos.x / this.track.scale);
                 let x = Math.floor(c.pos.y / this.track.scale);
+
                 this.track.grid[y] === void 0 && (this.track.grid[y] = []),
                 this.track.grid[y][x] === void 0 && (this.track.grid[y][x] = new Sector),
                 this.track.grid[y][x].powerups.push(c);
                 this.track.powerups.push(c);
-                // this.track.pushUndo(function() {
-                //     c.remove()
-                // }, function() {
-                //     this.track.grid[y][x].powerups.push(c)
-                // })
             }
         //}
     }

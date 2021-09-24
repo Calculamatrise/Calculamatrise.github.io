@@ -223,7 +223,6 @@ document.onkeydown = function(event) {
                     canvas.style.cursor = "none";
                 } else if (!window.game.track.cameraLock) {
                     window.game.track.cameraLock = true;
-                    //window.game.track.parent.mouse.old.copy(window.game.track.parent.mouse.position);
                 }
                 break;
             case 83:
@@ -232,7 +231,6 @@ document.onkeydown = function(event) {
                     canvas.style.cursor = "none";
                 } else if (!window.game.track.cameraLock) {
                     window.game.track.cameraLock = true;
-                    //window.game.track.parent.mouse.old.copy(window.game.track.parent.mouse.position);
                 }
                 break;
             case 81:
@@ -241,7 +239,6 @@ document.onkeydown = function(event) {
                     canvas.style.cursor = "none";
                 } else if (!window.game.track.cameraLock) {
                     window.game.track.cameraLock = true;
-                    //window.game.track.parent.mouse.old.copy(window.game.track.parent.mouse.position);
                 }
                 break;
             case 87:

@@ -25,6 +25,7 @@ export default class {
                 continue;
 
             ctx.save();
+            ctx.strokeStyle = this.track.parent.theme.dark ? "#FBFBFB" : "#000000";
             ctx.lineWidth = 1;
             ctx.lineCap = "round";
             ctx.beginPath();

@@ -55,8 +55,8 @@ export default class Player {
         this.hat.size = 10;
         this.hat.rotationFactor = .1;
     }
-    createExplosion() {
-        this.explosion = new Explosion(this.vehicle.head.pos, this.gravity, this.track);
+    createExplosion(part) {
+        this.explosion = new Explosion(this, part);
     }
     getStickMan() {
         var a = {}

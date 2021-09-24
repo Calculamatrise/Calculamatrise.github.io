@@ -4,11 +4,11 @@ import { ctx } from "../../bootstrap.js";
 
 export default class Shard {
     constructor(parent, a) {
+        this.parent = parent;
+
         this.pos = new Vector(a.x + 5 * (Math.random() - Math.random()),a.y + 5 * (Math.random() - Math.random()));
         this.old = new Vector(this.pos.x,this.pos.y);
         this.vel = new Vector(11 * (Math.random() - Math.random()),11 * (Math.random() - Math.random()));
-        this.parent = parent;
-        this.track = this.parent.track;
         this.size = 2 + 9 * Math.random();
         this.rotation = 6.2 * Math.random();
         this.rotationFactor = Math.random() - Math.random();
@@ -18,7 +18,7 @@ export default class Shard {
     }
     draw() {
         var a = this.pos.toPixel(),
-            b = this.shape[0] * this.size * this.track.zoom,
+            b = this.shape[0] * this.size * this.parent.track.zoom,
             d = a.x + b * Math.cos(this.rotation),
             c = a.y + b * Math.sin(this.rotation);
         ctx.save();
@@ -26,7 +26,7 @@ export default class Shard {
         ctx.moveTo(d, c),
         ctx.fillStyle = this.parent.track.parent.theme.dark ? "#FBFBFB" : "#000000";
         for (let e = 2; 8 > e; e++)
-            c = this.shape[e - 1] * this.size * this.track.zoom / 2,
+            c = this.shape[e - 1] * this.size * this.parent.track.zoom / 2,
             d = a.x + c * Math.cos(this.rotation + 6.283 * e / 8),
             c = a.y + c * Math.sin(this.rotation + 6.283 * e / 8),
             ctx.lineTo(d, c);
@@ -50,7 +50,7 @@ export default class Shard {
         this.pos.addToSelf(this.vel);
         this.touching = !1;
         if (this.collide) {
-            this.track.collide(this);
+            this.parent.track.collide(this);
         }
         this.vel = this.pos.sub(this.old);
         this.old.copy(this.pos)

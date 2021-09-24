@@ -3,23 +3,23 @@ import Shard from "./Shard.js";
 import BodyPart from "../bike/part/BodyPart.js";
 
 export default class Explosion {
-    constructor(a, b, c) {
-        this.track = c;
+    constructor(parent, part) {
+        this.parent = parent;
+        this.pos = part.pos.clone();
         this.motor = 30 + 20 * Math.random();
+
+        this.head = new BodyPart(this.pos, this);
+        this.head.vel.x = 20;
         this.shards = [
-            new Shard(this, a),
-            new Shard(this, a),
-            new Shard(this, a),
-            new Shard(this, a),
-            new Shard(this, a)
-        ];
-        this.pos = a.clone();
-        this.gravity = b;
-        this.head = new BodyPart(a, this);
-        this.head.vel.x = 20
+            new Shard(this.parent, this.pos),
+            new Shard(this.parent, this.pos),
+            new Shard(this.parent, this.pos),
+            new Shard(this.parent, this.pos),
+            new Shard(this.parent, this.pos)
+        ]
     }
     draw() {
-        const ctx = this.track.parent.canvas.getContext("2d");
+        const ctx = this.parent.track.parent.canvas.getContext("2d");
         var a, b;
         if (0 < this.motor) {
             this.motor -= 10;
