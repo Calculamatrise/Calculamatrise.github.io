@@ -45,8 +45,8 @@ export default class Shard {
     }
     update() {
         this.rotation += this.rotationFactor;
-        this.vel.addToSelf(this.parent.gravity);
-        this.vel = this.vel.scale(0.99);
+        this.vel.addToSelf(this.parent.gravity).scaleSelf(0.99);
+        
         this.pos.addToSelf(this.vel);
         this.touching = !1;
         if (this.collide) {

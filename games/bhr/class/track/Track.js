@@ -296,15 +296,13 @@ export default class Track {
                 case "scenery line":
                 case "brush":
                 case "scenery brush":
-                    let w = pos.x;
-                    let y = pos.y;
                     ctx.lineWidth = 1;
                     ctx.strokeStyle = this.parent.theme.dark ? "#FBFBFB" : "#000000";
                     ctx.beginPath(),
-                    ctx.moveTo(w - 10, y),
-                    ctx.lineTo(w + 10, y),
-                    ctx.moveTo(w, y + 10),
-                    ctx.lineTo(w, y - 10),
+                    ctx.moveTo(pos.x - 10, pos.y),
+                    ctx.lineTo(pos.x + 10, pos.y),
+                    ctx.moveTo(pos.x, pos.y + 10),
+                    ctx.lineTo(pos.x, pos.y - 10),
                     ctx.stroke();
                 break;
 
@@ -338,6 +336,7 @@ export default class Track {
                     } else {
                         ctx.translate(pos.x, pos.y);
                     }
+
                     ctx.moveTo(-7 * this.zoom, -10 * this.zoom),
                     ctx.lineTo(0, 10 * this.zoom),
                     ctx.lineTo(7 * this.zoom, -10 * this.zoom),
@@ -349,6 +348,7 @@ export default class Track {
 
             ctx.restore();
         }
+        
         ctx.beginPath();
         ctx.fillStyle = "#ff0";
         ctx.lineWidth = 1;

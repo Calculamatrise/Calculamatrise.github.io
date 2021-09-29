@@ -43,9 +43,11 @@ export default class {
 		event.preventDefault();
 
         this.down = true;
+
+        this.#emit("mousedown", event);
         this.old.copy(this.position);
-		
-		return this.#emit("mousedown", event);
+
+        return this.down;
 	}
     mousemove(event) {
         event.preventDefault();

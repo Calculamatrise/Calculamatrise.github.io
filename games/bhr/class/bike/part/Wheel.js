@@ -16,19 +16,22 @@ export default class Wheel extends Mass {
         if (this.brake) {
             this.pos.addToSelf(a.scale(0.3 * -a.dot(this.vel)));
         }
+        
         this.pedalSpeed = a.dot(this.vel) / this.size;
         this.touching = !0
     }
     update(delta) {
         this.vel.addToSelf(this.parent.parent.gravity).scaleSelf(.99);
         this.pos.addToSelf(this.vel);
+        // this.pos.lerpTowards(this.pos.add(this.vel), Math.cos(Math.PI * .5), delta);
         this.touching = !1;
         if (this.collide) {
             this.parent.parent.track.collide(this);
         }
+        
         this.vel = this.pos.sub(this.old);
         this.old.copy(this.pos);
-        // super.update(t);
+        // super.update(delta);
     }
     clone() {
         const wheel = new Wheel(this.pos, this.parent, this.size);
