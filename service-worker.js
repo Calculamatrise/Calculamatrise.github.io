@@ -17,6 +17,7 @@ self.addEventListener("install", function(event) {
         if (typeof self.skipWaiting === "function") {
             return self.skipWaiting();
         }
+        
         return;
     }));
 });

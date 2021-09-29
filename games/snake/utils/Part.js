@@ -1,15 +1,11 @@
+import Vector from "./Vector.js";
+
 export default class {
 	constructor(x, y) {
-		this.position = {
-			x,
-			y
-		},
-		this.old = {
-			x,
-			y
-		}
+		this.position = new Vector(x, y);
+		this.old = new Vector(x, y);
 	}
-	size = 10;
+	size = 1;
 	draw(ctx) {
 		ctx.save();
 		ctx.fillStyle = JSON.parse(localStorage.getItem("dark")) ? "white" : "black";

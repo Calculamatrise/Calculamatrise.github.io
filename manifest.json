@@ -1,9 +1,12 @@
 {
     "name": "Calculamatrise",
-    "short_name": "Calculus",
-    "start_url": "/",
+    "short_name": "Cal",
+    "start_url": "./",
+    "scope": "./",
     "display": "minimal-ui",
-    "background_color": "#1d1d1d",
+    "orientation": "portrait",
+    "background_color": "#1B1B1B",
+    "theme_color": "#2D2D2D",
     "icons": [
         {
             "src": "icons/manifest-icon-192.png",
@@ -17,7 +20,5 @@
             "type": "image/png",
             "purpose": "maskable any"
         }
-    ],
-    "orientation": "portrait",
-    "theme_color": "#2d2d2d"
+    ]
 }

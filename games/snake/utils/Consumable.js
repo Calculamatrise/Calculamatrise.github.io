@@ -1,23 +1,14 @@
+import Vector from "./Vector.js";
+
 export default class {
 	size = 1;
 	init(parent) {
-		let x = Math.ceil(Math.random() * (parent.canvas.height - 10));
-		while(x % 10 !== 0 || x < 0)
-			x++;
-		
-		let y = Math.ceil(Math.random() * (parent.canvas.height - 10));		
-		while(y % 10 !== 0 || y < 0)
-			y++;
-
-		this.position = {
-			x,
-			y
-		}
+		this.position = new Vector(Math.ceil(Math.random() * (parent.canvas.height - 10) / 10), Math.ceil(Math.random() * (parent.canvas.height - 10) / 10));
 	}
 	draw(ctx) {
 		ctx.save();
 		ctx.fillStyle = "#d2a5ff";
-		ctx.fillRect(this.position.x, this.position.y, 10, 10);
+		ctx.fillRect(this.position.x, this.position.y, this.size, this.size);
 		ctx.restore();
 	}
 }

@@ -1,3 +1,5 @@
+import Router from "./router.js";
+
 fetch("/head.html").then(async t => document.head.innerHTML += await t.text());
 fetch("/nav.html").then(t => t.text()).then(t => {
     document.body.prepend(Object.assign(document.createElement("nav"), { innerHTML: t }));
@@ -9,7 +11,9 @@ fetch("/nav.html").then(t => t.text()).then(t => {
         dark.checked = true;
 });
 
-// import Router from "./router.js";
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js");
+}
 
 // const router = new Router();
 
@@ -127,6 +131,10 @@ fetch("/nav.html").then(t => t.text()).then(t => {
 //     });
 // });
 
+// router.get("/games/snake/", function() {
+//     this.setTitle("Clicker");
+// });
+
 // router.get("/auth/discord/redirect/", function() {
 //     this.setTitle("Redirecting - Calculamatrise");
 //     this.addScripts({
@@ -159,13 +167,13 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// let pathname = location.pathname;
+let pathname = location.pathname;
 
-// window.addEventListener("hashchange", function(state) {
-//     pathname = this.location.pathname;
-// });
+window.addEventListener("hashchange", function(state) {
+    pathname = location.pathname;
+});
 
 // window.addEventListener("popstate", function(state) {
-//     if (this.location.pathname !== pathname)
-//         router.init.bind(router);
+//     if (location.pathname !== pathname)
+//         router.navigate(location.pathname);
 // });

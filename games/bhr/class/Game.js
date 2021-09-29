@@ -221,6 +221,9 @@ export default class {
             }
         } else if (event.button === 2 && this.track.toolHandler.selected !== "camera") {
             //this.track.erase(this.mouse.position);
+            return;
+        } else if (this.track.firstPlayer.gamepad.downKeys.has("q") && this.track.toolHandler.selected === "line") {
+            this.track.addLine(this.mouse.old, this.mouse.position, false);
         } else {
             let x;
             Z || this.mouse.old.copy(this.mouse.position);
@@ -339,7 +342,6 @@ export default class {
         }
     }
     mouseUp(event) {
-        console.log(this.mouse.old, this.mouse.position)
         if (!Z)
             this.track.cameraLock = false;
 

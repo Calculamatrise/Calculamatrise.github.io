@@ -7,8 +7,8 @@ export default class {
 		this.canvas.addEventListener("click", this.click.bind(this));
 		this.canvas.addEventListener("mousemove", this.hover.bind(this));
 		
-		window.onresize = this.adjust.bind(this.canvas);
-		window.onresize();
+		window.addEventListener("resize", this.adjust.bind(this.canvas));
+		this.adjust.bind(this.canvas)();
 		
 		this.players = [
 			new Snake(this, {
@@ -99,8 +99,8 @@ export default class {
 				continue;
 
 			this.lastTime = time;
-				
-			player.move(this.delta);
+
+			player.update(this.delta);
 		}
 		
 		this.draw();
@@ -131,7 +131,10 @@ export default class {
 			ctx.fillText(`High Score (today) - ${this.bestToday}`, 10, 45 * player.id);
 			ctx.restore();
 
+			ctx.save();
+			ctx.scale(10, 10);
 			player.draw(ctx);
+			ctx.restore();
 		}
 	}
 	restart() {

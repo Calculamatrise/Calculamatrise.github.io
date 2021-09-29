@@ -1,6 +1,7 @@
 import Gamepad from "./Gamepad.js";
 import Part from "./Part.js";
 import Consumable from "./Consumable.js";
+import Vector from "./Vector.js";
 
 export default class {
 	constructor(parent, { id }) {
@@ -18,21 +19,16 @@ export default class {
 	get length() {
 		return this.parts.length;
 	}
+	get velocity() {
+		return new Vector(this.orientation === 2 ? 1 : this.orientation === 4 ? -1 : 0, this.orientation === 1 ? -1 : this.orientation === 3 ? 1 : 0);
+	}
 	init(parent) {
 		this.dead = false;
 		this.consumed = 0;
 		this.orientation = Math.ceil(Math.random() * 4);
 		
 		this.parts = Array.from({ length: 5 }, function() {
-			let x = Math.round(parent.canvas.width / 2);
-			while(x % 10 !== 0)
-				x++;
-
-			let y = Math.round(parent.canvas.height / 2);		
-			while(y % 10 !== 0)
-				y++;
-			
-			return new Part(x, y);
+			return new Part(Math.round(parent.canvas.width / 2 / 10), Math.round(parent.canvas.height / 2 / 10));
 		});
 		
 		for (const part in this.parts) {
@@ -59,7 +55,7 @@ export default class {
 				break;
 			}
 			
-			this.parts[part].position = position;
+			this.parts[part].position.copy(position);
 		}
 		
 		this.head = this.parts[0];
@@ -71,6 +67,7 @@ export default class {
 		this.parts.push(new Part(lastPart.x, lastPart.y));
 
 		this.consumable.init(this.parent);
+
 		return this.consumed++;
 	}
 	kill() {
@@ -84,38 +81,18 @@ export default class {
 
 		this.dead = true;
 	}
-	lerp(source, target, alpha) {
-		return (1 - alpha) * source + alpha * target;
-	}
-	lerpTowards(source, target, smoothing, delta) {
-		return this.lerp(source, target, 1 - Math.pow(smoothing, delta));
-	}
-	move(delta) {
-		const x = this.orientation === 2 ? 10 : this.orientation === 4 ? -10 : 0;
-		const y = this.orientation === 1 ? -10 : this.orientation === 3 ? 10 : 0;
-		
-		this.head.old = {
-			x: this.head.position.x,
-			y: this.head.position.y
-		}
-		
-		if (this.head.position.x === this.consumable.position.x && this.head.position.y === this.consumable.position.y) {
+	update(delta) {
+		this.head.old.copy(this.head.position);
+		if (this.head.position.equals(this.consumable.position)) {
 			this.consume(this.consumable);
 		}
 
-		// this.head.position.x = this.lerpTowards(this.head.position.x, this.head.position.x + x, Math.cos(0.5 * Math.PI * 0.5), delta) | 0;
-		this.head.position.x += x;
-		if (this.head.position.x < 0 || this.head.position.x >= this.parent.canvas.width) {
+		//this.head.position.lerpTowards(this.head.position.add(this.velocity), Math.cos(Math.PI * 0.5 * 1), delta);
+		this.head.position.addToSelf(this.velocity);
+		if (this.head.position.x < 0 || this.head.position.x >= this.parent.canvas.width / 10
+		|| this.head.position.y < 0 || this.head.position.y >= this.parent.canvas.height / 10) {
 			this.kill();
 
-			return;
-		}
-		
-		// this.head.position.y = this.lerpTowards(this.head.position.y, this.head.position.y + y, Math.cos(0.5 * Math.PI * 0.5), delta) | 0;
-		this.head.position.y += y;
-		if (this.head.position.y < 0 || this.head.position.y >= this.parent.canvas.height) {
-			this.kill();
-			
 			return;
 		}
 		
@@ -123,48 +100,42 @@ export default class {
 			if (part == 0)
 				continue;
 			
-			// if (this.head.position.x === this.parts[part].position.x && this.head.position.y === this.parts[part].position.y) {
-			// 	this.kill();
+			if (this.head.position.equals(this.parts[part].position)) {
+				this.kill();
 				
-			// 	return;
-			// }
-			
-			this.parts[part].old = {
-				x: this.parts[part].position.x,
-				y: this.parts[part].position.y
+				return;
 			}
-			this.parts[part].position = this.parts[part - 1].old;
+			
+			this.parts[part].old.copy(this.parts[part].position);
+			this.parts[part].position.copy(this.parts[part - 1].old);
 		}
-	}
-	update(delta) {
-
 	}
 	control(key) {
 		switch(key) {
 			case "ArrowUp":
 				if (this.orientation === 3)
-					return;
+					break;
 				
 				this.orientation = 1;
 			break;
 				
 			case "ArrowRight":
 				if (this.orientation === 4)
-					return;
+					break;
 				
 				this.orientation = 2;
 			break;
 			
 			case "ArrowDown":
 				if (this.orientation === 1)
-					return;
+					break;
 				
 				this.orientation = 3;
 			break;
 				
 			case "ArrowLeft":
 				if (this.orientation === 2)
-					return;
+					break;
 				
 				this.orientation = 4;
 			break;

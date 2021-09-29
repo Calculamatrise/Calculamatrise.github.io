@@ -110,12 +110,12 @@ nav select {
 
 body {
 	margin-top: 8vh;
+    overflow: auto;
 }
 
 div.content {
     padding: 1%;
-    overflow-x: auto;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 div.code-block {
