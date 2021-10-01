@@ -25,18 +25,26 @@
                 <textarea placeholder="Message" class="content" style="width: 335px; height: 50px; font-family: Arial, Helvetica, sans-serif;"></textarea>
                 <p class="success" style="color: green;"></p>
                 <p class="error" style="color: red;"></p>
-                <button style="width: 355px;" onclick="
+                <button class="button" style="width: 355px;" onclick="
+                    this.classList.add('loading');
                     const message = document.querySelector('.message');
                     const { value: author } = message.querySelector('.split-input'), { value: content } = message.querySelector('.content');
                     const success = message.querySelector('.success');
                     const error = message.querySelector('.error');
-                    if (!author || !message)
+                    if (!author || !message) {
+                        this.classList.remove('loading');
+
                         return error.innerHTML = 'Username, discriminator and message are required.';
+                    }
 
                     if (!author.match(/.+#\d+/gi) || author.split(/#/gi)[1].length != 4) {
-                        error.innerHTML = 'Invalid discord tag, please try again.';
+                        this.classList.remove('loading');
+
+                        return error.innerHTML = 'Invalid discord tag, please try again.';
                     } else if (author.match(/calculamatrise#2780/gi)) {
-                        error.innerHTML = 'Impersonating another user won\'t get you anywhere, please try again.';
+                        this.classList.remove('loading');
+
+                        return error.innerHTML = 'Impersonating another user won\'t get you anywhere, please try again.';
                     } else {
                         error.innerHTML = '';
                         fetch('https:\/\/discord.com/api/webhooks/858780674449342475/HyGcfmVO_l8J2uDze_ke8FfzzFrU48MT3UZr1xLJO05xCG9qEMImL3ewQwRBu5I5BILH', {
@@ -50,14 +58,22 @@
                                 tts: false
                             }),
                             method: 'POST'
-                        }).then(function(response) {
-                            if (response.status === 400)
+                        }).then((response) => {
+                            if (response.status === 400) {
+                                this.classList.remove('loading');
+
                                 return response.json();
+                            }
                                 
                             return true;
-                        }).then(function(response) {
-                            if (typeof response === 'boolean' && response)
+                        }).then((response) => {
+                            if (typeof response === 'boolean' && response) {
+                                this.classList.remove('loading');
+
                                 return success.innerHTML = 'Message sent!';
+                            }
+
+                            this.classList.remove('loading');
 
                             success.innerHTML = '';
                             return error.innerHTML = response.message;
