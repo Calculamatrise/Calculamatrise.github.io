@@ -167,6 +167,20 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+document.addEventListener("mousedown", function(event) {
+    if (!["BUTTON", "A"].includes(event.target.tagName)) {
+        return;
+    }
+
+    let element = event.target;
+    while(!element.offsetLeft || !element.offsetTop) {
+        element = element.offsetParent;
+    }
+
+    this.documentElement.style.setProperty("--offsetX", (event.clientX - element.offsetLeft) / element.offsetWidth);
+    this.documentElement.style.setProperty("--offsetY", (event.clientY - element.offsetTop) / element.offsetHeight);
+});
+
 let pathname = location.pathname;
 
 window.addEventListener("hashchange", function(state) {
