@@ -63,12 +63,12 @@ input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="
     background-color: #dddddd;
 }
 
-.button, ::-webkit-file-upload-button {
+button, .button, ::-webkit-file-upload-button {
     background-color: #E7E7E7;
     color: #333;
 }
 
-.button::before {
+button::before, .button::before {
 	background-color: #C0C0C0;
 }
 
@@ -76,12 +76,12 @@ input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="
     background-color: #f5f5f5;
 }
 
-.button:hover, .header.button:hover, ::-webkit-file-upload-button:hover {
+button:hover, .button:hover, .header.button:hover, ::-webkit-file-upload-button:hover {
     background-color: #DDDDDD;
     color: #1d1d1d;
 }
 
-.button:active, .header.button:active, ::-webkit-file-upload-button:hover {
+button, .button:active, .header.button:active, ::-webkit-file-upload-button:hover {
     background-color: #C0C0C0;
 }
 

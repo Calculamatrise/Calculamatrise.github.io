@@ -16,20 +16,6 @@
     src: url(/fonts/helsinki.ttf);
 }
 
-@keyframes ripple {
-	0% {
-		width: 0px;
-		height: 0px;
-		opacity: .5;
-	}
-    
-	100% {
-		width: 500px;
-		height: 500px;
-		opacity: 0;
-	}
-}
-
 ::-webkit-scrollbar {
     height: 10px;
     width: 10px;
@@ -189,14 +175,35 @@ div.split-input * {
 }
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]) {
+    position: relative;
     border-radius: 2px;
     text-align: center;
     height: 45px;
     width: 200px;
     border: none;
+    outline: none;
 }
 
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="radio"]):focus, textarea:focus {
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"])::before, textarea::before {
+    opacity: 0;
+    content: "";
+    background-color: black;
+    padding: 50%;
+	position: absolute;
+    border-radius: 50%;
+    top: calc(var(--offsetY) * 100%);
+	left: calc(var(--offsetX) * 100%);
+	transition: transform 800ms, opacity 1s;
+    transform: translate(-50%, -50%) scale(3);
+}
+
+input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):active::before, textarea:focus::before {
+    opacity: .5;
+	transition: 0s;
+	transform: translate(-50%, -50%) scale(0);
+}
+
+textarea:focus {
     outline: none;
 }
 
@@ -204,7 +211,7 @@ input[type="file"] {
     width: 230px;
 }
 
-.button, ::-webkit-file-upload-button {
+button, .button, ::-webkit-file-upload-button {
     width: 130px;
     height: 45px;
     border: none;
@@ -215,7 +222,7 @@ input[type="file"] {
     transition: all 100ms;
 }
 
-.button::before {
+button::before, .button::before {
     opacity: 0;
     content: "";
     padding: 50%;
@@ -227,18 +234,18 @@ input[type="file"] {
     transform: translate(-50%, -50%) scale(3);
 }
 
-.button:active::before {
+button:active::before, .button:active::before {
     opacity: .5;
 	transition: 0s;
 	transform: translate(-50%, -50%) scale(0);
 }
 
-.button:hover, ::-webkit-file-upload-button:hover {
+button:hover, .button:hover, ::-webkit-file-upload-button:hover {
     cursor: pointer;
     transition: all 50ms;
 }
 
-.button:disabled, ::-webkit-file-upload-button:disabled {
+button:disabled, .button:disabled, ::-webkit-file-upload-button:disabled {
     cursor: default;
     opacity: 0.5;
 }
