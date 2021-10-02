@@ -221,8 +221,14 @@ window.inviolable = new class extends Builder {
 		}
 	}
 	createStyleSheet() {
+		document.addEventListener("mousedown", function(event) {
+			console.log(event)
+			document.documentElement.style.setProperty("--clientX", event.offsetX + "px");
+			document.documentElement.style.setProperty("--clientY", event.offsetY + "px");
+		});
+		
 		this.stylesheet = document.createElement("link");
-		this.stylesheet.href = /*`chrome-extension://eoobfbpaidheakijfedonmpjolfmebjn/overlay/style.css`*/"https://calculamatrise.github.io/inviolable/overlay/style.css";
+		this.stylesheet.href = /*`chrome-extension://pneamcljekbjbaiegbailnhpggddjknf/overlay/style.css`*/"https://calculamatrise.github.io/inviolable/overlay/style.css";
 		this.stylesheet.rel = "stylesheet";
 		document.head.appendChild(this.stylesheet);
 	}
