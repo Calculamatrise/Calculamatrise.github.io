@@ -165,10 +165,10 @@ window.inviolable = new class extends Builder {
 						element.style.display = element.classList.contains(event.target.innerText.replace(/\\s+.+/gi, '').toLowerCase()) ? 'block' : 'none';
 					})
 				">
-					<button class="tablinks">Options</button>
-					<button class="tablinks">Advanced Options</button>
-					<button class="tablinks">Hotkeys</button>
-					<button class="tablinks" onclick="
+					<button class="tablinks ripple">Options</button>
+					<button class="tablinks ripple">Advanced Options</button>
+					<button class="tablinks ripple">Hotkeys</button>
+					<button class="tablinks ripple" onclick="
 						this.lastElementChild.style.display = 'none',
 						inviolable.storage.set('cloud', {
 							dismissed: true,
@@ -180,17 +180,17 @@ window.inviolable = new class extends Builder {
 					</button>
 				</div>
 				<div class="inviolable-content options">
-					<div class="option" title="Custom rider cosmetic"><input type="checkbox" id="cr" ${this.storage.get("cr") ? "checked" : ""}>Canvas rider</div>
-					<div class="option" title="Toggle dark mode"><input type="checkbox" id="dark" ${this.storage.get("dark") ? "checked" : ""}>Dark mode</div>
-					<div class="option" title="Toggle an input display"><input type="checkbox" id="di" ${this.storage.get("di") ? "checked" : ""}>Input display</div>
-					<div class="option" title="Displays featured ghosts on the leaderboard"><input type="checkbox" id="feats" ${this.storage.get("feats") ? "checked" : ""}>Feat. ghosts</div>
-					<div class="option" title="Change grid style"><input type="checkbox" id="isometric" ${this.storage.get("isometric") ? "checked" : ""}> Isometric grid</div>
-					<div class="option" title="Customize your bike frame"><input type="color" id="cc" value="${this.storage.get("cc") || "#000000"}" style="background: ${this.storage.get("cc") || "#000000"}">Custom bike colour</div>
+					<div class="option ripple" title="Custom rider cosmetic"><input type="checkbox" id="cr" ${this.storage.get("cr") ? "checked" : ""}>Canvas rider</div>
+					<div class="option ripple" title="Toggle dark mode"><input type="checkbox" id="dark" ${this.storage.get("dark") ? "checked" : ""}>Dark mode</div>
+					<div class="option ripple" title="Toggle an input display"><input type="checkbox" id="di" ${this.storage.get("di") ? "checked" : ""}>Input display</div>
+					<div class="option ripple" title="Displays featured ghosts on the leaderboard"><input type="checkbox" id="feats" ${this.storage.get("feats") ? "checked" : ""}>Feat. ghosts</div>
+					<div class="option ripple" title="Change grid style"><input type="checkbox" id="isometric" ${this.storage.get("isometric") ? "checked" : ""}> Isometric grid</div>
+					<div class="option ripple" title="Customize your bike frame"><input type="color" id="cc" value="${this.storage.get("cc") || "#000000"}" style="background: ${this.storage.get("cc") || "#000000"}">Custom bike colour</div>
 				</div>
 				<div class="inviolable-content advanced" style="display:none">
-					<div class="option" title="Change the size of the input display"><span class="name" style="background-color:rgba(0,0,0,0)">Input display size (${this.storage.get("di_size") || "10"})</span><br><input type="range" id="di_size" min="1" max="10" value="${this.storage.get("di_size") || "10"}" style="padding:0"></div>
-					<div class="option" title="Change the number of snaphsots shown on checkpoints"><span class="name" style="background-color:rgba(0,0,0,0)">Snapshot Count (${this.storage.get("snapshots") || "10"})</span><br><input type="range" id="snapshots" min="0" max="15" value="${this.storage.get("snapshots") || "10"}" style="padding:0"></div>
-					<div class="option" title="Reset all the settings to their default state (THIS CANNOT BE UNDONE)" onclick="inviolable.storage.reset(), inviolable.scene && inviolable.scene.redraw()">Reset settings</div>
+					<div class="option ripple" title="Change the size of the input display"><span class="name" style="background-color:rgba(0,0,0,0)">Input display size (${this.storage.get("di_size") || "10"})</span><br><input type="range" id="di_size" min="1" max="10" value="${this.storage.get("di_size") || "10"}" style="padding:0"></div>
+					<div class="option ripple" title="Change the number of snaphsots shown on checkpoints"><span class="name" style="background-color:rgba(0,0,0,0)">Snapshot Count (${this.storage.get("snapshots") || "10"})</span><br><input type="range" id="snapshots" min="0" max="15" value="${this.storage.get("snapshots") || "10"}" style="padding:0"></div>
+					<div class="option ripple" title="Reset all the settings to their default state (THIS CANNOT BE UNDONE)" onclick="if (window.confirm(\`Are you sure you'd like to reset all your settings?\`)) { inviolable.storage.reset(), inviolable.scene && inviolable.scene.redraw() }">Reset settings</div>
 				</div>
 				<div class="inviolable-content hotkeys" style="display: none;" onclick="">
 					<span>Select Tool</span>
@@ -222,13 +222,12 @@ window.inviolable = new class extends Builder {
 	}
 	createStyleSheet() {
 		document.addEventListener("mousedown", function(event) {
-			console.log(event)
-			document.documentElement.style.setProperty("--clientX", event.offsetX + "px");
-			document.documentElement.style.setProperty("--clientY", event.offsetY + "px");
+			document.documentElement.style.setProperty("--clientX", event.offsetX);
+			document.documentElement.style.setProperty("--clientY", event.offsetY);
 		});
 		
 		this.stylesheet = document.createElement("link");
-		this.stylesheet.href = /*`chrome-extension://pneamcljekbjbaiegbailnhpggddjknf/overlay/style.css`*/"https://calculamatrise.github.io/inviolable/overlay/style.css";
+		this.stylesheet.href = /*`chrome-extension://pneamcljekbjbaiegbailnhpggddjknf/overlay/style.css`//*/"https://calculamatrise.github.io/inviolable/overlay/style.css";
 		this.stylesheet.rel = "stylesheet";
 		document.head.appendChild(this.stylesheet);
 	}

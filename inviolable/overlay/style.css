@@ -85,6 +85,8 @@
     border-radius: 5px;
     padding: 5px 30px 5px 30px;
     border: none;
+    position: relative;
+    overflow: hidden;
 }
 
 .inviolable.overlay .inviolable-tabs .tablinks:hover {
@@ -111,30 +113,10 @@
     border: none;
     overflow: hidden;
     position: relative;
-    background-color:#ffffff00;
-    font-size:13px;
-    font-family:roboto_medium,Arial,Helvetica,sans-serif;
-    color:#1b5264
-}
-
-.inviolable.overlay .option::before {
-    top: calc(var(--clientY));
-	left: calc(var(--clientX));
-    opacity: 0;
-    content: "";
-    padding: 50%;
-	position: absolute;
-    transform: translate(-50%, -50%) scale(3);
-	transition: transform 800ms, opacity 1s;
-    border-radius: 50%;
-    pointer-events: none;
-    background-color: black;
-}
-
-.inviolable.overlay .option:active::before {
-    transition: 0s;
-    opacity: .5;
-    transform: translate(-50%, -50%) scale(0);
+    background-color: #ffffff00;
+    font-size: 13px;
+    font-family: roboto_medium, Arial, Helvetica, sans-serif;
+    color: #1b5264
 }
 
 .inviolable.overlay .option:hover, .inviolable.overlay .option:hover * {
@@ -162,6 +144,27 @@
     width: 13px;
     height: 13px;
     background: #000000
+}
+
+.inviolable.overlay .ripple::before {
+    top: calc(var(--clientY) * 1px);
+	left: calc(var(--clientX) * 1px);
+    opacity: 0;
+    content: "";
+    padding: 50%;
+	position: absolute;
+    transform: translate(-50%, -50%) scale(3);
+	transition: transform 800ms, opacity 1s;
+    border-radius: 50%;
+    pointer-events: none;
+    background-color: black;
+}
+
+.inviolable.overlay .ripple:not(.focus):active::before,
+.inviolable.overlay .ripple.focus:active:not(:focus-within)::before {
+    transition: 0s;
+    opacity: .5;
+    transform: translate(-50%, -50%) scale(0);
 }
 
 .inviolable.overlay .option input[type="color"]::-webkit-color-swatch-wrapper {
