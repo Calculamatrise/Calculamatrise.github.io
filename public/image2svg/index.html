@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Image to SVG - Calculamatrise</title>
+        <link rel="stylesheet" href="/style.css">
+        <script src="/bootstrap.js" type="module"></script>
+        <script async src="bootstrap.js" type="module"></script>
+    </head>
+    <body>
+        <div class="content">
+            <input type="file" id="image" accept="image/*">
+            <label for="invert">Invert Colours&emsp;</label>
+            <input type="checkbox" id="invert"><br><br>
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress"></div>
+            </div><br>
+            <canvas id="canvas" style="display: none"></canvas>
+            <svg id="svg"></svg>
+        </div>
+    </body>
+</html>

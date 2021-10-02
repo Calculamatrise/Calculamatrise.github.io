@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Documentation - FRHD API</title>
+        <link rel="icon" href="/favicon.ico">
+        <link rel="stylesheet" href="/style.css">
+        <meta name="author" content="Calculus">
+        <meta name="description" property="og:description" content="A programmer's home.">
+        <meta property="og:url" content="https://calculamatrise.github.io/frhd/api/docs/">
+        <meta property="og:title" content="Documentation - FRHD API">
+        <meta property="og:image" content="/favicon.ico">
+        <script src="/bootstrap.js" type="module"></script>
+    </head>
+    <body>
+        <div class="content">
+            <div style="display: inline-block; margin-left: 30px;">
+                <h1>Client</h1>
+                <h4>Logging into Free Rider HD.</h4>
+                <div class="code-block">
+                    <span class="keyword">import</span> { <span class="constant">Client</span> } <span class="keyword">from</span> <span class="string">"frhd"</span>;
+                    <br><br>
+                    <span class="keyword">const</span> <span class="constant">client</span> = <span class="keyword">new</span> <span class="constant">Client</span>();
+                    <br><br>
+                    <span class="constant">client</span>.<span class="method">on</span>(<span class="string">"ready"</span>, <span class="keyword">function</span>() {
+                        <br>
+                        &emsp;&emsp;&emsp;&emsp;<span class="constant">console</span>.<span class="method">log</span>(<span class="string">"Ready!"</span>);
+                        <br>
+                    });
+                    <br><br>
+                    <span class="constant">client</span>.<span class="method">login</span>(<span class="string">"your-token-goes-here"</span>);
+                </div>
+                <br>
+                <h4>Listen for notifications</h4>
+                <div class="code-block">
+                    <span class="constant">client</span>.<span class="method">on</span>(<span class="string">"challenge"</span>, <span class="keyword">function</span>(<span class="parameter variable">challenge</span>) {
+                        <br>
+                        &emsp;&emsp;&emsp;&emsp;<span class="constant">console</span>.<span class="method">log</span>(<span class="parameter variable">challenge</span>);
+                        <br>
+                    });
+                </div>
+                <br>
+                <h2>Methods</h2>
+                <h3>getUser</h3>
+            </div>
+        </div>
+    </body>
+</html>
