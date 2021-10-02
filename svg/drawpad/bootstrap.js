@@ -2,6 +2,10 @@ import Canvas from "./utils/Canvas.js";
 
 window.canvas = new Canvas(document.querySelector("#view"));
 
+window.addEventListener("resize", function() {
+	view.setAttribute("viewBox", `0 0 ${window.innerWidth} ${window.innerHeight}`);
+});
+
 window.addEventListener("contextmenu", function(event) {
 	event.preventDefault();
 });
@@ -11,7 +15,6 @@ document.addEventListener("keydown", function(event) {
 	event.stopPropagation();
 	
 	const zoom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--zoom'));
-	console.log(event.key)
 	switch(event.key) {
 		case "Escape":
 			settings.style.display = "block";
@@ -45,7 +48,3 @@ if (JSON.parse(localStorage.getItem("dark")) ?? window.matchMedia('(prefers-colo
 
 document.documentElement.style.setProperty('--color', localStorage.getItem("--color") || "skyblue");
 colour.value = localStorage.getItem("--color") || "skyblue";
-
-window.addEventListener("resize", function() {
-	view.setAttribute("viewBox", `0 0 ${window.innerWidth} ${window.innerHeight}`);
-});

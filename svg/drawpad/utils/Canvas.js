@@ -14,6 +14,7 @@ export default class {
 	tool = "line";
 	toolSize = 4;
 	color = localStorage.getItem("--color") || "skyblue";
+	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 	eraser = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 	connection = document.createElementNS("http://www.w3.org/2000/svg", "line");
 	#lines = []
@@ -26,9 +27,15 @@ export default class {
 	}
 	mouseDown(event) {
 		if (event.button === 1) {
+			clearTimeout(this.text.timeout);
 			this.tool = this.tool === "line" ? "brush" : this.tool === "brush" ? "eraser" : this.tool === "eraser" ? "camera" : "line";
 			view.parentElement.style.cursor = this.tool === "camera" ? "move" : "default";
-			
+			this.text.setAttribute("x", 5 + this.viewBox.x);
+			this.text.setAttribute("y", 20 + this.viewBox.y);
+			this.text.setAttribute("fill", "#C299FF");
+			this.text.innerHTML = this.tool.charAt(0).toUpperCase() + this.tool.slice(1);
+			this.view.appendChild(this.text);
+
 			this.connection.remove();
 			this.eraser.remove();
 
@@ -43,6 +50,10 @@ export default class {
 					this.#lines.forEach(line => line.erase(event));
 				}
 			}
+
+			this.text.timeout = setTimeout(() => {
+				this.view.removeChild(this.text);
+			}, 2000);
 
 			return;
 		} else if (event.button === 2) {
@@ -91,6 +102,8 @@ export default class {
 		if (this.mouse.isDown && !this.mouse.isAlternate) {
 			if (this.tool === "camera") {
 				this.view.setAttribute("viewBox", `${this.viewBox.x - event.movementX} ${this.viewBox.y - event.movementY} ${window.innerWidth} ${window.innerHeight}`);
+				this.text.setAttribute("x", 5 + this.viewBox.x);
+				this.text.setAttribute("y", 20 + this.viewBox.y);
 
 				return;
 			}
@@ -143,6 +156,13 @@ export default class {
 						this.remove();
 					}
 				}
+
+				line._remove = line.remove;
+				line.remove = () => {
+					this.#lines.splice(this.#lines.indexOf(line), 1);
+					line._remove();
+				}
+
 				view.prepend(line);
 				this.#lines.push(line);
 				
@@ -199,6 +219,13 @@ export default class {
 					this.remove();
 				}
 			}
+
+			line._remove = line.remove;
+			line.remove = () => {
+				this.#lines.splice(this.#lines.indexOf(line), 1);
+				line._remove();
+			}
+
 			view.prepend(line);
 			this.#lines.push(line);
 		}

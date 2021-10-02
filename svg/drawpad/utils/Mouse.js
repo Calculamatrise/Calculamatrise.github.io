@@ -90,6 +90,7 @@ export default class {
 		for (const touch of event.touches) {
 			const mouseEvent = document.createEvent('MouseEvent');
 			mouseEvent.initMouseEvent('mousedown', true, true, window, event.detail, touch.screenX, touch.screenY, touch.clientX, touch.clientY, false, false, false, false, 0, null);
+			
 			this.down(mouseEvent);
 		}
 	}
