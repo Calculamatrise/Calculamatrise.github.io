@@ -201,6 +201,12 @@ input[type="file"] {
     width: 230px;
 }
 
+div.container {
+    display: inline-flex;
+    position: relative;
+    overflow: hidden;
+}
+
 button, .button, ::-webkit-file-upload-button {
     width: 130px;
     height: 45px;
@@ -212,19 +218,21 @@ button, .button, ::-webkit-file-upload-button {
     transition: all 100ms;
 }
 
-button::before, .button::before {
+button::before, .button::before, .ripple::before {
+    z-index: 1;
     opacity: 0;
     content: "";
     padding: 50%;
 	position: absolute;
     border-radius: 50%;
-    top: calc(var(--offsetY) * 100%);
-	left: calc(var(--offsetX) * 100%);
+    pointer-events: none;
+    top: calc(var(--offsetY) * 1px);
+	left: calc(var(--offsetX) * 1px);
 	transition: transform 800ms, opacity 1s;
     transform: translate(-50%, -50%) scale(3);
 }
 
-button:active::before, .button:active::before {
+button:active::before, .button:active::before, .ripple:not(.focus):active::before, .ripple.focus:active:not(:focus-within)::before {
     opacity: .5;
 	transition: 0s;
 	transform: translate(-50%, -50%) scale(0);

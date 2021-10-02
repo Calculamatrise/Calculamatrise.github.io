@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>SVG Drawpad - Calculamatrise</title>
+        <link rel="icon" href="/favicon.ico">
+        <link rel="stylesheet" href="/style.css">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="author" content="Calculamatrise">
+        <meta name="title" property="og:title" content="Calculamatrise">
+        <meta name="description" property="og:description" content="A program that uses scalable vector graphics to create an image of your choosing.">
+        <meta name="image" property="og:image" content="/images/favicon.png">
+        <meta property="og:url" content="https://calculamatrise.github.io/">
+        <script src="/bootstrap.js" type="module"></script>
+    </head>
+    <body>
+        <div class="content">
+            <div id="container">
+                <svg id="view">
+                    Sorry, your browser does not support inline SVG.
+                </svg>
+                <span id="settings" onclick="console.log('works')" style="visibility: hidden">Settings</span>
+                <input type="color" id="colour" oninput="localStorage.setItem('--color', this.value), window.canvas.color = this.value, console.log(window.canvas)">
+            </div>
+            <link rel="stylesheet" href="style.css">
+            <script type="module" src="bootstrap.js"></script>
+        </div>
+    </body>
+</html>

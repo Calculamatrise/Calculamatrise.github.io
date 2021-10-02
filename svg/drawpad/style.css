@@ -1,0 +1,53 @@
+html {
+	--zoom: .5;
+	--background: #EBEBEB;
+	--text: #1B1B1B;
+	--color: skyblue;
+	border: none;
+}
+
+body {
+	margin: 0;
+	overflow: hidden;
+}
+
+div.content {
+	padding: 0;
+	overflow: hidden;
+}
+
+div#container {
+	position: relative;
+}
+
+div#container span#settings {
+	top: 0;
+	right: 0;
+	margin: 10px;
+	color: var(--text);
+	position: absolute;
+}
+
+svg {
+	width: 100vw;
+	height: 100vh;
+	color: var(--text);
+	pointer-events: none;
+	background-color: var(--background);
+}
+
+cirlce {
+	r: calc(4 * var(--zoom));
+	fill: var(--color);
+}
+
+line {
+	/*stroke-width: calc(8 * var(--zoom));*/
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+input[type="color"]#colour {
+	visibility: hidden;
+	position: absolute;
+}

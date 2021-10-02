@@ -9,13 +9,19 @@
     </head>
     <body>
         <div class="content">
-            <textarea id="input" rows="10" cols="69" placeholder="Code"></textarea><br>
+            <div class="container focus ripple">
+                <textarea id="input" rows="10" cols="69" placeholder="Code"></textarea>
+            </div><br>
             <div class="progress-bar-container">
                 <div class="progress-bar" id="progress"></div>
             </div><br>
-            <input type="number" id="travelDistanceX" placeholder="X Axis">
+            <div class="container focus ripple">
+                <input type="number" id="travelDistanceX" placeholder="X Axis">
+            </div>
             <button id="move">Move</button><br>
-            <input type="number" id="travelDistanceY" placeholder="Y Axis">
+            <div class="container focus ripple">
+                <input type="number" id="travelDistanceY" placeholder="Y Axis">
+            </div>
             <button onclick="input.select(), document.execCommand('copy');">Copy</button>
         </div>
     </body>
