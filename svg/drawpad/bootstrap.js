@@ -3,7 +3,7 @@ import Canvas from "./utils/Canvas.js";
 window.canvas = new Canvas(document.querySelector("#view"));
 
 window.addEventListener("resize", function() {
-	view.setAttribute("viewBox", `0 0 ${window.innerWidth} ${window.innerHeight}`);
+	view.setAttribute("viewBox", `0 0 ${view.width.baseVal.value} ${view.height.baseVal.value}`);
 });
 
 view.addEventListener("contextmenu", function(event) {

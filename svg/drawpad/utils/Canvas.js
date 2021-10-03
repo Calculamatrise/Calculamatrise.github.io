@@ -3,7 +3,7 @@ import Mouse from "./Mouse.js";
 export default class {
 	constructor(view) {
 		this.view = view;
-		this.view.setAttribute("viewBox", `0 0 ${window.innerWidth} ${window.innerHeight}`);
+		this.view.setAttribute("viewBox", `0 0 ${view.width.baseVal.value} ${view.height.baseVal.value}`);
 
 		this.mouse = new Mouse(this);
 		this.mouse.init();
