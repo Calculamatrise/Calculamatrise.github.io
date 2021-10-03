@@ -25,7 +25,7 @@ export default class {
 
         this.svg.prepend(element);
 
-        return this;
+        return element;
     }
     fillRect(x, y, width, height) {
         const element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -38,6 +38,6 @@ export default class {
 
         this.svg.prepend(element);
 
-        return this;
+        return element;
     }
 }

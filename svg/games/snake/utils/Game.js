@@ -11,6 +11,8 @@ export default class {
 		this.canvas.getContext = function(dimension) {
 			return new SVGRenderingContext2D(this);
 		}
+
+		this.ctx = this.canvas.getContext("2d");
 		
 		window.addEventListener("resize", this.adjust.bind(this.canvas));
 		this.adjust.bind(this.canvas)();
@@ -22,7 +24,7 @@ export default class {
 		];
 
 		this.buttons = [
-			new Button({
+			new Button(this, {
 				name: "Settings",
 				position: {
 					x: this.canvas.width.baseVal.value - 65,
@@ -42,12 +44,12 @@ export default class {
 		]
 
 		this.draw();
-		
-		this.fps = 10;
-		this.delta = null;
-		this.lastTime = -1;
-		this.lastFrame = null;
 	}
+	fps = 20;
+	delta = null;
+	lastTime = -1;
+	lastFrame = null;
+	lastMessage = null;
 	mouse = {
 		x: 0,
 		y: 0
@@ -57,6 +59,9 @@ export default class {
 	}
 	get bestToday() {
 		return JSON.parse(sessionStorage.getItem("best_score")) | 0;
+	}
+	get dark() {
+		return JSON.parse(localStorage.getItem("dark")) ?? window.matchMedia('(prefers-color-scheme: dark)').matches;
 	}
 	adjust() {
 		const height = getComputedStyle(this).getPropertyValue('height').slice(0, -2);
@@ -79,6 +84,11 @@ export default class {
 		for (const button of this.buttons)
 			button.click();
 
+		if (this.lastMessage) {
+			this.lastMessage.remove();
+			this.lastMessage = null;
+		}
+
 		this.lastFrame ?? this.init();
 	}
 	hover(event) {
@@ -91,12 +101,17 @@ export default class {
 			button.hover(this.mouse);
 	}
 	update(time) {
-		this.lastFrame = requestAnimationFrame(this.update.bind(this));
 		this.delta = (time - this.lastTime) / 1000;
-		
+
 		for (const player of this.players) {
 			if (player.dead) {
 				this.lastFrame = null;
+
+				const text = `Player ${player.id} died. Click to restart.`;
+				this.ctx.font = "20px Arial";
+				this.ctx.fillStyle = "red";
+				this.lastMessage = this.ctx.fillText(text, this.canvas.width.baseVal.value / 2 - text.length * 4, this.canvas.height.baseVal.value / 2);
+
 				this.close();
 				
 				return;
@@ -109,38 +124,31 @@ export default class {
 
 			player.update(this.delta);
 		}
+
+		this.lastFrame = requestAnimationFrame(this.update.bind(this));
 	}
 	draw() {
-		const ctx = this.canvas.getContext("2d");
 		for (const button of this.buttons)
-			button.draw(ctx);
+			button.draw(this.ctx);
 		
 		for (const player of this.players) {
-			if (player.dead) {
-				const text = `Player ${player.id} died. Click to restart.`;
-				ctx.font = "20px Arial";
-				ctx.fillStyle = "red";
-				ctx.fillText(text, this.canvas.width.baseVal.value / 2 - text.length * 4, this.canvas.height.baseVal.value / 2);
-				
-				return;
-			}
+			this.ctx.fillStyle = this.dark ? "#FFFFFFA5" : "#000000A5";
+			this.ctx.fillText(`Score - ${player.consumed}`, 10, 20 * player.id);
+			this.ctx.fillText(`High Score - ${this.best}`, 10, 40 * player.id);
+			this.ctx.fillText(`High Score (today) - ${this.bestToday}`, 10, 60 * player.id);
 
-			ctx.fillStyle = JSON.parse(localStorage.getItem("dark")) ? "#FFFFFFA5" : "#000000A5";
-			ctx.fillText(`Score - ${player.consumed}`, 10, 20 * player.id);
-			ctx.fillText(`High Score - ${this.best}`, 10, 40 * player.id);
-			ctx.fillText(`High Score (today) - ${this.bestToday}`, 10, 60 * player.id);
-
-			player.draw(ctx);
+			player.draw(this.ctx);
 		}
 	}
 	restart() {
 		return;
 	}
 	close() {
+		cancelAnimationFrame(this.lastFrame);
 		for (const player of this.players) {
 			player.close();
 		}
-		
-		cancelAnimationFrame(this.lastFrame);
+
+		this.lastFrame = null;
 	}
 }

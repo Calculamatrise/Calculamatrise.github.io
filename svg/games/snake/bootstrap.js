@@ -11,13 +11,15 @@ view.addEventListener("contextmenu", function(event) {
 	event.preventDefault();
 });
 
+
+
 document.addEventListener("keydown", function(event) {
 	event.preventDefault();
 	event.stopPropagation();
 	
 	switch(event.key) {
 		case "Escape":
-			document.querySelector("overlay").style.display = "block";
+			document.querySelector("#overlay").style.display = "block";
 			break;
 		
 		case "=":
