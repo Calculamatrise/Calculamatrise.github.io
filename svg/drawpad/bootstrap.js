@@ -35,6 +35,34 @@ document.addEventListener("keydown", function(event) {
 
 			window.canvas.toolSize -= 1;
 			break;
+
+		case "0":
+			window.canvas.tool = "camera";
+			break;
+
+		case "1":
+			window.canvas.tool = "line";
+			break;
+		
+		case "2":
+			window.canvas.tool = "brush";
+			break;
+
+		case "3":
+			window.canvas.tool = "circle";
+			break;
+
+		case "4":
+			window.canvas.tool = "rectangle";
+			break;
+
+		case "5":
+			window.canvas.tool = "eraser";
+			break;
+
+		case "f":
+			window.canvas.fill = !window.canvas.fill;
+			break;
 	}
 });
 
