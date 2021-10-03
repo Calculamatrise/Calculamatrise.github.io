@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake - Calculamatrise</title>
+    <title>SVG Snake - Calculamatrise</title>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="style.css">
     <script type="module" src="/bootstrap.js"></script>
@@ -13,11 +13,9 @@
 <body>
     <div class="content">
         <div class="container">
-            <canvas id="view"></canvas>
+            <svg id="view" width="500" height="500"></svg>
             <div id="overlay">
                 <div id="settings">
-                    <button onclick="sessionStorage.setItem('snake-svg', true)">Continue</button>
-                    <br>
                     <button id="restart">Restart</button>
                     <button onclick="document.querySelector('div#overlay').style.display = 'none'">Continue</button>
                 </div>

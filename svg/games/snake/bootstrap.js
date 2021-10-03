@@ -1,9 +1,10 @@
-import Canvas from "./utils/Canvas.js";
+import Game from "./utils/Game.js";
 
-window.canvas = new Canvas(document.querySelector("#view"));
+window.game = new Game(document.querySelector("#view"));
+window.game.init();
 
 window.addEventListener("resize", function() {
-	view.setAttribute("viewBox", `0 0 ${window.innerWidth} ${window.innerHeight}`);
+	view.setAttribute("viewBox", `0 0 ${view.width.baseVal.value} ${view.height.baseVal.value}`);
 });
 
 view.addEventListener("contextmenu", function(event) {
@@ -14,10 +15,9 @@ document.addEventListener("keydown", function(event) {
 	event.preventDefault();
 	event.stopPropagation();
 	
-	const zoom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--zoom'));
 	switch(event.key) {
 		case "Escape":
-			settings.style.display = "block";
+			document.querySelector("overlay").style.display = "block";
 			break;
 		
 		case "=":
@@ -47,4 +47,3 @@ if (JSON.parse(localStorage.getItem("dark")) ?? window.matchMedia('(prefers-colo
 }
 
 document.documentElement.style.setProperty('--color', localStorage.getItem("--color") || "skyblue");
-colour.value = localStorage.getItem("--color") || "skyblue";
