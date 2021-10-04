@@ -112,7 +112,7 @@ export default class {
         this.parent.remove(this.id);
         this.parent.cache.forEach((layer, index) => {
             layer.id = index + 1;
-            layer.element.firstChild.innerText = "Layer " + layer.id;
+            layer.element.firstChild.data = "Layer " + layer.id;
         });
 
         if (this.parent.cache.length < window.canvas.layerDepth) {
