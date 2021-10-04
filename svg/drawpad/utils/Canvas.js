@@ -158,18 +158,6 @@ export default class {
 		if (event.button === 1) {
 			this.tool = this.#tool === "line" ? "brush" : this.#tool === "brush" ? "eraser" : this.#tool === "eraser" ? "camera" : "line";
 
-			this.line.remove();
-			this.eraser.remove();
-
-			if (this.#tool === "eraser") {
-				this.eraser.setAttribute("opacity", .8);
-				this.eraser.setAttribute("fill", "khaki");
-				this.eraser.setAttribute("cx", this.mouse.position.x);
-				this.eraser.setAttribute("cy", this.mouse.position.y);
-				this.eraser.setAttribute("r", this.toolSize * 5);
-				this.view.appendChild(this.eraser);
-			}
-
 			return;
 		} else if (event.button === 2) {
 			// open colour palette
@@ -194,6 +182,10 @@ export default class {
 		}
 
 		if (!this.mouse.isAlternate) {
+			if (event.ctrlKey) {
+				this.tool = "select";
+			}
+
 			if (event.shiftKey) {
 				clearTimeout(this.text.timeout);
 
@@ -208,38 +200,79 @@ export default class {
 				}, 2000);
 
 				return;
-			} else if (["line", "brush"].includes(this.#tool)) {
-				this.line.setAttribute("stroke-width", this.toolSize);
-				this.line.setAttribute("x1", this.mouse.pointA.x);
-				this.line.setAttribute("y1", this.mouse.pointA.y);
-				this.line.setAttribute("x2", this.mouse.position.x);
-				this.line.setAttribute("y2", this.mouse.position.y);
-				this.line.setAttribute("stroke", this.primary);
-				this.view.prepend(this.line);
-			} else if (this.#tool === "circle") {
-				this.circle.setAttribute("stroke-width", this.toolSize);
-				this.circle.setAttribute("cx", this.mouse.pointA.x);
-				this.circle.setAttribute("cy", this.mouse.pointA.y);
-				this.circle.setAttribute("r", 1);
-				this.circle.setAttribute("stroke", this.primary);
-				this.circle.setAttribute("fill", this.#fill ? this.primary : "#FFFFFF00");
-				this.view.prepend(this.circle);
-			} else if (this.#tool === "rectangle") {
-				this.rectangle.setAttribute("stroke-width", this.toolSize);
-				this.rectangle.setAttribute("x", this.mouse.pointA.x);
-				this.rectangle.setAttribute("y", this.mouse.pointA.y);
-				this.rectangle.setAttribute("width", 1);
-				this.rectangle.setAttribute("height", 1);
-				this.rectangle.setAttribute("stroke", this.primary);
-				this.rectangle.setAttribute("fill", this.#fill ? this.primary : "#FFFFFF00");
-				this.rectangle.setAttribute("rx", .5);
-				this.view.prepend(this.rectangle);
+			}
+			
+			switch(this.#tool) {
+				case "line":
+				case "brush":
+					this.line.setAttribute("stroke-width", this.toolSize);
+					this.line.setAttribute("x1", this.mouse.pointA.x);
+					this.line.setAttribute("y1", this.mouse.pointA.y);
+					this.line.setAttribute("x2", this.mouse.position.x);
+					this.line.setAttribute("y2", this.mouse.position.y);
+					this.line.setAttribute("stroke", this.primary);
+					this.view.prepend(this.line);
+					break;
+
+				case "circle":
+					this.circle.setAttribute("stroke-width", this.toolSize);
+					this.circle.setAttribute("cx", this.mouse.pointA.x);
+					this.circle.setAttribute("cy", this.mouse.pointA.y);
+					this.circle.setAttribute("r", 1);
+					this.circle.setAttribute("stroke", this.primary);
+					this.circle.setAttribute("fill", this.#fill ? this.primary : "#FFFFFF00");
+					this.view.prepend(this.circle);
+					break;
+
+				case "rectangle":
+					this.rectangle.setAttribute("stroke-width", this.toolSize);
+					this.rectangle.setAttribute("x", this.mouse.pointA.x);
+					this.rectangle.setAttribute("y", this.mouse.pointA.y);
+					this.rectangle.setAttribute("width", 1);
+					this.rectangle.setAttribute("height", 1);
+					this.rectangle.setAttribute("stroke", this.primary);
+					this.rectangle.setAttribute("fill", this.#fill ? this.primary : "#FFFFFF00");
+					this.rectangle.setAttribute("rx", .5);
+					this.view.prepend(this.rectangle);
+					break;
+
+				case "select":
+					this.rectangle.setAttribute("stroke-width", this.toolSize);
+					this.rectangle.setAttribute("x", this.mouse.pointA.x);
+					this.rectangle.setAttribute("y", this.mouse.pointA.y);
+					this.rectangle.setAttribute("width", 0);
+					this.rectangle.setAttribute("height", 0);
+					this.rectangle.setAttribute("stroke", "#87CEEB");
+					this.rectangle.setAttribute("fill", "#87CEEB80");
+					this.rectangle.setAttribute("rx", .5);
+					this.view.appendChild(this.rectangle);
+					break;
 			}
 		}
 		
 		return;
 	}
 	mouseMove(event) {
+		if (this.mouse.isDown && !this.mouse.isAlternate && this.tool == "select") {
+			if (this.mouse.position.x - this.mouse.pointA.x > 0) {
+				this.rectangle.setAttribute("x", this.mouse.pointA.x);
+				this.rectangle.setAttribute("width", this.mouse.position.x - this.mouse.pointA.x);
+			} else {
+				this.rectangle.setAttribute("x", this.mouse.position.x);
+				this.rectangle.setAttribute("width", this.mouse.pointA.x - this.mouse.position.x);
+			}
+
+			if (this.mouse.position.y - this.mouse.pointA.y > 0) {
+				this.rectangle.setAttribute("y", this.mouse.pointA.y);
+				this.rectangle.setAttribute("height", this.mouse.position.y - this.mouse.pointA.y);
+			} else {
+				this.rectangle.setAttribute("y", this.mouse.position.y);
+				this.rectangle.setAttribute("height", this.mouse.pointA.y - this.mouse.position.y);
+			}
+
+			return;
+		}
+
 		if (this.mouse.isDown && !this.mouse.isAlternate && event.shiftKey) {
 			this.view.setAttribute("viewBox", `${this.viewBox.x - event.movementX} ${this.viewBox.y - event.movementY} ${window.innerWidth} ${window.innerHeight}`);
 			this.text.setAttribute("x", this.view.width.baseVal.value / 2 - this.text.innerHTML.length * 2 + this.viewBox.x);
@@ -249,13 +282,8 @@ export default class {
 		}
 
 		if (this.#tool === "eraser") {
-			this.eraser.setAttribute("opacity", .8);
-			this.eraser.setAttribute("fill", "khaki");
 			this.eraser.setAttribute("cx", this.mouse.position.x);
 			this.eraser.setAttribute("cy", this.mouse.position.y);
-			this.eraser.setAttribute("r", this.toolSize * 5);
-			this.view.appendChild(this.eraser);
-			
 			if (this.mouse.isDown && !this.mouse.isAlternate) {
 				this.layer.lines.filter(line => !!line.parentElement).forEach(line => {
 					if (line.erase(event)) {
@@ -269,12 +297,11 @@ export default class {
 			
 			return;
 		}
-		
-		this.eraser.remove();
+
 		if (this.mouse.isDown && !this.mouse.isAlternate) {
 			if (this.#tool === "camera") {
 				this.view.setAttribute("viewBox", `${this.viewBox.x - event.movementX} ${this.viewBox.y - event.movementY} ${window.innerWidth} ${window.innerHeight}`);
-				this.text.setAttribute("x", 5 + this.viewBox.x);
+				this.text.setAttribute("x", this.view.width.baseVal.value / 2 - this.text.innerHTML.length * 2 + this.viewBox.x);
 				this.text.setAttribute("y", 20 + this.viewBox.y);
 
 				return;
@@ -443,7 +470,7 @@ export default class {
 					}
 
 					if (!this.layer.hidden) {
-						this.view.prepend(line);
+						this.view.querySelector(`g[data-id='${this.#layer}']`).prepend(line);
 					}
 
 					this.layer.lines.push(line);
@@ -517,7 +544,7 @@ export default class {
 					}
 
 					if (!this.layer.hidden) {
-						this.view.prepend(circle);
+						this.view.querySelector(`g[data-id='${this.#layer}']`).prepend(circle);
 					}
 
 					this.layer.lines.push(circle);
@@ -589,7 +616,7 @@ export default class {
 					}
 
 					if (!this.layer.hidden) {
-						this.view.prepend(rectangle);
+						this.view.querySelector(`g[data-id='${this.#layer}']`).prepend(rectangle);
 					}
 
 					this.layer.lines.push(rectangle);
@@ -598,6 +625,25 @@ export default class {
 						value: rectangle
 					});
 
+					break;
+
+				case "select":
+					if (this.mouse.position.x - this.mouse.pointA.x > 0) {
+						this.rectangle.setAttribute("x", this.mouse.pointA.x);
+						this.rectangle.setAttribute("width", this.mouse.position.x - this.mouse.pointA.x);
+					} else {
+						this.rectangle.setAttribute("x", this.mouse.position.x);
+						this.rectangle.setAttribute("width", this.mouse.pointA.x - this.mouse.position.x);
+					}
+		
+					if (this.mouse.position.y - this.mouse.pointA.y > 0) {
+						this.rectangle.setAttribute("y", this.mouse.pointA.y);
+						this.rectangle.setAttribute("height", this.mouse.position.y - this.mouse.pointA.y);
+					} else {
+						this.rectangle.setAttribute("y", this.mouse.position.y);
+						this.rectangle.setAttribute("height", this.mouse.pointA.y - this.mouse.position.y);
+					}
+		
 					break;
 			}
 		}

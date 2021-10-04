@@ -87,15 +87,20 @@ export default class {
         });
 
         const options = document.createElement("div");
-        if (this.id === 1) {
-            options.style.display = "block";
-        }
-
         options.className = "options";
 
         options.append(optionTwo, option, clearButton, deleteButton);
         this.element.append(options);
         layers.append(this.element);
+
+        const layer = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        layer.dataset.id = this.id;
+
+        if (this.id === 1) {
+            view.prepend(layer);
+        } else {
+            view.querySelector(`g[data-id='${this.id - 1}']`).after(layer);
+        }
 
         this.parent.cache.push(this);
     }
