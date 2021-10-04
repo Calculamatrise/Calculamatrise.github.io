@@ -18,6 +18,14 @@
                 <svg id="view">
                     Sorry, your browser does not support inline SVG.
                 </svg>
+                <div id="ui">
+                    <button onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'block' ? 'none' : 'block';">Layers</button>
+                </div>
+                <div id="layers">
+                    &emsp;<span>Click to delete</span>
+                    <br><br>
+                    <button onclick="window.canvas.layers.create(), window.canvas.layerDepth = window.canvas.layerDepth + 1;">New Layer</button>
+                </div>
                 <span id="settings" onclick="console.log('works')" style="visibility: hidden">Settings</span>
                 <input type="color" id="colour" oninput="localStorage.setItem('--color', this.value), window.canvas.color = this.value, console.log(window.canvas)">
             </div>

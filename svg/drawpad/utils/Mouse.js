@@ -23,7 +23,6 @@ export default class {
 			y: this.real.y + this.parent.viewBox.y
 		}
 	}
-	
 	init() {
 		document.addEventListener("mousedown", this.down.bind(this));
 		document.addEventListener("mousemove", this.move.bind(this));
@@ -45,6 +44,14 @@ export default class {
 		return this.#events.get(event)(...args);
 	}
 	down(event) {
+		if (event.target.id !== "container") {
+			return;
+		}
+
+		if (layers.style.display !== "none") {
+			layers.style.display = "none";
+		}
+
 		event.preventDefault();
 		
 		this.isAlternate = !!event.button;
@@ -57,6 +64,10 @@ export default class {
 		return this.emit("down", event);
 	}
 	move(event) {
+		if (event.target.id !== "container") {
+			return;
+		}
+
 		event.preventDefault();
 		
 		this.real = {
@@ -67,6 +78,10 @@ export default class {
 		return this.emit("move", event);
 	}
 	up(event) {
+		if (event.target.id !== "container") {
+			return;
+		}
+		
 		event.preventDefault();
 		
 		this.isDown = false;

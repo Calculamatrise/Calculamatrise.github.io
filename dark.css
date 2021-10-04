@@ -69,7 +69,7 @@ button, .button, ::-webkit-file-upload-button {
     color: #eeeeee;
 }
 
-button::before, .button::before, .ripple::before {
+button::before, .ripple::before {
 	background-color: #999999;
 }
 

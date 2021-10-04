@@ -211,6 +211,7 @@ button, .button, ::-webkit-file-upload-button {
     width: 130px;
     height: 45px;
     border: none;
+    outline: none;
     overflow: hidden;
     position: relative;
 	display: inline-block;

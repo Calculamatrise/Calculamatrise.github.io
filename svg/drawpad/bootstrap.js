@@ -6,7 +6,7 @@ window.addEventListener("resize", function() {
 	view.setAttribute("viewBox", `0 0 ${view.width.baseVal.value} ${view.height.baseVal.value}`);
 });
 
-view.addEventListener("contextmenu", function(event) {
+container.addEventListener("contextmenu", function(event) {
 	event.preventDefault();
 });
 
@@ -17,6 +17,13 @@ document.addEventListener("keydown", function(event) {
 	const zoom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--zoom'));
 	switch(event.key) {
 		case "Escape":
+			if (layers.style.display !== "none") {
+				layers.style.display = "none";
+				
+				break;
+			}
+
+			settings.style.visibility = "show";
 			settings.style.display = "block";
 			break;
 		
@@ -62,6 +69,26 @@ document.addEventListener("keydown", function(event) {
 
 		case "f":
 			window.canvas.fill = !window.canvas.fill;
+			break;
+
+		case "ArrowUp":
+			if (window.canvas.layerDepth >= window.canvas.layers.cache.length) {
+				if (!event.shiftKey) {
+					break;
+				}
+
+				window.canvas.layers.create();
+			}
+
+			window.canvas.layerDepth = window.canvas.layerDepth + 1;
+			break;
+
+		case "ArrowDown":
+			if (window.canvas.layerDepth <= 1) {
+				break;
+			}
+
+			window.canvas.layerDepth = window.canvas.layerDepth - 1;
 			break;
 	}
 });

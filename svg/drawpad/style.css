@@ -20,6 +20,78 @@ div#container {
 	position: relative;
 }
 
+div#container div#ui {
+	top: 0;
+	right: 0;
+	margin: 10px;
+	color: var(--text);
+	position: absolute;
+	display: inline-block;
+}
+
+div#container div#ui button, div#container div#layers button {
+	background-color: transparent;
+}
+
+div#container div#layers button {
+	color: var(--text);
+}
+
+div#container div#layers {
+	top: 0;
+	left: 0;
+	opacity: .9;
+	display: none;
+	z-index: 2000;
+	overflow: auto;
+	max-height: 20vh;
+	color: var(--text);
+	position: absolute;
+	border-radius: 30px;
+	margin: 25vh 25vw 25vh 25vw;
+	padding: 10vh 20vw 20vh 20vw;
+	background-color: var(--background);
+	box-shadow: 0 0 15px -10px var(--text)
+}
+
+div#container div#layers .layer {
+	overflow: hidden;
+	opacity: .8;
+	display: flex;
+	position: relative;
+	margin-top: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	flex-direction: column;
+	align-content: center;
+	align-items: center;
+	border-radius: 10px;
+	box-shadow: 0 0 10px -5px var(--text);
+	background-color: var(--background);
+}
+
+div#container div#layers .layer .option {
+	width: 130px;
+	height: 45px;
+	display: flex;
+	font-size: small;
+	overflow: hidden;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+}
+
+div#container div#layers .layer .option input {
+	margin-right: 8px;
+	pointer-events: none;
+}
+
+
+div#container div#layers .layer .options {
+	display: none;
+	margin-top: 10px;
+}
+
 div#container span#settings {
 	top: 0;
 	right: 0;
@@ -37,7 +109,6 @@ svg {
 }
 
 cirlce {
-	r: calc(4 * var(--zoom));
 	fill: var(--color);
 }
 
@@ -50,4 +121,24 @@ line {
 input[type="color"]#colour {
 	visibility: hidden;
 	position: absolute;
+}
+
+.ripple::before {
+    top: calc(var(--offsetY) * 1px);
+	left: calc(var(--offsetX) * 1px);
+    opacity: 0;
+    content: "";
+    padding: 50%;
+	position: absolute;
+    transform: translate(-50%, -50%) scale(3);
+	transition: transform 800ms, opacity 1s;
+    border-radius: 50%;
+    pointer-events: none;
+    background-color: #EEEEEE;
+}
+
+.ripple:not(.focus):active::before, .ripple.focus:active:not(:focus-within)::before {
+    transition: 0s;
+    opacity: .5;
+    transform: translate(-50%, -50%) scale(0);
 }

@@ -1,9 +1,13 @@
+import LayerManager from "./LayerManager.js";
+
 import Mouse from "./Mouse.js";
 
 export default class {
 	constructor(view) {
 		this.view = view;
 		this.view.setAttribute("viewBox", `0 0 ${view.width.baseVal.value} ${view.height.baseVal.value}`);
+
+		this.layers.create();
 
 		this.mouse = new Mouse(this);
 		this.mouse.init();
@@ -16,11 +20,35 @@ export default class {
 	#fill = false;
 	color = localStorage.getItem("--color") || "skyblue";
 	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+	layerText = document.createElementNS("http://www.w3.org/2000/svg", "text");
 	line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 	circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 	rectangle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 	eraser = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+	#layer = 1;
+	layers = new LayerManager();
 	#lines = []
+	get layerDepth() {
+		return this.#layer;
+	}
+	set layerDepth(layer) {
+		clearTimeout(this.layerText.timeout);
+
+		this.layerText.setAttribute("x", this.view.width.baseVal.value / 2);
+		this.layerText.setAttribute("y", 20 + this.viewBox.y);
+		this.layerText.setAttribute("fill", this.color);
+		this.layerText.innerHTML = "Layer " + layer;
+		this.view.appendChild(this.layerText);
+
+		this.layerText.timeout = setTimeout(() => {
+			this.layerText.remove();
+		}, 2000);
+
+		this.#layer = layer;
+	}
+	get layer() {
+		return this.layers.get(this.#layer);
+	}
 	get tool() {
 		return this.#tool;
 	}
@@ -32,6 +60,8 @@ export default class {
 		this.rectangle.remove();
 		this.eraser.remove();
 		
+		this.view.parentElement.style.cursor = tool === "camera" ? "move" : "default";
+
 		this.text.setAttribute("x", 5 + this.viewBox.x);
 		this.text.setAttribute("y", 20 + this.viewBox.y);
 		this.text.setAttribute("fill", this.color);
@@ -48,7 +78,7 @@ export default class {
 		}
 
 		this.text.timeout = setTimeout(() => {
-			this.view.removeChild(this.text);
+			this.text.remove();
 		}, 2000);
 
 		this.#tool = tool;
@@ -73,7 +103,6 @@ export default class {
 	mouseDown(event) {
 		if (event.button === 1) {
 			this.tool = this.#tool === "line" ? "brush" : this.#tool === "brush" ? "eraser" : this.#tool === "eraser" ? "camera" : "line";
-			view.parentElement.style.cursor = this.#tool === "camera" ? "move" : "default";
 
 			this.line.remove();
 			this.eraser.remove();
@@ -85,17 +114,13 @@ export default class {
 				this.eraser.setAttribute("cy", this.mouse.position.y);
 				this.eraser.setAttribute("r", this.toolSize * 5);
 				view.appendChild(this.eraser);
-				
-				if (this.mouse.isDown && !this.mouse.isAlternate) {
-					this.#lines.forEach(line => line.erase(event));
-				}
 			}
 
 			return;
 		} else if (event.button === 2) {
 			// open colour palette
-			colour.style.left = this.mouse.position.x + "px";
-			colour.style.top = this.mouse.position.y + "px";
+			colour.style.left = this.mouse.real.x + "px";
+			colour.style.top = this.mouse.real.y + "px";
 			setTimeout(() => {
 				colour.click();
 			});
@@ -104,7 +129,7 @@ export default class {
 		}
 		
 		if (this.#tool === "eraser") {
-			this.#lines.forEach(line => line.erase(event));
+			this.layer.lines.filter(line => !!line.parentElement).forEach(line => line.erase(event))
 		}
 
 		if (!this.mouse.isAlternate) {
@@ -116,7 +141,7 @@ export default class {
 				this.view.appendChild(this.text);
 
 				this.text.timeout = setTimeout(() => {
-					this.view.removeChild(this.text);
+					this.text.remove();
 				}, 2000);
 
 				return;
@@ -169,7 +194,7 @@ export default class {
 			view.appendChild(this.eraser);
 			
 			if (this.mouse.isDown && !this.mouse.isAlternate) {
-				this.#lines.forEach(line => line.erase(event));
+				this.layer.lines.filter(line => !!line.parentElement).forEach(line => line.erase(event));
 			}
 			
 			return;
@@ -234,14 +259,8 @@ export default class {
 					}
 				}
 
-				line._remove = line.remove;
-				line.remove = () => {
-					this.#lines.splice(this.#lines.indexOf(line), 1);
-					line._remove();
-				}
-
 				view.prepend(line);
-				this.#lines.push(line);
+				this.layer.lines.push(line);
 				
 				this.mouse.pointA = this.mouse.position;
 			} else if (this.#tool === "circle") {
@@ -334,14 +353,9 @@ export default class {
 						}
 					}
 
-					line._remove = line.remove;
-					line.remove = () => {
-						this.#lines.splice(this.#lines.indexOf(line), 1);
-						line._remove();
-					}
-
 					view.prepend(line);
-					this.#lines.push(line);
+					this.layer.lines.push(line);
+					
 					break;
 
 				case "circle":
@@ -403,7 +417,7 @@ export default class {
 					}
 
 					this.view.prepend(circle);
-					this.#lines.push(circle);
+					this.layer.lines.push(circle);
 
 					break;
 
@@ -464,7 +478,7 @@ export default class {
 					}
 
 					view.prepend(rectangle);
-					this.#lines.push(rectangle);
+					this.layer.lines.push(rectangle);
 
 					break;
 			}
