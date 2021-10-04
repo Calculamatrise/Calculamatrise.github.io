@@ -27,7 +27,8 @@ export default class {
 	eraser = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 	#layer = 1;
 	layers = new LayerManager();
-	#lines = []
+	#events = []
+	#cache = []
 	get layerDepth() {
 		return this.#layer;
 	}
@@ -100,6 +101,58 @@ export default class {
 			y: parseInt(viewBox[1])
 		}
 	}
+	undo() {
+		if (this.#events.length < 1) {
+			return;
+		}
+
+		const event = this.#events.pop();
+		switch(event.action) {
+			case "add":
+				event.value.remove();
+
+				event.action = "remove";
+				break;
+
+			case "remove":
+				this.view.prepend(event.value);
+
+				event.action = "add";
+				break;
+		}
+
+		if (this.#cache.length > 5000) {
+			return;
+		}
+
+		return this.#cache.push(event);
+	}
+	redo() {
+		if (this.#cache.length < 1) {
+			return;
+		}
+
+		const event = this.#cache.pop();
+		switch(event.action) {
+			case "add":
+				event.value.remove();
+
+				event.action = "remove";
+				break;
+
+			case "remove":
+				this.view.prepend(event.value);
+
+				event.action = "add";
+				break;
+		}
+
+		if (this.#events.length > 5000) {
+			return;
+		}
+
+		return this.#events.push(event);
+	}
 	mouseDown(event) {
 		if (event.button === 1) {
 			this.tool = this.#tool === "line" ? "brush" : this.#tool === "brush" ? "eraser" : this.#tool === "eraser" ? "camera" : "line";
@@ -129,7 +182,14 @@ export default class {
 		}
 		
 		if (this.#tool === "eraser") {
-			this.layer.lines.filter(line => !!line.parentElement).forEach(line => line.erase(event))
+			this.layer.lines.filter(line => !!line.parentElement).forEach(line => {
+				if (line.erase(event)) {
+					this.#events.push({
+						action: "remove",
+						value: line
+					});
+				}
+			});
 		}
 
 		if (!this.mouse.isAlternate) {
@@ -194,7 +254,14 @@ export default class {
 			view.appendChild(this.eraser);
 			
 			if (this.mouse.isDown && !this.mouse.isAlternate) {
-				this.layer.lines.filter(line => !!line.parentElement).forEach(line => line.erase(event));
+				this.layer.lines.filter(line => !!line.parentElement).forEach(line => {
+					if (line.erase(event)) {
+						this.#events.push({
+							action: "remove",
+							value: line
+						});
+					}
+				});
 			}
 			
 			return;
@@ -260,11 +327,19 @@ export default class {
 					len = Math.sqrt(res.x ** 2 + res.y ** 2);
 					if (len <= window.canvas.toolSize * 5) {
 						this.remove();
+
+						return true;
 					}
+
+					return false;
 				}
 
 				view.prepend(line);
 				this.layer.lines.push(line);
+				this.#events.push({
+					action: "add",
+					value: line
+				});
 				
 				this.mouse.pointA = this.mouse.position;
 			} else if (this.#tool === "circle") {
@@ -354,11 +429,19 @@ export default class {
 						len = Math.sqrt(res.x ** 2 + res.y ** 2);
 						if (len <= window.canvas.toolSize * 5) {
 							this.remove();
+
+							return true;
 						}
+
+						return false;
 					}
 
 					view.prepend(line);
 					this.layer.lines.push(line);
+					this.#events.push({
+						action: "add",
+						value: line
+					});
 					
 					break;
 
@@ -417,11 +500,19 @@ export default class {
 						len = Math.sqrt(res.x ** 2 + res.y ** 2);
 						if (len <= window.canvas.toolSize * 5) {
 							this.remove();
+
+							return true;
 						}
+
+						return false;
 					}
 
 					this.view.prepend(circle);
 					this.layer.lines.push(circle);
+					this.#events.push({
+						action: "add",
+						value: circle
+					});
 
 					break;
 
@@ -478,11 +569,19 @@ export default class {
 						len = Math.sqrt(res.x ** 2 + res.y ** 2);
 						if (len <= window.canvas.toolSize * 5) {
 							this.remove();
+
+							return true;
 						}
+
+						return false;
 					}
 
 					view.prepend(rectangle);
 					this.layer.lines.push(rectangle);
+					this.#events.push({
+						action: "add",
+						value: rectangle
+					});
 
 					break;
 			}

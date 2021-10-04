@@ -90,6 +90,14 @@ document.addEventListener("keydown", function(event) {
 
 			window.canvas.layerDepth = window.canvas.layerDepth - 1;
 			break;
+
+		case "z":
+			window.canvas.undo();
+			break;
+
+		case "x":
+			window.canvas.redo();
+			break;
 	}
 });
 
