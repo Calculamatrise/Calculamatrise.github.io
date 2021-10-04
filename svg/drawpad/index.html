@@ -25,7 +25,7 @@
                     <button onclick="window.canvas.layers.create(), window.canvas.layerDepth = window.canvas.layerDepth + 1;">New Layer</button>
                 </div>
                 <span id="settings" onclick="console.log('works')" style="visibility: hidden">Settings</span>
-                <input type="color" id="colour" oninput="localStorage.setItem('--color', this.value), window.canvas.color = this.value, console.log(window.canvas)">
+                <input type="color" id="colour" oninput="localStorage.setItem('--color', this.value), window.canvas.color = this.value;">
             </div>
             <link rel="stylesheet" href="style.css">
             <script type="module" src="bootstrap.js"></script>

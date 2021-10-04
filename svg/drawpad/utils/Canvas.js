@@ -29,6 +29,18 @@ export default class {
 	#layer = 1;
 	layers = new LayerManager();
 	#events = new EventHandler();
+	get container() {
+		const container = document.createElementNS("http://www.w3.org/2000/svg", "g");
+		container.style.setProperty("z-index", this.#layer);
+		container._appendChild = container.appendChild;
+		container.appendChild = function(element) {
+			container._appendChild(element);
+
+			return this;
+		}
+
+		return container;
+	}
 	get layerDepth() {
 		return this.#layer;
 	}
@@ -150,7 +162,7 @@ export default class {
 				this.eraser.setAttribute("cx", this.mouse.position.x);
 				this.eraser.setAttribute("cy", this.mouse.position.y);
 				this.eraser.setAttribute("r", this.toolSize * 5);
-				view.appendChild(this.eraser);
+				this.view.appendChild(this.eraser);
 			}
 
 			return;
@@ -196,7 +208,7 @@ export default class {
 				this.line.setAttribute("x2", this.mouse.position.x);
 				this.line.setAttribute("y2", this.mouse.position.y);
 				this.line.setAttribute("stroke", this.color);
-				view.prepend(this.line);
+				this.view.prepend(this.line);
 			} else if (this.#tool === "circle") {
 				this.circle.setAttribute("stroke-width", this.toolSize);
 				this.circle.setAttribute("cx", this.mouse.pointA.x);
@@ -204,7 +216,7 @@ export default class {
 				this.circle.setAttribute("r", 1);
 				this.circle.setAttribute("stroke", this.color);
 				this.circle.setAttribute("fill", this.#fill ? this.color : "#FFFFFF00");
-				view.prepend(this.circle);
+				this.view.prepend(this.circle);
 			} else if (this.#tool === "rectangle") {
 				this.rectangle.setAttribute("stroke-width", this.toolSize);
 				this.rectangle.setAttribute("x", this.mouse.pointA.x);
@@ -214,7 +226,7 @@ export default class {
 				this.rectangle.setAttribute("stroke", this.color);
 				this.rectangle.setAttribute("fill", this.#fill ? this.color : "#FFFFFF00");
 				this.rectangle.setAttribute("rx", .5);
-				view.prepend(this.rectangle);
+				this.view.prepend(this.rectangle);
 			}
 		}
 		
@@ -235,7 +247,7 @@ export default class {
 			this.eraser.setAttribute("cx", this.mouse.position.x);
 			this.eraser.setAttribute("cy", this.mouse.position.y);
 			this.eraser.setAttribute("r", this.toolSize * 5);
-			view.appendChild(this.eraser);
+			this.view.appendChild(this.eraser);
 			
 			if (this.mouse.isDown && !this.mouse.isAlternate) {
 				this.layer.lines.filter(line => !!line.parentElement).forEach(line => {
@@ -318,7 +330,10 @@ export default class {
 					return false;
 				}
 
-				view.prepend(line);
+				if (!this.layer.hidden) {
+					this.view.prepend(line);
+				}
+
 				this.layer.lines.push(line);
 				this.#events.push({
 					action: "add",
@@ -420,7 +435,10 @@ export default class {
 						return false;
 					}
 
-					view.prepend(line);
+					if (!this.layer.hidden) {
+						this.view.prepend(line);
+					}
+
 					this.layer.lines.push(line);
 					this.#events.push({
 						action: "add",
@@ -491,7 +509,10 @@ export default class {
 						return false;
 					}
 
-					this.view.prepend(circle);
+					if (!this.layer.hidden) {
+						this.view.prepend(circle);
+					}
+
 					this.layer.lines.push(circle);
 					this.#events.push({
 						action: "add",
@@ -560,7 +581,10 @@ export default class {
 						return false;
 					}
 
-					view.prepend(rectangle);
+					if (!this.layer.hidden) {
+						this.view.prepend(rectangle);
+					}
+
 					this.layer.lines.push(rectangle);
 					this.#events.push({
 						action: "add",
