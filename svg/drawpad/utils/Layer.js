@@ -31,7 +31,6 @@ export default class {
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
-        checkbox.innerText = "Delete";
 
         const option = document.createElement("div");
         option.className = "option ripple";
@@ -42,6 +41,28 @@ export default class {
         });
 
         option.prepend(checkbox);
+
+        const range = document.createElement("input");
+        range.type = "range";
+        range.setAttribute("min", 0);
+        range.setAttribute("max", 100);
+        range.setAttribute("value", 100);
+        range.style.setProperty("width", "100px");
+        range.style.setProperty("pointer-events", "all");
+
+        const optionTwo = document.createElement("div");
+        optionTwo.className = "option ripple";
+        optionTwo.innerText = "Opacity";
+        optionTwo.style.setProperty("flex-direction", "column");
+        optionTwo.addEventListener("mousemove", (event) => {
+            if (event.buttons !== 1) {
+                return;
+            }
+            
+            this.opacity = range.value / 100;
+        });
+
+        optionTwo.appendChild(range);
 
         const clearButton = document.createElement("button");
         clearButton.innerText = "Clear";
@@ -78,7 +99,7 @@ export default class {
 
         options.className = "options";
 
-        options.append(option, clearButton, deleteButton);
+        options.append(optionTwo, option, clearButton, deleteButton);
         this.element.append(options);
         layers.append(this.element);
 
@@ -86,12 +107,18 @@ export default class {
     }
     hidden = false;
     lines = []
-    clear() {
-        for (const line of this.lines) {
-            line.remove();
-        }
+    get opacity() {
+        return this.alpha;
+    }
+    set opacity(alpha) {
+        this.alpha = alpha;
 
-        this.lines = []
+        this.redraw();
+    }
+    redraw() {
+        for (const line of this.lines) {
+            line.style.setProperty("opacity", this.alpha);
+        }
     }
     toggleVisiblity() {
         this.hidden = !this.hidden;
@@ -104,6 +131,13 @@ export default class {
                 window.canvas.view.prepend(line);
             }
         }
+    }
+    clear() {
+        for (const line of this.lines) {
+            line.remove();
+        }
+
+        this.lines = []
     }
     remove() {
         this.element.remove();
