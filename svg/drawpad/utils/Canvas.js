@@ -218,6 +218,10 @@ export default class {
 			this.line.setAttribute("stroke", this.color);
 			
 			if (this.#tool === "brush") {
+				if (this.mouse.pointA.x === this.mouse.position.x && this.mouse.pointA.y === this.mouse.position.y) {
+					return;
+				}
+				
 				const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 				line.setAttribute("stroke-width", this.toolSize);
 				line.setAttribute("x1", this.mouse.pointA.x);
@@ -308,7 +312,7 @@ export default class {
 			this.rectangle.remove();
 			switch(this.#tool) {
 				case "line":
-					if (this.mouse.pointA.x === this.mouse.position.x && this.mouse.pointA.y === this.mouse.position.y) {
+					if (this.mouse.pointA.x === this.mouse.pointB.x && this.mouse.pointA.y === this.mouse.pointB.y) {
 						return;
 					}
 					

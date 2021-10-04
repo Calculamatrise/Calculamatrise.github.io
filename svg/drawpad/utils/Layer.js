@@ -16,13 +16,17 @@ export default class {
 
             this.style.cursor = "pointer";
         });
-        this.element.addEventListener("click", function(event) {
-            if (event.target.className !== this.className) {
+        this.element.addEventListener("click", event => {
+            if (event.target.className !== this.element.className) {
                 return;
             }
 
-            const options = this.querySelector(".options");
+            /*
+            const options = this.element.querySelector(".options");
             options.style.display = options.style.display === "block" ? "none" : "block";
+            */
+
+            window.canvas.layerDepth = this.id;
         });
 
         const checkbox = document.createElement("input");
