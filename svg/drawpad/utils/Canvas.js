@@ -1,3 +1,4 @@
+import EventHandler from "./EventHandler.js";
 import LayerManager from "./LayerManager.js";
 
 import Mouse from "./Mouse.js";
@@ -27,8 +28,7 @@ export default class {
 	eraser = document.createElementNS("http://www.w3.org/2000/svg", "circle");
 	#layer = 1;
 	layers = new LayerManager();
-	#events = []
-	#cache = []
+	#events = new EventHandler();
 	get layerDepth() {
 		return this.#layer;
 	}
@@ -102,56 +102,40 @@ export default class {
 		}
 	}
 	undo() {
-		if (this.#events.length < 1) {
-			return;
-		}
-
 		const event = this.#events.pop();
-		switch(event.action) {
-			case "add":
-				event.value.remove();
+		if (event) {
+			switch(event.action) {
+				case "add":
+					event.value.remove();
+					break;
 
-				event.action = "remove";
-				break;
+				case "remove":
+					this.view.prepend(event.value);
+					break;
+			}
 
-			case "remove":
-				this.view.prepend(event.value);
-
-				event.action = "add";
-				break;
+			return event;
 		}
 
-		if (this.#cache.length > 5000) {
-			return;
-		}
-
-		return this.#cache.push(event);
+		return null;
 	}
 	redo() {
-		if (this.#cache.length < 1) {
-			return;
+		const event = this.#events.cache.pop();
+		if (event) {
+			switch(event.action) {
+				case "add":
+					this.view.prepend(event.value);
+					break;
+
+				case "remove":
+					event.value.remove();
+					break;
+			}
+
+			return event;
 		}
 
-		const event = this.#cache.pop();
-		switch(event.action) {
-			case "add":
-				event.value.remove();
-
-				event.action = "remove";
-				break;
-
-			case "remove":
-				this.view.prepend(event.value);
-
-				event.action = "add";
-				break;
-		}
-
-		if (this.#events.length > 5000) {
-			return;
-		}
-
-		return this.#events.push(event);
+		return null;
 	}
 	mouseDown(event) {
 		if (event.button === 1) {
