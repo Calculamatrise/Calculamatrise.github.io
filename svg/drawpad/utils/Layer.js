@@ -67,12 +67,6 @@ export default class {
         const clearButton = document.createElement("button");
         clearButton.innerText = "Clear";
         clearButton.addEventListener("click", () => {
-            if (this.parent.cache.length <= 1) {
-                alert("You must have at least one layer at all times!");
-
-                return;
-            }
-
             if (confirm(`Are you sure you\'d like to clear Layer ${this.id}?`)) {
                 this.clear();
             }

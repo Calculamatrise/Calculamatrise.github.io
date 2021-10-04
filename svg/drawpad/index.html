@@ -12,20 +12,60 @@
         <meta property="og:url" content="https://calculamatrise.github.io/">
         <script src="/bootstrap.js" type="module"></script>
     </head>
-    <body>
+    <body onload="
+        document.querySelector('#primary').parentElement.style.setProperty('background-color', window.canvas.primary + '40');
+        document.querySelector('#primary').value = window.canvas.primary;
+
+        document.querySelector('#secondary').parentElement.style.setProperty('background-color', window.canvas.secondary + '40');
+        document.querySelector('#secondary').value = window.canvas.secondary;
+    ">
         <div class="content">
             <div id="container">
                 <svg id="view">
                     Sorry, your browser does not support inline SVG.
                 </svg>
-                <div id="ui">
+                <div class="ui top-left">
+                    <button onclick="
+                        document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'flex' ? 'none' : 'flex';
+                        this.innerText = `${this.innerText === 'Show Toolbar' ? 'Hide' : 'Show'} Toolbar`;
+                    ">Show Toolbar</button>
+                    <div id="toolbar" >
+                        <button onclick="window.canvas.tool = 'line';">Line</button>
+                        <button onclick="window.canvas.tool = 'brush';">Brush</button>
+                        <button onclick="window.canvas.tool = 'circle';">Circle</button>
+                        <button onclick="window.canvas.tool = 'rectangle';">Rectangle</button>
+                    </div>
+                </div>
+                <div class="ui bottom-left">
+                    <div class="option ripple" onclick="
+                        this.firstElementChild.click();
+                    ">
+                        <input type="color" id="primary" oninput="
+                            window.canvas.primary = this.value;
+                            this.parentElement.style.setProperty('background-color', this.value + '40');
+                        ">
+                        Primary Colour
+                    </div>
+                    <div class="option ripple disabled" onclick="
+                        this.firstElementChild.click();
+                    ">
+                        <input type="color" id="secondary" oninput="
+                            window.canvas.secondary = this.value;
+                            this.parentElement.style.setProperty('background-color', this.value + '40');
+                        ">
+                        Secondary Colour
+                    </div>
+                </div>
+                <div class="ui top-right">
                     <button onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'block' ? 'none' : 'block';">Layers</button>
                 </div>
                 <div id="layers">
                     <button onclick="window.canvas.layers.create(), window.canvas.layerDepth = window.canvas.layerDepth + 1;">New Layer</button>
                 </div>
-                <span id="settings" onclick="console.log('works')" style="visibility: hidden">Settings</span>
-                <input type="color" id="colour" oninput="localStorage.setItem('--color', this.value), window.canvas.color = this.value;">
+                <div id="settings">
+                    <button onclick="window.canvas.layerDepth = window.canvas.layerDepth + 1;">Null</button>
+                </div>
+                <input type="color" id="colour" oninput="localStorage.setItem('primaryColor', this.value), window.canvas.color = this.value;">
             </div>
             <link rel="stylesheet" href="style.css">
             <script type="module" src="bootstrap.js"></script>

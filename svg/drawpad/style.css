@@ -20,16 +20,64 @@ div#container {
 	position: relative;
 }
 
-div#container div#ui {
-	top: 0;
-	right: 0;
+div#container div.ui {
 	margin: 10px;
 	color: var(--text);
-	position: absolute;
+	position: fixed;
 	display: inline-block;
 }
 
-div#container div#ui button, div#container div#layers button {
+div#container div.ui.top-right {
+	top: 0;
+	right: 0;
+}
+
+div#container div.ui.bottom-left {
+	bottom: 0;
+	left: 0;
+}
+
+div#container div.ui.top-left {
+	top: 0;
+	left: 0;
+}
+
+div#container div.ui.top-left #toolbar {
+	display: none;
+	flex-direction: column;
+}
+
+div#container div.ui.bottom-left .option {
+	width: 130px;
+	height: 45px;
+	display: flex;
+	font-size: small;
+	overflow: hidden;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+}
+
+div#container div.ui.bottom-left .option.disabled {
+	opacity: .5;
+	pointer-events: none;
+}
+
+div#container div.ui.bottom-left .option input {
+	display: none;
+	margin-right: 8px;
+	pointer-events: none;
+    border: 1px solid rgba(172, 111, 111, 0.2);
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding: 0;
+    width: 13px;
+    height: 13px;
+    background: #000000;
+	-webkit-appearance: none;
+}
+
+div#container div.ui button, div#container div#layers button {
 	background-color: transparent;
 }
 

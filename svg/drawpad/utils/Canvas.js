@@ -19,7 +19,8 @@ export default class {
 	#tool = "line";
 	toolSize = 4;
 	#fill = false;
-	color = localStorage.getItem("--color") || "skyblue";
+	#primary = "#87CEEB";
+	#secondary = "#967BB6";
 	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 	layerText = document.createElementNS("http://www.w3.org/2000/svg", "text");
 	line = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -29,17 +30,21 @@ export default class {
 	#layer = 1;
 	layers = new LayerManager();
 	#events = new EventHandler();
-	get container() {
-		const container = document.createElementNS("http://www.w3.org/2000/svg", "g");
-		container.style.setProperty("z-index", this.#layer);
-		container._appendChild = container.appendChild;
-		container.appendChild = function(element) {
-			container._appendChild(element);
+	get primary() {
+		return localStorage.getItem("primaryColor") || this.#primary;
+	}
+	set primary(color) {
+		localStorage.setItem("primaryColor", color);
 
-			return this;
-		}
+		this.#primary = color;
+	}
+	get secondary() {
+		return localStorage.getItem("secondaryColor") || this.#secondary;
+	}
+	set secondary(color) {
+		localStorage.setItem("secondaryColor", color);
 
-		return container;
+		this.#secondary = color;
 	}
 	get layerDepth() {
 		return this.#layer;
@@ -49,7 +54,7 @@ export default class {
 
 		this.layerText.setAttribute("x", this.view.width.baseVal.value / 2);
 		this.layerText.setAttribute("y", 20 + this.viewBox.y);
-		this.layerText.setAttribute("fill", this.color);
+		this.layerText.setAttribute("fill", this.primary);
 		this.layerText.innerHTML = "Layer " + layer;
 		this.view.appendChild(this.layerText);
 
@@ -75,10 +80,10 @@ export default class {
 		
 		this.view.parentElement.style.cursor = tool === "camera" ? "move" : "default";
 
-		this.text.setAttribute("x", 5 + this.viewBox.x);
-		this.text.setAttribute("y", 20 + this.viewBox.y);
-		this.text.setAttribute("fill", this.color);
 		this.text.innerHTML = tool.charAt(0).toUpperCase() + tool.slice(1);
+		this.text.setAttribute("x", this.view.width.baseVal.value / 2 - this.text.innerHTML.length * 2 + this.viewBox.x);
+		this.text.setAttribute("y", 20 + this.viewBox.y);
+		this.text.setAttribute("fill", this.primary);
 		this.view.appendChild(this.text);
 
 		if (tool === "eraser") {
@@ -100,9 +105,9 @@ export default class {
 		return this.#fill;
 	}
 	set fill(boolean) {
-		this.text.setAttribute("fill", boolean ? this.color : "#FFFFFF00");
-		this.circle.setAttribute("fill", boolean ? this.color : "#FFFFFF00");
-		this.rectangle.setAttribute("fill", boolean ? this.color : "#FFFFFF00");
+		this.text.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
+		this.circle.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
+		this.rectangle.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
 
 		this.#fill = boolean;
 	}
@@ -189,11 +194,13 @@ export default class {
 		}
 
 		if (!this.mouse.isAlternate) {
-			if (this.#tool === "camera" || event.shiftKey) {
-				this.text.setAttribute("x", 5 + this.viewBox.x);
-				this.text.setAttribute("y", 20 + this.viewBox.y);
-				this.text.setAttribute("fill", this.color);
+			if (event.shiftKey) {
+				clearTimeout(this.text.timeout);
+
 				this.text.innerHTML = "Camera";
+				this.text.setAttribute("x", this.view.width.baseVal.value / 2 - this.text.innerHTML.length * 2 + this.viewBox.x);
+				this.text.setAttribute("y", 20 + this.viewBox.y);
+				this.text.setAttribute("fill", this.primary);
 				this.view.appendChild(this.text);
 
 				this.text.timeout = setTimeout(() => {
@@ -207,15 +214,15 @@ export default class {
 				this.line.setAttribute("y1", this.mouse.pointA.y);
 				this.line.setAttribute("x2", this.mouse.position.x);
 				this.line.setAttribute("y2", this.mouse.position.y);
-				this.line.setAttribute("stroke", this.color);
+				this.line.setAttribute("stroke", this.primary);
 				this.view.prepend(this.line);
 			} else if (this.#tool === "circle") {
 				this.circle.setAttribute("stroke-width", this.toolSize);
 				this.circle.setAttribute("cx", this.mouse.pointA.x);
 				this.circle.setAttribute("cy", this.mouse.pointA.y);
 				this.circle.setAttribute("r", 1);
-				this.circle.setAttribute("stroke", this.color);
-				this.circle.setAttribute("fill", this.#fill ? this.color : "#FFFFFF00");
+				this.circle.setAttribute("stroke", this.primary);
+				this.circle.setAttribute("fill", this.#fill ? this.primary : "#FFFFFF00");
 				this.view.prepend(this.circle);
 			} else if (this.#tool === "rectangle") {
 				this.rectangle.setAttribute("stroke-width", this.toolSize);
@@ -223,8 +230,8 @@ export default class {
 				this.rectangle.setAttribute("y", this.mouse.pointA.y);
 				this.rectangle.setAttribute("width", 1);
 				this.rectangle.setAttribute("height", 1);
-				this.rectangle.setAttribute("stroke", this.color);
-				this.rectangle.setAttribute("fill", this.#fill ? this.color : "#FFFFFF00");
+				this.rectangle.setAttribute("stroke", this.primary);
+				this.rectangle.setAttribute("fill", this.#fill ? this.primary : "#FFFFFF00");
 				this.rectangle.setAttribute("rx", .5);
 				this.view.prepend(this.rectangle);
 			}
@@ -235,7 +242,7 @@ export default class {
 	mouseMove(event) {
 		if (this.mouse.isDown && !this.mouse.isAlternate && event.shiftKey) {
 			this.view.setAttribute("viewBox", `${this.viewBox.x - event.movementX} ${this.viewBox.y - event.movementY} ${window.innerWidth} ${window.innerHeight}`);
-			this.text.setAttribute("x", 5 + this.viewBox.x);
+			this.text.setAttribute("x", this.view.width.baseVal.value / 2 - this.text.innerHTML.length * 2 + this.viewBox.x);
 			this.text.setAttribute("y", 20 + this.viewBox.y);
 
 			return;
@@ -278,7 +285,7 @@ export default class {
 			this.line.setAttribute("y1", this.mouse.pointA.y);
 			this.line.setAttribute("x2", this.mouse.position.x);
 			this.line.setAttribute("y2", this.mouse.position.y);
-			this.line.setAttribute("stroke", this.color);
+			this.line.setAttribute("stroke", this.primary);
 			
 			if (this.#tool === "brush") {
 				if (this.mouse.pointA.x === this.mouse.position.x && this.mouse.pointA.y === this.mouse.position.y) {
@@ -291,7 +298,7 @@ export default class {
 				line.setAttribute("y1", this.mouse.pointA.y);
 				line.setAttribute("x2", this.mouse.position.x);
 				line.setAttribute("y2", this.mouse.position.y);
-				line.setAttribute("stroke", this.color);
+				line.setAttribute("stroke", this.primary);
 				line.erase = function(event) {
 					let vector = {
 						x: (parseInt(this.getAttribute("x2")) - window.canvas.viewBox.x) - (parseInt(this.getAttribute("x1")) - window.canvas.viewBox.x),
@@ -396,7 +403,7 @@ export default class {
 					line.setAttribute("y1", this.mouse.pointA.y);
 					line.setAttribute("x2", this.mouse.pointB.x);
 					line.setAttribute("y2", this.mouse.pointB.y);
-					line.setAttribute("stroke", this.color);
+					line.setAttribute("stroke", this.primary);
 					line.erase = function(event) {
 						let vector = {
 							x: (parseInt(this.getAttribute("x2")) - window.canvas.viewBox.x) - (parseInt(this.getAttribute("x1")) - window.canvas.viewBox.x),
@@ -452,8 +459,8 @@ export default class {
 					circle.setAttribute("stroke-width", this.toolSize);
 					circle.setAttribute("cx", this.mouse.pointA.x);
 					circle.setAttribute("cy", this.mouse.pointA.y);
-					circle.setAttribute("stroke", this.color);
-					circle.setAttribute("fill", this.#fill ? this.color : "#FFFFFF00");
+					circle.setAttribute("stroke", this.primary);
+					circle.setAttribute("fill", this.#fill ? this.primary : "#FFFFFF00");
 
 					let sumX = this.mouse.position.x - this.mouse.pointA.x;
 					if (sumX < 0) {
@@ -540,8 +547,8 @@ export default class {
 					}
 
 					rectangle.setAttribute("stroke-width", this.toolSize);
-					rectangle.setAttribute("stroke", this.color);
-					rectangle.setAttribute("fill", this.#fill ? this.color : "#FFFFFF00");
+					rectangle.setAttribute("stroke", this.primary);
+					rectangle.setAttribute("fill", this.#fill ? this.primary : "#FFFFFF00");
 					rectangle.setAttribute("rx", .5);
 					rectangle.erase = function(event) {
 						let vector = {
