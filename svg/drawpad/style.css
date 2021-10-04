@@ -64,17 +64,11 @@ div#container div.ui.bottom-left .option.disabled {
 }
 
 div#container div.ui.bottom-left .option input {
-	display: none;
-	margin-right: 8px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	visibility: hidden;
 	pointer-events: none;
-    border: 1px solid rgba(172, 111, 111, 0.2);
-    box-sizing: border-box;
-    border-radius: 4px;
-    padding: 0;
-    width: 13px;
-    height: 13px;
-    background: #000000;
-	-webkit-appearance: none;
 }
 
 div#container div.ui button, div#container div#layers button {

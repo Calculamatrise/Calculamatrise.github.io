@@ -13,11 +13,8 @@
         <script src="/bootstrap.js" type="module"></script>
     </head>
     <body onload="
-        document.querySelector('#primary').parentElement.style.setProperty('background-color', window.canvas.primary + '40');
-        document.querySelector('#primary').value = window.canvas.primary;
-
-        document.querySelector('#secondary').parentElement.style.setProperty('background-color', window.canvas.secondary + '40');
-        document.querySelector('#secondary').value = window.canvas.secondary;
+        document.querySelector('#primary').parentElement.style.setProperty('background-color', (document.querySelector('#primary').value = window.canvas.primary) + '40');
+        document.querySelector('#secondary').parentElement.style.setProperty('background-color', (document.querySelector('#secondary').value = window.canvas.secondary) + '40');
     ">
         <div class="content">
             <div id="container">
@@ -25,10 +22,7 @@
                     Sorry, your browser does not support inline SVG.
                 </svg>
                 <div class="ui top-left">
-                    <button onclick="
-                        document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'flex' ? 'none' : 'flex';
-                        this.innerText = `${this.innerText === 'Show Toolbar' ? 'Hide' : 'Show'} Toolbar`;
-                    ">Show Toolbar</button>
+                    <button onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'flex' ? 'none' : 'flex') === 'flex' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
                     <div id="toolbar" >
                         <button onclick="window.canvas.tool = 'line';">Line</button>
                         <button onclick="window.canvas.tool = 'brush';">Brush</button>
@@ -37,22 +31,12 @@
                     </div>
                 </div>
                 <div class="ui bottom-left">
-                    <div class="option ripple" onclick="
-                        this.firstElementChild.click();
-                    ">
-                        <input type="color" id="primary" oninput="
-                            window.canvas.primary = this.value;
-                            this.parentElement.style.setProperty('background-color', this.value + '40');
-                        ">
+                    <div class="option ripple" onclick="this.firstElementChild.click();">
+                        <input type="color" id="primary" oninput="this.parentElement.style.setProperty('background-color', (window.canvas.primary = this.value) + '40');">
                         Primary Colour
                     </div>
-                    <div class="option ripple disabled" onclick="
-                        this.firstElementChild.click();
-                    ">
-                        <input type="color" id="secondary" oninput="
-                            window.canvas.secondary = this.value;
-                            this.parentElement.style.setProperty('background-color', this.value + '40');
-                        ">
+                    <div class="option ripple disabled" onclick="this.firstElementChild.click();">
+                        <input type="color" id="secondary" oninput="this.parentElement.style.setProperty('background-color', (window.canvas.secondary = this.value) + '40');">
                         Secondary Colour
                     </div>
                 </div>
