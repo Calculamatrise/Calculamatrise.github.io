@@ -11,6 +11,10 @@ body {
 	overflow: hidden;
 }
 
+nav {
+	display: none;
+}
+
 div.content {
 	padding: 0;
 	overflow: hidden;
