@@ -5,7 +5,7 @@ export default class {
 		this.position = new Vector(x, y);
 		this.old = new Vector(x, y);
 	}
-	size = 1;
+	size = 10;
 	draw(ctx) {
 		ctx.save();
 		ctx.fillStyle = JSON.parse(localStorage.getItem("dark")) ? "white" : "black";

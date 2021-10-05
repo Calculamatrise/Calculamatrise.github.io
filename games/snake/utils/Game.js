@@ -106,35 +106,35 @@ export default class {
 		this.draw();
 	}
 	draw() {
-		const ctx = this.canvas.getContext("2d");
-		ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		this.ctx = this.canvas.getContext("2d");
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		for (const button of this.buttons)
-			button.draw(ctx);
+			button.draw(this.ctx);
 		
 		for (const player of this.players) {
 			if (player.dead) {
 				const text = `Player ${player.id} died. Click to restart.`;
-				ctx.save();
-				ctx.font = "20px Arial";
-				ctx.fillStyle = "red";
-				ctx.fillText(text, this.canvas.width / 2 - text.length * 4, this.canvas.height / 2);
-				ctx.restore();
+				this.ctx.save();
+				this.ctx.font = "20px Arial";
+				this.ctx.fillStyle = "red";
+				this.ctx.fillText(text, this.canvas.width / 2 - text.length * 4, this.canvas.height / 2);
+				this.ctx.restore();
 				
 				return;
 			}
 
-			ctx.save();
-			ctx.fillStyle = JSON.parse(localStorage.getItem("dark")) ? "#FFFFFFA5" : "#000000A5";
-			ctx.fillText(`Score - ${player.consumed}`, 10, 15 * player.id);
-			ctx.fillText(`High Score - ${this.best}`, 10, 30 * player.id);
-			ctx.fillText(`High Score (today) - ${this.bestToday}`, 10, 45 * player.id);
-			ctx.restore();
+			this.ctx.save();
+			this.ctx.fillStyle = JSON.parse(localStorage.getItem("dark")) ? "#FFFFFFA5" : "#000000A5";
+			this.ctx.fillText(`Score - ${player.consumed}`, 10, 15 * player.id);
+			this.ctx.fillText(`High Score - ${this.best}`, 10, 30 * player.id);
+			this.ctx.fillText(`High Score (today) - ${this.bestToday}`, 10, 45 * player.id);
+			this.ctx.restore();
 
-			ctx.save();
-			ctx.scale(10, 10);
-			player.draw(ctx);
-			ctx.restore();
+			//this.ctx.save();
+			//this.ctx.scale(10, 10);
+			player.draw(this.ctx);
+			//this.ctx.restore();
 		}
 	}
 	restart() {

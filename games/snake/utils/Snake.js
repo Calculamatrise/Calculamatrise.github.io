@@ -28,7 +28,7 @@ export default class {
 		this.orientation = Math.ceil(Math.random() * 4);
 		
 		this.parts = Array.from({ length: 5 }, function() {
-			return new Part(Math.round(parent.canvas.width / 2 / 10), Math.round(parent.canvas.height / 2 / 10));
+			return new Part(Math.round(parent.canvas.width / 2), Math.round(parent.canvas.height / 2));
 		});
 		
 		for (const part in this.parts) {
@@ -87,10 +87,23 @@ export default class {
 			this.consume(this.consumable);
 		}
 
-		//this.head.position.lerpTowards(this.head.position.add(this.velocity), Math.cos(Math.PI * 0.5 * 1), delta);
-		this.head.position.addToSelf(this.velocity);
-		if (this.head.position.x < 0 || this.head.position.x >= this.parent.canvas.width / 10
-		|| this.head.position.y < 0 || this.head.position.y >= this.parent.canvas.height / 10) {
+		// if (this.target) {
+		// 	if (this.head.position.diff(this.target, this.velocity)) {
+		// 		this.target = this.head.position.add(this.velocity.scale(10));
+		// 	}
+		// } else {
+		// 	this.target = this.head.position.add(this.velocity.scale(10));
+		// }
+
+		// while(!this.head.position.diff(target, this.velocity)) {
+		// 	this.head.position.lerpTowards(target, Math.cos(Math.PI * 0.5 * 1), delta);
+		// 	//console.log(this.head.position)
+		// }
+
+		// this.head.position.lerpTowards(this.target, Math.cos(Math.PI * 0.5 * 1), delta);
+		this.head.position.addToSelf(this.velocity.scale(10));
+		if (this.head.position.x < 0 || this.head.position.x >= this.parent.canvas.width
+		|| this.head.position.y < 0 || this.head.position.y >= this.parent.canvas.height) {
 			this.kill();
 
 			return;
@@ -100,11 +113,11 @@ export default class {
 			if (part == 0)
 				continue;
 			
-			if (this.head.position.equals(this.parts[part].position)) {
-				this.kill();
+			// if (this.head.position.equals(this.parts[part].position)) {
+			// 	this.kill();
 				
-				return;
-			}
+			// 	return;
+			// }
 			
 			this.parts[part].old.copy(this.parts[part].position);
 			this.parts[part].position.copy(this.parts[part - 1].old);
