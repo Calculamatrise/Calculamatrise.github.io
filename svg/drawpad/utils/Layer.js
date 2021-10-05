@@ -72,6 +72,40 @@ export default class {
             }
         });
 
+        const mergeButton = document.createElement("button");
+        mergeButton.innerText = "Merge";
+        mergeButton.addEventListener("click", () => {
+            if (this.parent.cache.length <= 1) {
+                alert("There must be more than one layer in order to merge layers!");
+
+                return;
+            }
+
+            let layerId = prompt(`Which layer would you like to merge Layer ${this.id} with?`);
+            if (layerId !== null) {
+                let layer = this.parent.get(parseInt(layerId));
+                while(layer === void 0) {
+                    layerId = prompt(`That is not a valid option. Try again or cancel; which layer would you like to merge Layer ${this.id} with?`);
+                    if (layerId === null) {
+                        return;
+                    }
+
+                    layer = this.parent.get(parseInt(layerId));
+                }
+                
+                if (layer) {
+                    const layer = this.parent.get(layerId);
+                    if (layer) {
+                        layer.lines.push(...this.lines);
+                        
+                        this.lines = []
+
+                        this.remove();
+                    }
+                }
+            }
+        });
+
         const deleteButton = document.createElement("button");
         deleteButton.innerText = "Delete";
         deleteButton.addEventListener("click", () => {
@@ -89,7 +123,7 @@ export default class {
         const options = document.createElement("div");
         options.className = "options";
 
-        options.append(optionTwo, option, clearButton, deleteButton);
+        options.append(optionTwo, option, clearButton, mergeButton, deleteButton);
         this.element.append(options);
         layers.append(this.element);
 

@@ -24,10 +24,13 @@
                 <div class="ui top-left">
                     <button onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'flex' ? 'none' : 'flex') === 'flex' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
                     <div id="toolbar" >
-                        <button onclick="window.canvas.tool = 'line';">Line</button>
-                        <button onclick="window.canvas.tool = 'brush';">Brush</button>
-                        <button onclick="window.canvas.tool = 'circle';">Circle</button>
-                        <button onclick="window.canvas.tool = 'rectangle';">Rectangle</button>
+                        <button onclick="window.canvas.tools.select('line');">Line</button>
+                        <button onclick="window.canvas.tools.select('brush');">Brush</button>
+                        <button onclick="window.canvas.tools.select('circle');">Circle</button>
+                        <button onclick="window.canvas.tools.select('rectangle');">Rectangle</button>
+                        <button onclick="window.canvas.tools.select('eraser');">Eraser</button>
+                        <button onclick="window.canvas.tools.select('camera');">Camera</button>
+                        <button onclick="window.canvas.tools.select('select');">Select</button>
                     </div>
                 </div>
                 <div class="ui bottom-left">

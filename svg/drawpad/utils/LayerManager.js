@@ -7,7 +7,7 @@ export default class {
     }
     get(layerId) {
         return this.cache.find(function(layer) {
-            if (layer.id === layerId) {
+            if (layer.id === parseInt(layerId)) {
                 return true;
             }
 

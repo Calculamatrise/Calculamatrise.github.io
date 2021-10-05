@@ -28,43 +28,43 @@ document.addEventListener("keydown", function(event) {
 			break;
 		
 		case "=":
-			if (window.canvas.toolSize > 100) {
+			if (window.canvas.tool.size > 100) {
 				break;
 			}
 
-			window.canvas.toolSize += 1;
+			window.canvas.tool.size += 1;
 			break;
 			
 		case "-":
-			if (window.canvas.toolSize <= 2) {
+			if (window.canvas.tool.size <= 2) {
 				break;
 			}
 
-			window.canvas.toolSize -= 1;
+			window.canvas.tool.size -= 1;
 			break;
 
 		case "0":
-			window.canvas.tool = "camera";
+			window.canvas.tools.select("camera");
 			break;
 
 		case "1":
-			window.canvas.tool = "line";
+			window.canvas.tools.select("line");
 			break;
 		
 		case "2":
-			window.canvas.tool = "brush";
+			window.canvas.tools.select("brush");
 			break;
 
 		case "3":
-			window.canvas.tool = "circle";
+			window.canvas.tools.select("circle");
 			break;
 
 		case "4":
-			window.canvas.tool = "rectangle";
+			window.canvas.tools.select("rectangle");
 			break;
 
 		case "5":
-			window.canvas.tool = "eraser";
+			window.canvas.tools.select("eraser");
 			break;
 
 		case "f":
@@ -97,6 +97,24 @@ document.addEventListener("keydown", function(event) {
 
 		case "x":
 			window.canvas.redo();
+			break;
+
+		case "c":
+			if (window.canvas.tool.constructor.id === "select" && event.ctrlKey) {
+				window.canvas.tool.copy();
+
+				break;
+			}
+			
+			break;
+
+		case "v":
+			if (window.canvas.tool.constructor.id === "select" && event.ctrlKey) {
+				window.canvas.tool.paste();
+
+				break;
+			}
+
 			break;
 	}
 });
