@@ -168,6 +168,12 @@ line {
 	stroke-linejoin: round;
 }
 
+polyline {
+	fill: none;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
 input[type="color"]#colour {
 	visibility: hidden;
 	position: absolute;

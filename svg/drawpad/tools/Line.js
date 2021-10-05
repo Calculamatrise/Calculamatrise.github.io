@@ -15,8 +15,6 @@ export default class extends Tool {
     }
     mouseMove(event) {
         this.element.setAttribute("stroke-width", this.size);
-        this.element.setAttribute("x1", this.mouse.pointA.x);
-        this.element.setAttribute("y1", this.mouse.pointA.y);
         this.element.setAttribute("x2", this.mouse.position.x);
         this.element.setAttribute("y2", this.mouse.position.y);
         this.element.setAttribute("stroke", this.canvas.primary);

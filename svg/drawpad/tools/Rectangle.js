@@ -36,27 +36,7 @@ export default class extends Tool {
     mouseUp() {
         this.element.remove();
 
-        const rectangle = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        if (this.mouse.position.x - this.mouse.pointA.x > 0) {
-            rectangle.setAttribute("x", this.mouse.pointA.x);
-            rectangle.setAttribute("width", this.mouse.position.x - this.mouse.pointA.x);
-        } else {
-            rectangle.setAttribute("x", this.mouse.position.x);
-            rectangle.setAttribute("width", this.mouse.pointA.x - this.mouse.position.x);
-        }
-
-        if (this.mouse.position.y - this.mouse.pointA.y > 0) {
-            rectangle.setAttribute("y", this.mouse.pointA.y);
-            rectangle.setAttribute("height", this.mouse.position.y - this.mouse.pointA.y);
-        } else {
-            rectangle.setAttribute("y", this.mouse.position.y);
-            rectangle.setAttribute("height", this.mouse.pointA.y - this.mouse.position.y);
-        }
-
-        rectangle.setAttribute("stroke-width", this.size);
-        rectangle.setAttribute("stroke", this.canvas.primary);
-        rectangle.setAttribute("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
-        rectangle.setAttribute("rx", .5);
+        const rectangle = this.element.cloneNode();
         rectangle.erase = function(event) {
             let vector = {
                 x: (parseInt(this.getAttribute("width")) + parseInt(this.getAttribute("x")) - window.canvas.viewBox.x) - (parseInt(this.getAttribute("x")) - window.canvas.viewBox.x),

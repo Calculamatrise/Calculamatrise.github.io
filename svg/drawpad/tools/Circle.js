@@ -5,6 +5,29 @@ export default class extends Tool {
 
     size = 4;
     element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    init() {
+        let sumX = this.mouse.position.x - this.mouse.pointA.x;
+        if (sumX < 0) {
+            sumX *= -1;
+        }
+
+        let sumY = this.mouse.position.y - this.mouse.pointA.y;
+        if (sumY < 0) {
+            sumY *= -1;
+        }
+
+        let radius = sumX + sumY;
+        if (radius < 0) {
+            radius *= -1;
+        }
+
+        this.element.setAttribute("r", radius / Math.PI * 2);
+        this.element.setAttribute("stroke-width", this.size);
+        this.element.setAttribute("cx", this.mouse.pointA.x);
+        this.element.setAttribute("cy", this.mouse.pointA.y);
+        this.element.setAttribute("stroke", this.canvas.primary);
+        this.element.setAttribute("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
+    }
     mouseDown() {
         this.element.setAttribute("stroke-width", this.size);
         this.element.setAttribute("cx", this.mouse.pointA.x);
@@ -35,29 +58,7 @@ export default class extends Tool {
     mouseUp() {
         this.element.remove();
         
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("stroke-width", this.size);
-        circle.setAttribute("cx", this.mouse.pointA.x);
-        circle.setAttribute("cy", this.mouse.pointA.y);
-        circle.setAttribute("stroke", this.canvas.primary);
-        circle.setAttribute("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
-
-        let sumX = this.mouse.position.x - this.mouse.pointA.x;
-        if (sumX < 0) {
-            sumX *= -1;
-        }
-
-        let sumY = this.mouse.position.y - this.mouse.pointA.y;
-        if (sumY < 0) {
-            sumY *= -1;
-        }
-
-        let radius = sumX + sumY;
-        if (radius < 0) {
-            radius *= -1;
-        }
-
-        circle.setAttribute("r", radius / Math.PI * 2);
+        const circle = this.element.cloneNode();
         circle.erase = function(event) {
             let vector = {
                 x: (parseInt(this.getAttribute("r")) - window.canvas.viewBox.x) - (parseInt(this.getAttribute("cx")) - window.canvas.viewBox.x),

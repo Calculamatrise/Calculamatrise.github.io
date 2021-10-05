@@ -1,9 +1,8 @@
+import MouseHandler from "./MouseHandler.js";
 import EventHandler from "./EventHandler.js";
 import LayerManager from "./LayerManager.js";
 
 import ToolHandler from "./ToolHandler.js";
-
-import Mouse from "./Mouse.js";
 
 export default class {
 	constructor(view) {
@@ -16,15 +15,17 @@ export default class {
 		this.mouse.on("down", this.mouseDown.bind(this));
 		this.mouse.on("move", this.mouseMove.bind(this));
 		this.mouse.on("up", this.mouseUp.bind(this));
+
+		document.addEventListener("keydown", this.keyDown.bind(this));
 	}
 	#layer = 1;
 	#fill = false;
 	#primary = "#87CEEB";
 	#secondary = "#967BB6";
-	mouse = new Mouse(this);
-	tools = new ToolHandler(this);
+	mouse = new MouseHandler(this);
 	layers = new LayerManager();
 	events = new EventHandler();
+	tools = new ToolHandler(this);
 	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 	get tool() {
 		return this.tools.selected;
@@ -191,5 +192,118 @@ export default class {
 		}
 		
 		return;
+	}
+	keyDown(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		
+		const zoom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--zoom'));
+		switch(event.key) {
+			case "Escape":
+				if (layers.style.display !== "none") {
+					layers.style.display = "none";
+					
+					break;
+				}
+	
+				settings.style.visibility = "show";
+				settings.style.display = "block";
+				break;
+			
+			case "=":
+				if (this.tool.size > 100) {
+					break;
+				}
+	
+				this.tool.size += 1;
+				break;
+				
+			case "-":
+				if (this.tool.size <= 2) {
+					break;
+				}
+	
+				this.tool.size -= 1;
+				break;
+	
+			case "0":
+				this.tools.select("camera");
+				break;
+	
+			case "1":
+				this.tools.select("line");
+				break;
+			
+			case "2":
+				this.tools.select("brush");
+				break;
+	
+			case "3":
+				this.tools.select("circle");
+				break;
+	
+			case "4":
+				this.tools.select("rectangle");
+				break;
+	
+			case "5":
+				this.tools.select("eraser");
+				break;
+	
+			case "f":
+				this.fill = !this.fill;
+				break;
+	
+			case "ArrowUp":
+				if (this.layerDepth >= this.layers.cache.length) {
+					if (!event.shiftKey) {
+						break;
+					}
+	
+					this.layers.create();
+				}
+	
+				this.layerDepth = this.layerDepth + 1;
+				break;
+	
+			case "ArrowDown":
+				if (this.layerDepth <= 1) {
+					break;
+				}
+	
+				this.layerDepth = this.layerDepth - 1;
+				break;
+	
+			case "z":
+				this.undo();
+				break;
+	
+			case "x":
+				this.redo();
+				break;
+	
+			case "c":
+				if (this.tool.constructor.id === "select" && event.ctrlKey) {
+					this.tool.copy();
+	
+					break;
+				}
+				
+				break;
+	
+			case "v":
+				if (this.tool.constructor.id === "select" && event.ctrlKey) {
+					this.tool.paste();
+	
+					break;
+				}
+	
+				break;
+		}
+	}
+	close() {
+		this.mouse.close();
+
+
 	}
 }
