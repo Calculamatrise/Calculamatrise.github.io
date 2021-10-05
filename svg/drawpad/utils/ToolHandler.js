@@ -46,7 +46,6 @@ export default class {
         const primary = this.canvas.container.querySelector("#primary");
         const secondary = this.canvas.container.querySelector("#secondary");
         
-
 		this.canvas.text.timeout = setTimeout(() => {
 			this.canvas.text.remove();
 		}, 2000);
