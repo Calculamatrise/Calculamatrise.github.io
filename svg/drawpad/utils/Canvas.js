@@ -72,8 +72,7 @@ export default class {
 	}
 	set fill(boolean) {
 		this.text.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
-		this.circle.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
-		this.rectangle.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
+		this.tool.element.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
 
 		this.#fill = boolean;
 	}

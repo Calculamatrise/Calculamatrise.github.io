@@ -45,6 +45,18 @@ export default class {
 
         const primary = this.canvas.container.querySelector("#primary");
         const secondary = this.canvas.container.querySelector("#secondary");
+        if ([
+            "line",
+            "brush",
+            "circle",
+            "rectangle"
+        ].includes(toolName.toLowerCase())) {
+            primary.parentElement.style.setProperty("display", "flex");
+            secondary.parentElement.style.setProperty("display", "flex");
+        } else {
+            primary.parentElement.style.setProperty("display", "none");
+            secondary.parentElement.style.setProperty("display", "none");
+        }
         
 		this.canvas.text.timeout = setTimeout(() => {
 			this.canvas.text.remove();
