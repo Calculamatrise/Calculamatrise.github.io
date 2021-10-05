@@ -17,18 +17,15 @@ export default class {
 		this.mouse.on("move", this.mouseMove.bind(this));
 		this.mouse.on("up", this.mouseUp.bind(this));
 	}
-	toolSize = 4;
+	#layer = 1;
 	#fill = false;
 	#primary = "#87CEEB";
 	#secondary = "#967BB6";
-	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-	#layer = 1;
-	selected = []
-	clipboard = []
 	mouse = new Mouse(this);
 	tools = new ToolHandler(this);
 	layers = new LayerManager();
 	events = new EventHandler();
+	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
 	get tool() {
 		return this.tools.selected;
 	}
