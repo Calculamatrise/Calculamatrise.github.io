@@ -49,6 +49,7 @@ nav {
     width: 100%;
     padding: 10px;
     display: flex;
+    margin-bottom: 2vh;
     justify-content: space-between;
 }
 
