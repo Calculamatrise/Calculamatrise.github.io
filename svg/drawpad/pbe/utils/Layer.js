@@ -4,21 +4,9 @@ export default class {
 
         this.id = this.parent.cache.length + 1;
         
-        this.element = document.createElement("div");
-        this.element.className = "layer selected";
-        this.element.addEventListener("mouseover", function(event) {
-            if (event.target.className !== this.className) {
-                this.style.cursor = "default";
-
-                return;
-            }
-
-            this.style.cursor = "pointer";
-        });
-
-        const layerSelectorContainer = this.parent.createElement("div", {
-            innerText: "Layer ",
-            onmouseover(event) {
+        this.element = this.parent.createElement("div", {
+            className: "layer selected",
+            mouseover(event) {
                 if (event.target.className !== this.className) {
                     this.style.cursor = "default";
     
@@ -27,12 +15,11 @@ export default class {
     
                 this.style.cursor = "pointer";
             },
-            onclick: event => {
-                /*
-                const options = this.element.querySelector(".options");
-                options.style.display = options.style.display === "block" ? "none" : "block";
-                */
-    
+            click: event => {
+                if (event.target.className !== this.element.className) {
+                    return;
+                }
+
                 window.canvas.layerDepth = this.id;
                 this.parent.cache.forEach(function(layer, index) {
                     layer.element.classList.remove("selected");
@@ -40,19 +27,42 @@ export default class {
                         layer.element.classList.add("selected");   
                     }
                 });
+
+                this.element.querySelector("#selector").focus();
             }
         });
 
-        const layerSelector = this.parent.createElement("input", {
+        const layerSelectorContainer = this.parent.createElement("div", {
+            innerText: "Layer ",
+            mouseover(event) {    
+                this.style.cursor = "pointer";
+            },
+            click: event => {
+                window.canvas.layerDepth = this.id;
+                this.parent.cache.forEach(function(layer, index) {
+                    layer.element.classList.remove("selected");
+                    if (layer.id === window.canvas.layerDepth) {
+                        layer.element.classList.add("selected");   
+                    }
+                });
+
+                layerSelectorContainer.querySelector("#selector").focus();
+            }
+        });
+
+        this.selector = this.parent.createElement("input", {
             type: "number",
             id: "selector",
             className: "ripple selector",
             step: "1",
             value: this.id,
-            onkeydown(event) {
+            keydown(event) {
                 event.stopPropagation();
             },
-            oninput: (event) => {
+            mouseover(event) {    
+                this.style.cursor = "pointer";
+            },
+            input: (event) => {
                 if (parseInt(event.target.value) < 1) {
                     event.target.value = 1;
 
@@ -68,10 +78,12 @@ export default class {
                 }
 
                 this.move(parseInt(event.target.value));
+                
+                this.element.querySelector("#selector").focus();
             }
         });
 
-        layerSelectorContainer.appendChild(layerSelector);
+        layerSelectorContainer.append(this.selector);
 
         /*
         // Check if the mouse position on the layer container is greater than the next or previous layer. Then use element#after to move it.
@@ -100,118 +112,111 @@ export default class {
         
         //*/
 
-        this.element.addEventListener("click", event => {
-            if (event.target.className !== this.element.className) {
-                return;
+        const range = this.parent.createElement("input", {
+            type: "range",
+            min: 0,
+            max: 100,
+            value: 100,
+            style: {
+                width: "100px",
+                "pointer-events": "all"
             }
+        });
 
-            /*
-            const options = this.element.querySelector(".options");
-            options.style.display = options.style.display === "block" ? "none" : "block";
-            */
-
-            window.canvas.layerDepth = this.id;
-            this.parent.cache.forEach(function(layer, index) {
-                layer.element.classList.remove("selected");
-                if (layer.id === window.canvas.layerDepth) {
-                    layer.element.classList.add("selected");   
+        const optionTwo = this.parent.createElement("div", {
+            className: "option",
+            innerText: "Opacity",
+            style: {
+                "flex-direction": "column"
+            },
+            mousemove: (event) => {
+                if (event.buttons !== 1) {
+                    return;
                 }
-            });
-        });
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-
-        const option = document.createElement("div");
-        option.className = "option ripple";
-        option.innerText = "Hide";
-        option.addEventListener("click", () => {
-            this.toggleVisiblity();
-            checkbox.checked = this.hidden;
-        });
-
-        option.prepend(checkbox);
-
-        const range = document.createElement("input");
-        range.type = "range";
-        range.setAttribute("min", 0);
-        range.setAttribute("max", 100);
-        range.setAttribute("value", 100);
-        range.style.setProperty("width", "100px");
-        range.style.setProperty("pointer-events", "all");
-
-        const optionTwo = document.createElement("div");
-        optionTwo.className = "option ripple";
-        optionTwo.innerText = "Opacity";
-        optionTwo.style.setProperty("flex-direction", "column");
-        optionTwo.addEventListener("mousemove", (event) => {
-            if (event.buttons !== 1) {
-                return;
+                
+                this.opacity = range.value / 100;
             }
-            
-            this.opacity = range.value / 100;
         });
 
         optionTwo.appendChild(range);
 
-        const clearButton = document.createElement("button");
-        clearButton.innerText = "Clear";
-        clearButton.addEventListener("click", () => {
-            if (confirm(`Are you sure you\'d like to clear Layer ${this.id}?`)) {
-                this.clear();
+        const checkbox = this.parent.createElement("input", {
+            type: "checkbox"
+        });
+
+        const option = this.parent.createElement("div", {
+            className: "option ripple",
+            innerText: "Hide",
+            click: (event) => {
+                this.toggleVisiblity();
+                checkbox.checked = this.hidden;
             }
         });
 
-        const mergeButton = document.createElement("button");
-        mergeButton.innerText = "Merge";
-        mergeButton.addEventListener("click", () => {
-            if (this.parent.cache.length <= 1) {
-                alert("There must be more than one layer in order to merge layers!");
+        option.prepend(checkbox);
 
-                return;
-            }
-
-            let layerId = prompt(`Which layer would you like to merge Layer ${this.id} with?`);
-            if (layerId !== null) {
-                let layer = this.parent.get(parseInt(layerId));
-                while(layer === void 0) {
-                    layerId = prompt(`That is not a valid option. Try again or cancel; which layer would you like to merge Layer ${this.id} with?`);
-                    if (layerId === null) {
-                        return;
-                    }
-
-                    layer = this.parent.get(parseInt(layerId));
+        const clearButton = this.parent.createElement("button", {
+            innerText: "Clear",
+            click: (event) => {
+                if (confirm(`Are you sure you\'d like to clear Layer ${this.id}?`)) {
+                    this.clear();
                 }
-                
-                if (layer) {
-                    const layer = this.parent.get(layerId);
+            }
+        });
+
+        const mergeButton = this.parent.createElement("button", {
+            innerText: "Merge",
+            click: (event) => {
+                if (this.parent.cache.length <= 1) {
+                    alert("There must be more than one layer in order to merge layers!");
+    
+                    return;
+                }
+    
+                let layerId = prompt(`Which layer would you like to merge Layer ${this.id} with?`);
+                if (layerId !== null) {
+                    let layer = this.parent.get(parseInt(layerId));
+                    while(layer === void 0) {
+                        layerId = prompt(`That is not a valid option. Try again or cancel; which layer would you like to merge Layer ${this.id} with?`);
+                        if (layerId === null) {
+                            return;
+                        }
+    
+                        layer = this.parent.get(parseInt(layerId));
+                    }
+                    
                     if (layer) {
-                        layer.lines.push(...this.lines);
-                        
-                        this.lines = []
-
-                        this.remove();
+                        const layer = this.parent.get(layerId);
+                        if (layer) {
+                            layer.lines.push(...this.lines);
+                            
+                            this.lines = []
+    
+                            this.remove();
+                        }
                     }
                 }
             }
         });
 
-        const deleteButton = document.createElement("button");
-        deleteButton.innerText = "Delete";
-        deleteButton.addEventListener("click", () => {
-            if (this.parent.cache.length <= 1) {
-                alert("You must have at least one layer at all times!");
-
-                return;
-            }
-
-            if (confirm(`Are you sure you\'d like to delete Layer ${this.id}?`)) {
-                this.remove();
+        const deleteButton = this.parent.createElement("button", {
+            innerText: "Delete",
+            click: () => {
+                if (this.parent.cache.length <= 1) {
+                    alert("You must have at least one layer at all times!");
+    
+                    return;
+                }
+    
+                if (confirm(`Are you sure you\'d like to delete Layer ${this.id}?`)) {
+                    this.remove();
+                }
             }
         });
 
-        const options = document.createElement("div");
-        options.className = "options";
+        const options = this.parent.createElement("div", {
+            className: "options"
+        });
 
         options.append(optionTwo, option, clearButton, mergeButton, deleteButton);
         this.element.append(layerSelectorContainer, options);

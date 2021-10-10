@@ -56,10 +56,16 @@
                     <button onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex';">Layers</button>
                     <button onclick="document.querySelector('#settings').style.display = document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex';">Settings</button>
                 </div>
+                <div class="ui bottom-right">
+                    <button id="patch-notes">Patch Notes</button>
+                </div>
+                <!-- <iframe id="patch-notes-iframe"></iframe> -->
+                <!-- Layers Overlay -->
                 <div id="layers">
                     <button onclick="window.canvas.layers.create(), window.canvas.layerDepth = window.canvas.layerDepth + 1;" style="position: absolute;">New Layer</button>
                     <div id="layer-container"></div>
                 </div>
+                <!-- Settings Overlay -->
                 <div id="settings" style="display: none;">
                     <input type="file" id="import" accept="text/*" style="display: none;" onchange="
                         this.classList.add('loading');
@@ -75,7 +81,9 @@
                     <button onclick="
                         const date = new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i);
                         const link = document.createElement('a');
-                        const file = new Blob([ window.canvas.export() ], {
+                        const file = new Blob([
+                            window.canvas.export()
+                        ], {
                             type: 'text/plain'
                         });
                         link.href = window.URL.createObjectURL(file);
