@@ -1,0 +1,234 @@
+html {
+	--zoom: .5;
+	--background: #EBEBEB;
+	--text: #1B1B1B;
+	--color: skyblue;
+	border: none;
+}
+
+body {
+	margin: 0;
+	overflow: hidden;
+}
+
+nav {
+	display: none;
+}
+
+div.content {
+	padding: 0;
+	overflow: hidden;
+}
+
+div#container {
+	position: relative;
+}
+
+div#container div.ui {
+	margin: 10px;
+	color: var(--text);
+	position: fixed;
+	display: inline-block;
+}
+
+div#container div.ui.top-right {
+	top: 0;
+	right: 0;
+}
+
+div#container div.ui.bottom-left {
+	bottom: 0;
+	left: 0;
+}
+
+div#container div.ui.top-left {
+	top: 0;
+	left: 0;
+}
+
+div#container div.ui.top-left #toolbar {
+	display: none;
+	flex-direction: column;
+}
+
+div#container div.ui.bottom-left .option {
+	width: 130px;
+	height: 45px;
+	display: flex;
+	font-size: small;
+	overflow: hidden;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+}
+
+div#container div.ui.bottom-left .option.disabled {
+	opacity: .5;
+	pointer-events: none;
+}
+
+div#container div.ui.bottom-left .option input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	visibility: hidden;
+	pointer-events: none;
+}
+
+div#container div.ui button, div#container div#layers button {
+	background-color: transparent;
+}
+
+div#container div#layers button {
+	top: 3%;
+	color: var(--text);
+}
+
+div#container div#layers {
+	top: 0;
+	left: 0;
+	opacity: .95;
+	width: 30vw;
+	height: 30vh;
+	display: none;
+	overflow: hidden;
+	color: var(--text);
+	position: absolute;
+	align-items: center;
+	border-radius: 30px;
+	place-content: center;
+	flex-flow: column wrap;
+	margin: 20vh 15vw 20vh 15vw;
+	padding: 10vh 20vw 20vh 20vw;
+	border: 1px solid var(--text);
+	background-color: var(--background);
+	z-index: 20;
+}
+
+div#container div#layers div#layer-container {
+	display: flex;
+	overflow: auto;
+	flex-wrap: wrap;
+	max-width: 53vw;
+	width: max-content;
+	align-items: center;
+	flex-direction: row;
+}
+
+div#container div#layers .layer {
+	opacity: .8;
+	margin: 10px;
+	padding: 10px;
+	display: flex;
+	overflow: hidden;
+	align-items: center;
+	border-radius: 10px;
+	place-content: center;
+	flex-flow: column wrap;
+	border: 1px solid var(--text);
+	background-color: var(--background);
+}
+
+div#container div#layers .layer:not(div#container div#layers .layer.selected):hover {
+	box-shadow: 0 0 5px 0 inset var(--text);
+	transition: box-shadow 100ms;
+}
+
+div#container div#layers .layer.selected {
+	box-shadow: 0 0 10px 0 inset var(--text);
+	transition: box-shadow 100ms;
+}
+
+div#container div#layers .layer input.selector {
+	display: inline-block;
+	width: 30px;
+	height: 20px;
+}
+
+div#container div#layers .layer .option {
+	width: 130px;
+	height: 45px;
+	display: flex;
+	font-size: small;
+	overflow: hidden;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+}
+
+div#container div#layers .layer .option input {
+	margin-right: 8px;
+	pointer-events: none;
+}
+
+
+div#container div#layers .layer .options {
+	/*display: none;*/
+	display: flex;
+	flex-direction: column;
+	margin-top: 10px;
+}
+
+div#container span#settings {
+	top: 0;
+	right: 0;
+	margin: 10px;
+	color: var(--text);
+	position: absolute;
+}
+
+svg {
+	width: 100vw;
+	height: 100vh;
+	color: var(--text);
+	pointer-events: none;
+	background-color: var(--background);
+}
+
+line {
+	stroke: var(--text);
+	/*stroke-width: calc(8 * var(--zoom));*/
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+polyline {
+	fill: none;
+	stroke: var(--text);
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+cirlce {
+	fill: var(--text);
+}
+
+rect {
+	fill: var(--text);
+}
+
+
+input[type="color"]#colour {
+	visibility: hidden;
+	position: absolute;
+}
+
+.ripple::before {
+    top: calc(var(--offsetY) * 1px);
+	left: calc(var(--offsetX) * 1px);
+    opacity: 0;
+    content: "";
+    padding: 50%;
+	position: absolute;
+    transform: translate(-50%, -50%) scale(3);
+	transition: transform 800ms, opacity 1s;
+    border-radius: 50%;
+    pointer-events: none;
+    background-color: #EEEEEE;
+}
+
+.ripple:not(.focus):active::before, .ripple.focus:active:not(:focus-within)::before {
+    transition: 0s;
+    opacity: .5;
+    transform: translate(-50%, -50%) scale(0);
+}
