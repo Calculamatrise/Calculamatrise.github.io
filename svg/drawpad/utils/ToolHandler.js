@@ -1,6 +1,8 @@
 import Line from "../tools/Line.js";
 import Brush from "../tools/Brush.js";
+import Curve from "../tools/Curve.js";
 import Circle from "../tools/Circle.js";
+import DynamicCircle from "../tools/DynamicCircle.js";
 import Rectangle from "../tools/Rectangle.js";
 import Eraser from "../tools/Eraser.js";
 import Camera from "../tools/Camera.js";
@@ -11,7 +13,9 @@ export default class {
         this.canvas = parent;
         this.registerTool(Line);
         this.registerTool(Brush);
+        this.registerTool(Curve);
         this.registerTool(Circle);
+        this.registerTool(DynamicCircle);
         this.registerTool(Rectangle);
         this.registerTool(Eraser);
         this.registerTool(Camera);
@@ -38,9 +42,9 @@ export default class {
 		this.canvas.view.parentElement.style.cursor = this.#selected === "camera" ? "move" : "default";
 
 		this.canvas.text.innerHTML = this.#selected.charAt(0).toUpperCase() + this.#selected.slice(1);
-		this.canvas.text.setAttribute("x", this.canvas.view.width.baseVal.value / 2 - this.canvas.text.innerHTML.length * 2 + this.canvas.viewBox.x);
-		this.canvas.text.setAttribute("y", 20 + this.canvas.viewBox.y);
-		this.canvas.text.setAttribute("fill", this.canvas.primary);
+		this.canvas.text.setAttribute("x", this.canvas.view.width.baseVal.value / 2 + this.canvas.viewBox.x - this.canvas.text.innerHTML.length * 2.5);
+		this.canvas.text.setAttribute("y", 25 + this.canvas.viewBox.y);
+		this.canvas.text.setAttribute("fill", this.canvas.dark ? "#FBFBFB" : "1B1B1B");
 		this.canvas.view.appendChild(this.canvas.text);
 
         const primary = this.canvas.container.querySelector("#primary");

@@ -1,7 +1,7 @@
 import Tool from "./Tool.js";
 
 export default class extends Tool {
-    static id = "circle";
+    static id = "dynamic_circle";
 
     size = 4;
     segmentLength = 5;
@@ -53,6 +53,9 @@ export default class extends Tool {
     
                 return false;
             }
+            temp.toString = function() {
+                return `line:${this.getAttribute("x1")}-${this.getAttribute("y1")}-${this.getAttribute("x2")}-${this.getAttribute("y2")}.`;
+            }
 
             lines.push(temp);
         }
@@ -91,7 +94,35 @@ export default class extends Tool {
         this.element.style.setProperty("stroke", this.canvas.primary);
         this.element.style.setProperty("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
         this.element.style.setProperty("stroke-width", this.size);
-        this.element.erase = function(event) {
+    }
+    mouseDown() {
+        this.element.style.setProperty("stroke", this.canvas.primary);
+        this.element.style.setProperty("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
+        this.element.style.setProperty("stroke-width", this.size);
+
+        this.canvas.layer.base.appendChild(this.element);
+    }
+    mouseMove() {
+        const points = []
+        for (let i = 0; i <= 360; i += this.segmentLength) {
+            points.push([
+                this.x + this.width * Math.cos(i * Math.PI / 180),
+                this.y + this.height * Math.sin(i * Math.PI / 180)
+            ]);
+        }
+
+        this.element.style.setProperty("stroke", this.canvas.primary);
+        this.element.style.setProperty("stroke-width", this.size);
+        this.element.setAttribute("points", points.map(point => point.join(",")).join(" "));
+    }
+    mouseUp() {
+        this.element.remove();
+        if (this.mouse.pointA.x === this.mouse.pointB.x && this.mouse.pointA.y === this.mouse.pointB.y) {
+            return;
+        }
+        
+        const circle = this.current// this.element.cloneNode();
+        circle.erase = function(event) {
             const points = this.getAttribute("points").split(",").map(function(point) {
                 const xAndY = point.split(/\s+/g);
 
@@ -143,70 +174,12 @@ export default class extends Tool {
                 return false;
             });
         }
-    }
-    mouseDown() {
-        this.element.style.setProperty("stroke", this.canvas.primary);
-        this.element.style.setProperty("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
-        this.element.style.setProperty("stroke-width", this.size);
-
-        this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(this.element);
-    }
-    mouseMove() {
-        this.element.style.setProperty("stroke", this.canvas.primary);
-        this.element.style.setProperty("stroke-width", this.size);
-        this.element.setAttribute("points", "");
-
-        for (let i = 0; i <= 360; i += this.segmentLength) {
-            this.element.setAttribute("points", (this.element.getAttribute("points") || "") + `${this.x + this.width * Math.cos(i * Math.PI / 180)},${this.y + this.height * Math.sin(i * Math.PI / 180)} `);
+        circle.toString = function() {
+            return `brush:${this.getAttribute("points")}.`;
         }
-    }
-    mouseUp() {
-        this.element.remove();
-        if (this.mouse.pointA.x === this.mouse.pointB.x && this.mouse.pointA.y === this.mouse.pointB.y) {
-            return;
-        }
-        
-        const circle = this.current// this.element.cloneNode();
-        // circle.erase = function(event) {
-        //     let vector = {
-        //         x: (parseInt(this.getAttribute("r")) - window.canvas.viewBox.x) - (parseInt(this.getAttribute("cx")) - window.canvas.viewBox.x),
-        //         y: (parseInt(this.getAttribute("r")) - window.canvas.viewBox.y) - (parseInt(this.getAttribute("cy")) - window.canvas.viewBox.y)
-        //     }
-        //     let len = Math.sqrt(vector.x ** 2 + vector.y ** 2);
-        //     let b = (event.offsetX - (parseInt(this.getAttribute("cx")) - window.canvas.viewBox.x)) * (vector.x / len) + (event.offsetY - (parseInt(this.getAttribute("cy")) - window.canvas.viewBox.y)) * (vector.y / len);
-        //     const v = {
-        //         x: 0,
-        //         y: 0
-        //     }
-
-        //     if (b <= 0) {
-        //         v.x = parseInt(this.getAttribute("cx")) - window.canvas.viewBox.x;
-        //         v.y = parseInt(this.getAttribute("cy")) - window.canvas.viewBox.y;
-        //     } else if (b >= len) {
-        //         v.x = parseInt(this.getAttribute("r")) - window.canvas.viewBox.x;
-        //         v.y = parseInt(this.getAttribute("r")) - window.canvas.viewBox.y;
-        //     } else {
-        //         v.x = (parseInt(this.getAttribute("cx")) - window.canvas.viewBox.x) + vector.x / len * b;
-        //         v.y = (parseInt(this.getAttribute("cy")) - window.canvas.viewBox.y) + vector.y / len * b;
-        //     }
-
-        //     const res = {
-        //         x: event.offsetX - v.x,
-        //         y: event.offsetY - v.y
-        //     }
-
-        //     len = Math.sqrt(res.x ** 2 + res.y ** 2);
-        //     if (len <= window.canvas.tool.size) {
-        //         this.remove();
-
-        //         return true;
-        //     }
-
-        //     return false;
-        // }
 
         if (!this.canvas.layer.hidden) {
-            this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).append(...circle);
+            this.canvas.layer.base.append(...circle);
         }
 
         this.canvas.layer.lines.push(...circle);

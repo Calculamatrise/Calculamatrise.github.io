@@ -27,6 +27,9 @@ export default class {
 	events = new EventHandler();
 	tools = new ToolHandler(this);
 	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+	get dark() {
+		return JSON.parse(localStorage.getItem("dark")) ?? window.matchMedia('(prefers-color-scheme: dark)').matches;
+	}
 	get tool() {
 		return this.tools.selected;
 	}
@@ -52,10 +55,10 @@ export default class {
 	set layerDepth(layer) {
 		clearTimeout(this.text.timeout);
 
-		this.text.setAttribute("x", this.view.width.baseVal.value / 2);
-		this.text.setAttribute("y", 20 + this.viewBox.y);
-		this.text.setAttribute("fill", this.primary);
 		this.text.innerHTML = "Layer " + layer;
+		this.text.setAttribute("x", this.view.width.baseVal.value / 2 + this.viewBox.x - this.text.innerHTML.length * 2.5);
+		this.text.setAttribute("y", 25 + this.viewBox.y);
+		this.text.setAttribute("fill", this.dark ? "#FBFBFB" : "1B1B1B");
 		this.view.appendChild(this.text);
 
 		this.text.timeout = setTimeout(() => {
@@ -84,6 +87,65 @@ export default class {
 		return {
 			x: parseInt(viewBox[0]),
 			y: parseInt(viewBox[1])
+		}
+	}
+	import(data) {
+		const layers = data.split(/\u003E/g);
+		for (const layer in layers) {
+			if (!this.layers.has(parseInt(layer) + 1)) {
+				this.layers.create();
+			}
+			
+			layers[layer].match(/(?<=line:)[^.]+/gi).map(line => line.split(/\u002D/g)).forEach((line) => {
+				const element = document.createElementNS("http://www.w3.org/2000/svg", "line");
+				element.style.setProperty("stroke", this.primary);
+        		element.style.setProperty("stroke-width", 4);
+				element.setAttribute("x1", line[0]);
+				element.setAttribute("y1", line[1]);
+				element.setAttribute("x2", line[2]);
+				element.setAttribute("y2", line[3]);
+
+				this.layers.get(parseInt(layer) + 1).base.appendChild(element);
+				this.layers.get(parseInt(layer) + 1).lines.push(element);
+			});
+
+			layers[layer].match(/(?<=brush:)[^.]+/gi).forEach((points) => {
+				const element = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+				element.style.setProperty("stroke", this.primary);
+        		element.style.setProperty("stroke-width", 4);
+				element.setAttribute("points", points);
+
+				this.layers.get(parseInt(layer) + 1).base.appendChild(element);
+				this.layers.get(parseInt(layer) + 1).lines.push(element);
+			});
+
+			layers[layer].match(/(?<=circle:)[^.]+/gi).map(line => line.split(/\u002D/g)).forEach((line) => {
+				const element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+				element.style.setProperty("stroke", this.primary);
+				element.style.setProperty("fill", this.fill ? this.primary : "#FFFFFF00");
+        		element.style.setProperty("stroke-width", 4);
+				element.setAttribute("cx", line[0]);
+				element.setAttribute("cy", line[1]);
+				element.setAttribute("r", line[2]);
+
+				this.layers.get(parseInt(layer) + 1).base.appendChild(element);
+				this.layers.get(parseInt(layer) + 1).lines.push(element);
+			});
+
+			layers[layer].match(/(?<=rectangle:)[^.]+/gi).map(line => line.split(/\u002D/g)).forEach((line) => {
+				const element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+				element.style.setProperty("stroke", this.primary);
+				element.style.setProperty("fill", this.fill ? this.primary : "#FFFFFF00");
+        		element.style.setProperty("stroke-width", 4);
+				element.setAttribute("x", line[0]);
+				element.setAttribute("y", line[1]);
+				element.setAttribute("width", line[2]);
+				element.setAttribute("height", line[3]);
+				element.setAttribute("rx", .5);
+
+				this.layers.get(parseInt(layer) + 1).base.appendChild(element);
+				this.layers.get(parseInt(layer) + 1).lines.push(element);
+			});
 		}
 	}
 	undo() {
@@ -169,6 +231,10 @@ export default class {
 			this.tool.mouseMove(event);
 			
 			return;
+		} else if (this.tool.constructor.id === "curve") {
+			this.tool.mouseMove(event);
+
+			return;
 		}
 
 		if (this.mouse.isDown && !this.mouse.isAlternate) {	
@@ -205,8 +271,8 @@ export default class {
 					break;
 				}
 	
-				settings.style.visibility = "show";
-				settings.style.display = "block";
+				//settings.style.visibility = "show";
+				settings.style.display = settings.style.display === "flex" ? "none" : "flex";
 				break;
 			
 			case "=":
@@ -300,9 +366,12 @@ export default class {
 				break;
 		}
 	}
+	export() {
+		return this.layers.cache.map(function(layer) {
+			return `${layer.toString()}`;
+		}).join(">");
+	}
 	close() {
 		this.mouse.close();
-
-
 	}
 }

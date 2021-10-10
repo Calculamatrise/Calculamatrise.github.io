@@ -34,21 +34,30 @@ div#container div.ui {
 div#container div.ui.top-right {
 	top: 0;
 	right: 0;
+	z-index: 50;
 }
 
 div#container div.ui.bottom-left {
-	bottom: 0;
 	left: 0;
+	bottom: 0;
+	z-index: 50;
 }
 
 div#container div.ui.top-left {
 	top: 0;
 	left: 0;
+	overflow: auto;
+	max-height: 46.4vh;
+	z-index: 50;
 }
 
 div#container div.ui.top-left #toolbar {
 	display: none;
 	flex-direction: column;
+}
+
+div#container div.ui.top-left #toolbar #advanced-tools {
+	display: none;
 }
 
 div#container div.ui.bottom-left .option {
@@ -79,9 +88,23 @@ div#container div.ui button, div#container div#layers button {
 	background-color: transparent;
 }
 
-div#container div#layers button {
-	top: 3%;
+div#container div#settings {
+	top: 0;
+	left: 0;
+	opacity: .8;
+	width: calc(100vw - 40vw);
+	height: calc(100vh - 30vh);
+	display: none;
+	overflow: hidden;
 	color: var(--text);
+	position: absolute;
+	align-items: center;
+	align-content: center;
+	place-content: center;
+	flex-flow: row wrap;
+	padding: 10vh 20vw 20vh 20vw;
+	background-color: var(--background);
+	z-index: 40;
 }
 
 div#container div#layers {
@@ -103,6 +126,11 @@ div#container div#layers {
 	border: 1px solid var(--text);
 	background-color: var(--background);
 	z-index: 20;
+}
+
+div#container div#layers button {
+	top: 3%;
+	color: var(--text);
 }
 
 div#container div#layers div#layer-container {

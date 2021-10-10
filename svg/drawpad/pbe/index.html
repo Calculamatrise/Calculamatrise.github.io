@@ -23,14 +23,23 @@
                 </svg>
                 <div class="ui top-left">
                     <button onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'flex' ? 'none' : 'flex') === 'flex' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
-                    <div id="toolbar" >
+                    <div id="toolbar">
                         <button onclick="window.canvas.tools.select('line');">Line</button>
                         <button onclick="window.canvas.tools.select('brush');">Brush</button>
+                        <button onclick="window.canvas.tools.select('curve');">Curve</button>
                         <button onclick="window.canvas.tools.select('circle');">Circle</button>
                         <button onclick="window.canvas.tools.select('rectangle');">Rectangle</button>
                         <button onclick="window.canvas.tools.select('eraser');">Eraser</button>
                         <button onclick="window.canvas.tools.select('camera');">Camera</button>
                         <button onclick="window.canvas.tools.select('select');">Select</button>
+                        <button onclick="
+                            this.parentElement.querySelector('#toolbar #advanced-tools').style.display = this.parentElement.querySelector('#toolbar #advanced-tools').style.display === 'block' ? 'none' : 'block',
+                            this.parentElement.querySelector('#toolbar #advanced-tools').scrollIntoView({ behavior: 'smooth' }),
+                            this.innerText = this.innerText === 'Show Advanced Tools' ? 'Hide Advanced Tools' : 'Show Advanced Tools'
+                        ">Show Advanced Tools</button>
+                        <div id="advanced-tools">
+                            <button onclick="window.canvas.tools.select('dynamic_circle');">Dynamic Circle</button>
+                        </div>
                     </div>
                 </div>
                 <div class="ui bottom-left">
@@ -45,13 +54,34 @@
                 </div>
                 <div class="ui top-right">
                     <button onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex';">Layers</button>
+                    <button onclick="document.querySelector('#settings').style.display = document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex';">Settings</button>
                 </div>
                 <div id="layers">
                     <button onclick="window.canvas.layers.create(), window.canvas.layerDepth = window.canvas.layerDepth + 1;" style="position: absolute;">New Layer</button>
                     <div id="layer-container"></div>
                 </div>
                 <div id="settings" style="display: none;">
-                    <button onclick="window.canvas.layerDepth = window.canvas.layerDepth + 1;">Null</button>
+                    <input type="file" id="import" accept="text/*" style="display: none;" onchange="
+                        this.classList.add('loading');
+                        this.files[0].text().then((text) => {
+                            if (this.classList.contains('loading')) {
+                                this.classList.remove('loading');
+                            }
+
+                            window.canvas.import(text);
+                        });
+                    ">
+                    <label for="import" class="button ripple" style="text-align: center; line-height: 350%; font-size: calc(40px / 3);">Import Canvas</label>
+                    <button onclick="
+                        const date = new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i);
+                        const link = document.createElement('a');
+                        const file = new Blob([ window.canvas.export() ], {
+                            type: 'text/plain'
+                        });
+                        link.href = window.URL.createObjectURL(file);
+                        link.download = 'svg_canvas-' + date[0] + '_' + date[1].replace(/\..+/, '').replace(/:/g, '-');
+                        link.dispatchEvent(new MouseEvent('click'));
+                    ">Export Canvas</button>
                 </div>
                 <input type="color" id="colour" oninput="localStorage.setItem('primaryColor', this.value), window.canvas.color = this.value;">
             </div>

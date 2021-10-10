@@ -303,4 +303,9 @@ export default class {
 
         return this;
     }
+    toString() {
+        return this.lines.map(function(line) {
+            return line.toString();
+        }).join(".");
+    }
 }

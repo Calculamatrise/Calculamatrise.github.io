@@ -15,7 +15,7 @@ export default class extends Tool {
         this.element.setAttribute("height", 1);
         this.element.setAttribute("rx", .5);
         
-        this.canvas.view.prepend(this.element);
+        this.canvas.layer.base.appendChild(this.element);
     }
     mouseMove() {
         if (this.mouse.position.x - this.mouse.pointA.x > 0) {
@@ -78,9 +78,12 @@ export default class extends Tool {
 
             return false;
         }
+        rectangle.toString = function() {
+            return `rectangle:${this.getAttribute("x")}-${this.getAttribute("y")}-${this.getAttribute("width")}-${this.getAttribute("height")}.`
+        }
 
         if (!this.canvas.layer.hidden) {
-            this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(rectangle);
+            this.canvas.layer.base.appendChild(rectangle);
         }
 
         this.canvas.layer.lines.push(rectangle);

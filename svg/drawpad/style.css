@@ -34,21 +34,30 @@ div#container div.ui {
 div#container div.ui.top-right {
 	top: 0;
 	right: 0;
+	z-index: 50;
 }
 
 div#container div.ui.bottom-left {
-	bottom: 0;
 	left: 0;
+	bottom: 0;
+	z-index: 50;
 }
 
 div#container div.ui.top-left {
 	top: 0;
 	left: 0;
+	overflow: auto;
+	max-height: 46.4vh;
+	z-index: 50;
 }
 
 div#container div.ui.top-left #toolbar {
 	display: none;
 	flex-direction: column;
+}
+
+div#container div.ui.top-left #toolbar #advanced-tools {
+	display: none;
 }
 
 div#container div.ui.bottom-left .option {
@@ -79,43 +88,89 @@ div#container div.ui button, div#container div#layers button {
 	background-color: transparent;
 }
 
-div#container div#layers button {
+div#container div#settings {
+	top: 0;
+	left: 0;
+	opacity: .8;
+	width: calc(100vw - 40vw);
+	height: calc(100vh - 30vh);
+	display: none;
+	overflow: hidden;
 	color: var(--text);
+	position: absolute;
+	align-items: center;
+	align-content: center;
+	place-content: center;
+	flex-flow: row wrap;
+	padding: 10vh 20vw 20vh 20vw;
+	background-color: var(--background);
+	z-index: 40;
 }
 
 div#container div#layers {
 	top: 0;
 	left: 0;
-	opacity: .9;
+	opacity: .95;
+	width: 30vw;
+	height: 30vh;
 	display: none;
-	z-index: 2000;
-	overflow: auto;
-	max-width: 20vw;
-	max-height: 20vh;
+	overflow: hidden;
 	color: var(--text);
 	position: absolute;
+	align-items: center;
 	border-radius: 30px;
-	margin: 25vh 25vw 25vh 25vw;
+	place-content: center;
+	flex-flow: column wrap;
+	margin: 20vh 15vw 20vh 15vw;
 	padding: 10vh 20vw 20vh 20vw;
+	border: 1px solid var(--text);
 	background-color: var(--background);
-	box-shadow: 0 0 15px -10px var(--text)
+	z-index: 20;
+}
+
+div#container div#layers button {
+	top: 3%;
+	color: var(--text);
+}
+
+div#container div#layers div#layer-container {
+	display: flex;
+	overflow: auto;
+	flex-wrap: wrap;
+	max-width: 53vw;
+	width: max-content;
+	align-items: center;
+	flex-direction: row;
 }
 
 div#container div#layers .layer {
 	opacity: .8;
+	margin: 10px;
+	padding: 10px;
 	display: flex;
-	flex-direction: column;
-	align-items: center;
 	overflow: hidden;
-	margin-top: 10px;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	flex-direction: column;
-	align-content: center;
 	align-items: center;
 	border-radius: 10px;
-	box-shadow: 0 0 10px -5px var(--text);
+	place-content: center;
+	flex-flow: column wrap;
+	border: 1px solid var(--text);
 	background-color: var(--background);
+}
+
+div#container div#layers .layer:not(div#container div#layers .layer.selected):hover {
+	box-shadow: 0 0 5px 0 inset var(--text);
+	transition: box-shadow 100ms;
+}
+
+div#container div#layers .layer.selected {
+	box-shadow: 0 0 10px 0 inset var(--text);
+	transition: box-shadow 100ms;
+}
+
+div#container div#layers .layer input.selector {
+	display: inline-block;
+	width: 30px;
+	height: 20px;
 }
 
 div#container div#layers .layer .option {
@@ -158,11 +213,8 @@ svg {
 	background-color: var(--background);
 }
 
-cirlce {
-	fill: var(--color);
-}
-
 line {
+	stroke: var(--text);
 	/*stroke-width: calc(8 * var(--zoom));*/
 	stroke-linecap: round;
 	stroke-linejoin: round;
@@ -170,9 +222,19 @@ line {
 
 polyline {
 	fill: none;
+	stroke: var(--text);
 	stroke-linecap: round;
 	stroke-linejoin: round;
 }
+
+cirlce {
+	fill: var(--text);
+}
+
+rect {
+	fill: var(--text);
+}
+
 
 input[type="color"]#colour {
 	visibility: hidden;

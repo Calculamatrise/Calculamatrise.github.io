@@ -2,22 +2,24 @@ import Tool from "./Tool.js";
 
 export default class extends Tool {
     static id = "line";
+    
     size = 4;
     element = document.createElementNS("http://www.w3.org/2000/svg", "line");
     mouseDown(event) {
-        this.element.setAttribute("stroke-width", this.size);
+        this.element.style.setProperty("stroke", this.canvas.primary);
+        this.element.style.setProperty("stroke-width", this.size);
         this.element.setAttribute("x1", this.mouse.pointA.x);
         this.element.setAttribute("y1", this.mouse.pointA.y);
         this.element.setAttribute("x2", this.mouse.position.x);
         this.element.setAttribute("y2", this.mouse.position.y);
-        this.element.setAttribute("stroke", this.canvas.primary);
-        this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(this.element);
+
+        this.canvas.layer.base.appendChild(this.element);
     }
     mouseMove(event) {
-        this.element.setAttribute("stroke-width", this.size);
+        this.element.style.setProperty("stroke", this.canvas.primary);
+        this.element.style.setProperty("stroke-width", this.size);
         this.element.setAttribute("x2", this.mouse.position.x);
         this.element.setAttribute("y2", this.mouse.position.y);
-        this.element.setAttribute("stroke", this.canvas.primary);
     }
     mouseUp(event) {
         this.element.remove();
@@ -25,13 +27,11 @@ export default class extends Tool {
             return;
         }
         
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("stroke-width", this.size);
-        line.setAttribute("x1", this.mouse.pointA.x);
-        line.setAttribute("y1", this.mouse.pointA.y);
+        const line = this.element.cloneNode();
+        line.style.setProperty("stroke", this.canvas.primary);
+        line.style.setProperty("stroke-width", this.size);
         line.setAttribute("x2", this.mouse.pointB.x);
         line.setAttribute("y2", this.mouse.pointB.y);
-        line.setAttribute("stroke", this.canvas.primary);
         line.erase = function(event) {
             let vector = {
                 x: (parseInt(this.getAttribute("x2")) - window.canvas.viewBox.x) - (parseInt(this.getAttribute("x1")) - window.canvas.viewBox.x),
@@ -69,9 +69,12 @@ export default class extends Tool {
 
             return false;
         }
+        line.toString = function() {
+            return `line:${this.getAttribute("x1")}-${this.getAttribute("y1")}-${this.getAttribute("x2")}-${this.getAttribute("y2")}.`
+        }
 
         if (!this.canvas.layer.hidden) {
-            this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(line);
+            this.canvas.layer.base.appendChild(line);
         }
 
         this.canvas.layer.lines.push(line);

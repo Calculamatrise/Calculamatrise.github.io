@@ -18,6 +18,9 @@ export default class {
             return false;
         });
     }
+    has(layerId) {
+        return !!this.get(layerId);
+    }
     insert(layer, index) {
         window.canvas.layerDepth = index + 1;
 

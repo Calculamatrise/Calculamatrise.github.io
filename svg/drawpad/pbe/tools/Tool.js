@@ -3,6 +3,7 @@ export default class {
         this.parent = parent;
     }
     size = null;
+    active = null;
     #primary = "#87CEEB";
 	#secondary = "#967BB6";
     get canvas() {

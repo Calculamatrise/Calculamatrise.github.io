@@ -12,14 +12,15 @@ export default class extends Tool {
             return;
         }
 
-        this.element.setAttribute("stroke-width", 2);
+        this.element.style.setProperty("stroke", "#87CEEB");
+        this.element.style.setProperty("fill", "#87CEEB80");
+        this.element.style.setProperty("stroke-width", 2);
         this.element.setAttribute("x", this.mouse.pointA.x);
         this.element.setAttribute("y", this.mouse.pointA.y);
         this.element.setAttribute("width", 0);
         this.element.setAttribute("height", 0);
-        this.element.setAttribute("stroke", "#87CEEB");
-        this.element.setAttribute("fill", "#87CEEB80");
         this.element.setAttribute("rx", .5);
+        
         this.canvas.view.appendChild(this.element);
     }
     mouseMove(event) {

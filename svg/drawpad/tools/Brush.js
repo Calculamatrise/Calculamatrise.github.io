@@ -6,14 +6,14 @@ export default class extends Tool {
     size = 4;
     element = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     mouseDown() {
-        this.element.setAttribute("stroke-width", this.size);
-        this.element.setAttribute("stroke", this.canvas.primary);
+        this.element.style.setProperty("stroke", this.canvas.primary);
+        this.element.style.setProperty("stroke-width", this.size);
         this.element.setAttribute("points", [
             this.mouse.pointA.x,
             this.mouse.pointA.y
         ].join(" "));
         
-        this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(this.element);
+        this.canvas.layer.base.appendChild(this.element);
     }
     mouseMove() {
         if (this.mouse.pointA.x === this.mouse.position.x && this.mouse.pointA.y === this.mouse.position.y) {
@@ -81,9 +81,12 @@ export default class extends Tool {
                 return false;
             });
         }
+        temp.toString = function() {
+            return `brush:${this.getAttribute("points")}.`;
+        }
 
         if (!this.canvas.layer.hidden) {
-            this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(temp);
+            this.canvas.layer.base.appendChild(temp);
         }
 
         this.canvas.layer.lines.push(temp);

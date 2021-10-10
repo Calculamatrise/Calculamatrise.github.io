@@ -6,7 +6,7 @@ export default class extends Tool {
     size = 4;
     segmentLength = 1;
     element = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    get current() {
+    get polyline() {
         const temp = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
         temp.style.setProperty("stroke", this.canvas.primary);
         temp.style.setProperty("stroke-width", this.size);
@@ -62,14 +62,23 @@ export default class extends Tool {
                 return false;
             });
         }
-
-        for (let i = 0; i <= 360; i += this.segmentLength) {
-            temp.setAttribute("points", (temp.getAttribute("points") || "") + `${this.mouse.pointA.x + this.radius * Math.cos(i * Math.PI / 180)},${this.mouse.pointA.y + this.radius * Math.sin(i * Math.PI / 180)} `);
+        temp.toString = function() {
+            return `brush:${this.getAttribute("points")}.`;
         }
+
+        const points = []
+        for (let i = 0; i <= 360; i += this.segmentLength) {
+            points.push([
+                this.mouse.pointA.x + this.radius * Math.cos(i * Math.PI / 180),
+                this.mouse.pointA.y + this.radius * Math.sin(i * Math.PI / 180)
+            ]);
+        }
+
+        temp.setAttribute("points", points.map(point => point.join(",")).join(" "));
 
         return temp;
     }
-    get currentMultiLine() {
+    get lines() {
         const lines = [];
         for (let i = 0; i <= 360; i += this.segmentLength) {
             const temp = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -116,6 +125,9 @@ export default class extends Tool {
     
                 return false;
             }
+            temp.toString = function() {
+                return `line:${this.getAttribute("x1")}-${this.getAttribute("y1")}-${this.getAttribute("x2")}-${this.getAttribute("y2")}.`;
+            }
 
             lines.push(temp);
         }
@@ -138,25 +150,15 @@ export default class extends Tool {
             radius *= -1;
         }
 
-        return radius;
+        return radius  / 1.5;
     }
     init() {
         this.element.style.setProperty("stroke", this.canvas.primary);
         this.element.style.setProperty("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
         this.element.style.setProperty("stroke-width", this.size);
-        this.element.setAttribute("r", this.radius / Math.PI * 2);
+        this.element.setAttribute("r", this.radius);
         this.element.setAttribute("cx", this.mouse.pointA.x);
         this.element.setAttribute("cy", this.mouse.pointA.y);
-    }
-    draw(x, y, radius, segmentLength = 5) {
-        if (segmentLength === void 0)
-            segmentLength = 5;
-
-        for (let i = 0; i <= 360; i += segmentLength) {
-            this.poly.setAttribute("points", (this.poly.getAttribute("points") || "") + `${x + radius * Math.cos(i * Math.PI / 180)},${y + radius * Math.sin(i * Math.PI / 180)} `);
-        }
-
-        return this;
     }
     mouseDown() {
         this.element.style.setProperty("stroke", this.canvas.primary);
@@ -165,10 +167,11 @@ export default class extends Tool {
         this.element.setAttribute("cx", this.mouse.pointA.x);
         this.element.setAttribute("cy", this.mouse.pointA.y);
         this.element.setAttribute("r", 1);
-        this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(this.element);
+        
+        this.canvas.layer.base.appendChild(this.element);
     }
     mouseMove() {
-        this.element.setAttribute("r", this.radius / Math.PI * 2);
+        this.element.setAttribute("r", this.radius);
     }
     mouseUp() {
         this.element.remove();
@@ -214,9 +217,12 @@ export default class extends Tool {
 
             return false;
         }
+        circle.toString = function() {
+            return `circle:${this.getAttribute("cx")}-${this.getAttribute("cy")}-${this.getAttribute("r")}.`;
+        }
 
         if (!this.canvas.layer.hidden) {
-            this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).append(circle);
+            this.canvas.layer.base.append(circle);
         }
 
         this.canvas.layer.lines.push(circle);

@@ -6,15 +6,16 @@ export default class extends Tool {
     size = 4;
     element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     mouseDown() {
-        this.element.setAttribute("stroke-width", this.size);
+        this.element.style.setProperty("stroke", this.canvas.primary);
+        this.element.style.setProperty("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
+        this.element.style.setProperty("stroke-width", this.size);
         this.element.setAttribute("x", this.mouse.pointA.x);
         this.element.setAttribute("y", this.mouse.pointA.y);
         this.element.setAttribute("width", 1);
         this.element.setAttribute("height", 1);
-        this.element.setAttribute("stroke", this.canvas.primary);
-        this.element.setAttribute("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
         this.element.setAttribute("rx", .5);
-        this.canvas.view.prepend(this.element);
+        
+        this.canvas.layer.base.appendChild(this.element);
     }
     mouseMove() {
         if (this.mouse.position.x - this.mouse.pointA.x > 0) {
@@ -35,6 +36,9 @@ export default class extends Tool {
     }
     mouseUp() {
         this.element.remove();
+        if (this.mouse.pointA.x === this.mouse.pointB.x && this.mouse.pointA.y === this.mouse.pointB.y) {
+            return;
+        }
 
         const rectangle = this.element.cloneNode();
         rectangle.erase = function(event) {
@@ -74,9 +78,12 @@ export default class extends Tool {
 
             return false;
         }
+        rectangle.toString = function() {
+            return `rectangle:${this.getAttribute("x")}-${this.getAttribute("y")}-${this.getAttribute("width")}-${this.getAttribute("height")}.`
+        }
 
         if (!this.canvas.layer.hidden) {
-            this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(rectangle);
+            this.canvas.layer.base.appendChild(rectangle);
         }
 
         this.canvas.layer.lines.push(rectangle);

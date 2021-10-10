@@ -13,7 +13,7 @@ export default class extends Tool {
         this.element.setAttribute("x2", this.mouse.position.x);
         this.element.setAttribute("y2", this.mouse.position.y);
 
-        this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(this.element);
+        this.canvas.layer.base.appendChild(this.element);
     }
     mouseMove(event) {
         this.element.style.setProperty("stroke", this.canvas.primary);
@@ -69,9 +69,12 @@ export default class extends Tool {
 
             return false;
         }
+        line.toString = function() {
+            return `line:${this.getAttribute("x1")}-${this.getAttribute("y1")}-${this.getAttribute("x2")}-${this.getAttribute("y2")}.`
+        }
 
         if (!this.canvas.layer.hidden) {
-            this.canvas.view.querySelector(`g[data-id='${this.canvas.layer.id}']`).appendChild(line);
+            this.canvas.layer.base.appendChild(line);
         }
 
         this.canvas.layer.lines.push(line);
