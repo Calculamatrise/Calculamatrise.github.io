@@ -4,11 +4,13 @@ fetch("/head.html").then(async t => document.head.innerHTML += await t.text());
 fetch("/nav.html").then(t => t.text()).then(t => {
     document.body.prepend(Object.assign(document.createElement("nav"), { innerHTML: t }));
 
-    if (!localStorage.getItem("dark"))
+    if (!localStorage.getItem("dark")) {
         localStorage.setItem("dark", window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
 
-    if (JSON.parse(localStorage.getItem("dark")))
+    if (JSON.parse(localStorage.getItem("dark"))) {
         dark.checked = true;
+    }
 });
 
 if ("serviceWorker" in navigator) {

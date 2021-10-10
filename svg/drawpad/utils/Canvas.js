@@ -185,6 +185,13 @@ export default class {
 		return null;
 	}
 	mouseDown(event) {
+		const patchNotes = this.container.querySelector("#patch-notes") || {};
+		if (patchNotes.iframe) {
+			patchNotes.iframe.remove();
+
+			patchNotes.iframe = null;
+		}
+
 		if (event.button === 1) {
 			this.tools.select(this.tool.constructor.id === "line" ? "brush" : this.tool.constructor.id === "brush" ? "eraser" : this.tool.constructor.id === "eraser" ? "camera" : "line");
 			

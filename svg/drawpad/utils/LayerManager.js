@@ -72,6 +72,12 @@ export default class {
                 }
 
                 continue;
+            } else if (typeof properties[property] === "object") {
+                for (const childProperty in properties[property]) {
+                    element[property][childProperty] = properties[property][childProperty];
+                }
+
+                continue;
             }
 
             element[property] = properties[property];
