@@ -1,30 +1,30 @@
 :root {
     --text: rgb(0, 0, 0);
-    --background: rgb(255, 255, 255);
-    --border-color: rgb(245, 245, 245);
+    --background: rgb(237, 237, 237);
+    --border-color: rgb(207, 207, 207);
 }
 
 ::-webkit-scrollbar-track {
-    background-color: #eeeeee;
+    background-color: #eee;
     border-radius: 30px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #cccccc;
+    background-color: #ccc;
     border-radius: 30px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #bbbbbb;
+    background-color: #bbb;
 }
 
 ::-webkit-scrollbar-thumb:active {
-    background-color: #aaaaaa;
+    background-color: #aaa;
 }
 
 nav {
-    background-color: #f5f5f5;
-    border-bottom: 1px solid #ddd;
+    background-color: #d2d2d2;
+    border-bottom: 1px solid #bbb;
 }
 
 @media (max-width: 600px) {
@@ -46,70 +46,66 @@ nav {
     }
 
     nav select option:hover {
-        background-color: #eeeeee;
+        background-color: #eee;
     }
 }
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]), textarea {
-    background-color: #e8e8e8;
+    background-color: #d2d2d2;
 }
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):hover, textarea:hover {
-    background-color: #e4e4e4;
+    background-color: #cfcfcf;
     color: #1d1d1d;
 }
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):focus, textarea:focus {
-    background-color: #dddddd;
+    background-color: #ccc;
 }
 
 button, .button, ::-webkit-file-upload-button {
-    background-color: #E7E7E7;
+    background-color: #d2d2d2;
     color: #333;
 }
 
 button::before, .button::before, .ripple::before {
-	background-color: #C0C0C0;
+	background-color: #666;
 }
 
-.header.button {
-    background-color: #f5f5f5;
-}
-
-button:hover, .button:hover, .header.button:hover, ::-webkit-file-upload-button:hover {
-    background-color: #DDDDDD;
+button:hover, .button:hover, ::-webkit-file-upload-button:hover {
+    background-color: #bbb;
     color: #1d1d1d;
 }
 
-button, .button:active, .header.button:active, ::-webkit-file-upload-button:hover {
-    background-color: #C0C0C0;
+button:active, .button:active, ::-webkit-file-upload-button:active {
+    background-color: #aaa;
 }
 
 table tr td:nth-child(1), table tr td:nth-child(2) {
-    background-color: #e8e8e8;
+    background-color: #d2d2d2;
 }
 
 table tr td:nth-child(1):hover, table tr td:nth-child(2):hover {
-    background-color: #e0e0e0;
+    background-color: #ccc;
 }
 
 .dropdown .dropdown-content {
+    background-color: #d2d2d2;
     box-shadow: 1px 1px 20px 1px #aaa;
-    background-color: #f5f5f5;
 }
 
 .progress-bar-container {
-    background-color: #f9f9f9;
+    background-color: #e6e6e6;
 }
 
 #messages {
-    border: 1px solid #ddd;
+    border: 1px solid #bbb;
 }
 
 .message span.content {
-    background-color: #ddd
+    background-color: #bbb
 }
 
 .warning {
-    color: #ff0000
+    color: #cb0000
 }

@@ -1,23 +1,23 @@
 <div class="header-left">
-    <button class="header button" data-view="/" active>Home</button>
-    <button class="header button" data-view="/rae/">Rae</button>
+    <button class="button" data-view="/" active>Home</button>
+    <button class="button" data-view="/rae/">Rae</button>
     <div class="dropdown">
-        <button class="header button" data-view="/frhd/tools/">FRHD Tools</button>
+        <button class="button" data-view="/frhd/tools/">FRHD Tools</button>
         <div class="dropdown-content">
-            <button class="header button" data-view="/frhd/tools/move/">Move</button>
-            <button class="header button" data-view="/frhd/tools/render/">Render</button>
-            <button class="header button" data-view="/frhd/tools/combine/">Combine</button>
-            <button class="header button" data-view="/frhd/tools/reverse/">Reverse</button>
-            <button class="header button" data-view="/frhd/tools/editor/">Editor</button>
-            <button class="header button" data-view="/frhd/tools/api/">Visualize</button>
-            <button class="header button" data-view="/frhd/tools/tube_generator/">Tube Generator</button>
+            <button class="button" data-view="/frhd/tools/move/">Move</button>
+            <button class="button" data-view="/frhd/tools/render/">Render</button>
+            <button class="button" data-view="/frhd/tools/combine/">Combine</button>
+            <button class="button" data-view="/frhd/tools/reverse/">Reverse</button>
+            <button class="button" data-view="/frhd/tools/editor/">Editor</button>
+            <button class="button" data-view="/frhd/tools/api/">Visualize</button>
+            <button class="button" data-view="/frhd/tools/tube_generator/">Tube Generator</button>
         </div>
     </div>
-    <button class="header button" data-view="/contact/">Contact</button>
+    <button class="button" data-view="/contact/">Contact</button>
 </div>
 <div class="header-right">
-    <button class="header button" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
-    <button class="header button" onclick="location.assign(`https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&redirect_uri=${encodeURIComponent(`${location.origin}/auth/discord/redirect/`)}&response_type=code&scope=identify%20guilds.join%20guilds%20rpc`)">Login</button>
+    <button class="button" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
+    <button class="button" onclick="location.assign(`https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&redirect_uri=${encodeURIComponent(`${location.origin}/auth/discord/redirect/`)}&response_type=code&scope=identify%20guilds.join%20guilds%20rpc`)">Login</button>
 </div>
 <select oninput="
     console.dir(this)

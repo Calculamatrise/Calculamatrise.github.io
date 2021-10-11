@@ -5,31 +5,31 @@
 }
 
 ::-webkit-scrollbar-track {
-    background-color: #111111;
+    background-color: #111;
     border-radius: 30px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #333333;
+    background-color: #333;
     border-radius: 30px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #444444;
+    background-color: #444;
 }
 
 ::-webkit-scrollbar-thumb:active {
-    background-color: #555555;
+    background-color: #555;
 }
 
 nav {
     background-color: #2d2d2d;
-    border-bottom: 1px solid #444444;
+    border-bottom: 1px solid #444;
 }
 
 @media (max-width: 600px) {
     nav select:hover {
-        border-color: #444444;
+        border-color: #444;
         background-color: #3a3a3a;
     }
 
@@ -46,7 +46,7 @@ nav {
     }
 
     nav select option:hover {
-        background-color: #eeeeee;
+        background-color: #eee;
     }
 }
 
@@ -61,25 +61,25 @@ input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="
 }
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):focus, textarea:focus {
-    background-color: #333333;
+    background-color: #333;
 }
 
 button, .button, ::-webkit-file-upload-button {
     background-color: #2d2d2d;
-    color: #eeeeee;
+    color: #eee;
 }
 
 button::before, .ripple::before {
-	background-color: #999999;
+	background-color: #999;
 }
 
 button:hover, .button:hover, ::-webkit-file-upload-button:hover {
-    background-color: #444444;
+    background-color: #444;
     color: #f5f5f5;
 }
 
 button:active, .button:active, ::-webkit-file-upload-button:active {
-    background-color: #555555;
+    background-color: #555;
 }
 
 table tr td:nth-child(1), table tr td:nth-child(2) {
@@ -87,7 +87,7 @@ table tr td:nth-child(1), table tr td:nth-child(2) {
 }
 
 table tr td:nth-child(1):hover, table tr td:nth-child(2):hover {
-    background-color: #333333;
+    background-color: #333;
 }
 
 .dropdown .dropdown-content {
