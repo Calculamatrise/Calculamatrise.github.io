@@ -52,7 +52,9 @@ export default class {
         if ([
             "line",
             "brush",
+            "curve",
             "circle",
+            "dynamic_circle",
             "rectangle"
         ].includes(toolName.toLowerCase())) {
             primary.parentElement.style.setProperty("display", "flex");

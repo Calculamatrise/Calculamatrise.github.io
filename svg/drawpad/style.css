@@ -5,6 +5,7 @@ html {
 	--soft-background: #EEEEEE;
 	--text: #1B1B1B;
 	--color: skyblue;
+	border: none;
 }
 
 body {
@@ -49,7 +50,7 @@ div#container div.ui.top-left {
 div#container div.ui.top-right {
 	top: 0;
 	right: 0;
-	width: 20vw;
+	width: 260px;
 	flex-wrap: wrap;
 	display: inline-flex;
 	justify-content: flex-end;
@@ -69,6 +70,7 @@ div#container div.ui.top-left #toolbar {
 
 div#container div.ui.top-left #toolbar #advanced-tools {
 	display: none;
+	flex-direction: column;
 }
 
 div#container div.ui.bottom-left .option {
@@ -88,9 +90,9 @@ div#container div.ui.bottom-left .option.disabled {
 }
 
 div#container div.ui.bottom-left .option input {
-	position: absolute;
 	top: 0;
 	left: 0;
+	position: absolute;
 	visibility: hidden;
 	pointer-events: none;
 }
@@ -336,7 +338,18 @@ input[type="color"]#colour {
 	transition: transform 800ms, opacity 1s;
     border-radius: 50%;
     pointer-events: none;
+}
+
+.ripple:not(.ripple.rainbow)::before {
     background-color: #EEEEEE;
+}
+
+.rainbow::before {
+	background: #EEEEEE; /* For browsers that do not support gradients */
+    background: -webkit-radial-gradient(red, orange , yellow, green, cyan, blue, indigo, violet);
+    background: -o-radial-gradient(red, orange, yellow, green, cyan, blue, indigo, violet);
+    background: -moz-radial-gradient(red, orange, yellow, green, cyan, blue, indigo, violet);
+    background: radial-gradient(red, orange , yellow, green, cyan, blue, indigo,violet);
 }
 
 .ripple:not(.focus):active::before, .ripple.focus:active:not(:focus-within)::before {

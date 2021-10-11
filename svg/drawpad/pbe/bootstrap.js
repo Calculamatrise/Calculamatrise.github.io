@@ -36,7 +36,7 @@ document.querySelector("#patch-notes").addEventListener("click", function(event)
 
 	this.iframe = document.createElement("iframe");
 	this.iframe.id = "patch-notes-iframe";
-	this.iframe.src = "https://calculamatrise.github.io/svg/drawpad/updates/patch-1.2.5/";
+	this.iframe.src = location.origin + "/svg/drawpad/updates/patch-1.2.5/";
 
 	document.querySelector("#container").appendChild(this.iframe);
 });

@@ -13,6 +13,12 @@ export default class {
         return this.canvas.mouse;
     }
     get primary() {
+        if (JSON.parse(sessionStorage.getItem("randomColors"))) {
+			return `rgb(${Math.ceil(Math.random() * 255)}, ${Math.ceil(Math.random() * 255)}, ${Math.ceil(Math.random() * 255)})`;
+		} else if (JSON.parse(sessionStorage.getItem("rainbowColors"))) {
+			return ["red", "orange", "yellow", "green", "blue", "indigo", "violet"][Math.floor(Math.random() * 7)];
+        }
+
 		return localStorage.getItem("primaryColor") || this.#primary;
 	}
 	set primary(color) {
