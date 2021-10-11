@@ -13,10 +13,9 @@
         <script src="/bootstrap.js" type="module"></script>
     </head>
     <body onload="
-        document.querySelector('#primary').parentElement.style.setProperty('background-color', (document.querySelector('#primary').value = window.canvas.primary) + '40');
+        document.querySelector('#primary').parentElement.style.setProperty('background-color', (localStorage.getItem('primaryColor') || (document.querySelector('#primary').value = window.canvas.primary)) + '40');
         document.querySelector('#secondary').parentElement.style.setProperty('background-color', (document.querySelector('#secondary').value = window.canvas.secondary) + '40');
         document.querySelector('#randomColors').innerText = JSON.parse(sessionStorage.getItem('randomColors')) ? 'Disable Random Colours' : 'Enable Random Colours';
-        document.querySelector('#rainbowColors').innerText = JSON.parse(sessionStorage.getItem('rainbowColors')) ? 'Disable Rainbow Colours' : 'Enable Rainbow Colours';
     ">
         <div class="content">
             <div id="container">
@@ -56,34 +55,17 @@
                             ">
                                 Enable Random Colours
                             </button>
-                            <button class="option ripple rainbow" id="rainbowColors" onclick="
-                                if (JSON.parse(sessionStorage.getItem('rainbowColors'))) {
-                                    this.innerText = 'Enable Rainbow Colours';
-                                    
-                                    sessionStorage.setItem('rainbowColors', false);
-
-                                    return;
-                                }
-
-                                this.innerText = 'Disable Rainbow Colours';
-
-                                sessionStorage.setItem('rainbowColors', true);
-                            ">
-                                Enable Rainbow Colours
-                            </button>
                         </div>
                     </div>
                 </div>
                 <div class="ui bottom-left">
                     <div class="option ripple" onclick="this.firstElementChild.click();">
                         <input type="color" id="primary" oninput="
-                            this.parentElement.style.setProperty('background-color', (window.canvas.primary = this.value) + '40');
+                            this.parentElement.style.setProperty('background-color', (localStorage.getItem('primaryColor') || (window.canvas.primary = this.value)) + '40');
                             
                             sessionStorage.removeItem('randomColors');
-                            sessionStorage.removeItem('rainbowColors');
 
                             document.querySelector('#randomColors').innerText = 'Enable Random Colours';
-                            document.querySelector('#rainbowColors').innerText = 'Enable Rainbow Colours';
                         ">
                         Primary Colour
                     </div>
@@ -92,10 +74,8 @@
                             this.parentElement.style.setProperty('background-color', (window.canvas.secondary = this.value) + '40');
                             
                             sessionStorage.removeItem('randomColors');
-                            sessionStorage.removeItem('rainbowColors');
 
                             document.querySelector('#randomColors').innerText = 'Enable Random Colours';
-                            document.querySelector('#rainbowColors').innerText = 'Enable Rainbow Colours';
                         ">
                         Secondary Colour
                     </div>

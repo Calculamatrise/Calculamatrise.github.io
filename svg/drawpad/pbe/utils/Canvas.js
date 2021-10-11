@@ -16,6 +16,8 @@ export default class {
 		this.mouse.on("move", this.mouseMove.bind(this));
 		this.mouse.on("up", this.mouseUp.bind(this));
 
+		window.addEventListener("resize", this.resize.bind(this));
+
 		document.addEventListener("keydown", this.keyDown.bind(this));
 	}
 	#layer = 1;
@@ -36,9 +38,7 @@ export default class {
 	get primary() {
 		if (JSON.parse(sessionStorage.getItem("randomColors"))) {
 			return `rgb(${Math.ceil(Math.random() * 255)}, ${Math.ceil(Math.random() * 255)}, ${Math.ceil(Math.random() * 255)})`;
-		} else if (JSON.parse(sessionStorage.getItem("rainbowColors"))) {
-			return ["red", "orange", "yellow", "green", "blue", "indigo", "violet"][Math.floor(Math.random() * 7)];
-        }
+		}
 
 		return localStorage.getItem("primaryColor") || this.#primary;
 	}
@@ -154,16 +154,62 @@ export default class {
 			});
 		}
 	}
+	resize(event) {
+		const boundingRect = this.view.getBoundingClientRect();
+		this.view.setAttribute("viewBox", `0 0 ${boundingRect.width} ${boundingRect.height}`);
+
+		this.text.setAttribute("x", boundingRect.width / 2 + this.viewBox.x - this.text.innerHTML.length * 2.5);
+		this.text.setAttribute("y", 25 + this.viewBox.y);
+	}
 	undo() {
 		const event = this.events.pop();
 		if (event) {
 			switch(event.action) {
 				case "add":
 					event.value.remove();
+
 					break;
 
 				case "remove":
 					this.view.prepend(event.value);
+
+					break;
+
+				case "move_selected":
+					event.data.selected.map(function(line, index) {
+						let type = parseInt(line.getAttribute("x")) ? 0 : parseInt(line.getAttribute("x1")) ? 1 : parseInt(line.getAttribute("cx")) ? 2 : parseInt(line.getAttribute("points")) ? 3 : NaN;
+						if (isNaN(type)) {
+							return;
+						}
+		
+						switch(type) {
+							case 0:
+								line.setAttribute("x", event.data.cache[index].getAttribute("x"));
+								line.setAttribute("y", event.data.cache[index].getAttribute("y"));
+		
+								break;
+		
+							case 1:
+								line.setAttribute("x1", event.data.cache[index].getAttribute("x1"));
+								line.setAttribute("y1", event.data.cache[index].getAttribute("y1"));
+								line.setAttribute("x2", event.data.cache[index].getAttribute("x2"));
+								line.setAttribute("y2", event.data.cache[index].getAttribute("y2"));
+		
+								break;
+		
+							case 2:
+								line.setAttribute("cx", event.data.cache[index].getAttribute("cx"));
+								line.setAttribute("cy", event.data.cache[index].getAttribute("cy"));
+		
+								break;
+
+							case 3:
+								line.setAttribute("points", event.data.cache[index].getAttribute("points"));
+
+								break;
+						}
+					});
+
 					break;
 			}
 
@@ -178,10 +224,49 @@ export default class {
 			switch(event.action) {
 				case "add":
 					this.view.prepend(event.value);
+
 					break;
 
 				case "remove":
 					event.value.remove();
+
+					break;
+
+				case "move_selected":
+					event.data.selected.map(function(line, index) {
+						let type = parseInt(line.getAttribute("x")) ? 0 : parseInt(line.getAttribute("x1")) ? 1 : parseInt(line.getAttribute("cx")) ? 2 : parseInt(line.getAttribute("points")) ? 3 : NaN;
+						if (isNaN(type)) {
+							return;
+						}
+		
+						switch(type) {
+							case 0:
+								line.setAttribute("x", event.data.secondaryCache[index].getAttribute("x"));
+								line.setAttribute("y", event.data.secondaryCache[index].getAttribute("y"));
+		
+								break;
+		
+							case 1:
+								line.setAttribute("x1", event.data.secondaryCache[index].getAttribute("x1"));
+								line.setAttribute("y1", event.data.secondaryCache[index].getAttribute("y1"));
+								line.setAttribute("x2", event.data.secondaryCache[index].getAttribute("x2"));
+								line.setAttribute("y2", event.data.secondaryCache[index].getAttribute("y2"));
+		
+								break;
+		
+							case 2:
+								line.setAttribute("cx", event.data.secondaryCache[index].getAttribute("cx"));
+								line.setAttribute("cy", event.data.secondaryCache[index].getAttribute("cy"));
+		
+								break;
+
+							case 3:
+								line.setAttribute("points", event.data.secondaryCache[index].getAttribute("points"));
+
+								break;
+						}
+					});
+
 					break;
 			}
 
@@ -274,8 +359,6 @@ export default class {
 	keyDown(event) {
 		event.preventDefault();
 		event.stopPropagation();
-		
-		const zoom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--zoom'));
 		switch(event.key) {
 			case "Escape":
 				if (layers.style.display !== "none") {
@@ -289,7 +372,7 @@ export default class {
 				break;
 			
 			case "=":
-				if (this.tool.size > 100) {
+				if (this.tool.size >= 100) {
 					break;
 				}
 	

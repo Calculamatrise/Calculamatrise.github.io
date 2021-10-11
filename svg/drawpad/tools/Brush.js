@@ -5,13 +5,13 @@ export default class extends Tool {
 
     size = 4;
     element = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    init() {
+        this.element.style.setProperty("stroke-width", this.size);
+    }
     mouseDown() {
         this.element.style.setProperty("stroke", this.canvas.primary);
         this.element.style.setProperty("stroke-width", this.size);
-        this.element.setAttribute("points", [
-            this.mouse.pointA.x,
-            this.mouse.pointA.y
-        ].join(" "));
+        this.element.setAttribute("points", `${this.mouse.pointA.x} ${this.mouse.pointA.y}`);
         
         this.canvas.layer.base.appendChild(this.element);
     }
@@ -20,10 +20,7 @@ export default class extends Tool {
             return;
         }
 
-        this.element.setAttribute("points", this.element.getAttribute("points") + "," + [
-            this.mouse.position.x,
-            this.mouse.position.y
-        ].join(" "));
+        this.element.setAttribute("points", `${this.element.getAttribute("points")},${this.mouse.position.x} ${this.mouse.position.y}`);
     }
     mouseUp(event) {
         this.element.remove();

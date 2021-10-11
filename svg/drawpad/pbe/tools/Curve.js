@@ -9,6 +9,9 @@ export default class extends Tool {
     anchorB = null;
     segmentLength = 1;
     element = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    init() {
+        this.element.style.setProperty("stroke-width", this.size);
+    }
     mouseDown() {
         if (this.active) {
             return;
@@ -36,8 +39,6 @@ export default class extends Tool {
 
             return;
         } else if (this.mouse.isDown && !this.mouse.isAlternate) {
-            this.element.style.setProperty("stroke", this.canvas.primary);
-            this.element.style.setProperty("stroke-width", this.size);
             this.element.setAttribute("points", `${this.anchorA.x},${this.anchorA.y} ${this.mouse.position.x},${this.mouse.position.y}`);
         }
     }
@@ -64,25 +65,25 @@ export default class extends Tool {
                     }
 
                     let vector = {
-                        x: (parseInt(points[index - 1].x) - window.canvas.viewBox.x) - (parseInt(point.x) - window.canvas.viewBox.x),
-                        y: (parseInt(points[index - 1].y) - window.canvas.viewBox.y) - (parseInt(point.y) - window.canvas.viewBox.y)
+                        x: (parseFloat(points[index - 1].x) - window.canvas.viewBox.x) - (parseFloat(point.x) - window.canvas.viewBox.x),
+                        y: (parseFloat(points[index - 1].y) - window.canvas.viewBox.y) - (parseFloat(point.y) - window.canvas.viewBox.y)
                     }
                     let len = Math.sqrt(vector.x ** 2 + vector.y ** 2);
-                    let b = (event.offsetX - (parseInt(point.x) - window.canvas.viewBox.x)) * (vector.x / len) + (event.offsetY - (parseInt(point.y) - window.canvas.viewBox.y)) * (vector.y / len);
+                    let b = (event.offsetX - (parseFloat(point.x) - window.canvas.viewBox.x)) * (vector.x / len) + (event.offsetY - (parseFloat(point.y) - window.canvas.viewBox.y)) * (vector.y / len);
                     const v = {
                         x: 0,
                         y: 0
                     }
 
                     if (b <= 0) {
-                        v.x = parseInt(point.x) - window.canvas.viewBox.x;
-                        v.y = parseInt(point.y) - window.canvas.viewBox.y;
+                        v.x = parseFloat(point.x) - window.canvas.viewBox.x;
+                        v.y = parseFloat(point.y) - window.canvas.viewBox.y;
                     } else if (b >= len) {
-                        v.x = parseInt(points[index - 1].x) - window.canvas.viewBox.x;
-                        v.y = parseInt(points[index - 1].y) - window.canvas.viewBox.y;
+                        v.x = parseFloat(points[index - 1].x) - window.canvas.viewBox.x;
+                        v.y = parseFloat(points[index - 1].y) - window.canvas.viewBox.y;
                     } else {
-                        v.x = (parseInt(point.x) - window.canvas.viewBox.x) + vector.x / len * b;
-                        v.y = (parseInt(point.y) - window.canvas.viewBox.y) + vector.y / len * b;
+                        v.x = (parseFloat(point.x) - window.canvas.viewBox.x) + vector.x / len * b;
+                        v.y = (parseFloat(point.y) - window.canvas.viewBox.y) + vector.y / len * b;
                     }
 
                     const res = {

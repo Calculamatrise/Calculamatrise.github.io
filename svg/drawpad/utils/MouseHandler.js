@@ -93,12 +93,20 @@ export default class {
 		return this.emit("up", event);
 	}
 	wheel(event) {
-		const zoom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--zoom'));
-		if (event.deltaY > 0 && zoom >= 100 || event.deltaY < 0 && zoom < 1) {
+		if (event.deltaY > 0 && this.parent.tool.size <= 2) {
+			return;
+		} else if (event.deltaY < 0 && this.parent.tool.size >= 100) {
 			return;
 		}
-		
-		document.documentElement.style.setProperty("--zoom", zoom + event.deltaY / 1000);
+
+		this.parent.tool.size -= event.deltaY / 100;
+
+		// const zoom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--size'));
+		// if (event.deltaY > 0 && zoom >= 100 || event.deltaY < 0 && zoom < 1) {
+		// 	return;
+		// }
+
+		// document.documentElement.style.setProperty("--size", zoom + event.deltaY / 1000);
 	}
 	touchStart(event) {
 		event.stopPropagation();

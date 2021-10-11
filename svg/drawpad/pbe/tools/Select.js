@@ -5,10 +5,16 @@ export default class extends Tool {
     
     active = false;
     selected = []
+    cache = []
+    secondaryCache = []
     clipboard = []
     element = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     mouseDown(event) {
         if (this.active) {
+            this.cache = this.selected.map(function(line) {
+                return line.cloneNode();
+            });
+            
             return;
         }
 
@@ -26,11 +32,45 @@ export default class extends Tool {
     mouseMove(event) {
         if (this.active) {
             this.canvas.view.style.setProperty("cursor", "move");
-            this.selected.forEach(function(line) {
-                line.setAttribute("x1", parseInt(line.getAttribute("x1")) + event.movementX);
-                line.setAttribute("y1", parseInt(line.getAttribute("y1")) + event.movementY);
-                line.setAttribute("x2", parseInt(line.getAttribute("x2")) + event.movementX);
-                line.setAttribute("y2", parseInt(line.getAttribute("y2")) + event.movementY);
+            this.selected.map(function(line) {
+                let type = parseInt(line.getAttribute("x")) ? 0 : parseInt(line.getAttribute("x1")) ? 1 : parseInt(line.getAttribute("cx")) ? 2 : parseInt(line.getAttribute("points")) ? 3 : NaN;
+                if (isNaN(type)) {
+                    return;
+                }
+
+                switch(type) {
+                    case 0:
+                        line.setAttribute("x", parseInt(line.getAttribute("x")) + event.movementX);
+                        line.setAttribute("y", parseInt(line.getAttribute("y")) + event.movementY);
+
+                        break;
+
+                    case 1:
+                        line.setAttribute("x1", parseInt(line.getAttribute("x1")) + event.movementX);
+                        line.setAttribute("y1", parseInt(line.getAttribute("y1")) + event.movementY);
+                        line.setAttribute("x2", parseInt(line.getAttribute("x2")) + event.movementX);
+                        line.setAttribute("y2", parseInt(line.getAttribute("y2")) + event.movementY);
+
+                        break;
+
+                    case 2:
+                        line.setAttribute("cx", parseInt(line.getAttribute("cx")) + event.movementX);
+                        line.setAttribute("cy", parseInt(line.getAttribute("cy")) + event.movementY);
+
+                        break;
+
+                    case 3:
+                        line.setAttribute("points", line.getAttribute("points").split(/\u002C/g).map(function(coord) {
+                            coord = coord.split(/\s+/g).map(value => parseInt(value));
+                            
+                            coord[0] += event.movementX
+                            coord[1] += event.movementY
+
+                            return coord.join(" ");
+                        }).join(","));
+
+                        break;
+                }
             });
 
             return;
@@ -58,6 +98,19 @@ export default class extends Tool {
         if (this.active) {
             this.deselect();
 
+            this.secondaryCache = this.selected.map(function(line) {
+                return line.cloneNode();
+            });
+
+            this.canvas.events.push({
+                action: "move_selected",
+                data: {
+                    selected: this.selected,
+                    cache: this.cache,
+                    secondaryCache: this.secondaryCache
+                }
+            });
+
             return;
         }
 
@@ -65,13 +118,17 @@ export default class extends Tool {
         this.element.remove();
         
         this.selected = this.canvas.layer.lines.filter(line => !!line.parentElement).filter((line) => {
+            let strokePoints = (line.getAttribute("points") || "").split(/\u002C/g);
             let passing = false;
-            if (this.mouse.position.x - this.mouse.pointA.x > 0) {
-                let points = [
-                    parseInt(line.getAttribute("x1")),
-                    parseInt(line.getAttribute("x2"))
-                ]
+            let points = [
+                parseInt(line.getAttribute("x")),
+                parseInt(line.getAttribute("x1")),
+                parseInt(line.getAttribute("x2")),
+                parseInt(line.getAttribute("cx")),
+                ...strokePoints.map(coord => parseInt(coord.split(/\s+/g)[0]))
+            ].filter(point => isFinite(point));
 
+            if (this.mouse.position.x - this.mouse.pointA.x > 0) {
                 passing = !!points.find((point) => {
                     if (point > this.mouse.pointA.x && point < this.mouse.position.x) {
                         return true;
@@ -80,11 +137,6 @@ export default class extends Tool {
                     return false;
                 });
             } else {
-                let points = [
-                    parseInt(line.getAttribute("x1")),
-                    parseInt(line.getAttribute("x2"))
-                ]
-
                 passing = !!points.find((point) => {
                     if (point > this.mouse.position.x && point < this.mouse.pointA.x) {
                         return true;
@@ -94,13 +146,16 @@ export default class extends Tool {
                 });
             }
 
+            points = [
+                parseInt(line.getAttribute("y")),
+                parseInt(line.getAttribute("y1")),
+                parseInt(line.getAttribute("y2")),
+                parseInt(line.getAttribute("cy")),
+                ...strokePoints.map(coord => parseInt(coord.split(/\s+/g)[1]))
+            ].filter(point => isFinite(point));
+
             if (passing) {
                 if (this.mouse.position.y - this.mouse.pointA.y > 0) {
-                    let points = [
-                        parseInt(line.getAttribute("y1")),
-                        parseInt(line.getAttribute("y2"))
-                    ]
-
                     passing = !!points.find((point) => {
                         if (point > this.mouse.pointA.y && point < this.mouse.position.y) {
                             return true;
@@ -109,11 +164,6 @@ export default class extends Tool {
                         return false;
                     });
                 } else {
-                    let points = [
-                        parseInt(line.getAttribute("y1")),
-                        parseInt(line.getAttribute("y2"))
-                    ]
-
                     passing = !!points.find((point) => {
                         if (point > this.mouse.position.y && point < this.mouse.pointA.y) {
                             return true;

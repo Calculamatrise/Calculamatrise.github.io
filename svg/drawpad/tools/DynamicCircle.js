@@ -4,13 +4,14 @@ export default class extends Tool {
     static id = "dynamic_circle";
 
     size = 4;
+    color = null;
     segmentLength = 5;
     element = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     get current() {
         const lines = [];
         for (let i = 0; i <= 360; i += this.segmentLength) {
             const temp = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            temp.style.setProperty("stroke", this.canvas.primary);
+            temp.style.setProperty("stroke", this.color);
             temp.style.setProperty("stroke-width", this.size);
             temp.setAttribute("x1", this.x + this.width * Math.cos(i * Math.PI / 180));
             temp.setAttribute("y1", this.y + this.height * Math.sin(i * Math.PI / 180));
@@ -65,40 +66,41 @@ export default class extends Tool {
     get x() {
         if (this.mouse.position.x - this.mouse.pointA.x > 0) {
             return this.mouse.pointA.x + this.width;
-        } else {
-            return this.mouse.position.x + this.width;
         }
+        
+        return this.mouse.position.x + this.width;
     }
     get y() {
         if (this.mouse.position.y - this.mouse.pointA.y > 0) {
             return this.mouse.pointA.y + this.height;
-        } else {
-            return this.mouse.position.y + this.height;
         }
+
+        return this.mouse.position.y + this.height;
     }
     get width() {
         if (this.mouse.position.x - this.mouse.pointA.x > 0) {
             return (this.mouse.position.x - this.mouse.pointA.x) / 2;
-        } else {
-            return (this.mouse.pointA.x - this.mouse.position.x) / 2;
         }
+        
+        return (this.mouse.pointA.x - this.mouse.position.x) / 2;
     }
     get height() {
         if (this.mouse.position.y - this.mouse.pointA.y > 0) {
             return (this.mouse.position.y - this.mouse.pointA.y) / 2;
-        } else {
-            return (this.mouse.pointA.y - this.mouse.position.y) / 2;
         }
+        
+        return (this.mouse.pointA.y - this.mouse.position.y) / 2;
     }
     init() {
-        this.element.style.setProperty("stroke", this.canvas.primary);
+        this.element.style.setProperty("stroke", this.color = this.canvas.primary);
         this.element.style.setProperty("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
         this.element.style.setProperty("stroke-width", this.size);
     }
     mouseDown() {
-        this.element.style.setProperty("stroke", this.canvas.primary);
+        this.element.style.setProperty("stroke", this.color = this.canvas.primary);
         this.element.style.setProperty("fill", this.canvas.fill ? this.canvas.primary : "#FFFFFF00");
         this.element.style.setProperty("stroke-width", this.size);
+        this.element.setAttribute("points", "");
 
         this.canvas.layer.base.appendChild(this.element);
     }
@@ -111,7 +113,6 @@ export default class extends Tool {
             ]);
         }
 
-        this.element.style.setProperty("stroke", this.canvas.primary);
         this.element.style.setProperty("stroke-width", this.size);
         this.element.setAttribute("points", points.map(point => point.join(",")).join(" "));
     }

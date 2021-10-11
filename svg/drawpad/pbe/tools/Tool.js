@@ -2,38 +2,34 @@ export default class {
     constructor(parent) {
         this.parent = parent;
     }
-    size = null;
+    _size = null;
     active = null;
-    #primary = "#87CEEB";
-	#secondary = "#967BB6";
     get canvas() {
         return this.parent.canvas;
     }
     get mouse() {
         return this.canvas.mouse;
     }
-    get primary() {
-        if (JSON.parse(sessionStorage.getItem("randomColors"))) {
-			return `rgb(${Math.ceil(Math.random() * 255)}, ${Math.ceil(Math.random() * 255)}, ${Math.ceil(Math.random() * 255)})`;
-		} else if (JSON.parse(sessionStorage.getItem("rainbowColors"))) {
-			return ["red", "orange", "yellow", "green", "blue", "indigo", "violet"][Math.floor(Math.random() * 7)];
-        }
+    get size() {
+        return this._size;
+    }
+    set size(size) {
+        this._size = size;
 
-		return localStorage.getItem("primaryColor") || this.#primary;
-	}
-	set primary(color) {
-		localStorage.setItem("primaryColor", color);
+        this.init();
 
-		this.#primary = color;
-	}
-	get secondary() {
-		return localStorage.getItem("secondaryColor") || this.#secondary;
-	}
-	set secondary(color) {
-		localStorage.setItem("secondaryColor", color);
+        clearTimeout(this.canvas.text.timeout);
 
-		this.#secondary = color;
-	}
+        this.canvas.text.innerHTML = this.constructor.id.charAt(0).toUpperCase() + this.constructor.id.slice(1) + " size - " + this.size;
+		this.canvas.text.setAttribute("x", this.canvas.view.width.baseVal.value / 2 + this.canvas.viewBox.x - this.canvas.text.innerHTML.length * 2.5);
+		this.canvas.text.setAttribute("y", 25 + this.canvas.viewBox.y);
+		this.canvas.text.setAttribute("fill", this.canvas.dark ? "#FBFBFB" : "1B1B1B");
+		this.canvas.view.appendChild(this.canvas.text);
+
+        this.canvas.text.timeout = setTimeout(() => {
+			this.canvas.text.remove();
+		}, 2000);
+    }
     createElementNS(element, properties = {}) {
         if (typeof element !== "string" || element === void 0) {
 			throw new Error("Invalid element! What were you thinking?");

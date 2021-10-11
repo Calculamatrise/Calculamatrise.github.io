@@ -3,8 +3,11 @@ import Tool from "./Tool.js";
 export default class extends Tool {
     static id = "line";
     
-    size = 4;
+    _size = 4;
     element = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    init() {
+        this.element.style.setProperty("stroke-width", this.size);
+    }
     mouseDown(event) {
         this.element.style.setProperty("stroke", this.canvas.primary);
         this.element.style.setProperty("stroke-width", this.size);
@@ -16,7 +19,6 @@ export default class extends Tool {
         this.canvas.layer.base.appendChild(this.element);
     }
     mouseMove(event) {
-        this.element.style.setProperty("stroke", this.canvas.primary);
         this.element.style.setProperty("stroke-width", this.size);
         this.element.setAttribute("x2", this.mouse.position.x);
         this.element.setAttribute("y2", this.mouse.position.y);
@@ -28,8 +30,6 @@ export default class extends Tool {
         }
         
         const line = this.element.cloneNode();
-        line.style.setProperty("stroke", this.canvas.primary);
-        line.style.setProperty("stroke-width", this.size);
         line.setAttribute("x2", this.mouse.pointB.x);
         line.setAttribute("y2", this.mouse.pointB.y);
         line.erase = function(event) {
