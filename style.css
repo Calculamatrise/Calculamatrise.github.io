@@ -295,7 +295,6 @@ textarea::placeholder {
     max-height: 0;
     overflow: hidden;
 	position: absolute;
-    transition: max-height .15s ease-out;
 }
 
 .title {
