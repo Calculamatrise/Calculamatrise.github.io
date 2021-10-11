@@ -10,7 +10,7 @@ export default class Triangle extends Item {
     }
     draw() {
         var a = this.track,
-            b = this.pos.toPixel();
+            b = this.position.toPixel();
         ctx.strokeStyle = this.track.parent.theme.dark ? "#FBFBFB" : "#000000";
         ctx.fillStyle = this.color;
         ctx.beginPath(),
@@ -20,11 +20,11 @@ export default class Triangle extends Item {
         ctx.moveTo(-7 * a.zoom, -10 * a.zoom),ctx.lineTo(0, 10 * a.zoom),ctx.lineTo(7 * a.zoom, -10 * a.zoom),ctx.lineTo(-7 * a.zoom, -10 * a.zoom),ctx.fill(),ctx.stroke(),ctx.restore()
     }
     collide(a) {
-        if (a.pos.distanceToSquared(this.pos) < 1E3) {
+        if (a.position.distanceToSquared(this.position) < 1E3) {
             this.activate(a);
         }
     }
     toString() {
-        return this.type + " " + this.pos.toString() + " " + (this.rotation - 180).toString(32)
+        return this.type + " " + this.position.toString() + " " + (this.rotation - 180).toString(32)
     }
 }

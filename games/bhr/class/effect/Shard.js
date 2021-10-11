@@ -1,14 +1,13 @@
 import Vector from "../Vector.js";
+import Mass from "../bike/part/Mass.js";
 
-import { ctx } from "../../bootstrap.js";
-
-export default class Shard {
+export default class Shard extends Mass {
     constructor(parent, a) {
-        this.parent = parent;
+        super(parent);
 
-        this.pos = new Vector(a.x + 5 * (Math.random() - Math.random()),a.y + 5 * (Math.random() - Math.random()));
-        this.old = new Vector(this.pos.x,this.pos.y);
-        this.vel = new Vector(11 * (Math.random() - Math.random()),11 * (Math.random() - Math.random()));
+        this.position = new Vector(a.x + 5 * (Math.random() - Math.random()),a.y + 5 * (Math.random() - Math.random()));
+        this.old = new Vector(this.position.x,this.position.y);
+        this.velocity = new Vector(11 * (Math.random() - Math.random()),11 * (Math.random() - Math.random()));
         this.size = 2 + 9 * Math.random();
         this.rotation = 6.2 * Math.random();
         this.rotationFactor = Math.random() - Math.random();
@@ -16,8 +15,8 @@ export default class Shard {
         this.collide = !0;
         this.shape = [1, 0.7, 0.8, 0.9, 0.5, 1, 0.7, 1]
     }
-    draw() {
-        var a = this.pos.toPixel(),
+    draw(ctx) {
+        var a = this.position.toPixel(),
             b = this.shape[0] * this.size * this.parent.track.zoom,
             d = a.x + b * Math.cos(this.rotation),
             c = a.y + b * Math.sin(this.rotation);
@@ -34,25 +33,25 @@ export default class Shard {
         ctx.restore();
     }
     drive(a) {
-        this.pedalSpeed = a.dot(this.vel) / this.size;
-        this.pos.addToSelf(a.scale(-a.dot(this.vel) * this.friction));
+        this.pedalSpeed = a.dot(this.velocity) / this.size;
+        this.position.addToSelf(a.scale(-a.dot(this.velocity) * this.friction));
         this.rotation += this.rotationFactor;
         var b = a.length;
         if (b > 0) {
             a = new Vector(-a.y / b,a.x / b),
-            this.old.addToSelf(a.scale(0.8 * a.dot(this.vel)));
+            this.old.addToSelf(a.scale(0.8 * a.dot(this.velocity)));
         }
     }
-    update() {
+    update(delta) {
         this.rotation += this.rotationFactor;
-        this.vel.addToSelf(this.parent.gravity).scaleSelf(0.99);
+        this.velocity.addToSelf(this.parent.gravity).scaleSelf(0.99);
+        this.position.addToSelf(this.velocity);
         
-        this.pos.addToSelf(this.vel);
         this.touching = !1;
         if (this.collide) {
             this.parent.track.collide(this);
         }
-        this.vel = this.pos.sub(this.old);
-        this.old.copy(this.pos)
+        this.velocity = this.position.sub(this.old);
+        this.old.copy(this.position)
     }
 }

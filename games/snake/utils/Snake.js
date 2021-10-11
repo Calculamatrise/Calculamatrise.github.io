@@ -81,6 +81,9 @@ export default class {
 
 		this.dead = true;
 	}
+	fixedUpdate() {
+		this.head.position.addToSelf(this.velocity.scale(10));
+	}
 	update(delta) {
 		this.head.old.copy(this.head.position);
 		if (this.head.position.equals(this.consumable.position)) {

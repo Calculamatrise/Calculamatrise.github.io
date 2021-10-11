@@ -5,8 +5,6 @@ import Camera from "../tools/Camera.js";
 export default class {
     constructor(parent) {
         this.track = parent;
-
-        this.selected = "camera";
     }
     old = "camera";
     selected = "camera";

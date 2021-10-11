@@ -94,7 +94,7 @@ export default class Track {
         }
 
         this.cameraFocus = this.firstPlayer.vehicle.head,
-        this.camera = this.firstPlayer.vehicle.head.pos.clone();
+        this.camera = this.firstPlayer.vehicle.head.position.clone();
     }
     removeCheckpoint() {
         for (var i in this.players) {
@@ -148,8 +148,8 @@ export default class Track {
         this.paused = false;
     }
     collide(a) {
-        let x = Math.floor(a.pos.x / this.scale - 0.5);
-        let y = Math.floor(a.pos.y / this.scale - 0.5);
+        let x = Math.floor(a.position.x / this.scale - 0.5);
+        let y = Math.floor(a.position.y / this.scale - 0.5);
         if (this.grid[x] !== void 0) {
             if (this.grid[x][y] !== void 0) {
                 this.grid[x][y].za()
@@ -187,58 +187,70 @@ export default class Track {
 
         return this;
     }
+    fixedUpdate() {
+        if (!this.paused) {
+            for (const player of this.players)
+                player.fixedUpdate();
+
+            this.currentTime += 1000 / 25;
+        }
+
+        if (this.cameraFocus)
+            this.camera.addToSelf(this.cameraFocus.position.sub(this.camera).scale(0.3));
+
+        return this;
+    }
     update(delta) {
         if (!this.paused) {
             for (const player of this.players)
                 player.update(delta);
 
-            this.currentTime += 1000 / 25
+            this.currentTime += 1000 / 25;
         }
 
         if (this.cameraFocus)
-            this.camera.addToSelf(this.cameraFocus.pos.sub(this.camera).scale(0.3))
+            this.camera.addToSelf(this.cameraFocus.position.sub(this.camera).scale(0.3));
 
-        return this
+        return this;
     }
-    render() {
-        this.draw();
+    render(ctx) {
+        this.draw(ctx);
         for (const player of this.players)
-            player.draw();
+            player.draw(ctx);
 
         this.toolHandler.draw();
     }
-    draw() {
-        const ctx = this.parent.canvas.getContext("2d");
+    draw(ctx) {
         ctx.clearRect(0, 0, this.parent.canvas.width, this.parent.canvas.height);
         ctx.lineWidth = Math.max(2 * this.zoom, 0.5);
 
-        let pos = this.parent.mouse.position.toPixel();
+        let position = this.parent.mouse.position.toPixel();
         let old = this.parent.mouse.old.toPixel();
         if (this.cameraLock && ["line", "scenery line", "brush", "scenery brush", "teleporter"].includes(this.toolHandler.selected)) {
-            if (pos.x < 50) {
+            if (position.x < 50) {
                 this.camera.x -= 4 / this.zoom;
                 this.parent.mouse.position.x -= 4 / this.zoom;
-            } else if (pos.x > this.parent.canvas.width - 50) {
+            } else if (position.x > this.parent.canvas.width - 50) {
                 this.camera.x += 4 / this.zoom;
                 this.parent.mouse.position.x += 4 / this.zoom;
             }
 
-            if (pos.y < 50) {
+            if (position.y < 50) {
                 this.camera.y -= 4 / this.zoom;
                 this.parent.mouse.position.y -= 4 / this.zoom;
-            } else if (pos.y > this.parent.canvas.height - 50) {
+            } else if (position.y > this.parent.canvas.height - 50) {
                 this.camera.y += 4 / this.zoom;
                 this.parent.mouse.position.y += 4 / this.zoom;
             }
 
-            pos = this.parent.mouse.position.toPixel();
+            position = this.parent.mouse.position.toPixel();
             old = this.parent.mouse.old.toPixel();
             
             ctx.save();
             ctx.strokeStyle = "#f00";
             ctx.beginPath(),
             ctx.moveTo(old.x, old.y),
-            ctx.lineTo(pos.x, pos.y),
+            ctx.lineTo(position.x, position.y),
             ctx.stroke();
             ctx.restore();
         }
@@ -299,17 +311,17 @@ export default class Track {
                     ctx.lineWidth = 1;
                     ctx.strokeStyle = this.parent.theme.dark ? "#FBFBFB" : "#000000";
                     ctx.beginPath(),
-                    ctx.moveTo(pos.x - 10, pos.y),
-                    ctx.lineTo(pos.x + 10, pos.y),
-                    ctx.moveTo(pos.x, pos.y + 10),
-                    ctx.lineTo(pos.x, pos.y - 10),
+                    ctx.moveTo(position.x - 10, position.y),
+                    ctx.lineTo(position.x + 10, position.y),
+                    ctx.moveTo(position.x, position.y + 10),
+                    ctx.lineTo(position.x, position.y - 10),
                     ctx.stroke();
                 break;
 
                 case "eraser":
                     ctx.fillStyle = "#ffb6c199";
                     ctx.beginPath();
-                    ctx.arc(pos.x, pos.y, (tool.eraser.size - 1) * this.zoom, 0, Math.PI * 2, !0);
+                    ctx.arc(position.x, position.y, (tool.eraser.size - 1) * this.zoom, 0, Math.PI * 2, true);
                     ctx.fill();
                 break;
 
@@ -321,7 +333,7 @@ export default class Track {
                 case "teleporter":
                     ctx.fillStyle = this.toolHandler.selected == "goal" ? "#ff0" : this.toolHandler.selected == "checkpoint" ? "#00f" : this.toolHandler.selected == "bomb" ? "#f00" : this.toolHandler.selected == "slow-mo" ? "#eee" : this.toolHandler.selected == "antigravity" ? "#0ff" : "#f0f";
                     ctx.beginPath(),
-                    ctx.arc(pos.x, pos.y, 7 * this.zoom, 0, 2 * Math.PI, true),
+                    ctx.arc(position.x, position.y, 7 * this.zoom, 0, 2 * Math.PI, true),
                     ctx.fill(),
                     ctx.stroke();
                 break;
@@ -334,7 +346,7 @@ export default class Track {
                         ctx.translate(old.x, old.y),
                         ctx.rotate(Math.atan2(-(this.parent.mouse.position.x - this.parent.mouse.old.x), this.parent.mouse.position.y - this.parent.mouse.old.y));
                     } else {
-                        ctx.translate(pos.x, pos.y);
+                        ctx.translate(position.x, position.y);
                     }
 
                     ctx.moveTo(-7 * this.zoom, -10 * this.zoom),

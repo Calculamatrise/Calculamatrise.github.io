@@ -20,7 +20,8 @@ let Z = false, Hb = false, older = null;
 export default class {
     constructor(canvas) {
         this.canvas = canvas;
-        this.canvas.style.backgroundColor = this.theme.dark ? "#1B1B1B" : "white";
+        this.canvas.style.setProperty("background-color", this.theme.dark ? "#1B1B1B" : "white");
+        this.ctx = this.canvas.getContext("2d");
         
         window.addEventListener("resize", this.adjust.bind(canvas));
         this.adjust.bind(canvas)();
@@ -36,6 +37,7 @@ export default class {
     }
     lastTime = null;
     lastFrame = null;
+    progress = 0;
     get theme() {
         this.canvas.style.backgroundColor = JSON.parse(localStorage.getItem("dark")) ?? window.matchMedia("(prefers-color-scheme: dark)").matches ? "#1B1B1B" : "white";
         return {
@@ -66,9 +68,9 @@ export default class {
     mouseDown(event) {
         this.track.cameraLock = true;
         this.track.cameraFocus = false;
-        if (this.mouse.real.x / 25 < 1 && [0, 1, 2, 4, 6, 7, 12, 13, 15, 16, 17].includes(Math.floor(this.mouse.real.y / 25))) {
+        if (this.mouse.position.x / 25 < 1 && [0, 1, 2, 4, 6, 7, 12, 13, 15, 16, 17].includes(Math.floor(this.mouse.position.y / 25))) {
             this.track.cameraLock = false;
-            switch(Math.floor(this.mouse.real.y / 25) + 1) {
+            switch(Math.floor(this.mouse.position.y / 25) + 1) {
                 case 1:
                     this.track.paused = !this.track.paused;
                     break;
@@ -145,10 +147,10 @@ export default class {
                     }
                     break;
             }
-        } else if (this.track.editor && this.mouse.real.x / 25 > this.canvas.width / 25 - 1 &&
-        [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 17].includes(Math.floor(this.mouse.real.y / 25))) {
+        } else if (this.track.editor && this.mouse.position.x / 25 > this.canvas.width / 25 - 1 &&
+        [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 17].includes(Math.floor(this.mouse.position.y / 25))) {
             this.track.cameraLock = false;
-            switch (Math.floor(this.mouse.real.y / 25) + 1) {
+            switch (Math.floor(this.mouse.position.y / 25) + 1) {
                 case 1:
                     this.track.toolHandler.selected = "brush";
                     break;
@@ -271,8 +273,8 @@ export default class {
             }
             
             if (x !== void 0) {
-                let c = Math.floor(x.pos.x / this.track.scale)
-                , d = Math.floor(x.pos.y / this.track.scale);
+                let c = Math.floor(x.position.x / this.track.scale)
+                , d = Math.floor(x.position.y / this.track.scale);
                 this.track.grid[c] === void 0 && (this.track.grid[c] = []);
                 this.track.grid[c][d] === void 0 && (this.track.grid[c][d] = new Sector);
                 this.track.grid[c][d].powerups.push(x);
@@ -303,8 +305,8 @@ export default class {
             }
         }
 
-        const x = this.mouse.real.x / 25;
-        const y = Math.floor(this.mouse.real.y / 25);
+        const x = this.mouse.position.x / 25;
+        const y = Math.floor(this.mouse.position.y / 25);
         if (x < 1) {
             if (y > 11) {
                 if ("eraser\\brush\\scenery brush".split(/\\/).includes(this.track.toolHandler.selected)) {
@@ -362,8 +364,8 @@ export default class {
 
                 let d = Math.round(180 * Math.atan2(-(this.mouse.position.x - this.mouse.old.x), this.mouse.position.y - this.mouse.old.y) / Math.PI);
                 let c = "boost" === this.track.toolHandler.selected ? new Boost(this.mouse.old.x,this.mouse.old.y,d, this.track) : new Gravity(this.mouse.old.x,this.mouse.old.y,d, this.track);
-                let y = Math.floor(c.pos.x / this.track.scale);
-                let x = Math.floor(c.pos.y / this.track.scale);
+                let y = Math.floor(c.position.x / this.track.scale);
+                let x = Math.floor(c.position.y / this.track.scale);
 
                 this.track.grid[y] === void 0 && (this.track.grid[y] = []),
                 this.track.grid[y][x] === void 0 && (this.track.grid[y][x] = new Sector),
@@ -403,12 +405,21 @@ export default class {
     }
     render(time) {
         this.lastFrame = requestAnimationFrame(this.render.bind(this));
-        this.delta = (time - this.lastTime) / 1000;
-        if (this.delta * 1000 < 1000 / this.fps)
-            return this.track.render();
+        this.delta = time - this.lastTime;
+        if (this.delta < 1000 / this.fps) {
+            //this.track.fixedUpdate();
+            this.track.render(this.ctx);
 
-        this.track.update(this.delta);
-        this.track.render();
+            return;
+        }
+        // this.progress += this.delta / (1000 / 50);
+        // while(this.progress >= 1) {
+        //     this.track.fixedUpdate();
+        //     this.progress--;
+        // }
+        this.track.fixedUpdate();
+        // this.track.update(this.progress);
+        this.track.render(this.ctx);
         this.lastTime = time;
     }
     load() {
@@ -435,7 +446,7 @@ export default class {
                 if (typeof navigator.msSaveBlob == "function")
                     return navigator.msSaveBlob(t, e);
 
-                let saver = document.createElementNS("http://www.w3.org/1999/xhtml", "y");
+                let saver = document.createElementNS("http://www.w3.org/2000/svg", "a");
                 saver.href = URL.createObjectURL(t);
                 saver.download = e;
                 document.body.appendChild(saver);
@@ -452,20 +463,20 @@ export default class {
                 if (typeof navigator.msSaveBlob == "function")
                     return navigator.msSaveBlob(t, e);
 
-                var saver = document.createElementNS("http://www.w3.org/1999/xhtml", "y");
+                var saver = document.createElementNS("http://www.w3.org/2000/svg", "a");
                 saver.href = URL.createObjectURL(t);
                 saver.download = e;
-                document.body.appendChild(saver);
                 saver.dispatchEvent(new MouseEvent("click"));
-                document.body.removeChild(saver);
                 URL.revokeObjectURL(saver.href);
-            }(new Blob([JSON.stringify(this.firstPlayer.gamepad.records)], { type: "txt" }), `black_hat_ghost_${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`);
+            }(new Blob([JSON.stringify(this.firstPlayer.gamepad.records)], { type: "txt" }), `black_hat_ghost-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`);
         }
     }
     close() {
         this.track = null;
 
-        window.removeEventListener("resize", this.adjust.bind(this.canvas));
+        this.mouse.close();
+
+        window.removeEventListener("resize", this.adjust);
 
         cancelAnimationFrame(this.lastFrame);
     }

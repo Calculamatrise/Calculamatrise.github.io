@@ -35,12 +35,14 @@ export default class {
 				}
 			})
 		];
-		
+
+		this.ups = 20;
 		this.fps = 20;
 		this.delta = null;
 		this.lastTime = -1;
 		this.lastFrame = null;
 	}
+	progress = 0;
 	mouse = {
 		x: 0,
 		y: 0
@@ -84,26 +86,49 @@ export default class {
 			button.hover(this.mouse);
 	}
 	update(time) {
-		this.lastFrame = requestAnimationFrame(this.update.bind(this));
-		this.delta = (time - this.lastTime) / 1000;
-		
+		this.delta = time - this.lastTime;
+		if (this.delta <= 1000 / this.fps) {
+			this.draw();
+
+			this.lastFrame = requestAnimationFrame(this.update.bind(this));
+
+			return;
+		}
+
+		this.lastTime = time;
+
+		// this.progress += this.delta / (1000 / this.fps)
+		// while(this.progress >= 1) {
+		// 	for (const player of this.players) {
+		// 		if (player.dead) {
+		// 			this.lastFrame = null;
+
+		// 			this.close();
+					
+		// 			return;
+		// 		}
+	
+		// 		player.fixedUpdate();
+		// 	}
+
+		// 	this.progress--
+		// }
+
 		for (const player of this.players) {
 			if (player.dead) {
 				this.lastFrame = null;
+
 				this.close();
 				
 				return;
 			}
-
-			if (this.delta * 1000 <= 1000 / this.fps)
-				continue;
-
-			this.lastTime = time;
-
-			player.update(this.delta);
+			player.update(10);
+			//player.update(this.progress);
 		}
 		
 		this.draw();
+
+		this.lastFrame = requestAnimationFrame(this.update.bind(this));
 	}
 	draw() {
 		this.ctx = this.canvas.getContext("2d");

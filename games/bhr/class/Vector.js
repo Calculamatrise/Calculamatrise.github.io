@@ -61,16 +61,16 @@ export default class {
         return this.lerp(target, 1 - Math.pow(smoothing, delta));
     }
     add(a) {
-        return new this.constructor(this.x + a.x,this.y + a.y);
+        return new this.constructor(this.x + a.x, this.y + a.y);
     }
     sub(a) {
-        return new this.constructor(this.x - a.x,this.y - a.y);
+        return new this.constructor(this.x - a.x, this.y - a.y);
     }
     scale(a) {
-        return new this.constructor(this.x * a,this.y * a);
+        return new this.constructor(this.x * a, this.y * a);
     }
     oppositeScale(a) {
-        return new this.constructor(this.x / a,this.y / a);
+        return new this.constructor(this.x / a, this.y / a);
     }
     dot(a) {
         return this.x * a.x + this.y * a.y;

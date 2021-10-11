@@ -16,7 +16,7 @@ export default class Player {
     constructor(parent, { vehicle, ghost }) {
         this.track = parent;
         this.ghostData = ghost;
-        this.gravity = new Vector(0, .3);
+        this.gravity = new Vector(0, 0.3);
         this.snapshots = new SnapshotHandler();
         this.gamepad = new Gamepad(this);
         if (!this.ghost) {
@@ -45,48 +45,84 @@ export default class Player {
         this.vehicle = new bike[vehicle](this);
     }
     createRagdoll() {
-        this.ragdoll = new Ragdoll(this, this.getStickMan());
-        this.ragdoll.setVelocity(this.vehicle.head.vel, this.vehicle.rearWheel.vel);
+        this.ragdoll = new Ragdoll(this, this.vehicle.rider);
+        this.ragdoll.setVelocity(this.vehicle.head.velocity, this.vehicle.rearWheel.velocity);
         this.ragdoll.dir = this.vehicle.dir;
         this.ragdoll.gravity = this.gravity;
 
-        this.hat = new Shard(this, this.vehicle.head.pos.clone());
-        this.hat.vel = this.vehicle.head.vel.clone();
+        this.hat = new Shard(this, this.vehicle.head.position.clone());
+        this.hat.velocity = this.vehicle.head.velocity.clone();
         this.hat.size = 10;
         this.hat.rotationFactor = .1;
     }
     createExplosion(part) {
         this.explosion = new Explosion(this, part);
     }
-    getStickMan() {
-        var a = {}
-        , b = this.vehicle.frontWheel.pos.sub(this.vehicle.rearWheel.pos)
-        , c = new Vector(b.y * this.vehicle.dir,-b.x * this.vehicle.dir);
-        a.head = this.vehicle.rearWheel.pos.add(b.scale(0.35)).add(this.vehicle.head.pos.sub(this.vehicle.frontWheel.pos.add(this.vehicle.rearWheel.pos).scale(0.5)).scale(1.2));
-        a.hand = a.shadowHand = this.vehicle.rearWheel.pos.add(b.scale(0.8)).add(c.scale(0.68));
-        var d = a.head.sub(a.hand)
-        , d = new Vector(d.y * this.vehicle.dir,-d.x * this.vehicle.dir);
-        a.elbow = a.shadowElbow = a.head.add(a.hand).scale(0.5).add(d.scale(130 / d.lengthSquared()));
-        a.hip = this.vehicle.rearWheel.pos.add(b.scale(0.2)).add(c.scale(0.5));
-        var e = new Vector(6 * Math.cos(this.vehicle.pedalSpeed),6 * Math.sin(this.vehicle.pedalSpeed));
-        a.foot = this.vehicle.rearWheel.pos.add(b.scale(0.4)).add(c.scale(0.05)).add(e);
-        d = a.hip.sub(a.foot);
-        d = new Vector(-d.y * this.vehicle.dir,d.x * this.vehicle.dir);
-        a.knee = a.hip.add(a.foot).scale(0.5).add(d.scale(160 / d.lengthSquared()));
-        a.shadowFoot = this.vehicle.rearWheel.pos.add(b.scale(0.4)).add(c.scale(0.05)).sub(e);
-        d = a.hip.sub(a.shadowFoot);
-        d = new Vector(-d.y * this.vehicle.dir,d.x * this.vehicle.dir);
-        a.shadowKnee = a.hip.add(a.shadowFoot).scale(0.5).add(d.scale(160 / d.lengthSquared()));
-        return a
-    }
-    draw() {
-        if (this.explosion ?? false) {
-            this.explosion.draw();
+    draw(ctx) {
+        if (this.explosion) {
+            this.explosion.draw(ctx);
         } else {
-            this.vehicle.draw();
+            this.vehicle.draw(ctx);
             if (this.dead) {
-                this.ragdoll.draw();
-                this.hat.draw();
+                this.ragdoll.draw(ctx);
+                this.hat.draw(ctx);
+            }
+        }
+    }
+    fixedUpdate() {
+        if (this.pastCheckpoint)
+            this.trackComplete();
+
+        if (this.ghost) {
+            if (this.ghostData[0][this.track.currentTime]) {
+                if (this.gamepad.downKeys.has("ArrowLeft")) {
+                    this.gamepad.downKeys.delete("ArrowLeft");
+                } else {
+                    this.gamepad.downKeys.set("ArrowLeft", true);
+                }
+            }
+
+            if (this.ghostData[1][this.track.currentTime]) {
+                if (this.gamepad.downKeys.has("ArrowRight")) {
+                    this.gamepad.downKeys.delete("ArrowRight");
+                } else {
+                    this.gamepad.downKeys.set("ArrowRight", true);
+                }
+            }
+
+            if (this.ghostData[2][this.track.currentTime]) {
+                if (this.gamepad.downKeys.has("ArrowUp")) {
+                    this.gamepad.downKeys.delete("ArrowUp");
+                } else {
+                    this.gamepad.downKeys.set("ArrowUp", true);
+                }
+            }
+
+            if (this.ghostData[3][this.track.currentTime]) {
+                if (this.gamepad.downKeys.has("ArrowDown")) {
+                    this.gamepad.downKeys.delete("ArrowDown");
+                } else {
+                    this.gamepad.downKeys.set("ArrowDown", true);
+                }
+            }
+
+            if (this.ghostData[4][this.track.currentTime]) {
+                if (this.gamepad.downKeys.has("z")) {
+                    this.gamepad.downKeys.delete("z");
+                } else {
+                    this.gamepad.downKeys.set("z", true);
+                    this.vehicle.swap();
+                }
+            }
+        }
+
+        if (this.explosion) {
+            this.explosion.fixedUpdate();
+        } else {
+            this.vehicle.fixedUpdate();
+            if (this.dead) {
+                this.ragdoll.fixedUpdate();
+                this.hat.fixedUpdate();
             }
         }
     }
@@ -137,7 +173,7 @@ export default class Player {
             }
         }
 
-        if (this.explosion ?? false) {
+        if (this.explosion) {
             this.explosion.update();
         } else {
             this.vehicle.update(delta);
@@ -226,15 +262,15 @@ export default class Player {
     }
     restore(snapshot) {
         console.log(snapshot)
-        this.vehicle.masses[0].pos = snapshot.masses[0].pos;
+        this.vehicle.masses[0].position = snapshot.masses[0].position;
         this.vehicle.masses[0].old = snapshot.masses[0].old;
-        this.vehicle.masses[0].vel = snapshot.masses[0].vel;
-        this.vehicle.masses[1].pos = snapshot.masses[1].pos;
+        this.vehicle.masses[0].velocity = snapshot.masses[0].velocity;
+        this.vehicle.masses[1].position = snapshot.masses[1].position;
         this.vehicle.masses[1].old = snapshot.masses[1].old;
-        this.vehicle.masses[1].vel = snapshot.masses[1].vel;
-        this.vehicle.masses[2].pos = snapshot.masses[2].pos;
+        this.vehicle.masses[1].velocity = snapshot.masses[1].velocity;
+        this.vehicle.masses[2].position = snapshot.masses[2].position;
         this.vehicle.masses[2].old = snapshot.masses[2].old;
-        this.vehicle.masses[2].vel = snapshot.masses[2].vel;
+        this.vehicle.masses[2].velocity = snapshot.masses[2].velocity;
         this.vehicle.masses[1].motor = snapshot.masses[1].motor;
         this.vehicle.masses[2].motor = snapshot.masses[2].motor;
         this.vehicle.springs[0].leff = snapshot.springs[0].leff;
@@ -246,7 +282,7 @@ export default class Player {
         this.dead = false;
         this.ragdoll = null;
         this.explosion = null;
-        this.powerupsEnabled = !0;
+        this.powerupsEnabled = true;
         this.targetsCollected = 0;
         this.powerupsConsumed = 0;
 

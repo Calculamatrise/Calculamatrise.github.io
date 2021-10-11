@@ -1,29 +1,28 @@
 import Shard from "./Shard.js";
 
-import BodyPart from "../bike/part/BodyPart.js";
+import BodyPart from "../bike/part/Entity.js";
 
 export default class Explosion {
     constructor(parent, part) {
         this.parent = parent;
-        this.pos = part.pos.clone();
+        this.position = part.position.clone();
         this.motor = 30 + 20 * Math.random();
 
-        this.head = new BodyPart(this.pos, this);
-        this.head.vel.x = 20;
+        this.head = new BodyPart(this.position, this);
+        this.head.velocity.x = 20;
         this.shards = [
-            new Shard(this.parent, this.pos),
-            new Shard(this.parent, this.pos),
-            new Shard(this.parent, this.pos),
-            new Shard(this.parent, this.pos),
-            new Shard(this.parent, this.pos)
+            new Shard(this.parent, this.position),
+            new Shard(this.parent, this.position),
+            new Shard(this.parent, this.position),
+            new Shard(this.parent, this.position),
+            new Shard(this.parent, this.position)
         ]
     }
-    draw() {
-        const ctx = this.parent.track.parent.canvas.getContext("2d");
+    draw(ctx) {
         var a, b;
         if (0 < this.motor) {
             this.motor -= 10;
-            b = this.pos.toPixel();
+            b = this.position.toPixel();
             var e = b.x + this.motor / 2 * Math.cos(Math.random() * 2 * Math.PI)
             , d = b.y + this.motor / 2 * Math.sin(Math.random() * 2 * Math.PI);
             ctx.save();
@@ -40,11 +39,13 @@ export default class Explosion {
             ctx.restore();
         }
         a = 0;
-        for (b = this.shards.length; a < b; a++)
-            this.shards[a].draw()
+        for (const shard of this.shards) {
+            shard.draw(ctx);
+        }
     }
-    update() {
-        for (var a = this.shards.length - 1; 0 <= a; a--)
-            this.shards[a].update()
+    update(delta) {
+        for (const shard of this.shards) {
+            shard.update(delta);
+        }
     }
 }
