@@ -31,9 +31,13 @@ export default class {
             throw new Error(`Hmm. What's a "${toolName}" tool?`);
         }
 
+        if (this.#selected === toolName.toLowerCase()) {
+            return;
+        }
+
         this.selected.close();
 
-        this.#selected = toolName;
+        this.#selected = toolName.toLowerCase();
 
         this.selected.init();
 
