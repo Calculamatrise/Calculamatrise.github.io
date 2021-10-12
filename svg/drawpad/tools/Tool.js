@@ -3,7 +3,7 @@ export default class {
         this.parent = parent;
     }
     _size = null;
-    active = null;
+    active = false;
     get canvas() {
         return this.parent.canvas;
     }
