@@ -25,6 +25,7 @@ div.content {
 
 div#container {
 	position: relative;
+	touch-action: none;
 }
 
 div#container div.ui {
@@ -43,8 +44,6 @@ div#container div.ui.bottom-left {
 div#container div.ui.top-left {
 	top: 0;
 	left: 0;
-	overflow: auto;
-	max-height: 46.4vh;
 	z-index: 50;
 }
 
@@ -66,7 +65,8 @@ div#container div.ui.bottom-right {
 
 div#container div.ui.top-left #toolbar {
 	display: none;
-	flex-direction: column;
+	overflow: auto;
+	max-height: 41.41vh;
 }
 
 div#container div.ui.top-left #toolbar #advanced-tools {

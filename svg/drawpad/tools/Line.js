@@ -81,9 +81,6 @@ export default class extends Tool {
 
             return false;
         }
-        line.toString = function() {
-            return `line:${this.getAttribute("x1")}-${this.getAttribute("y1")}-${this.getAttribute("x2")}-${this.getAttribute("y2")}.`
-        }
 
         if (!this.canvas.layer.hidden) {
             this.canvas.layer.base.appendChild(line);

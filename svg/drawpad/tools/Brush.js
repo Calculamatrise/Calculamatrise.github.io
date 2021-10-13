@@ -3,13 +3,14 @@ import Tool from "./Tool.js";
 export default class extends Tool {
     static id = "brush";
 
-    size = 4;
+    _size = 4;
     element = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     init() {
         this.element.style.setProperty("stroke-width", this.size);
     }
     mouseDown() {
         this.element.style.setProperty("stroke", this.canvas.primary);
+        this.element.style.setProperty("fill", "transparent");
         this.element.style.setProperty("stroke-width", this.size);
         this.element.setAttribute("points", `${this.mouse.pointA.x} ${this.mouse.pointA.y}`);
         
@@ -77,9 +78,6 @@ export default class extends Tool {
 
                 return false;
             });
-        }
-        temp.toString = function() {
-            return `brush:${this.getAttribute("points")}.`;
         }
 
         if (!this.canvas.layer.hidden) {

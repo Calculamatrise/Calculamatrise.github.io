@@ -13,7 +13,7 @@
         <script src="/bootstrap.js" type="module"></script>
     </head>
     <body onload="
-        document.querySelector('#primary').parentElement.style.setProperty('background-color', (localStorage.getItem('primaryColor') || (document.querySelector('#primary').value = window.canvas.primary)) + '40');
+        document.querySelector('#primary').parentElement.style.setProperty('background-color', (document.querySelector('#primary').value = window.canvas.primary) + '40');
         document.querySelector('#secondary').parentElement.style.setProperty('background-color', (document.querySelector('#secondary').value = window.canvas.secondary) + '40');
         document.querySelector('#randomColors').innerText = JSON.parse(sessionStorage.getItem('randomColors')) ? 'Disable Random Colours' : 'Enable Random Colours';
     ">
@@ -23,7 +23,7 @@
                     Sorry, your browser does not support inline SVG.
                 </svg>
                 <div class="ui top-left">
-                    <button onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'flex' ? 'none' : 'flex') === 'flex' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
+                    <button onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'grid' ? 'none' : 'grid') === 'grid' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
                     <div id="toolbar">
                         <button onclick="window.canvas.tools.select('line');">Line</button>
                         <button onclick="window.canvas.tools.select('brush');">Brush</button>
@@ -61,7 +61,7 @@
                 <div class="ui bottom-left">
                     <div class="option ripple" onclick="this.firstElementChild.click();">
                         <input type="color" id="primary" oninput="
-                            this.parentElement.style.setProperty('background-color', (localStorage.getItem('primaryColor') || (window.canvas.primary = this.value)) + '40');
+                            this.parentElement.style.setProperty('background-color', (window.canvas.primary = this.value) + '40');
                             
                             sessionStorage.removeItem('randomColors');
 
@@ -87,7 +87,6 @@
                 <div class="ui bottom-right">
                     <button id="patch-notes">Patch Notes</button>
                 </div>
-                <!-- <iframe id="patch-notes-iframe"></iframe> -->
                 <!-- Layers Overlay -->
                 <div id="layers">
                     <button onclick="window.canvas.layers.create(), window.canvas.layerDepth = window.canvas.layerDepth + 1;" style="position: absolute;">New Layer</button>
@@ -95,7 +94,7 @@
                 </div>
                 <!-- Settings Overlay -->
                 <div id="settings" style="display: none;">
-                    <input type="file" id="import" accept="text/*" style="display: none;" onchange="
+                    <input type="file" id="import" accept="image/svg+xml" style="display: none;" onchange="
                         this.classList.add('loading');
                         this.files[0].text().then((text) => {
                             if (this.classList.contains('loading')) {
@@ -110,9 +109,9 @@
                         const date = new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i);
                         const link = document.createElement('a');
                         const file = new Blob([
-                            window.canvas.export()
+                            window.canvas.toString()
                         ], {
-                            type: 'text/plain'
+                            type: 'image/svg+xml'
                         });
                         link.href = window.URL.createObjectURL(file);
                         link.download = 'svg_canvas-' + date[0] + '_' + date[1].replace(/\..+/, '').replace(/:/g, '-');

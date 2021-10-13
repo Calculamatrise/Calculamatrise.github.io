@@ -46,7 +46,7 @@ export default class {
 		this.canvas.view.parentElement.style.cursor = this.#selected === "camera" ? "move" : "default";
 
 		this.canvas.text.innerHTML = this.#selected.charAt(0).toUpperCase() + this.#selected.slice(1);
-		this.canvas.text.setAttribute("x", this.canvas.view.width.baseVal.value / 2 + this.canvas.viewBox.x - this.canvas.text.innerHTML.length * 2.5);
+		this.canvas.text.setAttribute("x", this.canvas.viewBox.width / 2 + this.canvas.viewBox.x - this.canvas.text.innerHTML.length * 2.5);
 		this.canvas.text.setAttribute("y", 25 + this.canvas.viewBox.y);
 		this.canvas.text.setAttribute("fill", this.canvas.dark ? "#FBFBFB" : "1B1B1B");
 		this.canvas.view.appendChild(this.canvas.text);

@@ -3,7 +3,7 @@ import Tool from "./Tool.js";
 export default class extends Tool {
     static id = "dynamic_circle";
 
-    size = 4;
+    _size = 4;
     color = null;
     segmentLength = 5;
     element = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
@@ -174,9 +174,6 @@ export default class extends Tool {
 
                 return false;
             });
-        }
-        circle.toString = function() {
-            return `brush:${this.getAttribute("points")}.`;
         }
 
         if (!this.canvas.layer.hidden) {
