@@ -4,6 +4,7 @@ import Curve from "../tools/Curve.js";
 import Circle from "../tools/Circle.js";
 import DynamicCircle from "../tools/DynamicCircle.js";
 import Rectangle from "../tools/Rectangle.js";
+import Text from "../tools/Text.js";
 import Eraser from "../tools/Eraser.js";
 import Camera from "../tools/Camera.js";
 import Select from "../tools/Select.js";
@@ -17,6 +18,7 @@ export default class {
         this.registerTool(Circle);
         this.registerTool(DynamicCircle);
         this.registerTool(Rectangle);
+        this.registerTool(Text);
         this.registerTool(Eraser);
         this.registerTool(Camera);
         this.registerTool(Select);

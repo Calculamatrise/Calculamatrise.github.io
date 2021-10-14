@@ -274,9 +274,8 @@ export default class {
 				clearTimeout(this.text.timeout);
 
 				this.text.innerHTML = "Camera";
-				this.text.setAttribute("x", this.view.width.baseVal.value / 2 - this.text.innerHTML.length * 2 + this.viewBox.x);
+				this.text.setAttribute("x", this.viewBox.width / 2 - this.text.innerHTML.length * 2 + this.viewBox.x);
 				this.text.setAttribute("y", 20 + this.viewBox.y);
-				this.text.setAttribute("fill", this.primary);
 				this.view.appendChild(this.text);
 
 				this.text.timeout = setTimeout(() => {
@@ -308,9 +307,7 @@ export default class {
 
 		if (this.mouse.isDown && !this.mouse.isAlternate) {	
 			if (event.shiftKey) {
-				this.view.setAttribute("viewBox", `${this.viewBox.x - event.movementX} ${this.viewBox.y - event.movementY} ${window.innerWidth} ${window.innerHeight}`);
-				this.text.setAttribute("x", this.view.width.baseVal.value / 2 - this.text.innerHTML.length * 2 + this.viewBox.x);
-				this.text.setAttribute("y", 20 + this.viewBox.y);
+				this.tools.get("camera").mouseMove(event);
 	
 				return;
 			}
