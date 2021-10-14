@@ -295,16 +295,6 @@ export default class {
 		return;
 	}
 	mouseMove(event) {
-		if (this.tool.constructor.id === "eraser") {
-			this.tool.mouseMove(event);
-			
-			return;
-		} else if (this.tool.constructor.id === "curve") {
-			this.tool.mouseMove(event);
-
-			return;
-		}
-
 		if (this.mouse.isDown && !this.mouse.isAlternate) {	
 			if (event.shiftKey) {
 				this.tools.get("camera").mouseMove(event);
@@ -312,6 +302,10 @@ export default class {
 				return;
 			}
 
+			this.tool.mouseMove(event);
+		}
+
+		if (["curve", "eraser"].includes(this.tool.constructor.id)) {
 			this.tool.mouseMove(event);
 		}
 
@@ -350,6 +344,8 @@ export default class {
 					this.view.setAttribute("viewBox", `${this.viewBox.x + (this.viewBox.width - window.innerWidth * this.zoom) / 2} ${this.viewBox.y + (this.viewBox.height - window.innerHeight * this.zoom) / 2} ${window.innerWidth * this.zoom} ${window.innerHeight * this.zoom}`);
 					this.text.setAttribute("y", 25 + this.viewBox.y);
 
+					this.tool.init();
+
 					break;
 				}
 
@@ -370,6 +366,8 @@ export default class {
 					
 					this.view.setAttribute("viewBox", `${this.viewBox.x - (window.innerWidth * this.zoom - this.viewBox.width) / 2} ${this.viewBox.y - (window.innerHeight * this.zoom - this.viewBox.height) / 2} ${window.innerWidth * this.zoom} ${window.innerHeight * this.zoom}`);
 					this.text.setAttribute("y", 25 + this.viewBox.y);
+
+					this.tool.init();
 
 					break;
 				}
