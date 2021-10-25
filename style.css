@@ -125,50 +125,61 @@ div.content {
     padding-left: 2vw;
 }
 
-div.code-block {
+pre.code-block {
+    counter-reset: line;
+    display: flex;
+    flex-direction: column;
     background-color: #282C34;
-    font-family: monospace;
     border-radius: 10px;
     line-height: 1.5;
     overflow-x: auto;
     overflow-y: auto;
     font-size: 14px;
-    min-width: 50vw;
     padding: 20px;
     min-width: 50vw;
     color: #ABB2BF;
     max-height: 500px;
 }
 
-div.code-block span.indent {
+pre.code-block code {
+    counter-increment: line;
+}
+
+pre.code-block code:before {
+    content: counter(line);
+    margin-right: 10px;
+    padding: 10px;
+}
+
+pre.code-block span.indent {
     text-indent: 5em;
 }
 
-div.code-block span.constant {
+pre.code-block span.constant {
     color: #E5C07B;
 }
 
-div.code-block span.parameter {
+pre.code-block span.parameter {
     font-style: italic;
 }
 
-div.code-block span.variable, div.code-block span.property {
+pre.code-block span.variable, pre.code-block span.property, pre.code-block span.parameter {
     color: #E06C75;
 }
 
-div.code-block span.function, div.code-block span.method {
+pre.code-block span.function, pre.code-block span.method {
     color: #4FAFE3;
 }
 
-div.code-block span.keyword {
+pre.code-block span.keyword {
     color: #C678DD;
 }
 
-div.code-block span.string {
+pre.code-block span.string {
     color: #98C379;
 }
 
-div.code-block span.number {
+pre.code-block span.number {
     color: #D19A58;
 }
 
