@@ -68,21 +68,21 @@ input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="
     background-color: #333;
 }
 
-button, .button, ::-webkit-file-upload-button {
+button, input[type="button"], ::-webkit-file-upload-button {
     background-color: #2d2d2d;
     color: #eee;
 }
 
-button::before, .ripple::before {
+button:not(.header)::before, input[type="button"]:not(.header)::before, .ripple::before {
 	background-color: #999;
 }
 
-button:hover, .button:hover, ::-webkit-file-upload-button:hover {
+button:not(.header):hover, input[type="button"]:not(.header):hover, ::-webkit-file-upload-button:hover {
     background-color: #444;
     color: #f5f5f5;
 }
 
-button:active, .button:active, ::-webkit-file-upload-button:active {
+button:not(.header):active, input[type="button"]:not(.header):active, ::-webkit-file-upload-button:active {
     background-color: #555;
 }
 
