@@ -38,10 +38,6 @@
                         <th>Description</th>
                     </tr>
                     <tr>
-                        <td>afk</td>
-                        <td>Set an afk status. (displays when someone tries to ping you)</td>
-                    </tr>
-                    <tr>
                         <td>anagramatize</td>
                         <td>Anagramatize a word of your choice!</td>
                     </tr>
@@ -56,10 +52,6 @@
                     <tr>
                         <td>clear</td>
                         <td>Purge command; bulk delete messages.</td>
-                    </tr>
-                    <tr>
-                        <td>confess</td>
-                        <td>Submit a confession.</td>
                     </tr>
                     <tr>
                         <td>deafen</td>
@@ -90,20 +82,12 @@
                         <td>Timed mute.</td>
                     </tr>
                     <tr>
-                        <td>pat</td>
-                        <td>Pat another member.</td>
-                    </tr>
-                    <tr>
                         <td>pause</td>
                         <td>Pause the moosic...</td>
                     </tr>
                     <tr>
                         <td>play</td>
                         <td>Play moosic from youtube.</td>
-                    </tr>
-                    <tr>
-                        <td>poke</td>
-                        <td>Poke another member.</td>
                     </tr>
                     <tr>
                         <td>queue</td>
@@ -120,10 +104,6 @@
                     <tr>
                         <td>skip</td>
                         <td>Skip the song that is currently playing.</td>
-                    </tr>
-                    <tr>
-                        <td>slap</td>
-                        <td>Slap another member.</td>
                     </tr>
                     <tr>
                         <td>snipe</td>
@@ -150,26 +130,12 @@
                         <td>Unmute a muted user.</td>
                     </tr>
                     <tr>
-                        <td>userinfo</td>
-                        <td>Gather data on a discord user.</td>
+                        <td>volume</td>
+                        <td>Configure the volume of the music.</td>
                     </tr>
                 </table>
             </div>
             <div class="tab-content" id="usage" style="display:none">
-                <div id="afk" class="command">
-                    <div class="example">
-                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
-                        <div class="message-content">/afk <span class="pill">status: Out buying milk at the grocery store. I'll be back later!</span></div>
-                    </div>
-                    <div class="response ephemeral">
-                        <img src="/rae/favicon.ico" class="avatar-small">
-                        <div class="message-content">I've set your afk: Out buying milk at the grocery store. I'll be back later!</div>
-                    </div>
-                    <div class="response followUp ephemeral">
-                        <img src="/rae/favicon.ico" class="avatar-small">
-                        <div class="message-content" style="white-space: pre-line;">Welcome back <span class="mention">Calculamatrise</span>,<br>I've removed your AFK.</div>
-                    </div>
-                </div>
                 <div id="anagramatize" class="command">
                     <div class="example">
                         <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
@@ -212,16 +178,6 @@
                     <div class="response ephemeral">
                         <img src="/rae/favicon.ico" class="avatar-small">
                         <div class="message-content">Successfully cleared 50 messages.</div>
-                    </div>
-                </div>
-                <div id="confess" class="command">
-                    <div class="example">
-                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
-                        <div class="message-content">/confess <span class="pill">confession: I'm an extremely skilled programmer!</span> <span class="pill">attachment:</span> Optional <span class="pill">anonymous:</span> Optional</div>
-                    </div>
-                    <div class="response ephemeral">
-                        <img src="/rae/favicon.ico" class="avatar-small">
-                        <div class="message-content">Your confession has successfully been submitted to <b>confessions</b></div>
                     </div>
                 </div>
                 <div id="deafen" class="command">
@@ -290,16 +246,6 @@
                         <div class="message-content"><b>Calculamatrise#2780</b> was muted for 60000 miliseconds. <br><button class="discord SECONDARY">Unmute</button></div>
                     </div>
                 </div>
-                <div id="pat" class="command">
-                    <div class="example">
-                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
-                        <div class="message-content">/pat <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
-                    </div>
-                    <div class="response">
-                        <img src="/rae/favicon.ico" class="avatar-small">
-                        <img src="https://cdn.nekos.life/pat/pat_042.gif" class="image">
-                    </div>
-                </div>
                 <div id="pause" class="command">
                     <div class="example">
                         <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
@@ -326,16 +272,6 @@
                     <div class="response">
                         <img src="/rae/favicon.ico" class="avatar-small">
                         <img src="https://cdn.discordapp.com/attachments/683489290634002604/876371999902019624/unknown.png" class="image">
-                    </div>
-                </div>
-                <div id="poke" class="command">
-                    <div class="example">
-                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
-                        <div class="message-content">/avatar <span class="pill">user: <span class="mention">Calculamatrise</span></span></div>
-                    </div>
-                    <div class="response">
-                        <img src="/rae/favicon.ico" class="avatar-small">
-                        <img src="https://cdn.nekos.life/poke/poke_011.gif" class="image">
                     </div>
                 </div>
                 <div id="queue" class="command">
@@ -380,16 +316,6 @@
                             <button class="discord PRIMARY">Pause</button>
                             <button class="discord PRIMARY">Skip</button>
                         </div>
-                    </div>
-                </div>
-                <div id="slap" class="command">
-                    <div class="example">
-                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
-                        <div class="message-content">/slap <span class="pill">user:</span> <span class="mention">Calculamatrise</span></div>
-                    </div>
-                    <div class="response">
-                        <img src="/rae/favicon.ico" class="avatar-small">
-                        <img src="https://cdn.nekos.life/slap/slap_003.gif" class="image">
                     </div>
                 </div>
                 <div id="snipe" class="command">
@@ -458,10 +384,22 @@
                         <img src="https://cdn.discordapp.com/attachments/683489290634002604/876376470405128223/unknown.png" class="image">
                     </div>
                 </div>
+                <div id="volume" class="command">
+                    <div class="example">
+                        <img src="https://cdn.discordapp.com/avatars/430418106972897282/918c2bf617d14985ccd7891f03d08387.png?size=2048" class="avatar-small">
+                        <div class="message-content">/volume</div>
+                    </div>
+                    <div class="response">
+                        <img src="/rae/favicon.ico" class="avatar-small">
+                        <div class="message-content">Current Volume - 100<br>
+                            <button class="discord PRIMARY">Raise</button>
+                            <button class="discord PRIMARY">Lower</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="tab-content" id="invite" style="display:none">
-                <a
-                    href="https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands">
+                <a href="https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands">
                     https://discord.com/api/oauth2/authorize?client_id=708904786916933693&permissions=8&scope=bot%20applications.commands
                 </a>
             </div>
