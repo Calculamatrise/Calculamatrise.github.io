@@ -17,7 +17,6 @@
 </div>
 <div class="nav-right">
     <button class="primary header" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
-    <button class="primary header" onclick="location.assign(`https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&redirect_uri=${encodeURIComponent(`${location.origin}/auth/discord/redirect/`)}&response_type=code&scope=identify%20guilds.join%20guilds%20rpc`)">Login</button>
 </div>
 <select oninput="
     console.dir(this)
