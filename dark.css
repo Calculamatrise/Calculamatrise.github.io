@@ -2,10 +2,11 @@
     --text: rgb(255, 255, 255);
     --background: rgb(29, 29, 29);
     --border-color: rgb(48, 48, 48);
+    --transparency: rgba(255, 255, 255, .15);
 }
 
 ::-webkit-scrollbar-track {
-    background-color: #111;
+    background-color: #1119;
     border-radius: 30px;
 }
 
@@ -73,16 +74,24 @@ button, input[type="button"], ::-webkit-file-upload-button {
     color: #eee;
 }
 
-button:not(.header)::before, input[type="button"]:not(.header)::before, .ripple::before {
+button.nav:hover, input[type="button"].nav:hover {
+    box-shadow: inset 0 0 2000px rgba(255, 255, 255, .15);
+}
+
+button.nav:active {
+    box-shadow: inset 0 0 2000px rgba(255, 255, 255, .1);
+}
+
+button:not(.nav)::before, input[type="button"]:not(.nav)::before, .ripple::before {
 	background-color: #999;
 }
 
-button:not(.header):hover, input[type="button"]:not(.header):hover, ::-webkit-file-upload-button:hover {
+button:not(.nav):hover, input[type="button"]:not(.nav):hover, ::-webkit-file-upload-button:hover {
     background-color: #444;
     color: #f5f5f5;
 }
 
-button:not(.header):active, input[type="button"]:not(.header):active, ::-webkit-file-upload-button:active {
+button:not(.nav):active, input[type="button"]:not(.nav):active, ::-webkit-file-upload-button:active {
     background-color: #555;
 }
 

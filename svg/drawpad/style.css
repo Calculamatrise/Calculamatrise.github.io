@@ -50,7 +50,7 @@ div#container div.ui.top-left {
 div#container div.ui.top-right {
 	top: 0;
 	right: 0;
-	width: 260px;
+	width: 270px;
 	flex-wrap: wrap;
 	display: inline-flex;
 	justify-content: flex-end;

@@ -1,22 +1,22 @@
-<div class="nav-left">
-    <button class="primary header" data-view="/" active>Home</button>
-    <button class="primary header" data-view="/svg/drawpad/">SVG Drawpad</button>
+<div class="left">
+    <button class="primary nav" data-view="/" active>Home</button>
+    <button class="primary nav" data-view="/svg/drawpad/">SVG Drawpad</button>
     <div class="dropdown">
-        <button class="primary header" data-view="/frhd/tools/">FRHD Tools</button>
+        <button class="primary nav" data-view="/frhd/tools/">FRHD Tools</button>
         <div class="dropdown-content">
-            <button class="primary header" data-view="/frhd/tools/move/">Move</button>
-            <button class="primary header" data-view="/frhd/tools/render/">Render</button>
-            <button class="primary header" data-view="/frhd/tools/combine/">Combine</button>
-            <button class="primary header" data-view="/frhd/tools/reverse/">Reverse</button>
-            <button class="primary header" data-view="/frhd/tools/editor/">Editor</button>
-            <button class="primary header" data-view="/frhd/tools/api/">Visualize</button>
-            <button class="primary header" data-view="/frhd/tools/tube_generator/">Tube Generator</button>
+            <button class="primary nav" data-view="/frhd/tools/move/">Move</button>
+            <button class="primary nav" data-view="/frhd/tools/render/">Render</button>
+            <button class="primary nav" data-view="/frhd/tools/combine/">Combine</button>
+            <button class="primary nav" data-view="/frhd/tools/reverse/">Reverse</button>
+            <button class="primary nav" data-view="/frhd/tools/editor/">Editor</button>
+            <button class="primary nav" data-view="/frhd/tools/api/">Visualize</button>
+            <button class="primary nav" data-view="/frhd/tools/tube_generator/">Tube Generator</button>
         </div>
     </div>
-    <button class="primary header" data-view="/contact/">Contact</button>
+    <button class="primary nav" data-view="/contact/">Contact</button>
 </div>
-<div class="nav-right">
-    <button class="primary header" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
+<div class="right">
+    <button class="primary nav" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
 </div>
 <select oninput="
     console.dir(this)

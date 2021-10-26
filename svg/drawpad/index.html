@@ -23,7 +23,7 @@
                     Sorry, your browser does not support inline SVG.
                 </svg>
                 <div class="ui top-left">
-                    <button onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'grid' ? 'none' : 'grid') === 'grid' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
+                    <button class="primary nav" onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'grid' ? 'none' : 'grid') === 'grid' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
                     <div id="toolbar">
                         <button onclick="window.canvas.tools.select('line');">Line</button>
                         <button onclick="window.canvas.tools.select('brush');">Brush</button>
@@ -81,11 +81,11 @@
                     </div>
                 </div>
                 <div class="ui top-right">
-                    <button onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex';">Layers</button>
-                    <button onclick="document.querySelector('#settings').style.display = document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex';">Settings</button>
+                    <button class="primary nav" onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex';">Layers</button>
+                    <button class="primary nav" onclick="document.querySelector('#settings').style.display = document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex';">Settings</button>
                 </div>
                 <div class="ui bottom-right">
-                    <button id="patch-notes">Patch Notes</button>
+                    <button class="primary nav" id="patch-notes">Patch Notes</button>
                 </div>
                 <!-- Layers Overlay -->
                 <div id="layers">
