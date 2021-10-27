@@ -4,13 +4,12 @@
     <div class="dropdown">
         <button class="primary nav" data-view="/frhd/tools/">FRHD Tools</button>
         <div class="dropdown-content">
-            <button class="primary nav" data-view="/frhd/tools/move/">Move</button>
             <button class="primary nav" data-view="/frhd/tools/render/">Render</button>
             <button class="primary nav" data-view="/frhd/tools/combine/">Combine</button>
             <button class="primary nav" data-view="/frhd/tools/reverse/">Reverse</button>
             <button class="primary nav" data-view="/frhd/tools/editor/">Editor</button>
             <button class="primary nav" data-view="/frhd/tools/api/">Visualize</button>
-            <button class="primary nav" data-view="/frhd/tools/tube_generator/">Tube Generator</button>
+            <button class="primary nav" data-view="/frhd/tools/generators/tube">Tube Generator</button>
         </div>
     </div>
     <button class="primary nav" data-view="/contact/">Contact</button>
@@ -24,6 +23,7 @@
         case 'theme':
             localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))),
             theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css';
+            this.value = 'home';
         break;
 
         case 'login':
@@ -37,7 +37,6 @@
         <option value="/">Home</option>
         <option value="/rae/">Rae</option>
         <optgroup label="FRHD Tools">
-            <option value="/frhd/tools/move/">Move</option>
             <option value="/frhd/tools/render/">Render</option>
             <option value="/frhd/tools/combine/">Combine</option>
             <option value="/frhd/tools/reverse/">Reverse</option>

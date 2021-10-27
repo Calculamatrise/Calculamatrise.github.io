@@ -1,4 +1,4 @@
-import Track from "./utils/track.js";
+import Track from "./utils/Track.js";
 
 let worker = new Worker("./worker.js");
 

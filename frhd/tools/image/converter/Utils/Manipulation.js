@@ -1,9 +1,6 @@
 export default class Manipulation {
     constructor({ image }) {
-        this.canvas = canvas;
-        this.canvas.onmousedown = e => this.mouseEvent({ event: e, type: "down" });
-        this.canvas.onmousemove = e => this.mouseEvent({ event: e, type: "move" });
-        this.canvas.onmouseup = e => this.mouseEvent({ event: e, type: "up" });
+        this.canvas = new OffscreenCanvas(512, 512);
         this.ctx = this.canvas.getContext("2d");
 
         this.image = new Image();

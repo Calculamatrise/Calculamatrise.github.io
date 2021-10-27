@@ -7,11 +7,12 @@ import LayerManager from "./LayerManager.js";
 export default class {
 	constructor(view) {
 		this.view = view;
-		this.view.style.setProperty("stroke-linecap", "round");
-        this.view.style.setProperty("stroke-linejoin", "round");
-		this.view.setAttribute("viewBox", `0 0 ${this.view.width.baseVal.value} ${this.view.height.baseVal.value}`);
+        this.view.x = 0;
+        this.view.y = 0;
 
-		this.layers.create();
+        this.ctx = this.view.getContext("2d");
+
+        this.layers.create();
 
 		this.mouse.init();
 		this.mouse.on("down", this.mouseDown.bind(this));
@@ -19,17 +20,18 @@ export default class {
 		this.mouse.on("up", this.mouseUp.bind(this));
 
 		window.addEventListener("resize", this.resize.bind(this));
+        this.resize();
 
 		document.addEventListener("keydown", this.keyDown.bind(this));
 	}
 	zoom = 1;
 	zoomIncrementValue = 0.5;
-	#layer = 1;
+    #layer = 1;
 	#fill = false;
-	#primary = "#87CEEB";
-	#secondary = "#967BB6";
+	#primary = "#000000";
+	#secondary = "#999999";
 	mouse = new MouseHandler(this);
-	layers = new LayerManager();
+    layers = new LayerManager();
 	events = new EventHandler();
 	tools = new ToolHandler(this);
 	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -40,10 +42,6 @@ export default class {
 		return this.tools.selected;
 	}
 	get primary() {
-		if (JSON.parse(sessionStorage.getItem("randomColors"))) {
-			return `rgb(${Math.ceil(Math.random() * 255)}, ${Math.ceil(Math.random() * 255)}, ${Math.ceil(Math.random() * 255)})`;
-		}
-
 		return localStorage.getItem("primaryColor") || this.#primary;
 	}
 	set primary(color) {
@@ -59,7 +57,16 @@ export default class {
 
 		this.#secondary = color;
 	}
-	get layerDepth() {
+	get fill() {
+		return this.#fill;
+	}
+	set fill(boolean) {
+		this.text.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
+		this.tool.element.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
+
+		this.#fill = boolean;
+	}
+    get layerDepth() {
 		return this.#layer;
 	}
 	set layerDepth(layer) {
@@ -80,57 +87,29 @@ export default class {
 	get layer() {
 		return this.layers.get(this.#layer);
 	}
-	get fill() {
-		return this.#fill;
-	}
-	set fill(boolean) {
-		this.text.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
-		this.tool.element.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
-
-		this.#fill = boolean;
-	}
 	get container() {
 		return this.view.parentElement || document.querySelector("#container");
 	}
-	get viewBox() {
-		const viewBox = this.view.getAttribute("viewBox").split(/\s+/g);
-		return {
-			x: parseFloat(viewBox[0]),
-			y: parseFloat(viewBox[1]),
-			width: parseFloat(viewBox[2]),
-			height: parseFloat(viewBox[3])
-		}
-	}
 	import(data) {
 		try {
-			this.close();
+            throw new Error("INCOMPLETE METHOD");
+			// this.close();
 
-			const newView = new DOMParser().parseFromString(data, "text/xml").querySelector("svg");
+			// const newView = new DOMParser().parseFromString(data, "text/xml").querySelector("svg");
 
-			this.view.innerHTML = newView.innerHTML;
-
-			let layerId = 1;
-			while(true) {
-				if ([...document.querySelectorAll("g:not([data-id])")].filter(element => element.parentElement.id === "view").length < 1) {
-					break;
-				}
-
-				this.layers.create();
-
-				layerId++;
-			}
-
-			this.layerDepth = this.layers.cache.length;
+			// this.view.innerHTML = newView.innerHTML;
 		} catch(error) {
 			console.error(error);
 		}
 	}
 	resize(event) {
-		const boundingRect = this.view.getBoundingClientRect();
-		this.view.setAttribute("viewBox", `0 0 ${boundingRect.width} ${boundingRect.height}`);
+		this.view.setAttribute("height", getComputedStyle(this.view).getPropertyValue('height').slice(0, -2) * window.devicePixelRatio);
+		this.view.setAttribute("width", getComputedStyle(this.view).getPropertyValue('width').slice(0, -2) * window.devicePixelRatio);
 
-		this.text.setAttribute("x", boundingRect.width / 2 + this.viewBox.x - this.text.innerHTML.length * 2.5);
-		this.text.setAttribute("y", 25 + this.viewBox.y);
+		this.text.setAttribute("x", this.view.width / 2 + this.view.x - this.text.innerHTML.length * 2.5);
+		this.text.setAttribute("y", 25);
+
+        this.draw(this);
 	}
 	undo() {
 		const event = this.events.pop();
@@ -259,12 +238,7 @@ export default class {
 			
 			return;
 		} else if (event.button === 2) {
-			// open colour palette
-			colour.style.left = this.mouse.real.x + "px";
-			colour.style.top = this.mouse.real.y + "px";
-			setTimeout(() => {
-				colour.click();
-			});
+			// draw scenery lines
 			
 			return;
 		}
@@ -274,8 +248,8 @@ export default class {
 				clearTimeout(this.text.timeout);
 
 				this.text.innerHTML = "Camera";
-				this.text.setAttribute("x", this.viewBox.width / 2 - this.text.innerHTML.length * 2 + this.viewBox.x);
-				this.text.setAttribute("y", 20 + this.viewBox.y);
+				this.text.setAttribute("x", this.view.width / 2 - this.text.innerHTML.length * 2 + this.view.x);
+				this.text.setAttribute("y", 20 + this.view.y);
 				this.view.appendChild(this.text);
 
 				this.text.timeout = setTimeout(() => {
@@ -291,6 +265,8 @@ export default class {
 
 			this.tool.mouseDown(event);
 		}
+
+        this.draw();
 		
 		return;
 	}
@@ -309,12 +285,18 @@ export default class {
 			this.tool.mouseMove(event);
 		}
 
+        if (this.tool.active) {
+            this.draw();
+        }
+
 		return;
 	}
 	mouseUp(event) {
 		if (!this.mouse.isAlternate) {
 			this.tool.mouseUp(event);
 		}
+
+        this.draw();
 		
 		return;
 	}
@@ -340,10 +322,11 @@ export default class {
 					}
 
 					this.zoom -= this.zoomIncrementValue;
-					
-					this.view.setAttribute("viewBox", `${this.viewBox.x + (this.viewBox.width - window.innerWidth * this.zoom) / 2} ${this.viewBox.y + (this.viewBox.height - window.innerHeight * this.zoom) / 2} ${window.innerWidth * this.zoom} ${window.innerHeight * this.zoom}`);
-					this.text.setAttribute("y", 25 + this.viewBox.y);
 
+                    this.view.x = this.view.x + (this.view.width - window.innerWidth * this.zoom) / 2;
+                    this.view.y = this.view.y + (this.view.height - window.innerHeight * this.zoom) / 2;
+					
+                    this.text.setAttribute("y", 25 + this.view.y);
 					this.tool.init();
 
 					break;
@@ -363,10 +346,11 @@ export default class {
 					}
 
 					this.zoom += this.zoomIncrementValue;
-					
-					this.view.setAttribute("viewBox", `${this.viewBox.x - (window.innerWidth * this.zoom - this.viewBox.width) / 2} ${this.viewBox.y - (window.innerHeight * this.zoom - this.viewBox.height) / 2} ${window.innerWidth * this.zoom} ${window.innerHeight * this.zoom}`);
-					this.text.setAttribute("y", 25 + this.viewBox.y);
 
+                    this.view.x = this.view.x - (window.innerWidth - this.view.width) / 2;
+                    this.view.y = this.view.y - (window.innerHeight - this.view.height) / 2;
+
+					this.text.setAttribute("y", 25 + this.view.y);
 					this.tool.init();
 
 					break;
@@ -407,26 +391,6 @@ export default class {
 				this.fill = !this.fill;
 				break;
 	
-			case "ArrowUp":
-				if (this.layerDepth >= this.layers.cache.length) {
-					if (!event.shiftKey) {
-						break;
-					}
-	
-					this.layers.create();
-				}
-	
-				this.layerDepth = this.layerDepth + 1;
-				break;
-	
-			case "ArrowDown":
-				if (this.layerDepth <= 1) {
-					break;
-				}
-	
-				this.layerDepth = this.layerDepth - 1;
-				break;
-	
 			case "z":
 				this.undo();
 				break;
@@ -454,11 +418,14 @@ export default class {
 				break;
 		}
 	}
+    draw() {
+        this.ctx.clearRect(0, 0, this.view.width, this.view.height);
+        this.layers.cache.forEach(layer => layer.draw(this));
+    }
 	toString() {
 		return this.view.outerHTML;
 	}
 	close() {
-		this.layers.close();
 		this.mouse.close();
 		this.events.close();
 	}
