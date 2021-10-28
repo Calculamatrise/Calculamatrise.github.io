@@ -28,8 +28,6 @@ export default class {
 	zoomIncrementValue = 0.5;
     #layer = 1;
 	#fill = false;
-	#primary = "#000000";
-	#secondary = "#999999";
 	mouse = new MouseHandler(this);
     layers = new LayerManager();
 	events = new EventHandler();
@@ -42,20 +40,10 @@ export default class {
 		return this.tools.selected;
 	}
 	get primary() {
-		return localStorage.getItem("primaryColor") || this.#primary;
-	}
-	set primary(color) {
-		localStorage.setItem("primaryColor", color);
-
-		this.#primary = color;
+		return this.dark ? "#fff" : "#000";
 	}
 	get secondary() {
-		return localStorage.getItem("secondaryColor") || this.#secondary;
-	}
-	set secondary(color) {
-		localStorage.setItem("secondaryColor", color);
-
-		this.#secondary = color;
+		return this.dark ? "#999" : "#aaa";
 	}
 	get fill() {
 		return this.#fill;
@@ -263,7 +251,7 @@ export default class {
 				this.tools.select("select");
 			}
 
-			this.tool.mouseDown(event);
+			this.tool.press(event);
 		}
 
         this.draw();
@@ -273,16 +261,16 @@ export default class {
 	mouseMove(event) {
 		if (this.mouse.isDown && !this.mouse.isAlternate) {	
 			if (event.shiftKey) {
-				this.tools.get("camera").mouseMove(event);
+				this.tools.get("camera").stroke(event);
 	
 				return;
 			}
 
-			this.tool.mouseMove(event);
+			this.tool.stroke(event);
 		}
 
 		if (["curve", "eraser"].includes(this.tool.constructor.id)) {
-			this.tool.mouseMove(event);
+			this.tool.stroke(event);
 		}
 
         if (this.tool.active) {
@@ -293,7 +281,7 @@ export default class {
 	}
 	mouseUp(event) {
 		if (!this.mouse.isAlternate) {
-			this.tool.mouseUp(event);
+			this.tool.clip(event);
 		}
 
         this.draw();

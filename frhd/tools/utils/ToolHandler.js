@@ -53,22 +53,22 @@ export default class {
 		this.canvas.text.setAttribute("fill", this.canvas.dark ? "#FBFBFB" : "1B1B1B");
 		this.canvas.view.appendChild(this.canvas.text);
 
-        const primary = this.canvas.container.querySelector("#primary");
-        const secondary = this.canvas.container.querySelector("#secondary");
-        if ([
-            "line",
-            "brush",
-            "curve",
-            "circle",
-            "dynamic_circle",
-            "rectangle"
-        ].includes(toolName.toLowerCase())) {
-            primary.parentElement.style.setProperty("display", "flex");
-            secondary.parentElement.style.setProperty("display", "flex");
-        } else {
-            primary.parentElement.style.setProperty("display", "none");
-            secondary.parentElement.style.setProperty("display", "none");
-        }
+        // const primary = this.canvas.container.querySelector("#primary");
+        // const secondary = this.canvas.container.querySelector("#secondary");
+        // if ([
+        //     "line",
+        //     "brush",
+        //     "curve",
+        //     "circle",
+        //     "dynamic_circle",
+        //     "rectangle"
+        // ].includes(toolName.toLowerCase())) {
+        //     primary.parentElement.style.setProperty("display", "flex");
+        //     secondary.parentElement.style.setProperty("display", "flex");
+        // } else {
+        //     primary.parentElement.style.setProperty("display", "none");
+        //     secondary.parentElement.style.setProperty("display", "none");
+        // }
         
 		this.canvas.text.timeout = setTimeout(() => {
 			this.canvas.text.remove();

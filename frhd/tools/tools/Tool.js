@@ -57,8 +57,8 @@ export default class {
         return element;
     }
     init() {}
-    mouseDown() {}
-    mouseMove() {}
-    mouseUp() {}
+    press() {}
+    stroke() {}
+    clip() {}
     close() {}
 }

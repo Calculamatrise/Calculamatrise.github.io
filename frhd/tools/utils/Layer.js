@@ -283,17 +283,13 @@ export default class {
     draw(canvas) {
         canvas.ctx.strokeStyle = "white";
         canvas.ctx.strokeWidth = 2;
-        canvas.ctx.beginPath();
-        canvas.ctx.moveTo(parseInt(canvas.tool.element.getAttribute("x1")), parseInt(canvas.tool.element.getAttribute("y1")));
-        canvas.ctx.lineTo(parseInt(canvas.tool.element.getAttribute("x2")), parseInt(canvas.tool.element.getAttribute("y2")));
-        canvas.ctx.stroke();
+
+        canvas.tool.element.draw(canvas.ctx);
         for (const line of this.lines) {
             canvas.ctx.strokeStyle = "white";
             canvas.ctx.strokeWidth = 2;
-            canvas.ctx.beginPath();
-            canvas.ctx.moveTo(parseInt(line.getAttribute("x1")), parseInt(line.getAttribute("y1")));
-            canvas.ctx.lineTo(parseInt(line.getAttribute("x2")), parseInt(line.getAttribute("y2")));
-            canvas.ctx.stroke();
+
+            line.draw(canvas.ctx);
         }
     }
     clear() {
