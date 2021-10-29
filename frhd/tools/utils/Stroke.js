@@ -1,6 +1,6 @@
 export default class {
     constructor(points, { strokeWidth, strokeStyle, fillStyle } = {}) {
-        if (arguments[0] !== void 0) {
+        if (points !== void 0) {
             this.points.push(...points);
             
             this.strokeWidth = strokeWidth;

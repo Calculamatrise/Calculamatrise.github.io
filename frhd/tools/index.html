@@ -10,7 +10,7 @@
             <div id="container">
                 <canvas id="view"></canvas>
                 <div class="ui top-left">
-                    <button disabled class="primary nav" onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'grid' ? 'none' : 'grid') === 'grid' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
+                    <button class="primary nav" onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'grid' ? 'none' : 'grid') === 'grid' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
                     <div id="toolbar">
                         <button onclick="window.canvas.tools.select('line');">Line</button>
                         <button onclick="window.canvas.tools.select('brush');">Brush</button>
