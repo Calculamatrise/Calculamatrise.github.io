@@ -66,7 +66,7 @@ div#container div.ui.bottom-right {
 div#container div.ui.top-left #toolbar {
 	display: none;
 	overflow: auto;
-	max-height: 41.41vh;
+	max-height: 43.5vh;
 }
 
 div#container div.ui.top-left #toolbar #advanced-tools {
@@ -103,34 +103,23 @@ div#container div.ui button, div#container div#layers button {
 }
 
 div#container div#settings {
-	top: 0;
-	left: 0;
-	width: calc(100vw - 40vw);
-	height: calc(100vh - 30vh);
+	top: 10vh;
+	left: 10vw;
+	width: 70vw;
+	height: 70vh;
 	display: none;
 	overflow: hidden;
 	color: var(--text);
 	position: absolute;
 	align-items: center;
-	align-content: center;
+	border-radius: 20px;
 	place-content: center;
 	flex-flow: row wrap;
-	padding: 10vh 20vw 20vh 20vw;
+	padding: 5vh 5vw;
+	background-color: #ffffff30;
+	backdrop-filter: blur(2em);
 	z-index: 40;
-}
-
-div#container div#settings::before {
-	content: "";
-	opacity: .9;
-	top: inherit;
-	left: inherit;
-	width: inherit;
-	height: inherit;
-	padding: inherit;
-	position: inherit;
-	pointer-events: none;
-	background-color: var(--soft-background);
-	z-index: -1;
+	box-shadow: inset 0px 5px 8px -10px #ffffff80;
 }
 
 div#container iframe#patch-notes-iframe {
@@ -156,9 +145,8 @@ div#container iframe#patch-notes-iframe {
 div#container div#layers {
 	top: 0;
 	left: 0;
-	/*opacity: .95;*/
-	width: 30vw;
-	height: 30vh;
+	width: 40vw;
+	height: 40vh;
 	display: none;
 	overflow: hidden;
 	color: var(--text);
@@ -166,29 +154,17 @@ div#container div#layers {
 	align-items: center;
 	border-radius: 30px;
 	place-content: center;
-	flex-flow: column wrap;
-	margin: 20vh 15vw 20vh 15vw;
-	padding: 10vh 20vw 20vh 20vw;
-	/*background-color: var(--hard-background);*/
+	flex-flow: column;
+	margin: 15vh 15vw;
+	padding: 10vh 15vw 20vh;
+	background: #ffffff20;
+	/* background-color: var(--hard-background); */
+	box-shadow: inset 0px 5px 8px -10px #ffffff80;
 	z-index: 20;
 }
 
-div#container div#layers::before {
-	content: "";
-	opacity: .6;
-	top: inherit;
-	left: inherit;
-	width: inherit;
-	height: inherit;
-	padding: inherit;
-	position: inherit;
-	pointer-events: none;
-	background-color: var(--soft-background);
-	z-index: -1;
-}
-
 div#container div#layers button {
-	top: 3%;
+	/* top: 3%; */
 	color: var(--text);
 }
 
@@ -200,6 +176,7 @@ div#container div#layers div#layer-container {
 	width: max-content;
 	align-items: center;
 	flex-direction: row;
+	max-height: 80%;
 }
 
 div#container div#layers .layer {

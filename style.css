@@ -222,6 +222,7 @@ button, input[type="button"], .button, ::-webkit-file-upload-button {
     border: none;
     outline: none;
     overflow: hidden;
+    user-select: none;
     position: relative;
 	display: inline-block;
 	text-decoration: none;
