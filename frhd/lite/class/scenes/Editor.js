@@ -71,8 +71,17 @@ export default class {
     controls = null;
     verified = !1;
     injectLiteFeatures() {
-        if (!this.game) return;
+        if (!this.game || !GameManager.game) {
+            return;
+        }
+
         let it = setInterval(() => {
+            if (!this.game) {
+                if (GameManager.game !== null) {
+                    this.game = GameManager.game;
+                }
+            }
+
             if (this.game.gameContainer.querySelector('.bottomToolOptions_straightline')) {
                 this.game.gameContainer.querySelector('.bottomToolOptions_straightline').after(Object.assign(document.createElement("div"), {
                     className: "bottomMenu-button bottomMenu-button-left bottomMenu-button",
@@ -96,7 +105,14 @@ export default class {
                 clearInterval(it);
             }
         });
+
         let ie = setInterval(() => {
+            if (!this.game) {
+                if (GameManager.game !== null) {
+                    this.game = GameManager.game;
+                }
+            }
+            
             if (this.game.gameContainer.querySelector(".sideButton_cameraTool") && !this.game.gameContainer.querySelector(".sideButton-bottom.sideButton_selectTool")) {
                 [...document.getElementsByClassName('sideButton')].forEach(e => {
                     e.onclick = () => {
@@ -111,7 +127,7 @@ export default class {
                 });
                 clearInterval(ie)
             }
-        });
+        }, 1000);
     }
     getCanvasOffset() {
         return {
