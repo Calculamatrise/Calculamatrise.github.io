@@ -16,7 +16,7 @@ function merge(original, object) {
 
 export default class {
     constructor({ name, defaults }) {
-        if (name !== void 0 && typeof name === "string" || typeof name === "number") {
+        if (name !== void 0 && (typeof name === "string" || typeof name === "number")) {
             this.$name = name;
         }
 
