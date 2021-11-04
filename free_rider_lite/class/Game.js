@@ -25,12 +25,16 @@ window.Game = class {
     fullscreen = !1;
     onStateChange = null;
     static init() {
-        GameManager._loadGame = GameManager.loadGame;
+        const loadGame = GameManager.loadGame;
         GameManager.loadGame = function() {
-            if (this.game) return;
-            GameManager._loadGame()
+            if (GameManager.hasOwnProperty("game")) {
+                GameManager.closeGame();
+            }
+            
+            loadGame.bind(this)();
         }
-        GameManager.loadGame()
+        
+        GameManager.loadGame();
     }
     initCanvas() {
         this.gameContainer = document.getElementById(this.settings.defaultContainerID),
