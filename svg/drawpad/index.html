@@ -88,12 +88,12 @@
                     <button class="primary nav" id="patch-notes">Patch Notes</button>
                 </div>
                 <!-- Layers Overlay -->
-                <div id="layers">
+                <div class="overlay" id="layers">
                     <button class="nav ripple" onclick="window.canvas.layers.create(), window.canvas.layerDepth = window.canvas.layerDepth + 1;">New Layer</button>
                     <div id="layer-container"></div>
                 </div>
                 <!-- Settings Overlay -->
-                <div id="settings" style="display: none;">
+                <div class="overlay" id="settings" style="display: none;">
                     <input type="file" id="import" accept="image/svg+xml" style="display: none;" onchange="
                         this.classList.add('loading');
                         this.files[0].text().then((text) => {

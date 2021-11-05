@@ -6,6 +6,7 @@ html {
 	--text: #1B1B1B;
 	--stroke: skyblue;
 	--fill: violet;
+	color: var(--text);
 	border: none;
 }
 
@@ -30,7 +31,6 @@ div#container {
 
 div#container div.ui {
 	margin: 10px;
-	color: var(--text);
 	position: fixed;
 	display: inline-block;
 }
@@ -66,7 +66,7 @@ div#container div.ui.bottom-right {
 div#container div.ui.top-left #toolbar {
 	display: none;
 	overflow: auto;
-	max-height: 43.5vh;
+	max-height: 43.55vh;
 }
 
 div#container div.ui.top-left #toolbar #advanced-tools {
@@ -102,70 +102,52 @@ div#container div.ui button, div#container div#layers button {
 	background-color: transparent;
 }
 
+div#container .overlay {
+	top: 15vh;
+	left: 15vw;
+	width: 40vw;
+	height: 40vh;
+	padding: 5vh 5vw;
+	overflow: hidden;
+	position: absolute;
+	align-items: center;
+	border-radius: 20px;
+	place-content: center;
+	flex-flow: row wrap;
+	box-shadow: inset 0px 5px 8px -10px #ffffff80;
+}
+
+div#container iframe#patch-notes-iframe {
+	top: 20vh;
+	width: 70vw;
+	height: 60vh;
+	border: none;
+	opacity: .95;
+	padding: 2px;
+	border-radius: 30px;
+	flex-flow: column wrap;
+	background-color: var(--border-color);
+	z-index: 20;
+}
+
 div#container div#settings {
 	top: 10vh;
 	left: 10vw;
 	width: 70vw;
 	height: 70vh;
 	display: none;
-	overflow: hidden;
-	color: var(--text);
-	position: absolute;
-	align-items: center;
-	border-radius: 20px;
-	place-content: center;
-	flex-flow: row wrap;
-	padding: 5vh 5vw;
 	background-color: #ffffff30;
 	backdrop-filter: blur(2em);
 	z-index: 40;
-	box-shadow: inset 0px 5px 8px -10px #ffffff80;
-}
-
-div#container iframe#patch-notes-iframe {
-	top: 0;
-	left: 0;
-	width: 70vw;
-	height: 60vh;
-	border: none;
-	opacity: .95;
-	padding: 2px;
-	overflow: hidden;
-	color: var(--text);
-	position: absolute;
-	align-items: center;
-	border-radius: 30px;
-	place-content: center;
-	flex-flow: column wrap;
-	margin: 20vh 15vw 20vh 15vw;
-	background-color: var(--border-color);
-	z-index: 20;
 }
 
 div#container div#layers {
-	top: 0;
-	left: 0;
-	width: 40vw;
-	height: 40vh;
 	display: none;
-	overflow: hidden;
-	color: var(--text);
-	position: absolute;
-	align-items: center;
 	border-radius: 30px;
-	place-content: center;
 	flex-flow: column;
-	margin: 15vh 15vw;
 	padding: 10vh 15vw 20vh;
-	background: #ffffff20;
-	/* background-color: var(--hard-background); */
-	box-shadow: inset 0px 5px 8px -10px #ffffff80;
+	background-color: #ffffff20; /* var(--hard-background); */
 	z-index: 20;
-}
-
-div#container div#layers button {
-	/* top: 3%; */
-	color: var(--text);
 }
 
 div#container div#layers div#layer-container {
@@ -265,14 +247,12 @@ div#container span#settings {
 	top: 0;
 	right: 0;
 	margin: 10px;
-	color: var(--text);
 	position: absolute;
 }
 
 svg {
 	width: 100vw;
 	height: 100vh;
-	color: var(--text);
 	pointer-events: none;
 	background-color: var(--background);
 }
