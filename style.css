@@ -229,21 +229,21 @@ button, input[type="button"], .button, ::-webkit-file-upload-button {
     transition: all 100ms;
 }
 
-button.primary, input.primary,  .button.primary, input.primary::-webkit-file-upload-button {
+:is(button, input, .button).primary, input.primary::-webkit-file-upload-button {
     transition: all 100ms;
 }
 
-button.nav, input.nav, .button.nav {
+:is(button, input, .button).nav {
     border-radius: 4px;
     margin: 2.5px;
 }
 
-button.nav:active, .button.nav:active {
+:is(button, .button).nav:active {
 	transform: scale(.85);
     transition: transform 80ms ease;
 }
 
-button:not(.nav)::before, input:not(.nav)::before, .button:not(.nav)::before, .ripple::before {
+:is(button, input, .button):not(.nav)::before, .ripple::before {
     z-index: 1;
     opacity: 0;
     content: "";
@@ -257,23 +257,31 @@ button:not(.nav)::before, input:not(.nav)::before, .button:not(.nav)::before, .r
     transform: translate(-50%, -50%) scale(3);
 }
 
-button:not(.nav):active:before, input:not(.nav):active:before, .button:not(.nav):active:before, .ripple:not(.nav):not(.focus):active:before, .ripple.focus:not(.nav):active:not(:focus-within):before {
+.rainbow::before {
+	background: #EEEEEE; /* For browsers that do not support gradients */
+    background: -webkit-radial-gradient(red, orange , yellow, green, cyan, blue, indigo, violet);
+    background: -o-radial-gradient(red, orange, yellow, green, cyan, blue, indigo, violet);
+    background: -moz-radial-gradient(red, orange, yellow, green, cyan, blue, indigo, violet);
+    background: radial-gradient(red, orange , yellow, green, cyan, blue, indigo,violet);
+}
+
+:is(button, input, .button):not(.nav):active:before, .ripple:not(.nav):not(.focus):active:before, .ripple.focus:not(.nav):active:not(:focus-within):before {
     opacity: .5;
 	transition: 0s;
 	transform: translate(-50%, -50%) scale(0);
 }
 
-button:not(.nav):hover, input[type="button"]:not(.nav):hover, .button:not(.nav):hover, :-webkit-file-upload-button:hover {
+:is(button, input[type="button"], .button):not(.nav):hover, ::-webkit-file-upload-button:hover {
     cursor: pointer;
     transition: all 50ms;
 }
 
-button:disabled, input[type="button"]:disabled, .button:disabled {
+:is(button, input[type="button"], .button):disabled {
     cursor: default;
     opacity: 0.5;
 }
 
-button.loading, input[type="button"].loading, .button.loading {
+:is(button, input[type="button"], .button).loading {
     font-size: 0;
 }
 
