@@ -274,6 +274,11 @@ line {
 	stroke-linejoin: round;
 }
 
+path {
+	stroke: none;
+	fill: var(--text);
+}
+
 polyline {
 	fill: none;
 	stroke: var(--text);
