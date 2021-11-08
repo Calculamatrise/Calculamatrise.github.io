@@ -103,9 +103,9 @@ table tr td:nth-child(1):hover, table tr td:nth-child(2):hover {
     background-color: #333;
 }
 
-.dropdown .dropdown-content {
+dropdown content {
 	background-color: #2d2d2d;
-    box-shadow: 1px 1px 20px 1px #555;
+    box-shadow: 0 0 20px -10px #5558;
 }
 
 .progress-bar-container {

@@ -1,53 +1,52 @@
-<div class="left">
+<left-nav>
     <button class="primary nav" data-view="/" active>Home</button>
-    <button class="primary nav" data-view="/svg/drawpad/">SVG Drawpad</button>
-    <div class="dropdown">
+    <button class="primary nav" data-view="/svg-drawpad/">SVG Drawpad</button>
+    <dropdown>
         <button class="primary nav" data-view="/frhd/tools/">FRHD Tools</button>
-        <div class="dropdown-content">
+        <content>
             <button class="primary nav" data-view="/frhd/tools/render/">Render</button>
             <button class="primary nav" data-view="/frhd/tools/combine/">Combine</button>
             <button class="primary nav" data-view="/frhd/tools/reverse/">Reverse</button>
             <button class="primary nav" data-view="/frhd/tools/editor/">Editor</button>
             <button class="primary nav" data-view="/frhd/tools/api/">Visualize</button>
             <button class="primary nav" data-view="/frhd/tools/generators/tube">Tube Generator</button>
-        </div>
-    </div>
+        </content>
+    </dropdown>
     <button class="primary nav" data-view="/contact/">Contact</button>
-</div>
-<div class="right">
+</left-nav>
+<right-nav>
     <button class="primary nav" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
-</div>
-<select oninput="
-    console.dir(this)
-    switch(this.value) {
-        case 'theme':
-            localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))),
-            theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css';
-            this.value = 'home';
-        break;
+</right-nav>
+<mobile-nav>
+    <select oninput="
+        console.dir(this)
+        switch(this.value) {
+            case 'theme':
+                localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))),
+                theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css';
+                this.value = '/';
+                break;
 
-        case 'login':
-            this.value = `https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&redirect_uri=${encodeURIComponent(`${location.origin}/auth/discord/redirect/`)}&response_type=code&scope=identify%20guilds.join%20guilds%20rpc`;
-
-        default:
-            location.assign(this.value);
-    }
-">
-    <optgroup label="Pages">
-        <option value="/">Home</option>
-        <option value="/rae/">Rae</option>
-        <optgroup label="FRHD Tools">
-            <option value="/frhd/tools/render/">Render</option>
-            <option value="/frhd/tools/combine/">Combine</option>
-            <option value="/frhd/tools/reverse/">Reverse</option>
-            <option value="/frhd/tools/editor/">Editor</option>
-            <option value="/frhd/tools/api/">Visualize</option>
-            <option value="/frhd/tools/tube_generator/">Tube Generator</option>
+            default:
+                location.assign(this.value);
+                break;
+        }
+    ">
+        <optgroup label="Pages">
+            <option value="/">Home</option>
+            <option value="/svg-drawpad/">SVG Drawpad</option>
+            <optgroup label="FRHD Tools">
+                <option value="/frhd/tools/render/">Render</option>
+                <option value="/frhd/tools/combine/">Combine</option>
+                <option value="/frhd/tools/reverse/">Reverse</option>
+                <option value="/frhd/tools/editor/">Editor</option>
+                <option value="/frhd/tools/api/">Visualize</option>
+                <option value="/frhd/tools/tube_generator/">Tube Generator</option>
+            </optgroup>
+            <option value="/contact/">Contact</option>
         </optgroup>
-        <option value="/contact/">Contact</option>
-    </optgroup>
-    <optgroup label="Accesibility">
-        <option value="theme">Change Theme</option>
-        <option value="`https:\/\/discord.com/api/oauth2/authorize?client_id=708904786916933693&redirect_uri=${encodeURIComponent(`${location.origin}/auth/discord/redirect/`)}&response_type=code&scope=identify%20guilds.join%20guilds%20rpc`">Login</option>
-    </optgroup>
-</select>
+        <optgroup label="Accesibility">
+            <option value="theme">Change Theme</option>
+        </optgroup>
+    </select>
+</mobile-nav>
