@@ -6,7 +6,7 @@ export default class Manipulation {
         this.image = new Image();
         this.image.src = image;
         this.image.crossOrigin = "Anonymous";
-        this.image.onload = () => this.render();
+        this.image.onload = this.render.bind(this);
 
         this.mouse = {
             down: false,
