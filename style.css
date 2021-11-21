@@ -247,22 +247,22 @@ button, input[type="button"], .button, ::-webkit-file-upload-button {
     transition: all 100ms;
 }
 
-:is(button, input, .button).primary, input.primary::-webkit-file-upload-button {
+:is(button, input[type="button"], .button).primary, input.primary::-webkit-file-upload-button {
     transition: all 100ms;
 }
 
-:is(button, input, .button).nav {
+:is(button, input[type="button"], .button).nav {
     border-radius: 4px;
     margin: 2.5px;
     background-color: transparent;
 }
 
-:is(button, .button).nav:active {
+:is(button, input[type="button"], .button).nav:active {
 	transform: scale(.85);
     transition: transform 80ms ease;
 }
 
-:is(button, input, .button):not(.nav)::before, .ripple::before {
+:is(button, input[type="button"], .button):not(.nav)::before, .ripple::before {
     opacity: 0;
     content: "";
     padding: 50%;

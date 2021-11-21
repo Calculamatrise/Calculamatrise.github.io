@@ -23,10 +23,6 @@
     background-color: #aaa;
 }
 
-html {
-    box-shadow: 0 -1px 0 0 inset #bbb;
-}
-
 nav {
     border-bottom: 1px solid #bbb;
     background-image: linear-gradient(180deg, #d2d2d2, transparent);
@@ -73,24 +69,25 @@ button, input[type="button"], ::-webkit-file-upload-button {
     color: #333;
 }
 
-button.nav:hover, input[type="button"].nav:hover, .button.nav:hover {
-    box-shadow: inset 0 0 2000px rgba(0, 0, 0, .15);
+:is(button, input[type="button"], .button).nav:hover {
+    background-color: rgba(0, 0, 0, .1);
 }
 
-button.nav:active, .button.nav:hover {
-    box-shadow: inset 0 0 2000px rgba(0, 0, 0, .1);
+:is(button, input[type="button"], .button).nav:active {
+    background-color: rgba(0, 0, 0, .08);
 }
 
-button:not(.nav)::before, input[type="button"]:not(.nav)::before, .button:not(.nav)::before, .ripple::before {
+:is(button, input[type="button"], .button):not(.nav)::before, .ripple::before {
 	background-color: #666;
 }
 
-button:not(.nav):hover, input[type="button"]:not(.nav):hover, .button:not(.nav):hover, ::-webkit-file-upload-button:hover {
+
+:is(button, input[type="button"], .button):not(.nav):hover, ::-webkit-file-upload-button:hover {
     background-color: #bbb;
     color: #1d1d1d;
 }
 
-button:not(.nav):active, input[type="button"]:not(.nav):active, .button:not(.nav):active, ::-webkit-file-upload-button:active {
+:is(button, input[type="button"], .button):not(.nav):active, ::-webkit-file-upload-button:active {
     background-color: #aaa;
 }
 

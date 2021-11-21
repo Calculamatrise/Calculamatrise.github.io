@@ -26,15 +26,15 @@
                     <top-left-nav>
                         <button class="primary nav" onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'grid' ? 'none' : 'grid') === 'grid' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
                         <div id="toolbar">
-                            <button onclick="window.canvas.tools.select('line');">Line</button>
-                            <button onclick="window.canvas.tools.select('brush');">Brush</button>
-                            <button onclick="window.canvas.tools.select('curve');">Curve</button>
-                            <button onclick="window.canvas.tools.select('circle');">Circle</button>
-                            <button onclick="window.canvas.tools.select('rectangle');">Rectangle</button>
-                            <button onclick="window.canvas.tools.select('eraser');">Eraser</button>
-                            <button onclick="window.canvas.tools.select('camera');">Camera</button>
-                            <button onclick="window.canvas.tools.select('select');">Select</button>
-                            <button onclick="
+                            <button class="ripple" onclick="window.canvas.tools.select('line');">Line</button>
+                            <button class="ripple" onclick="window.canvas.tools.select('brush');">Brush</button>
+                            <button class="ripple" onclick="window.canvas.tools.select('curve');">Curve</button>
+                            <button class="ripple" onclick="window.canvas.tools.select('circle');">Circle</button>
+                            <button class="ripple" onclick="window.canvas.tools.select('rectangle');">Rectangle</button>
+                            <button class="ripple" onclick="window.canvas.tools.select('eraser');">Eraser</button>
+                            <button class="ripple" onclick="window.canvas.tools.select('camera');">Camera</button>
+                            <button class="ripple" onclick="window.canvas.tools.select('select');">Select</button>
+                            <button class="ripple" onclick="
                                 this.parentElement.querySelector('#toolbar #advanced-tools').style.display = this.parentElement.querySelector('#toolbar #advanced-tools').style.display === 'flex' ? 'none' : 'flex',
                                 this.parentElement.querySelector('#toolbar #advanced-tools').scrollIntoView({ behavior: 'smooth' }),
                                 this.innerText = this.innerText === 'Show Advanced Tools' ? 'Hide Advanced Tools' : 'Show Advanced Tools'

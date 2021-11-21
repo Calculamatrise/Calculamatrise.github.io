@@ -184,3 +184,13 @@ window.addEventListener("hashchange", function(state) {
 //     if (location.pathname !== pathname)
 //         router.navigate(location.pathname);
 // });
+
+
+
+document.addEventListener("scroll", function(event) {
+    const rect = document.body.getBoundingClientRect();
+    const nav = document.querySelector("nav");
+    if (rect.y < 0) {
+        nav.style.setProperty("background-image", `linear-gradient(180deg, #${JSON.parse(localStorage.getItem("dark")) ? "2d2d2d, rgba(45, 45, 45" : "d2d2d2, rgba(210, 210, 210"}, ${Math.min(.66 - (nav.getBoundingClientRect().height - Math.abs(rect.y)) / 100, 1)}))`);
+    }
+});
