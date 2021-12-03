@@ -94,7 +94,7 @@ export default class {
                 this.ui.time = 0;
                 this.ui.day++;
             }
-        }, 1000);
+        }, 60000);
     }
 
     raisePrice() {
