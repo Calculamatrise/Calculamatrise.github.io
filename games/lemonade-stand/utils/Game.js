@@ -3,11 +3,14 @@ let time = document.querySelector("day[data-id='1'] #time");
 let customers = document.querySelector("day[data-id='1'] customers");
 let profit = document.querySelector("day[data-id='1'] profit");
 let price = document.querySelector("day[data-id='1'] price");
+let reputation = document.querySelector("day[data-id='1'] reputation");
 
+/**
+ * 
+ * @todo profit can be used to upgrade the stand to attract more customers.
+ */
 export default class {
-    constructor(document) {
-        this.DOM = document;
-
+    constructor() {
         this.buttons.raise.addEventListener("click", this.raisePrice.bind(this));
         this.buttons.lower.addEventListener("click", this.lowerPrice.bind(this));
     }
@@ -52,6 +55,14 @@ export default class {
             set(value) {
                 price.innerText = value;
             }
+        },
+        reputation: {
+            get() {
+                return parseFloat(reputation.innerText);
+            },
+            set(value) {
+                reputation.innerText = value;
+            }
         }
     })
 
@@ -92,9 +103,11 @@ export default class {
             this.ui.time++;
             if (this.ui.time > 24) {
                 this.ui.time = 0;
+                this.ui.customers = 0;
+                this.ui.profit = 0;
                 this.ui.day++;
             }
-        }, 60000);
+        }, 1250);
     }
 
     raisePrice() {
