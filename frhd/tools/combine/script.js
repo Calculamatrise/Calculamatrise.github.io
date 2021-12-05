@@ -3,6 +3,10 @@ inputs = [
     document.getElementById("input2")
 ];
 
+for (const input of inputs) {
+    input.addEventListener("input", run);
+}
+
 function add() {
     let e = Object.assign(document.createElement("textarea"), {
         placeholder: "Track " + (inputs.length + 1),
@@ -10,7 +14,8 @@ function add() {
         spellcheck: false,
         onclick: function() {
             this.select()
-        } 
+        },
+        oninput: run
     });
     inputs[inputs.length - 1].after(e);
     inputs.push(e);
