@@ -58,6 +58,16 @@ export default class extends EventEmitter {
         }
 
         for (const element of [
+            ...data.body.querySelectorAll("link")
+        ]) {
+            const link = document.createElement("link");
+            link.rel = element.rel || "";
+            link.href = element.href;
+        
+            document.body.appendChild(link);
+        }
+
+        for (const element of [
             ...data.body.querySelectorAll("script")
         ]) {
             const script = document.createElement("script");
@@ -68,12 +78,5 @@ export default class extends EventEmitter {
         }
 
         document.title = data.title;
-
-        let icon = document.querySelector("link[rel=icon]");
-        if (icon) {
-            icon.href = data.querySelector("link[rel=icon]").href;
-        } else {
-            document.head.appendChild(data.querySelector("link[rel=icon]"));
-        }
     }
 }
