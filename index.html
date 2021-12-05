@@ -2,17 +2,18 @@
 <html>
     <head>
         <title>Headquarters - Calculamatrise</title>
-        <link rel="icon" href="/favicon.ico">
         <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/light.css" id="theme" onload="JSON.parse(localStorage.getItem('dark')) && (this.href = '/dark.css')">
         <link rel="manifest" href="/manifest.json">
         <meta name="author" content="Calculamatrise">
         <meta name="title" property="og:title" content="Calculamatrise">
         <meta name="description" property="og:description" content="A programmer's home.">
         <meta name="image" property="og:image" content="/images/favicon.png">
         <meta property="og:url" content="https://calculamatrise.github.io/">
-        <script src="/bootstrap.js" type="module"></script>
+        <script async src="/bootstrap.js" type="module"></script>
     </head>
     <body>
+        <nav></nav>
         <div class="content">
             <h1>SVG Drawpad</h1>
             <p style="opacity: .8;">Latest development by Calculamatrise</p>

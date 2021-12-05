@@ -4,9 +4,11 @@
         <title>Page not found - Calculamatrise</title>
         <link rel="icon" href="/favicon-disabled.ico">
         <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/light.css" id="theme" onload="JSON.parse(localStorage.getItem('dark')) && (this.href = '/dark.css')">
         <script src="/bootstrap.js" type="module"></script>
     </head>
     <body>
+        <nav></nav>
         <div class="content">
             <h1>404</h1>
             <h3 onmouseenter="this.innerText = 'There is no such content for the requested url: ' + location.href" onmouseleave="this.innerText = 'Page not found.'">Page not found.</h3>

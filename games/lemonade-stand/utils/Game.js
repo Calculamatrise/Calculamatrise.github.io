@@ -8,6 +8,8 @@ let reputation = document.querySelector("day[data-id='1'] reputation");
 /**
  * 
  * @todo profit can be used to upgrade the stand to attract more customers.
+ * @todo add a total profit count
+ * @todo maybe add a popup at the end of every day for the user to purchase an upgrade?
  */
 export default class {
     constructor() {
@@ -83,7 +85,7 @@ export default class {
 
         // intervals for profit to increase based on conditions and random factors
         setInterval(() => {
-            // 76% chance to increase profit
+            // 70% chance to increase profit
             let customerChance = Math.round(Math.random() * 100);
             if (customerChance < 30) {
                 // Decides the number of customers per hour
@@ -92,7 +94,7 @@ export default class {
                 this.ui.customers++;
             }
 
-            // 10% chance of a bug appearing in a customer's drink; in which case, they'd be refunded.
+            // 5% chance of a bug appearing in a customer's drink; in which case, they'd be refunded.
             let bugChance = Math.round(Math.random() * 100);
             if (bugChance < 5) {
                 this.ui.profit -= this.ui.price;
@@ -102,7 +104,7 @@ export default class {
 
             this.ui.time++;
             if (this.ui.time > 24) {
-                this.ui.time = 0;
+                this.ui.time = 1;
                 this.ui.customers = 0;
                 this.ui.profit = 0;
                 this.ui.day++;
