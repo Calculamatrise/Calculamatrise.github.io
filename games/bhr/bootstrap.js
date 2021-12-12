@@ -5,7 +5,7 @@ import Game from "./class/Game.js";
 
 export default window.game = new Game(document.querySelector("#view"));
 
-localStorage.setItem("theme", localStorage.getItem("theme") || window.matchMedia("(prefers-color-scheme: dark)").matches);
+localStorage.setItem("theme", localStorage.getItem("theme") || window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
 
 document.querySelector("#upload")?.addEventListener("click", () => {
     function ja(){
