@@ -76,22 +76,8 @@ export default class {
     equals(vector) {
         return vector.x === this.x && vector.y === this.y;
     }
-    diff(vector, velocity) {
-        switch(velocity.x) {
-            case 1:
-                return this.x >= vector.x;
-
-            case -1:
-                return this.x <= vector.x;
-        }
-
-        switch(velocity.y) {
-            case 1:
-                return this.y >= vector.y;
-
-            case -1:
-                return this.y <= vector.y;
-        }
+    diff(vector) {
+        return Math.abs(this.x) >= Math.abs(vector.x) || Math.abs(this.y) >= Math.abs(vector.y)
     }
     clone() {
         return new this.constructor(this.x,this.y);

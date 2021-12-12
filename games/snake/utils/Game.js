@@ -86,11 +86,11 @@ export default class {
 			button.hover(this.mouse);
 	}
 	update(time) {
+		this.lastFrame = requestAnimationFrame(this.update.bind(this));
+
 		this.delta = time - this.lastTime;
 		if (this.delta <= 1000 / this.fps) {
 			this.draw();
-
-			this.lastFrame = requestAnimationFrame(this.update.bind(this));
 
 			return;
 		}
@@ -122,13 +122,12 @@ export default class {
 				
 				return;
 			}
-			player.update(10);
+            
+			player.update(this.delta);
 			//player.update(this.progress);
 		}
 		
 		this.draw();
-
-		this.lastFrame = requestAnimationFrame(this.update.bind(this));
 	}
 	draw() {
 		this.ctx = this.canvas.getContext("2d");
