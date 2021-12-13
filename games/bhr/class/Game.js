@@ -43,8 +43,8 @@ export default class {
     }
 
     adjust() {
-        this.setAttribute("height", +getComputedStyle(this).getPropertyValue("height").slice(0, -2) * window.devicePixelRatio);
-        this.setAttribute("width", +getComputedStyle(this).getPropertyValue("width").slice(0, -2) * window.devicePixelRatio);
+        this.setAttribute("height", parseFloat(getComputedStyle(this).height) * window.devicePixelRatio);
+        this.setAttribute("width", parseFloat(getComputedStyle(this).width) * window.devicePixelRatio);
     }
 
     init(trackCode) {

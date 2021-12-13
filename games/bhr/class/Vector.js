@@ -1,5 +1,3 @@
-import { canvas } from "../bootstrap.js";
-
 export default class {
     constructor(x = 0, y = 0) {
         if (typeof x === "object") {
@@ -21,11 +19,19 @@ export default class {
     get absolute() {
         return this.toPixel();
     }
+    get canvas() {
+        let style = getComputedStyle(window.game.canvas);
+        return {
+            width: parseFloat(style.width),
+            height: parseFloat(style.height),
+            view: window.game.canvas
+        }
+    }
     toPixel() {
-        return new this.constructor((this.x - window.game.track.camera.x) * window.game.track.zoom + canvas.width / 2, (this.y - window.game.track.camera.y) * window.game.track.zoom + canvas.height / 2);
+        return new this.constructor((this.x - window.game.track.camera.x) * window.game.track.zoom + this.canvas.width / 2 * window.devicePixelRatio, (this.y - window.game.track.camera.y) * window.game.track.zoom + this.canvas.height / 2 * window.devicePixelRatio);
     }
     toCanvas() {
-        return new this.constructor(Math.round((this.x - canvas.width / 2) / window.game.track.zoom + window.game.track.camera.x), Math.round((this.y - canvas.height / 2) / window.game.track.zoom + window.game.track.camera.y));
+        return new this.constructor(Math.round((this.x - this.canvas.width / 2) / window.game.track.zoom + window.game.track.camera.x), Math.round((this.y - this.canvas.height / 2) / window.game.track.zoom + window.game.track.camera.y)).scale(window.devicePixelRatio);
     }
     copy(a) {
         this.x = a.x;
