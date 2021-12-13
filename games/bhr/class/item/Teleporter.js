@@ -14,7 +14,10 @@ export default class Teleporter extends SingleUseItem {
 
     draw() {
         super.draw();
-        super.draw(this.d.toPixel());
+
+        if (this.d) {
+            super.draw(this.d.toPixel());
+        }
     }
 
     tpb(t, e) {
@@ -24,7 +27,6 @@ export default class Teleporter extends SingleUseItem {
     }
 
     activate(part) {
-        console.log(part)
         part.parent.move(this.x - this.a, this.y - this.b);
     }
 }
