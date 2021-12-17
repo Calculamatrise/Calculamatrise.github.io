@@ -10,12 +10,17 @@ export default class Player {
 	}
 	
     size = 15;
+    speed = 2;
     direction = 1;
+    velocity = new Vector(5);
+    gravity = new Vector(0, .3);
     position = null;
     jumpHeight = null;
 
     jump() {
         this.jumpHeight = this.position.y - this.size * 2;
+        // this.velocity.sub(new Vector(0, 15));
+        this.velocity.y = -10;
     }
 
 	update(delta) {
@@ -25,14 +30,23 @@ export default class Player {
 
         if (this.position.x >= this.parent.canvas.width - this.size) {
             this.direction = -1;
+            this.velocity.x *= -1;
         } else if (this.position.x <= this.size) {
             this.direction = 1;
+            this.velocity.x *= -1;
         }
 
-        this.position.lerpTowards({
-            x: this.position.x + 4 * this.direction,
-            y: this.jumpHeight || this.position.y + 3
-        }, .4, delta);
+        this.velocity.add(this.gravity).scale(.99);
+        this.position.add(this.velocity);
+        
+        this.velocity = this.position.clone().sub(this.position.old);
+
+        this.position.add(new Vector(this.speed).scale(this.direction));
+
+        // this.position.lerpTowards({
+        //     x: this.position.x + 4 * this.direction,
+        //     y: this.jumpHeight || this.position.y + 3
+        // }, .4, delta);
 	}
 	
 	draw(ctx) {

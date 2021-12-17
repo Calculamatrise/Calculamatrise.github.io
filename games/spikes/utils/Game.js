@@ -47,11 +47,13 @@ export default class Game {
 		this.animationFrameId = requestAnimationFrame(this.update.bind(this));
 		
         try {
-            for (const player of this.players) {
-                player.update((time - this.lastTime) / (1000 / 50));
+            if (this.running) {
+                for (const player of this.players) {
+                    player.update((time - this.lastTime) / (1000 / 50));
+                }
             }
-
-		    this.draw();
+            
+            this.draw();
         } catch(error) {
             cancelAnimationFrame(this.animationFrameId);
 
