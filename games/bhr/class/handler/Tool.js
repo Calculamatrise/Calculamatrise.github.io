@@ -9,6 +9,7 @@ export default class {
     constructor(parent) {
         this.track = parent;
     }
+
     old = "camera";
     selected = "camera";
     tools = {
@@ -19,6 +20,7 @@ export default class {
         trianglePowerup: new TrianglePowerup(this),
         line: new Line(this)
     }
+
     get currentTool() {
         if (["goal", "checkpoint", "bomb", "slow-mo", "antigravity", "teleporter"].includes(this.selected)) {
             return this.tools["powerup"];
@@ -39,7 +41,7 @@ export default class {
 
         this.selected = name;
 
-        settings.style.setProperty("display", ["brush", "scenery brush", "eraser"].includes(this.selected) ? "block" : "none");
+        settings.style.setProperty("display", ["brush", "eraser"].includes(this.selected) ? "block" : "none");
         eraserSettings.style.setProperty("display", this.selected === "eraser" ? "block" : "none");
     }
 }

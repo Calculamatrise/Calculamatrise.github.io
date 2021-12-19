@@ -7,7 +7,7 @@ import Ragdoll from "./bike/part/Ragdoll.js";
 import Explosion from "./effect/Explosion.js";
 import Shard from "./effect/Shard.js";
 
-const bike = {
+const Bike = {
     MTB,
     BMX
 }
@@ -16,8 +16,6 @@ export default class Player {
     constructor(parent, { vehicle, ghost }) {
         this.track = parent;
         this.ghostData = ghost;
-        this.gravity = new Vector(0, 0.3);
-        this.snapshots = new SnapshotHandler();
         this.gamepad = new Gamepad(this);
         if (!this.ghost) {
             this.gamepad.init();
@@ -28,6 +26,7 @@ export default class Player {
         this.createCosmetics();
         this.createVehicle(vehicle);
     }
+    
     slow = false;
     dead = false;
     ragdoll = null;
@@ -35,15 +34,21 @@ export default class Player {
     powerupsEnabled = true;
     targetsCollected = 0;
     powerupsConsumed = [];
+    gravity = new Vector(0, .3);
+    snapshots = new SnapshotHandler();
+
     get ghost() {
         return !!this.ghostData;
     }
+    
     createCosmetics() {
         this.cosmetics = this._user != void 0 ? this._user.cosmetics : { head: "hat" }
     }
+
     createVehicle(vehicle = "BMX") {
-        this.vehicle = new bike[vehicle](this);
+        this.vehicle = new Bike[vehicle](this);
     }
+
     createRagdoll() {
         this.ragdoll = new Ragdoll(this, this.vehicle.rider);
         this.ragdoll.setVelocity(this.vehicle.head.velocity, this.vehicle.rearWheel.velocity);
@@ -57,6 +62,7 @@ export default class Player {
     }
 
     createExplosion(part) {
+        this.dead = true;
         this.explosion = new Explosion(this, part);
     }
 
@@ -111,7 +117,7 @@ export default class Player {
             this.explosion.update();
         } else {
             this.vehicle.update(delta);
-            if (this.dead) {
+            if (this.dead && !this.explosion) {
                 this.ragdoll.update();
                 this.hat.update();
             }
@@ -175,12 +181,7 @@ export default class Player {
         if (this.pastCheckpoint & 2) {
             this.collide("hitGoal");
             if (this.track.targets && e.targetsCollected === e.targets && 0 < e.currentTime && (!e.time || this.time < e.time) && e.id !== void 0) {
-                const records = `${game.track.firstPlayer.gamepad.records.map(function(record) {
-                    if (typeof record === "object")
-                        return Object.keys(record).join(" ");
-                
-                    return record;
-                }).join(",")},${this.track.currentTime},${this.vehicle.name}`;
+                const records = `${game.track.firstPlayer.gamepad.records.map(record => Object.keys(record).join(" ")).join(",")},${this.track.currentTime},${this.vehicle.name}`;
 
                 fetch("/tracks/ghost_save", {
                     headers: {
@@ -212,6 +213,7 @@ export default class Player {
             targetsCollected: this.targetsCollected,
             powerupsConsumed: [...this.powerupsConsumed],
             currentTime: this.track.currentTime,
+            gamepad: this.gamepad.snapshot(),
             gravity: this.gravity.clone(),
             vehicle: this.vehicle.clone()
         }
@@ -224,6 +226,7 @@ export default class Player {
         this.powerupsConsumed = [...snapshot.powerupsConsumed];
         this.gravity = snapshot.gravity.clone();
 
+        this.gamepad.restore(snapshot.gamepad);
         this.vehicle.restore(snapshot.vehicle);
     }
 
@@ -236,11 +239,10 @@ export default class Player {
         this.targetsCollected = 0;
         this.powerupsConsumed = [];
 
-        this.snapshots = new SnapshotHandler();
-
+        this.snapshots.reset();
         this.gamepad.reset();
 
-        this.gravity = new Vector(0,.3);
+        this.gravity = new Vector(0, .3);
         this.createVehicle(this.vehicle.name);
     }
 }

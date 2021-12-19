@@ -4,8 +4,9 @@ import Line from "./Line.js";
 export default class PhysicsLine extends Line {
     type = "physics";
     collide(part) {
-        if (this.collided)
+        if (this.collided) {
             return this;
+        }
 
         this.collided = !0;
         var b = part.position,

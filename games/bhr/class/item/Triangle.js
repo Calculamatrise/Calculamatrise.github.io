@@ -4,8 +4,9 @@ import Item from "./Item.js";
 export default class Triangle extends Item {
     constructor(a, b, c, d) {
         super(a, b, d);
+
         this.rotation = c;
-        this.dir = new Vector(-Math.sin(c * Math.PI / 180), Math.cos(c * Math.PI / 180))
+        this.dir = new Vector(-Math.sin(c * Math.PI / 180), Math.cos(c * Math.PI / 180));
     }
     
     draw() {

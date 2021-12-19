@@ -1,5 +1,5 @@
 import Vector from "../Vector.js";
-import BodyPart from "./part/Entity.js";
+import Entity from "./part/Entity.js";
 import Wheel from "./part/Wheel.js";
 import Spring from "../Spring.js";
 
@@ -7,19 +7,28 @@ export default class {
     constructor(parent) {
         this.parent = parent;
 
-        this.head = new BodyPart(this);
+        this.head = new Entity(this);
         this.head.drive = this.destroy.bind(this);
         this.frontWheel = new Wheel(this);
         this.rearWheel = new Wheel(this);
 
-        this.rearSpring = new Spring(this.head, this.rearWheel, this);
-        this.chasse = new Spring(this.rearWheel,this.frontWheel,this);
-        this.frontSpring = new Spring(this.frontWheel,this.head,this);
+        this.rearSpring = new Spring(this.head, this.rearWheel);
+        this.chasse = new Spring(this.rearWheel, this.frontWheel);
+        this.frontSpring = new Spring(this.frontWheel, this.head);
 
-        this.masses = [this.head, this.frontWheel, this.rearWheel];
-        this.springs = [this.rearSpring, this.chasse, this.frontSpring];
+        this.masses = [
+            this.head,
+            this.frontWheel,
+            this.rearWheel
+        ]
+
+        this.springs = [
+            this.rearSpring,
+            this.chasse,
+            this.frontSpring
+        ]
     }
-    name = null;
+
     dir = 1;
     pedalSpeed = 0;
     get rider() {
@@ -71,11 +80,13 @@ export default class {
             this.parent.slow = false;
         }
 
-        for (const spring of this.springs)
+        for (const spring of this.springs) {
             spring.update();
+        }
 
-        for (const mass of this.masses)
+        for (const mass of this.masses) {
             mass.update(delta);
+        }
 
         if (!this.parent.slow && !this.parent.dead) {
             this.updateControls();
@@ -84,7 +95,7 @@ export default class {
                 spring.update();
 
             for (const mass of this.masses)
-                mass.update();
+                mass.update(delta);
         }
     }
 

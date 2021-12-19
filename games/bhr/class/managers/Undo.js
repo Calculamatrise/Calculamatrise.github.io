@@ -7,6 +7,7 @@ export default class UndoManager {
 
         return this;
     }
+
     undo() {
         if (this.position >= 0) {
             let undo = this.stack[this.position--].undo;
@@ -17,6 +18,7 @@ export default class UndoManager {
 
         return this;
     }
+    
     redo() {
         if (this.position < this.stack.length - 1) {
             let redo = this.stack[++this.position].redo;

@@ -16,13 +16,12 @@ export default class extends Mass {
         
         this.velocity = this.position.sub(this.old);
         this.old.copy(this.position);
-        
-        super.update(delta);
     }
 
     clone() {
         const clone = new this.constructor(this.parent);
         
+        clone.size = this.size;
         clone.position = this.position.clone();
         clone.old = this.old.clone();
         clone.velocity = this.velocity.clone();

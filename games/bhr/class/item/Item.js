@@ -6,7 +6,9 @@ export default class Item {
         this.track = c;
         this.id = this.track.goals++
     }
+
     removed = false;
+
     get ctx() {
         return this.track.parent.ctx;
     }

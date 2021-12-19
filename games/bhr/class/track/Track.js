@@ -18,7 +18,7 @@ import Slowmo from "../item/Slowmo.js";
 import Teleporter from "../item/Teleporter.js";
 
 export default class Track {
-    constructor(parent, { id, code } = { id: null, code: "-18 1i 18 1i###BMX" }) {
+    constructor(parent, { id = null, code = "-18 1i 18 1i###BMX" }) {
         this.parent = parent;
 
         if (id)
@@ -34,6 +34,7 @@ export default class Track {
 
         this.parent.watchGhost = this.watchGhost;
     }
+
     code = null;
     goals = 0;
     scale = 100;
@@ -168,8 +169,7 @@ export default class Track {
     }
 
     watchGhost(a) {
-        if (typeof a === "string")
-            a = JSON.parse(a);
+        a = a.split(/\u002C/g).map(key => Object.fromEntries(key.split(/\s+/g).filter(keys => keys).map(input => [ input, 1 ])));
 
         this.reset();
         this.cameraFocus = this.players[0].vehicle.head;
@@ -180,42 +180,42 @@ export default class Track {
         this.paused = false;
     }
 
-    collide(a) {
-        let x = Math.floor(a.position.x / this.scale - 0.5);
-        let y = Math.floor(a.position.y / this.scale - 0.5);
+    collide(part) {
+        let x = Math.floor(part.position.x / this.scale - 0.5);
+        let y = Math.floor(part.position.y / this.scale - 0.5);
         if (this.grid[x] !== void 0) {
             if (this.grid[x][y] !== void 0) {
-                this.grid[x][y].za()
+                this.grid[x][y].fix()
             }
             if (this.grid[x][y + 1] !== void 0) {
-                this.grid[x][y + 1].za()
+                this.grid[x][y + 1].fix()
             }
         }
 
         if (this.grid[x + 1] !== void 0) {
             if (this.grid[x + 1][y] !== void 0) {
-                this.grid[x + 1][y].za()
+                this.grid[x + 1][y].fix()
             }
             if (this.grid[x + 1][y + 1] !== void 0) {
-                this.grid[x + 1][y + 1].za()
+                this.grid[x + 1][y + 1].fix()
             }
         }
 
         if (this.grid[x] !== void 0 && this.grid[x][y] !== void 0) {
-            this.grid[x][y].collide(a)
+            this.grid[x][y].collide(part)
         }
 
         if (this.grid[x + 1] !== void 0) {
             if (this.grid[x + 1][y] !== void 0) {
-                this.grid[x + 1][y].collide(a)
+                this.grid[x + 1][y].collide(part)
             }
             if (this.grid[x + 1][y + 1] !== void 0) {
-                this.grid[x + 1][y + 1].collide(a)
+                this.grid[x + 1][y + 1].collide(part)
             }
         }
 
         if (this.grid[x] !== void 0 && this.grid[x][y + 1] !== void 0) {
-            this.grid[x][y + 1].collide(a)
+            this.grid[x][y + 1].collide(part)
         }
 
         return this;

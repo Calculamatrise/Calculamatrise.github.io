@@ -23,18 +23,18 @@ export default class {
         this.ctx = this.canvas.getContext("2d");
         this.container = this.canvas.parentElement;
         
-        window.addEventListener("resize", this.adjust.bind(canvas));
-        this.adjust.bind(canvas)();
+        window.addEventListener("resize", this.adjust.bind(this.canvas));
+        this.adjust.bind(this.canvas)();
 
-        this.mouse = new Mouse(canvas);
+        this.mouse = new Mouse(this.canvas);
         this.mouse.on("mouseover", this.initCursor.bind(this));
         this.mouse.on("mousedown", this.mouseDown.bind(this));
         this.mouse.on("mousemove", this.mouseMove.bind(this));
         this.mouse.on("mouseup", this.mouseUp.bind(this));
         this.mouse.on("mousewheel", this.scroll.bind(this));
-
-        this.fps = 25;
     }
+
+    fps = 25;
     lastTime = null;
     lastFrame = null;
     progress = 0;

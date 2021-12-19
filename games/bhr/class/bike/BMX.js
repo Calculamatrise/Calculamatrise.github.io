@@ -11,13 +11,10 @@ export default class extends Bike {
 
         this.head.position = new Vector(0, -1);
         this.head.old = this.head.position.clone();
-        this.head.displayPos = this.head.position.clone();
         this.frontWheel.position = new Vector(21, 38);
         this.frontWheel.old = this.frontWheel.position.clone();
-        this.frontWheel.displayPos = this.frontWheel.position.clone();
         this.rearWheel.position = new Vector(-21, 38);
         this.rearWheel.old = this.rearWheel.position.clone();
-        this.rearWheel.displayPos = this.rearWheel.position.clone();
 
         this.rearSpring.lrest = 45;
         this.rearSpring.leff = 45;
@@ -34,11 +31,9 @@ export default class extends Bike {
         this.frontSpring.springConstant = 0.35;
         this.frontSpring.dampConstant = 0.3;
     }
+    
     name = "BMX";
     updateControls() {
-        if (this.parent.gamepad.downKeys.has("ArrowUp"))
-            this.pedalSpeed += this.rearWheel.pedalSpeed / 5;
-        
         this.rearWheel.motor += (this.parent.gamepad.downKeys.has("ArrowUp") - this.rearWheel.motor) / 10;
         this.rearWheel.brake = this.frontWheel.brake = this.parent.gamepad.downKeys.has("ArrowDown");
         
@@ -46,25 +41,26 @@ export default class extends Bike {
         this.rearSpring.lean(rotate * this.dir * 5);
         this.frontSpring.lean(-rotate * this.dir * 5);
         this.chasse.rotate(rotate / 6);
-        if (!rotate && this.parent.gamepad.downKeys.has("ArrowUp")) {
-            this.rearSpring.lean(-7);
-            this.frontSpring.lean(7);
+        
+        if (this.parent.gamepad.downKeys.has("ArrowUp")) {
+            this.pedalSpeed += this.rearWheel.pedalSpeed / 5;
+            if (!rotate) {
+                this.rearSpring.lean(-7);
+                this.frontSpring.lean(7);
+            }
         }
     }
 
     draw(ctx) {
-        const rearWheel = this.rearWheel.displayPos.toPixel();
-        const frontWheel = this.frontWheel.displayPos.toPixel();
+        const rearWheel = this.rearWheel.position.toPixel();
+        const frontWheel = this.frontWheel.position.toPixel();
         
         ctx.globalAlpha = this.parent.ghost ? .5 : 1;
         ctx.strokeStyle = this.parent.track.parent.theme === "dark" ? "#fbfbfb" : "#000000";
         ctx.lineWidth = 3.5 * this.parent.track.zoom;
 
-        ctx.beginPath(),
-        ctx.arc(rearWheel.x, rearWheel.y, this.parent.track.zoom * 10, 0, 2 * Math.PI, true),
-        ctx.moveTo(frontWheel.x + 10 * this.parent.track.zoom, frontWheel.y),
-        ctx.arc(frontWheel.x, frontWheel.y, this.parent.track.zoom * 10, 0, 2 * Math.PI, true),
-        ctx.stroke();
+        this.rearWheel.draw(ctx, 10),
+        this.frontWheel.draw(ctx, 10);
         
         let l = frontWheel.sub(rearWheel);
         let i = new Vector((frontWheel.y - rearWheel.y) * this.dir, (rearWheel.x - frontWheel.x) * this.dir);
@@ -116,7 +112,7 @@ export default class extends Bike {
             ctx.lineCap = "round";
             ctx.lineJoin = "round";
 
-            i = this.head.displayPos.toPixel().sub(rearWheel).sub(l.scale(0.5));
+            i = this.head.position.toPixel().sub(rearWheel).sub(l.scale(0.5));
             let h = a.sub(l.scale(0.1)).add(i.scale(0.3));
             T = n.sub(h);
             let za = this.dir * this.parent.track.zoom ** 2 / T.dot(T);
@@ -124,7 +120,7 @@ export default class extends Bike {
             let N = new Vector(h.x + 0.5 * T.x + 200 * T.y * za, h.y + 0.5 * T.y + 200 * -T.x * za);
             
             ctx.lineWidth = this.parent.track.zoom * 6;
-            ctx.strokeStyle = this.parent.track.parent.theme === "dark" ? "#FBFBFB80" : "rgba(0, 0, 0, 0.5)";
+            ctx.strokeStyle = this.parent.track.parent.theme === "dark" ? "#fbfbfb80" : "#00000080";
             ctx.beginPath(),
             ctx.moveTo(c.x, c.y),
             ctx.lineTo(N.x, N.y),
@@ -187,6 +183,7 @@ export default class extends Bike {
                     
                     break;
             }
+
             i = new Vector((n.y - w.y) * this.dir * this.parent.track.zoom ** 2, -(n.x - w.x) * this.dir * this.parent.track.zoom ** 2);
 
             let f = (n.x - w.x) ** 2 + (n.y - w.y) ** 2;

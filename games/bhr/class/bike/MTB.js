@@ -11,13 +11,10 @@ export default class extends Bike {
 
         this.head.position = new Vector(2, -3);
         this.head.old = this.head.position.clone();
-        this.head.displayPos = this.head.position.clone();
         this.frontWheel.position = new Vector(23, 35);
         this.frontWheel.old = this.frontWheel.position.clone();
-        this.frontWheel.displayPos = this.frontWheel.position.clone();
         this.rearWheel.position = new Vector(-23, 35);
         this.rearWheel.old = this.rearWheel.position.clone();
-        this.rearWheel.displayPos = this.rearWheel.position.clone();
 
         this.rearSpring.lrest = 47;
         this.rearSpring.leff = 47;
@@ -34,6 +31,7 @@ export default class extends Bike {
         this.frontSpring.springConstant = 0.2;
         this.frontSpring.dampConstant = 0.3;
     }
+
     name = "MTB";
     updateControls() {
         if (this.parent.gamepad.downKeys.has("ArrowUp"))
@@ -53,20 +51,18 @@ export default class extends Bike {
     }
     
     draw(ctx) {
-        var b = this.rearWheel.displayPos.toPixel()
-        , c = this.frontWheel.displayPos.toPixel()
-        , d = this.head.displayPos.toPixel()
+        var b = this.rearWheel.position.toPixel()
+        , c = this.frontWheel.position.toPixel()
+        , d = this.head.position.toPixel()
         , e = c.sub(b)
         , f = new Vector((c.y - b.y) * this.dir,(b.x - c.x) * this.dir)
         , h = d.sub(b.add(e.scale(0.5)));
         ctx.globalAlpha = this.ghost ? .5 : 1;
         ctx.strokeStyle = this.parent.track.parent.theme === "dark" ? "#fbfbfb" : "#000000";
         ctx.lineWidth = 3.5 * this.parent.track.zoom;
-        ctx.beginPath(),
-        ctx.arc(b.x, b.y, 12.5 * this.parent.track.zoom, 0, 2 * Math.PI, true),
-        ctx.moveTo(c.x + 12.5 * this.parent.track.zoom, c.y),
-        ctx.arc(c.x, c.y, 12.5 * this.parent.track.zoom, 0, 2 * Math.PI, true),
-        ctx.stroke(),
+        
+        this.rearWheel.draw(ctx, 12.5),
+        this.frontWheel.draw(ctx, 12.5);
 
         ctx.beginPath(),
         ctx.fillStyle = "grey";

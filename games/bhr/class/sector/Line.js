@@ -8,6 +8,7 @@ export default class Line {
         this.len = this.vector.length;
         this.track = n;
     }
+    
     removed = false;
     // draw(ctx) {
     //     let point1 = this.a.toPixel();
@@ -37,6 +38,7 @@ export default class Line {
         ctx.lineTo(this.b.x * this.track.zoom - e, this.b.y * this.track.zoom - i);
         ctx.stroke()
     }
+
     erase(t) {
         let b = t.sub(this.a).dot(this.vector.oppositeScale(this.len));
         let c = new Vector(0,0);
@@ -50,6 +52,11 @@ export default class Line {
 
         return t.sub(c).length <= this.track.toolHandler.currentTool.size ? this.remove() : !1
     }
+
+    commit() {
+        this.track.addLineInternal(this);
+    }
+
     remove() {
         this.removed = true;
         this.track.remove(this.a, this.b);
@@ -57,9 +64,7 @@ export default class Line {
         
         return this;
     }
-    xb() {
-        this.track.addLineInternal(this)
-    }
+
     toString() {
         return `${this.a} ${this.b}`;
     }

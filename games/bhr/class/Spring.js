@@ -1,25 +1,27 @@
 import Vector from "./Vector.js";
 
 export default class Spring {
-    constructor(a, b, c) {
+    constructor(a, b) {
         this.a = a;
         this.b = b;
-        this.track = c;
-        this.leff = this.lrest = 40;
-        this.dampConstant= 0.5;
-        this.springConstant = 0.7;
     }
+
+    leff = 45;
+    lrest = 45;
+    dampConstant= 0.3;
+    springConstant = 0.5;
+
     get length() {
         return this.b.position.sub(this.a.position).length;
     }
 
     lean(a) {
-        this.leff += (this.lrest - a - this.leff) / 5
+        this.leff += (this.lrest - a - this.leff) / 5;
     }
 
     rotate(a) {
-        var b = this.b.position.sub(this.a.position),
-            b = new Vector(-b.y / this.leff,b.x / this.leff);
+        let b = this.b.position.sub(this.a.position);
+        b = new Vector(-b.y / this.leff, b.x / this.leff);
         this.a.position.addToSelf(b.scale(a));
         this.b.position.addToSelf(b.scale(-a))
     }
@@ -39,7 +41,7 @@ export default class Spring {
     }
     
     swap() {
-        var a = new Vector;
+        let a = new Vector;
         a.copy(this.a.position);
         this.a.position.copy(this.b.position);
         this.b.position.copy(a);
@@ -55,7 +57,7 @@ export default class Spring {
     }
 
     clone() {
-        const clone = new this.constructor(this.a,this.b,this.track);
+        const clone = new this.constructor(this.a, this.b);
         
         clone.lrest = this.lrest;
         clone.leff = this.leff;

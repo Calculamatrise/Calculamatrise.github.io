@@ -4,6 +4,6 @@ export default class Slowmo extends Item {
     type = "S";
     color = "#eee";
     activate(part) {
-        part.parent.slow = !0;
+        part.parent.parent.slow = true;
     }
 }

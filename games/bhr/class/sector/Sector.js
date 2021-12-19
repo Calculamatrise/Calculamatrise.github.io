@@ -1,44 +1,49 @@
 export default class Sector {
-    constructor() {
-        this.physics = [];
-        this.scenery= [];
-        this.powerups = []
-    }
-    za() {
-        for (var a = 0, b = this.physics.length; a < b; a++) {
-            this.physics[a].collided = !1;
+    physics = []
+    scenery= []
+    powerups = []
+    fix() {
+        for (const line of this.physics) {
+            line.collided = !1;
         }
     }
-    collide(a) {
-        for (var b = this.physics.length - 1; 0 <= b; b--) {
-            this.physics[b].collide(a);
+
+    collide(part) {
+        for (const line of this.physics) {
+            line.collide(part);
         }
-        if (!a.parent.dead) {
-            for (b = this.powerups.length - 1; 0 <= b; b--) {
-                this.powerups[b].collide(a);
+
+        if (!part.parent.dead) {
+            for (const powerup of this.powerups) {
+                powerup.collide(part);
             }
         }
+
         return this;
     }
+
     remove() {
-        for (var a = [], b = 0, c = this.physics.length; b < c; b++) {
+        let a = []
+
+        for (let b = 0; b < this.physics.length; b++) {
             this.physics[b] && this.physics[b].removed && a.push(this.physics.splice(b--, 1)[0]);
         }
-        b = 0;
-        for (c = this.scenery.length; b < c; b++) {
+
+        for (let b = 0; b < this.scenery.length; b++) {
             this.scenery[b] && this.scenery[b].removed && a.push(this.scenery.splice(b--, 1)[0]);
         }
-        b = 0;
-        for (c = this.powerups.length; b < c; b++) {
+
+        for (let b = 0; b < this.powerups.length; b++) {
             this.powerups[b] && this.powerups[b].removed && a.push(this.powerups.splice(b--, 1)[0]);
         }
-        return a
+
+        return a;
     }
-    search(a, b) {
-        var c = 0, d, e, f = b === "scenery" ? this.scenery: this.physics;
-        for (d = f.length; c < d; c++) {
-            if ((e = f[c]) && e.a.x === a.x && e.a.y === a.y && !e.ma) {
-                return e;
+
+    search(a, type) {
+        for (const line of type === "scenery" ? this.scenery: this.physics) {
+            if (line.a.x === a.x && line.a.y === a.y && !line.ma) {
+                return line;
             }
         }
     } 

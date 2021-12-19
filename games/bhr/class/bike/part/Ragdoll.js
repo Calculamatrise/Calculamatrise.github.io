@@ -1,49 +1,52 @@
 import Spring from "../../Spring.js";
-import BodyPart from "./Entity.js";
+import Entity from "./Entity.js";
 
 export default class {
     constructor(parent, stickman) {
         this.parent = parent;
 
-        this.dead = true;
-        this.points = [
-            this.head = new BodyPart(this),
-            this.hip = new BodyPart(this),
-            this.elbow = new BodyPart(this),
-            this.shadowElbow = new BodyPart(this),
-            this.hand = new BodyPart(this),
-            this.shadowHand = new BodyPart(this),
-            this.knee = new BodyPart(this),
-            this.shadowKnee = new BodyPart(this),
-            this.foot = new BodyPart(this),
-            this.shadowFoot = new BodyPart(this)
-        ];
-        this.joints = [
-            new Spring(this.head,this.hip,this),
-            new Spring(this.head,this.elbow,this),
-            new Spring(this.elbow,this.hand,this),
-            new Spring(this.head,this.shadowElbow,this),
-            new Spring(this.shadowElbow,this.shadowHand,this),
-            new Spring(this.hip,this.knee,this),
-            new Spring(this.knee,this.foot,this),
-            new Spring(this.hip,this.shadowKnee,this),
-            new Spring(this.shadowKnee,this.shadowFoot,this)
-        ];
-        for (var point in this.points) {
-            this.points[point].size = 3,
-            this.points[point].friction = 0.05;
+        this.head.size = 8;
+        this.hip.size = 8;
+
+        for (const point of this.points) {
+            point.size = 3,
+            point.friction = 0.05;
         }
 
-        this.head.size = this.hip.size = 8;
-        for (var joint in this.joints) {
-            this.joints[joint].springConstant = 0.4,
-            this.joints[joint].dampConstant= 0.7;
+        for (const joint of this.joints) {
+            joint.springConstant = 0.4,
+            joint.dampConstant= 0.7;
         }
         
         for (const part in stickman) {
             this[part].position.copy(stickman[part]);
         }
     }
+
+    points = [
+        this.head = new Entity(this),
+        this.hip = new Entity(this),
+        this.elbow = new Entity(this),
+        this.shadowElbow = new Entity(this),
+        this.hand = new Entity(this),
+        this.shadowHand = new Entity(this),
+        this.knee = new Entity(this),
+        this.shadowKnee = new Entity(this),
+        this.foot = new Entity(this),
+        this.shadowFoot = new Entity(this)
+    ]
+
+    joints = [
+        new Spring(this.head, this.hip, this),
+        new Spring(this.head, this.elbow, this),
+        new Spring(this.elbow, this.hand, this),
+        new Spring(this.head, this.shadowElbow, this),
+        new Spring(this.shadowElbow, this.shadowHand, this),
+        new Spring(this.hip, this.knee, this),
+        new Spring(this.knee, this.foot, this),
+        new Spring(this.hip, this.shadowKnee, this),
+        new Spring(this.shadowKnee, this.shadowFoot, this)
+    ]
 
     update() {
         for (var a = this.joints.length - 1; a >= 0; a--)
@@ -65,7 +68,7 @@ export default class {
         const shadowFoot = this.shadowFoot.position.toPixel();
         const hip = this.hip.position.toPixel();
         
-        ctx.globalAlpha = this.ghost ? .5 : 1;
+        ctx.globalAlpha = this.parent.ghost ? .5 : 1;
         ctx.lineWidth = 5 * this.parent.track.zoom;
         ctx.lineJoin = "round";
         ctx.strokeStyle = this.parent.track.parent.theme === "dark" ? "#fbfbfb80" : "rgba(0,0,0,0.5)";

@@ -13,15 +13,19 @@ export default class extends Entity {
         this.touching = true;
     }
 
+    draw(ctx, size) {
+        const position = this.position.toPixel();
+
+        ctx.beginPath();
+        ctx.arc(position.x, position.y, this.parent.parent.track.zoom * size, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
+
     clone() {
-        const clone = new this.constructor(this.parent);
+        const clone = super.clone();
         
-        clone.size = this.size;
-        clone.position = this.position.clone();
-        clone.old = this.old.clone();
-        clone.velocity = this.velocity.clone();
         clone.motor = this.motor;
         
-        return clone
+        return clone;
     }
 }

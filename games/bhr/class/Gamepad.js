@@ -1,96 +1,97 @@
-export default class {
-    constructor(parent) {
-        this.parent = parent;
+import EventEmitter from "./EventEmitter.js";
 
-        this.downKeys = new Map();
+export default class extends EventEmitter {
+    constructor(parent) {
+        super();
+
+        this.parent = parent;
     }
-    #events = new Map();
-    #records = [
-        {},
-        {},
-        {},
-        {},
-        {}
-    ]
+
+    downKeys = new Map();
+    #records = Array.from({ length: 5 }, () => ({}));
+
     get records() {
         return this.#records;
     }
-    #emit(event, ...args) {
-        if (this.#events.has(event))
-            return !!this.#events.get(event)(...args);
 
-        return null;
-    }
-    on(event, func = function() {}) {
-		return !!this.#events.set(event, func);
-	}
     init() {
         window.addEventListener("keydown", this.keydown.bind(this));
-        window.addEventListener("keypress", this.keypress.bind(this));
 		window.addEventListener("keyup", this.keyup.bind(this));
     }
+
+    key(event) {
+        switch(event.key.toLowerCase()) {
+            case "a":
+            case "arrowleft":
+                return 0;
+            
+            case "d":
+            case "arrowright":
+                return 1;
+
+            case "w":
+            case "arrowup":
+                return 2;
+
+            case "s":
+            case "arrowdown":
+                return 3;
+
+            case "z":
+                return 4;
+
+            default:
+                return null;
+        }
+    }
+
 	keydown(event) {
 		event.preventDefault();
 
-        const key = event.key.replace(/^(arrowleft|a)$/gi, 0)
-            .replace(/^(arrowright|d)$/gi, 1)
-            .replace(/^(arrowup|w)$/gi, 2)
-            .replace(/^(arrowdown|s)$/gi, 3)
-            .replace(/^z$/gi, 4);
+        const key = this.key(event);
 
-        if (this.downKeys.has(event.key))
+        if (this.downKeys.has(event.key)) {
             return;
+        }
 
         this.downKeys.set(event.key, true);
 
-        if (this.#records.hasOwnProperty(key.toLowerCase()))
-            this.#records[key.toLowerCase()][this.parent.track.currentTime] = 1;
+        if (this.#records.hasOwnProperty(key)) {
+            this.#records[key][this.parent.track.currentTime] = 1;
+        }
 
-		return this.#emit("keydown", event.key);
+		return this.emit("keydown", event.key);
 	}
-    keypress(event) {
-        event.preventDefault();
-        
-        return this.#emit("keypress", event.key, event.keyCode);
-    }
+
 	keyup(event) {
 		event.preventDefault();
 
-        const key = event.key.replace(/^(arrowleft|a)$/gi, 0)
-            .replace(/^(arrowright|d)$/gi, 1)
-            .replace(/^(arrowup|w)$/gi, 2)
-            .replace(/^(arrowdown|s)$/gi, 3)
-            .replace(/^z$/gi, 4);
+        const key = this.key(event);
 
         this.downKeys.delete(event.key);
 
-        if (this.#records.hasOwnProperty(key.toLowerCase()))
-            this.#records[key.toLowerCase()][this.parent.track.currentTime] = 1;
-		
-		return this.#emit("keyup", event.key);
+        if (this.#records.hasOwnProperty(key)) {
+            this.#records[key][this.parent.track.currentTime] = 1;
+        }
+
+		return this.emit("keyup", event.key);
 	}
+
     snapshot() {
-        return this.records;
+        return this.#records.map(records => ({...records}));
     }
+
     restore(records) {
-        if (typeof records !== "object")
-            return null;
-            
-        this.#records = records;
+        this.#records = records.map(records => ({...records}));
     }
+
     reset() {
         this.downKeys = new Map();
-        this.#records = [
-            {},
-            {},
-            {},
-            {},
-            {}
-        ]
+        this.#records = Array.from({ length: 5 }, () => ({}));
     }
+    
     close() {
         window.removeEventListener("keydown", this.keydown.bind(this));
-        window.removeEventListener("keypress", this.keypress.bind(this));
 		window.removeEventListener("keyup", this.keyup.bind(this));
     }
 }

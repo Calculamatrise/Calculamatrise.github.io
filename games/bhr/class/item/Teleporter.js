@@ -7,7 +7,9 @@ export default class Teleporter extends SingleUseItem {
         this.a = a;
         this.b = b
     }
+    
     type = "W";
+
     get color() {
         return this.used ? "#faf" : "#f0f";
     }

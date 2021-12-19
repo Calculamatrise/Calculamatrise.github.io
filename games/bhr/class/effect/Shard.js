@@ -2,19 +2,21 @@ import Vector from "../Vector.js";
 import Mass from "../bike/part/Mass.js";
 
 export default class Shard extends Mass {
-    constructor(parent, a) {
+    constructor(parent, vector) {
         super(parent);
 
-        this.position = new Vector(a.x + 5 * (Math.random() - Math.random()),a.y + 5 * (Math.random() - Math.random()));
-        this.old = new Vector(this.position.x,this.position.y);
-        this.velocity = new Vector(11 * (Math.random() - Math.random()),11 * (Math.random() - Math.random()));
-        this.size = 2 + 9 * Math.random();
-        this.rotation = 6.2 * Math.random();
-        this.rotationFactor = Math.random() - Math.random();
-        this.friction = 0.05;
-        this.collide = !0;
-        this.shape = [1, 0.7, 0.8, 0.9, 0.5, 1, 0.7, 1]
+        this.position = new Vector(vector.x + 5 * (Math.random() - Math.random()), vector.y + 5 * (Math.random() - Math.random()));
+        this.old = new Vector(this.position.x, this.position.y);
     }
+
+    velocity = new Vector(11 * (Math.random() - Math.random()), 11 * (Math.random() - Math.random()));
+    size = 2 + 9 * Math.random();
+    rotation = 6.2 * Math.random();
+    rotationFactor = Math.random() - Math.random();
+    friction = .05;
+    collide = !0;
+    shape = [ 1, 0.7, 0.8, 0.9, 0.5, 1, 0.7, 1 ]
+
     draw(ctx) {
         var a = this.position.toPixel(),
             b = this.shape[0] * this.size * this.parent.track.zoom,
@@ -32,16 +34,18 @@ export default class Shard extends Mass {
         ctx.fill();
         ctx.restore();
     }
-    drive(a) {
-        this.pedalSpeed = a.dot(this.velocity) / this.size;
-        this.position.addToSelf(a.scale(-a.dot(this.velocity) * this.friction));
+
+    drive(velocity) {
+        this.pedalSpeed = velocity.dot(this.velocity) / this.size;
+        this.position.addToSelf(velocity.scale(-velocity.dot(this.velocity) * this.friction));
         this.rotation += this.rotationFactor;
-        var b = a.length;
+        let b = velocity.length;
         if (b > 0) {
-            a = new Vector(-a.y / b,a.x / b),
-            this.old.addToSelf(a.scale(0.8 * a.dot(this.velocity)));
+            velocity = new Vector(-velocity.y / b, velocity.x / b);
+            this.old.addToSelf(velocity.scale(0.8 * velocity.dot(this.velocity)));
         }
     }
+    
     update(delta) {
         this.rotation += this.rotationFactor;
         this.velocity.addToSelf(this.parent.gravity).scaleSelf(0.99);
