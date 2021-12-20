@@ -16,7 +16,7 @@ export default class Line {
 
     //     ctx.save();
 
-    //     ctx.strokeStyle = this.type === "scenery" ? this.parent.track.parent.theme === "dark" ? "#999" : "#aaa" : this.parent.track.parent.theme === "dark" ? "#fff" : "#000";
+    //     ctx.strokeStyle = this.type === "scenery" ? this.track.parent.theme === "dark" ? "#999" : "#aaa" : this.track.parent.theme === "dark" ? "#fff" : "#000";
     //     ctx.lineWidth = Math.max(this.track.zoom * 2, 0.5);
     //     ctx.lineCap = "round";
     //     ctx.beginPath();

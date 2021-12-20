@@ -48,6 +48,10 @@ export default class {
     }
 
     init(trackCode) {
+        if (trackCode === null) {
+            return;
+        }
+
         if (this.lastFrame) {
             this.close();
         }

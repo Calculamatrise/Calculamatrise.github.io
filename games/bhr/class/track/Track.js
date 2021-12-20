@@ -17,7 +17,7 @@ import Antigravity from "../item/Antigravity.js";
 import Slowmo from "../item/Slowmo.js";
 import Teleporter from "../item/Teleporter.js";
 
-export default class Track {
+export default class {
     constructor(parent, { id = null, code = "-18 1i 18 1i###BMX" }) {
         this.parent = parent;
 
@@ -129,37 +129,19 @@ export default class Track {
     }
 
     collectItems(items) {
-        for (const x in this.grid) {
-            if (this.grid.hasOwnProperty(x)) {
-                for (const y in this.grid[x]) {
-                    if (this.grid[x].hasOwnProperty(y)) {
-                        let sector = this.grid[x][y];
-                        for (const powerup of sector.powerups) {
-                            if (powerup.used !== void 0) {
-                                if (items.includes(powerup.id)) {
-                                    powerup.used = true;
-                                }
-                            }
-                        }
-                    }
+        for (const powerup of this.powerups) {
+            if (powerup.used !== void 0) {
+                if (items.includes(powerup.id)) {
+                    powerup.used = true;
                 }
             }
         }
     }
 
     removeCollectedItems() {
-        for (const x in this.grid) {
-            if (this.grid.hasOwnProperty(x)) {
-                for (const y in this.grid[x]) {
-                    if (this.grid[x].hasOwnProperty(y)) {
-                        let sector = this.grid[x][y];
-                        for (const powerup of sector.powerups) {
-                            if (powerup.used !== void 0) {
-                                powerup.used = false;
-                            }
-                        }
-                    }
-                }
+        for (const powerup of this.powerups) {
+            if (powerup.used !== void 0) {
+                powerup.used = false;
             }
         }
     }
@@ -263,9 +245,9 @@ export default class Track {
 
         let i = new Vector().toCanvas(this.parent.canvas).oppositeScale(this.scale).floor();
         let l = new Vector(this.parent.canvas.width, this.parent.canvas.height).toCanvas(this.parent.canvas).oppositeScale(this.scale).floor();
-        let sectors = [], w, y;
-        for (w = i.x; w <= l.x; w++) {
-            for (y = i.y; y <= l.y; y++) {
+        let sectors = [];
+        for (let w = i.x; w <= l.x; w++) {
+            for (let y = i.y; y <= l.y; y++) {
                 if (this.grid[w] !== void 0 && this.grid[w][y] !== void 0) {
                     if (this.grid[w][y].physics.length > 0 || this.grid[w][y].scenery.length > 0) {
                         let sector = `${w}_${y}`;
@@ -307,7 +289,7 @@ export default class Track {
         ctx.beginPath(),
         ctx.lineWidth = 1,
         ctx.fillStyle = "#ff0",
-        ctx.arc(45, 12, 3.5, 0, 2 * Math.PI, true),
+        ctx.arc(45, 12, 3.5, 0, 2 * Math.PI),
         ctx.fill(),
         ctx.stroke();
 
@@ -613,6 +595,6 @@ export default class Track {
     }
 
     toString() {
-        return this.physics.map(line => line.toString()).slice(0, -1) + "#" + this.scenery.map(line => line.toString()).slice(0, -1) + "#" + this.powerups.map(powerup => powerup.toString()).slice(0, -1) + "#" + this.firstPlayer.vehicle.name;
+        return this.physics.map(line => line.toString()).join(",") + "#" + this.scenery.map(line => line.toString()).join(",") + "#" + this.powerups.map(powerup => powerup.toString()).join(",") + "#" + this.firstPlayer.vehicle.name;
     }
 }
