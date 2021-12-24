@@ -16,6 +16,7 @@ container {
 	display: block;
 	width: fit-content;
 	position: relative;
+    overflow: hidden;
 }
 
 container interface {
@@ -113,7 +114,6 @@ toolbar settings, toolbar settings div[data-id=eraser] {
 }
 
 toolbar div.left, toolbar div.right {
-    width: 30px;
     position: absolute;
 }
 
@@ -122,15 +122,17 @@ toolbar div.left {
 }
 
 toolbar div.right {
-    right: 3px;
+    right: 0;
 }
 
 toolbar tool {
-    width: 16px;
-    height: 16px;
+    width: 1vw;
+    height: 1vw;
     padding: 8px;
     outline: none;
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     backdrop-filter: blur(2px);
 }
 
@@ -310,12 +312,12 @@ camera {
 }
 
 powerup:not(.triangle) {
-	width: 7px;
-	height: 7px;
-    border-width: 4px;
-    border-style: solid;
-    border-radius: 50%;
-    clip-path: circle(30%);
+	width: 50%;
+	height: 50%;
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 50%;
+	clip-path: circle(60%);
 }
 
 powerup.triangle {

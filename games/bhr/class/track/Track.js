@@ -50,7 +50,7 @@ export default class {
     camera = new Vector();
     cameraLock = false;
     cameraFocus = null;
-    zoom = 0.6;
+    zoom = 0.6 * window.devicePixelRatio;
     toolHandler = new ToolHandler(this);
     undoManager = new UndoManager();
     get firstPlayer() {
@@ -58,15 +58,15 @@ export default class {
     }
 
     zoomIn() {
-        if (4 > this.zoom) {
-            this.zoom = Math.round(10 * this.zoom + 2) / 10;
+        if (this.zoom < 4 * window.devicePixelRatio) {
+            this.zoom += .2 * window.devicePixelRatio;
             this.sectors = {}
         }
     }
 
     zoomOut() {
-        if (0.2 < this.zoom) {
-            this.zoom = Math.round(10 * this.zoom + 2 * -1) / 10;
+        if (this.zoom > .2 * window.devicePixelRatio) {
+            this.zoom -= .2 * window.devicePixelRatio
             this.sectors = {}
         }
     }

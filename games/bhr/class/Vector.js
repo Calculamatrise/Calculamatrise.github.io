@@ -29,15 +29,15 @@ export default class {
     }
 
     get pixel() {
-        return new this.constructor((this.x - window.game.track.camera.x) * window.game.track.zoom + window.game.canvas.width / 2 * window.devicePixelRatio, (this.y - window.game.track.camera.y) * window.game.track.zoom + window.game.canvas.height / 2 * window.devicePixelRatio);
+        return new this.constructor((this.x - window.game.track.camera.x) * window.game.track.zoom + window.game.canvas.width / 2, (this.y - window.game.track.camera.y) * window.game.track.zoom + window.game.canvas.height / 2);
     }
 
     toPixel() {
-        return new this.constructor((this.x - window.game.track.camera.x) * window.game.track.zoom + window.game.canvas.width / 2 * window.devicePixelRatio, (this.y - window.game.track.camera.y) * window.game.track.zoom + window.game.canvas.height / 2 * window.devicePixelRatio);
+        return new this.constructor((this.x - window.game.track.camera.x) * window.game.track.zoom + window.game.canvas.width / 2, (this.y - window.game.track.camera.y) * window.game.track.zoom + window.game.canvas.height / 2);
     }
 
     toCanvas() {
-        return new this.constructor(Math.round((this.x - window.game.canvas.width / 2) / window.game.track.zoom + window.game.track.camera.x), Math.round((this.y - window.game.canvas.height / 2) / window.game.track.zoom + window.game.track.camera.y)).scale(window.devicePixelRatio);
+        return new this.constructor(Math.round((this.x * window.devicePixelRatio - window.game.canvas.width / 2) / window.game.track.zoom + window.game.track.camera.x), Math.round((this.y * window.devicePixelRatio - window.game.canvas.height / 2) / window.game.track.zoom + window.game.track.camera.y));
     }
 
     copy(vector) {
