@@ -1,226 +1,285 @@
-export default class {
-    constructor(worker) {
-        let code = (input.value || "-18 1i 18 1i##").split(/\u0023/g).map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
-        this._physics = code[0] ? code[0].map(t => t.map(t => parseInt(t, 32)).filter(t => !isNaN(t))) : [],
-        this._scenery = code[1] ? code[1].map(t => t.map(t => parseInt(t, 32)).filter(t => !isNaN(t))) : [],
-        this._powerups = {
-            targets: [],
-            boosters: [],
-            gravity: [],
-            slowmos: [],
-            bombs: [],
-            checkpoints: [],
-            antigravity: [],
-            teleporters: [],
-            vehicles: {
-                heli: [],
-                truck: [],
-                balloon: [],
-                blob: [],
-                glider: []
-            }
-        }
-        this._events = new Map();
-        this.readyCount = 0;
+class Track {
+    constructor(code) {
+        code = (code || "-18 1i 18 1i##").split(/\u0023/g).map(t => t.split(/\u002C+/g).map(t => t.split(/\s+/g)));
 
-        this.worker = worker;
-        this.worker.onmessage = ({ data }) => {
-            this._physics = data.args.physics,
-            this._scenery = data.args.scenery,
-            this._powerups = data.args.powerups,
-            output.value = this.code;
-            switch(data.cmd) {
-                case "move":
-                    this.emit("moved", this.code);
-                break;
-                
-                case "rotate":
-                    this.emit("rotated", this.code);
-                break;
+        this._physics = code[0] ? code[0].map(t => t.map(t => Math.round(parseInt(t, 32))).filter(t => !isNaN(t))) : [],
+        this._scenery = code[1] ? code[1].map(t => t.map(t => Math.round(parseInt(t, 32))).filter(t => !isNaN(t))) : [];
 
-                case "scale":
-                    this.emit("scaled", this.code);
-            }
-        }
-
-        for (const e in code[2]) {
-            switch(e) {
+        for (const powerup of code[2]) {
+            switch(powerup[0]) {
                 case "T":
-                    this._powerups.targets.push(e.slice(1).map(t => parseInt(t, 32)));
-                break;
+                    this._powerups.targets.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                    break;
                 
                 case "B":
-                    this._powerups.boosters.push(e.slice(1).map(t => parseInt(t, 32)));
-                break;
+                    this._powerups.boosters.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                    break;
 
                 case "G":
-                    this._powerups.gravity.push(e.slice(1).map(t => parseInt(t, 32)));
-                break;
+                    this._powerups.gravity.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                    break;
 
                 case "S":
-                    this._powerups.slowmos.push(e.slice(1).map(t => parseInt(t, 32)));
-                break;
+                    this._powerups.slowmos.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                    break;
 
                 case "O":
-                    this._powerups.bombs.push(e.slice(1).map(t => parseInt(t, 32)));
-                break;
+                    this._powerups.bombs.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                    break;
 
                 case "C":
-                    this._powerups.checkpoints.push(e.slice(1).map(t => parseInt(t, 32)));
-                break;
+                    this._powerups.checkpoints.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                    break;
 
                 case "A":
-                    this._powerups.antigravity.push(e.slice(1).map(t => parseInt(t, 32)));
-                break;
+                    this._powerups.antigravity.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                    break;
 
                 case "W":
-                    this._powerups.teleporters.push(e.slice(1).map(t => parseInt(t, 32)));
-                break;
+                    this._powerups.teleporters.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                    break;
 
                 case "V":
-                    switch(e[3]) {
+                    switch(powerup[3]) {
                         case "1":
-                            this._powerups.vehicles.heli.push(e.slice(1).map(t => parseInt(t, 32)));
-                        break;
+                            this._powerups.vehicles.heli.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                            break;
 
                         case "2":
-                            this._powerups.vehicles.truck.push(e.slice(1).map(t => parseInt(t, 32)));
-                        break;
+                            this._powerups.vehicles.truck.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                            break;
 
                         case "3":
-                            this._powerups.vehicles.balloon.push(e.slice(1).map(t => parseInt(t, 32)));
-                        break;
+                            this._powerups.vehicles.balloon.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                            break;
 
                         case "4":
-                            this._powerups.vehicles.blob.push(e.slice(1).map(t => parseInt(t, 32)));
-                        break;
-
-                        case "5":
-                            this._powerups.vehicles.glider.push(e.slice(1).map(t => parseInt(t, 32)));
-                        break;
+                            this._powerups.vehicles.blob.push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+                            break;
                     }
                 break;
             }
         }
     }
-    on(event, func = function() {}) {
-        this._events.set(event, func);
-    }
-    emit(event, ...args) {
-        event = this._events.get(event);
-        if (!event || typeof event !== "function")
-            return new Error("INVALID_FUNCTION");
-        return event(...args);
-    }
-    move(x = 0, y = 0) {
-        this.worker.postMessage({
-            cmd: "move",
-            args: {
-                physics: this._physics,
-                scenery: this._scenery,
-                powerups: this._powerups,
-                x, y
-            }
-        });
-        return this;
-    }
-    rotate(x = 0) {
-        let rotationFactor = x;
-        x *= -Math.PI / 180;
-        this.worker.postMessage({
-            cmd: "rotate",
-            args: {
-                physics: this._physics,
-                scenery: this._scenery,
-                powerups: this._powerups,
-                rotationFactor,
-                x
-            }
-        });
-        return this;
-    }
-    scale(x = 1, y = 1) {
-        this.worker.postMessage({
-            cmd: "scale",
-            args: {
-                physics: this._physics,
-                scenery: this._scenery,
-                powerups: this._powerups,
-                x, y
-            }
-        });
-        return this;
+    _powerups = {
+        targets: [],
+        boosters: [],
+        gravity: [],
+        slowmos: [],
+        bombs: [],
+        checkpoints: [],
+        antigravity: [],
+        teleporters: [],
+        vehicles: {
+            heli: [],
+            truck: [],
+            balloon: [],
+            blob: []
+        }
     }
     get physics() {
-        return this._physics.map(t => t.map(t => t.toString(32)).join(" ")).join(",");
+        return this._physics.map(t => t.map(t => Math.round(t).toString(32)).join(" ")).join(",");
     }
     get scenery() {
-        return this._scenery.map(t => t.map(t => t.toString(32)).join(" ")).join(",");
+        return this._scenery.map(t => t.map(t => Math.round(t).toString(32)).join(" ")).join(",");
     }
     get powerups() {
-        let powerups = "";
-        for (const t in this._powerups) {
-            switch(t) {
+        let powerups = [];
+        for (const type in this._powerups) {
+            switch(type) {
                 case "targets":
-                    for (const e of this._powerups[t]) {
-                        powerups += `T ${e.map(t => t.toString(32)).join(" ")},`;
-                    }
-                break;
+                    powerups.push(this._powerups[type].map(powerup => "T " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
+                    break;
                 
                 case "boosters":
-                    for (const e of this._powerups[t]) {
-                        powerups += `B ${e.map(t => t.toString(32)).join(" ")},`;
-                    }
-                break;
+                    powerups.push(this._powerups[type].map(powerup => "B " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
+                    break;
 
                 case "gravity":
-                    for (const e of this._powerups[t]) {
-                        powerups += `G ${e.map(t => t.toString(32)).join(" ")},`;
-                    }
-                break;
+                    powerups.push(this._powerups[type].map(powerup => "G " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
+                    break;
 
                 case "slowmos":
-                    for (const e of this._powerups[t]) {
-                        powerups += `S ${e.map(t => t.toString(32)).join(" ")},`;
-                    }
-                break;
+                    powerups.push(this._powerups[type].map(powerup => "S " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
+                    break;
                 
                 case "bombs":
-                    for (const e of this._powerups[t]) {
-                        powerups += `O ${e.map(t => t.toString(32)).join(" ")},`;
-                    }
-                break;
+                    powerups.push(this._powerups[type].map(powerup => "O " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
+                    break;
 
                 case "checkpoints":
-                    for (const e of this._powerups[t]) {
-                        powerups += `C ${e.map(t => t.toString(32)).join(" ")},`;
-                    }
-                break;
+                    powerups.push(this._powerups[type].map(powerup => "C " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
+                    break;
 
                 case "antigravity":
-                    for (const e of this._powerups[t]) {
-                        powerups += `A ${e.map(t => t.toString(32)).join(" ")},`;
-                    }
-                break;
+                    powerups.push(this._powerups[type].map(powerup => "A " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
+                    break;
 
                 case "teleporters":
-                    for (const e of this._powerups[t]) {
-                        powerups += `W ${e.map(t => t.toString(32)).join(" ")},`;
-                    }
-                break;
+                    powerups.push(this._powerups[type].map(powerup => "W " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
+                    break;
 
                 case "vehicles":
-                    for (const e in this._powerups[t]) {
-                        for (const i of this._powerups[t][e]) {
-                            powerups += `V ${i.map(t => t.toString(32)).join(" ")},`;
-                        }
+                    for (const vehicle in this._powerups[type]) {
+                        powerups.push(this._powerups[type][vehicle].map(powerup => "V " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
                     }
-                break;
+                    break;
             }
         }
-        return powerups;
+
+        return powerups.filter(powerups => powerups).join(",");
     }
     get code() {
         return this.physics + "#" + this.scenery + "#" + this.powerups;
+    }
+    move(x = 0, y = 0) {
+        for (const line of this._physics) {
+            for (let t = 0; t < line.length; t += 2) {
+                line[t] += x;
+                line[t + 1] += y;
+            }
+        }
+
+        for (const line of this._scenery) {
+            for (let t = 0; t < line.length; t += 2) {
+                line[t] += x;
+                line[t + 1] += y;
+            }
+        }
+
+        for (const type in this._powerups) {
+            for (const powerup in this._powerups[type]) {
+                switch(type) {
+                    case "teleporters":
+                        this._powerups[type][powerup][2] += x;
+                        this._powerups[type][powerup][3] += y;
+                    case "targets":
+                    case "boosters":
+                    case "gravity":
+                    case "slomos":
+                    case "bombs":
+                    case "checkpoints":
+                    case "antigravity":
+                        this._powerups[type][powerup][0] += x;
+                        this._powerups[type][powerup][1] += y;
+                        break;
+                    
+                    case "vehicles":
+                        for (const vehicle of this._powerups[type][powerup]) {
+                            vehicle[0] += x;
+                            vehicle[1] += y;
+                        }
+
+                        break;
+                } 
+            }
+        }
+
+        return this;
+    }
+
+    rotate(x = 0) {
+        for (const line of this._physics) {
+            for (let t = 0, e = line[t]; t < line.length; t += 2) {
+                e = line[t];
+
+                line[t] = Math.cos(x) * e + Math.sin(x) * line[t + 1],
+                line[t + 1] = -Math.sin(x) * e + Math.cos(x) * line[t + 1];
+            }
+        }
+
+        for (const line of this._scenery) {
+            for (let t = 0, e = line[t]; t < line.length; t += 2) {
+                e = line[t];
+                
+                line[t] = Math.cos(x) * e + Math.sin(x) * line[t + 1],
+                line[t + 1] = -Math.sin(x) * e + Math.cos(x) * line[t + 1];
+            }
+        }
+
+        for (const type in this._powerups) {
+            for (const powerup in this._powerups[type]) {
+                switch(type) {
+                    case "teleporters":
+                        let e = this._powerups[type][powerup][2];
+
+                        this._powerups[type][powerup][2] = Math.cos(x) * e + Math.sin(x) * this._powerups[type][powerup][3],
+                        this._powerups[type][powerup][3] = -Math.sin(x) * e + Math.cos(x) * this._powerups[type][powerup][3];
+                    case "targets":
+                    case "boosters":
+                    case "gravity":
+                    case "slomos":
+                    case "bombs":
+                    case "checkpoints":
+                    case "antigravity":
+                        let i = this._powerups[type][powerup][0];
+
+                        this._powerups[type][powerup][0] = Math.cos(x) * i + Math.sin(x) * this._powerups[type][powerup][1],
+                        this._powerups[type][powerup][1] = -Math.sin(x) * i + Math.cos(x) * this._powerups[type][powerup][1];
+                        if (["boosters", "gravity"].includes(type)) {
+                            this._powerups[type][powerup][2] += x / -Math.PI * 180;
+                        }
+
+                        break;
+                    
+                    case "vehicles":
+                        for (const vehicle of this._powerups[type][powerup]) {
+                            let i = vehicle[0];
+                            vehicle[0] = Math.cos(x) * i + Math.sin(x) * vehicle[1],
+                            vehicle[1] = -Math.sin(x) * i + Math.cos(x) * vehicle[1];
+                        }
+
+                        break;
+                } 
+            }
+        }
+
+        return this;
+    }
+
+    scale(x = 1, y = 1) {
+        for (const line of this._physics) {
+            for (let t = 0; t < line.length; t += 2) {
+                line[t] *= x;
+                line[t + 1] *= y;
+            }
+        }
+
+        for (const line of this._scenery) {
+            for (let t = 0; t < line.length; t += 2) {
+                line[t] *= x;
+                line[t + 1] *= y;
+            }
+        }
+
+        for (const type in this._powerups) {
+            for (const powerup in this._powerups[type]) {
+                switch(type) {
+                    case "teleporters":
+                        this._powerups[type][powerup][2] *= x;
+                        this._powerups[type][powerup][3] *= y;
+                    case "targets":
+                    case "boosters":
+                    case "gravity":
+                    case "slomos":
+                    case "bombs":
+                    case "checkpoints":
+                    case "antigravity":
+                        this._powerups[type][powerup][0] *= x;
+                        this._powerups[type][powerup][1] *= y;
+                        break;
+                    
+                    case "vehicles":
+                        for (const vehicle of this._powerups[type][powerup]) {
+                            vehicle[0] *= x;
+                            vehicle[1] *= y;
+                        }
+
+                        break;
+                } 
+            }
+        }
+
+        return this;
     }
 }

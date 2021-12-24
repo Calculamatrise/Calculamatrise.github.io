@@ -3,6 +3,7 @@
     <head>
         <title>Tools - FRHD | Calculamatrise</title>
         <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/light.css" id="theme" onload="JSON.parse(localStorage.getItem('dark')) && (this.href = '/dark.css')">
         <script type="module" src="/bootstrap.js"></script>
     </head>
     <body>
@@ -10,7 +11,7 @@
             <div id="container">
                 <canvas id="view"></canvas>
                 <div class="ui top-left">
-                    <button class="primary nav" onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'grid' ? 'none' : 'grid') === 'grid' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
+                    <button class="secondary" onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'grid' ? 'none' : 'grid') === 'grid' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
                     <div id="toolbar">
                         <button onclick="window.canvas.tools.select('line');">Line</button>
                         <button onclick="window.canvas.tools.select('brush');">Brush</button>
@@ -46,15 +47,15 @@
                     </div>
                 </div>
                 <div class="ui bottom-left">
-                    <button class="primary nav" onclick="window.canvas.color = 'primary';">Primary Colour</button>
-                    <button class="primary nav" onclick="window.canvas.color = 'secondary';">Secondary Colour</button>
+                    <button class="secondary" onclick="window.canvas.color = 'primary';">Primary Colour</button>
+                    <button class="secondary" onclick="window.canvas.color = 'secondary';">Secondary Colour</button>
                 </div>
                 <div class="ui top-right">
-                    <button class="primary nav" onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex';" disabled>Layers</button>
-                    <button class="primary nav" onclick="document.querySelector('#settings').style.display = document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex';">Settings</button>
+                    <button class="secondary" onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex';" disabled>Layers</button>
+                    <button class="secondary" onclick="document.querySelector('#settings').style.display = document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex';">Settings</button>
                 </div>
                 <div class="ui bottom-right">
-                    <button class="primary nav" id="patch-notes" disabled>Patch Notes</button>
+                    <button class="secondary" id="patch-notes" disabled>Patch Notes</button>
                 </div>
                 <!-- Layers Overlay -->
                 <div id="layers">
@@ -73,7 +74,7 @@
                             window.canvas.import(text);
                         });
                     ">
-                    <label for="import" class="button primary" style="text-align: center; line-height: 350%; font-size: calc(40px / 3);">Import Canvas</label>
+                    <label for="import" class="button secondary" style="text-align: center; line-height: 350%; font-size: calc(40px / 3);">Import Canvas</label>
                     <button onclick="
                         const date = new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i);
                         const link = document.createElement('a');

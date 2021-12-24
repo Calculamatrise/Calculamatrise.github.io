@@ -50,6 +50,10 @@ nav {
     z-index: 1;
 }
 
+nav button {
+    background-color: transparent;
+}
+
 nav select {
     display: none;
     color: var(--text);
@@ -252,18 +256,17 @@ button, input[type="button"], .button, ::-webkit-file-upload-button {
     transition: all 100ms;
 }
 
-:is(button, input[type="button"], .button).nav {
+:is(button, input[type="button"], .button).secondary {
     border-radius: 4px;
     margin: 2.5px;
-    background-color: transparent;
 }
 
-:is(button, input[type="button"], .button).nav:active {
+:is(button, input[type="button"], .button).secondary:active {
 	transform: scale(.85);
     transition: transform 80ms ease;
 }
 
-:is(button, input[type="button"], .button):not(.nav)::before, .ripple::before {
+:is(button, input[type="button"], .button):not(.secondary)::before, .ripple::before {
     opacity: 0;
     content: "";
     padding: 50%;
@@ -284,13 +287,13 @@ button, input[type="button"], .button, ::-webkit-file-upload-button {
     background: radial-gradient(red, orange , yellow, green, cyan, blue, indigo,violet);
 }
 
-:is(button, input, .button):not(.nav):active:before, .ripple:not(.nav):not(.focus):active:before, .ripple.focus:not(.nav):active:not(:focus-within):before {
+:is(button, input, .button):not(.secondary):active:before, .ripple:not(.secondary):not(.focus):active:before, .ripple.focus:not(.secondary):active:not(:focus-within):before {
     opacity: .5;
 	transition: 0s;
 	transform: translate(-50%, -50%) scale(0);
 }
 
-:is(button, input[type="button"], .button):not(.nav):hover, ::-webkit-file-upload-button:hover {
+:is(button, input[type="button"], .button):not(.secondary):hover, ::-webkit-file-upload-button:hover {
     cursor: pointer;
     transition: all 50ms;
 }

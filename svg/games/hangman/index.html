@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG Hangman - Calculamatrise</title>
-    <link rel="stylesheet" href="/style.css">
-    <script type="module" src="/bootstrap.js"></script>
-</head>
-<body>
-    <div class="content">
-        <div class="container">
-            <svg id="view" xmlns="http://www.w3.org/2000/svg"></svg>
-            <div id="overlay">
-                <div id="settings">
-                    <button id="restart">Restart</button>
-                    <button onclick="document.querySelector('div#overlay').style.display = 'none'">Continue</button>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SVG Hangman - Calculamatrise</title>
+        <link rel="stylesheet" href="/style.css">
+        <link rel="stylesheet" href="/light.css" id="theme" onload="JSON.parse(localStorage.getItem('dark')) && (this.href = '/dark.css')">
+        <script type="module" src="/bootstrap.js"></script>
+    </head>
+    <body>
+        <div class="content">
+            <div class="container">
+                <svg id="view" xmlns="http://www.w3.org/2000/svg"></svg>
+                <div id="overlay">
+                    <div id="settings">
+                        <button id="restart">Restart</button>
+                        <button onclick="document.querySelector('div#overlay').style.display = 'none'">Continue</button>
+                    </div>
                 </div>
             </div>
+            <br>
+            <input type="text" placeholder="Your guess" maxlength="1" onkeydown="window.game.guess(this, event.key.toLowerCase())">
         </div>
-        <br>
-        <input type="text" placeholder="Your guess" maxlength="1" onkeydown="window.game.guess(this, event.key.toLowerCase())">
-    </div>
-    <link rel="stylesheet" href="style.css">
-    <script type="module" src="bootstrap.js"></script>
-</body>
+        <link rel="stylesheet" href="style.css">
+        <script type="module" src="bootstrap.js"></script>
+    </body>
 </html>

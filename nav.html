@@ -1,20 +1,20 @@
 <left-nav>
-    <button class="primary nav" data-view="/" active>Home</button>
-    <button class="primary nav" data-view="/svg-drawpad/">SVG Drawpad</button>
+    <button class="secondary" data-view="/" active>Home</button>
+    <button class="secondary" data-view="/svg-drawpad/">SVG Drawpad</button>
     <dropdown>
-        <button class="primary nav" data-view="/frhd/tools/">FRHD Tools</button>
+        <button class="secondary" data-view="/frhd/tools/">FRHD Tools</button>
         <content>
-            <button class="primary nav" data-view="/frhd/tools/render/">Render</button>
-            <button class="primary nav" data-view="/frhd/tools/combine/">Combine</button>
-            <button class="primary nav" data-view="/frhd/tools/reverse/">Reverse</button>
-            <button class="primary nav" data-view="/frhd/tools/editor/">Editor</button>
-            <button class="primary nav" data-view="/frhd/tools/tube/generator/">Tube Generator</button>
+            <button class="secondary" data-view="/frhd/tools/render/">Render</button>
+            <button class="secondary" data-view="/frhd/tools/combine/">Combine</button>
+            <button class="secondary" data-view="/frhd/tools/reverse/">Reverse</button>
+            <button class="secondary" data-view="/frhd/tools/editor/">Editor</button>
+            <button class="secondary" data-view="/frhd/tools/tube/generator/">Tube Generator</button>
         </content>
     </dropdown>
-    <button class="primary nav" data-view="/contact/">Contact</button>
+    <button class="secondary" data-view="/contact/">Contact</button>
 </left-nav>
 <right-nav>
-    <button class="primary nav" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
+    <button class="secondary" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
 </right-nav>
 <mobile-nav>
     <select oninput="
