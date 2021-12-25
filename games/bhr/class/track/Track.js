@@ -59,14 +59,14 @@ export default class {
 
     zoomIn() {
         if (this.zoom < 4 * window.devicePixelRatio) {
-            this.zoom += .2 * window.devicePixelRatio;
+            this.zoom = Math.round(10 * this.zoom + window.devicePixelRatio * 2) / 10;
             this.sectors = {}
         }
     }
 
     zoomOut() {
         if (this.zoom > .2 * window.devicePixelRatio) {
-            this.zoom -= .2 * window.devicePixelRatio
+            this.zoom = Math.round(10 * this.zoom - window.devicePixelRatio * 2) / 10;
             this.sectors = {}
         }
     }
