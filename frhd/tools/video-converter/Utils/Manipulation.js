@@ -7,23 +7,25 @@ export default class Manipulation {
         this.scenery = "";
         this.powerups = "";
 
+        this.oppositeScale = 8;
+
         this.video = video;
         this.videoFrameCallback = null;
-        this.video.onplay = () => {
-            this.canvas.width = this.video.videoWidth / 4;
-            this.canvas.height = this.video.videoHeight / 4;
+        this.video.addEventListener("play", () => {
+            this.canvas.width = this.video.videoWidth / this.oppositeScale;
+            this.canvas.height = this.video.videoHeight / this.oppositeScale;
             document.title = "Progress... 0%";
             progress.style.width = "0%";
-            this.video.requestVideoFrameCallback(this.loop.bind(this));
-        }
-        this.video.onended = () => {
+            this.videoFrameCallback = this.video.requestVideoFrameCallback(this.loop.bind(this));
+        });
+        this.video.addEventListener("ended", () => {
             this.video.cancelVideoFrameCallback(this.videoFrameCallback);
             code.value = `${this.physics}#${this.scenery}#${this.powerups}`;
             document.title = "Ready!";
             progress.innerText = "Done";
             progress.style.width = "100%";
-        }
-        setTimeout(() => this.video.play(), 100);
+        });
+        // this.video.addEventListener("loadeddata", () => this.video.play());
 
         this.worker = new Worker("./worker.js");
         this.worker.onmessage = ({ data }) => {

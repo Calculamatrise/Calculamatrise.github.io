@@ -10,7 +10,7 @@
     <body>
         <div class="content">
             <input type="file" id="input" accept="video/*">
-            <video id="video" controls="true" style="display: none;" muted></video>
+            <video id="video" controls="true" style="display: none" onloadeddata="this.play()" muted></video>
             <label for="invert">Invert Colours&emsp;</label>
             <input type="checkbox" id="invert"><br><br>
             <canvas id="canvas" width="720" height="480"></canvas>
