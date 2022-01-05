@@ -1,16 +1,15 @@
 import Manipulation from "./Utils/Manipulation.js";
 
-input.onchange = function() {
-    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-    progress.style.width = "0%";
-    progress.innerText = "";
-    code.value = null;
-    
-    if (this.files.length < 1) return;
-    video.src = URL.createObjectURL(this.files[0]);
-    Manipulation.init(video);
-}
+const app = new Manipulation(document.querySelector("canvas#view"));
 
-invert.onchange = function() {
-    input.value = null;
+input.onchange = function() {
+    code.value = null;
+    progress.innerText = "";
+    progress.style.width = "0%";
+    if (this.files.length < 1) {
+        app.canvas.getContext("2d").clearRect(0, 0, app.canvas.width, app.canvas.height);
+        return;
+    }
+
+    app.init(URL.createObjectURL(this.files[0]));
 }
