@@ -47,8 +47,9 @@ onmessage = function({ data }) {
                 }
             }
 
-            this.offset.x += data.args.width * 10;
+            this.physics += `${(this.offset.x + data.args.width - 40).toString(32)} 1i ${(this.offset.x + data.args.width + 40).toString(32)} 1i,`;
             this.powerups += `W ${(this.offset.x + data.args.width).toString(32)} 0 ${(this.offset.x + data.args.width + data.args.width * 10).toString(32)} 0,`;
+            this.offset.x += data.args.width * 10;
             postMessage({
                 cmd: "ready",
                 args: {
