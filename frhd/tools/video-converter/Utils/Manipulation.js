@@ -5,12 +5,10 @@ export default class Manipulation {
         this.pixels = this.ctx.createImageData(this.canvas.width, this.canvas.height);
 
         this.video.addEventListener("play", () => {
-            document.title = "Progress... 0%";
-            progress.style.width = "0%";
-            this.videoFrameCallback = this.video.requestVideoFrameCallback(this.render.bind(this));
+            this.progress = 0;
+            this.videoFrameCallback = this.video.requestVideoFrameCallback(this.loop.bind(this));
         });
         this.video.addEventListener("ended", () => {
-            this.video.cancelVideoFrameCallback(this.videoFrameCallback);
             this.worker.postMessage({
                 cmd: "fetch"
             });
@@ -54,8 +52,8 @@ export default class Manipulation {
     }
 
     oppositeScale = 4;
-    videoFrameCallback = null;
     video = document.createElement("video");
+
     static filter(pixels) {
         for (let t = 0, e = 0; t in pixels.data; t += 4) {
             e = pixels.data[t] * .2 + pixels.data[t + 1] * .7 + pixels.data[t + 2] * .1;
@@ -75,15 +73,25 @@ export default class Manipulation {
         return pixels;
     }
 
+    set progress(value) {
+        progress.style.setProperty("width", value);
+        document.title = "Progress... " + value;
+        progress.innerText = value;
+    }
+
     init(video) {
         this.video.src = video;
     }
 
-    render() {
-        document.title = "Progress... " + Math.round(this.video.currentTime / this.video.duration * 100) + "%";
-        progress.innerText = Math.round(this.video.currentTime / this.video.duration * 100) + "%";
-        progress.style.width = Math.round(this.video.currentTime / this.video.duration * 100) + "%";
+    loop() {
+        this.render();
+        this.render();
 
+        this.progress = Math.round(this.video.currentTime / this.video.duration * 100) + "%";
+        this.video.requestVideoFrameCallback(this.loop.bind(this));
+    }
+
+    render() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
 
@@ -100,7 +108,5 @@ export default class Manipulation {
                 height: this.canvas.height
             }
         });
-
-        this.videoFrameCallback = this.video.requestVideoFrameCallback(this.render.bind(this));
     }
 }

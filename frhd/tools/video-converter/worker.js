@@ -1,7 +1,7 @@
 onmessage = function({ data }) {
     switch(data.cmd) {
         case "fetch":
-            this.code = this.physics.join(",") + "#" + this.scenery.join(",") + "#" + this.powerups.join(",");
+            this.code = this.physics + "#" + this.scenery + "#" + this.powerups;
             postMessage({
                 cmd: "result",
                 args: {
@@ -9,13 +9,18 @@ onmessage = function({ data }) {
                     size: this.code.length
                 }
             });
+
+            this.code = "";
+            this.physics = ""
+            this.scenery = ""
+            this.powerups = "";
             break;
 
         case "init":
             this.code = "";
-            this.physics = []
-            this.scenery = []
-            this.powerups = []
+            this.physics = ""
+            this.scenery = ""
+            this.powerups = "";
             this.offset = {
                 x: -data.args.width,
                 y: 50
@@ -38,14 +43,19 @@ onmessage = function({ data }) {
                         }
                     }
 
-                    this[data.args.pixels.data[e] == 0 ? "physics" : "scenery"].push(`${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${(iy + 2).toString(32)} ${dx.toString(32)} ${(iy + 2).toString(32)}`);
+                    this[data.args.pixels.data[e] == 0 ? "physics" : "scenery"] += `${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${(iy + 2).toString(32)} ${dx.toString(32)} ${(iy + 2).toString(32)},`;
                 }
             }
 
-            this.powerups.push(`W ${(this.offset.x + data.args.width).toString(32)} 0 ${(this.offset.x + data.args.width + data.args.width * 10).toString(32)} 0`);
             this.offset.x += data.args.width * 10;
+            this.powerups += `W ${(this.offset.x + data.args.width).toString(32)} 0 ${(this.offset.x + data.args.width + data.args.width * 10).toString(32)} 0,`;
+            postMessage({
+                cmd: "ready",
+                args: {
+                    code: this.code,
+                    size: this.code.length
+                }
+            });
             break;
     }
-    
-    postMessage(data);
 }
