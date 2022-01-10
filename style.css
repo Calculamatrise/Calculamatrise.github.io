@@ -474,3 +474,42 @@ context-menu item {
 context-menu item:hover {
 	background-color: #3f4042;
 }
+
+checkbox {
+	width: auto;
+	min-width: 25px;
+	min-height: 25px;
+	line-height: 1.4;
+	user-select: none;
+	text-align: right;
+	position: relative;
+	padding-left: 25px;
+	display: inline-block;
+}
+
+checkbox::before {
+	left: 0;
+	top: 10%;
+	content: "";
+	width: 16px;
+	height: 16px;
+	background: white;
+	position: absolute;
+	border-radius: 4px;
+	border: 1px solid black;
+}
+
+checkbox[checked]::before {
+	transform: rotate(90deg);
+}
+
+checkbox[checked]::after {
+	left: 2px;
+	top: 18%;
+	content: "";
+	width: 14px;
+	height: 14px;
+	background: black;
+	position: absolute;
+	clip-path: polygon(25% 50%, 12% 64%, 36% 90%, 90% 24%, 76% 15%, 36% 65%);
+}

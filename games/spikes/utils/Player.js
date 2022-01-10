@@ -12,15 +12,14 @@ export default class Player {
     size = 15;
     speed = 2;
     direction = 1;
-    velocity = new Vector(5);
-    gravity = new Vector(0, .3);
+    velocity = new Vector();
+    gravity = new Vector(0, .12);
     position = null;
     jumpHeight = null;
 
     jump() {
         this.jumpHeight = this.position.y - this.size * 2;
-        // this.velocity.sub(new Vector(0, 15));
-        this.velocity.y = -10;
+        this.velocity.y = -4;
     }
 
 	update(delta) {
@@ -39,7 +38,7 @@ export default class Player {
         this.velocity.add(this.gravity).scale(.99);
         this.position.add(this.velocity);
         
-        this.velocity = this.position.clone().sub(this.position.old);
+        this.velocity.y = this.position.y - this.position.old.y;
 
         this.position.add(new Vector(this.speed).scale(this.direction));
 

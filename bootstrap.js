@@ -7,6 +7,10 @@ window.Application = new App();
 window.Application.init();
 
 document.body.addEventListener("click", function(event) {
+    if (event.target.tagName === "CHECKBOX") {
+		event.target[(event.target.hasAttribute("checked") ? "remove" : "set") + "Attribute"]("checked", "");
+	}
+    
     const href = event.target.getAttribute("data-view");
     if (href) {
         Application.router.navigate(href);
