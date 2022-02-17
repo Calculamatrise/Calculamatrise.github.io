@@ -41,19 +41,17 @@
                                 this.innerText = this.innerText === 'Show Advanced Tools' ? 'Hide Advanced Tools' : 'Show Advanced Tools'
                             ">Show Advanced Tools</button>
                             <div id="advanced-tools">
-                                <button onclick="window.canvas.tools.select('dynamic_circle');">Dynamic Circle</button>
+                                <button onclick="window.canvas.tools.select('dynamic_circle');">Ellipse</button>
                                 <button class="option ripple rainbow" id="randomColors" onclick="
                                     if (JSON.parse(sessionStorage.getItem('randomColors'))) {
                                         this.innerText = 'Enable Random Colours';
                                         
                                         sessionStorage.setItem('randomColors', false);
+                                    } else {
+                                        this.innerText = 'Disable Random Colours';
 
-                                        return;
+                                        sessionStorage.setItem('randomColors', true);
                                     }
-
-                                    this.innerText = 'Disable Random Colours';
-
-                                    sessionStorage.setItem('randomColors', true);
                                 ">
                                     Enable Random Colours
                                 </button>
