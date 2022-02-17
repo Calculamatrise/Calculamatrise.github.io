@@ -4,15 +4,15 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Black Hat Rider - Calculamatrise</title>
-        <link rel="stylesheet" href="styles/main.css">
+        <link rel="stylesheet" href="styles/default.css">
         <link rel="stylesheet" href="styles/light.css" id="theme" onload="
         localStorage.getItem('theme') === 'dark' && (this.href = 'styles/dark.css') || localStorage.getItem('theme') === 'midnight' && (this.href = 'styles/dark.css')
         ">
     </head>
     <body>
-        <container>
-            <interface>
-                <overlay>
+        <game-container>
+            <game-interface>
+                <game-overlay>
                     <nav onclick="event.target.tagName !== 'NAV' && ([...this.children].forEach(element => element.classList[event.target.dataset.id === element.dataset.id ? 'add' : 'remove']('active')),
                     document.querySelectorAll('options').forEach(element => element.style.setProperty('display', 'none')),
                     document.querySelector('options#' + event.target.dataset.id).style.setProperty('display',
@@ -37,22 +37,21 @@
                         });
                         picker.click();
                         ">Load File...</button>
-                        <button onclick="document.querySelector('textarea#code').value = game.track.toString()">Save</button>
+                        <button onclick="document.querySelector('textarea#code').value = game.scene.toString()">Save</button>
                         <button onclick="
-                        let date = new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i);
                         let link = document.createElement('a');
-                        let file = new Blob([game.track.toString()], {
+                        let file = new Blob([game.scene.toString()], {
                             type: 'text/plain'
                         });
                         link.href = window.URL.createObjectURL(file);
-                        link.download = 'bhr_track_' + date[0] + '_' + date[1].replace(/\..+/, '').replace(/:/g, '-');
+                        link.download = 'bhr_track_' + new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i).join('_').replace(/\..+/, '').replace(/:/g, '-');
                         link.click();
                         ">Save As...</button>
                         <textarea id="code" cols="30" rows="10"></textarea>
                     </options>
                     <options id="ghost">
-                        <button onclick="game.track.players.splice(1, game.track.players.length)">Clear Ghosts</button>
-                        <button onclick="game.track.watchGhost(document.querySelector('textarea#gcode').value)">Load</button>
+                        <button onclick="game.scene.players.splice(1, game.scene.players.length)">Clear Ghosts</button>
+                        <button onclick="game.scene.watchGhost(document.querySelector('textarea#gcode').value)">Load</button>
                         <button onclick="
                         let picker = document.createElement('input');
                         picker.type = 'file';
@@ -60,44 +59,43 @@
                         picker.addEventListener('change', function(event) {
                             const reader = new FileReader();
                             reader.addEventListener('load', function() {
-                                game.track.watchGhost(this.result);
+                                game.scene.watchGhost(this.result);
                             });
                             reader.readAsText(this.files[0]);
                         });
                         picker.click();
                         ">Load File...</button>
-                        <button onclick="document.querySelector('textarea#gcode').value = game.track.firstPlayer.gamepad.records.map(record => Object.keys(record).join(' ')).join(',')">Save</button>
+                        <button onclick="document.querySelector('textarea#gcode').value = game.scene.firstPlayer.gamepad.records.map(record => Object.keys(record).join(' ')).join(',')">Save</button>
                         <button onclick="
-                        let date = new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i);
                         let link = document.createElement('a');
-                        let file = new Blob([game.track.firstPlayer.gamepad.records.map(record => Object.keys(record).join(' ')).join(',')], {
+                        file = new Blob([game.scene.firstPlayer.gamepad.records.map(record => Object.keys(record).join(' ')).join(',')], {
                             type: 'text/plain'
                         });
                         link.href = window.URL.createObjectURL(file);
-                        link.download = 'bhr_track_' + date[0] + '_' + date[1].replace(/\..+/, '').replace(/:/g, '-');
+                        link.download = 'bhr_track_' + new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i).join('_').replace(/\..+/, '').replace(/:/g, '-');
                         link.click();
                         ">Save As...</button>
                         <textarea id="gcode" cols="30" rows="10"></textarea>
                     </options>
                     <options id="theme">
-                        <button onclick="localStorage.setItem('theme', 'light'), document.querySelector('link#theme').href = 'styles/light.css', game.track.sectors = {}">Light</button>
-                        <button onclick="localStorage.setItem('theme', 'midnight'), document.querySelector('link#theme').href = 'styles/dark.css', game.track.sectors = {}">Midnight</button>
-                        <button onclick="localStorage.setItem('theme', 'dark'), document.querySelector('link#theme').href = 'styles/dark.css', game.track.sectors = {}">Dark</button>
+                        <button onclick="localStorage.setItem('theme', 'light'), document.querySelector('link#theme').href = 'styles/light.css', game.scene.sectors = {}">Light</button>
+                        <button onclick="localStorage.setItem('theme', 'midnight'), document.querySelector('link#theme').href = 'styles/dark.css', game.scene.sectors = {}">Midnight</button>
+                        <button onclick="localStorage.setItem('theme', 'dark'), document.querySelector('link#theme').href = 'styles/dark.css', game.scene.sectors = {}">Dark</button>
                     </options>
-                </overlay>
+                </game-overlay>
                 <toolbar>
                     <div class="left">
-                        <tool title="Pause/Play - Space" onclick="this.firstElementChild.classList[(window.game.track.paused = !window.game.track.paused) ? 'remove' : 'add']('playing')">
+                        <tool title="Pause/Play - Space" onclick="this.firstElementChild.classList[(window.game.scene.paused = !window.game.scene.paused) ? 'remove' : 'add']('playing')">
                             <playpause class="playing"/>
                         </tool>
-                        <tool title="Checkpoint - Enter" onclick="window.game.track.gotoCheckpoint()">
+                        <tool title="Checkpoint - Enter" onclick="window.game.scene.gotoCheckpoint()">
                             <backtrack/>
                         </tool>
-                        <tool title="Cancel Checkpoint - Backspace" style="border-bottom-width: 1px;border-bottom-style: solid; border-bottom-right-radius: 5px;" onclick="window.game.track.removeCheckpoint()">
+                        <tool title="Cancel Checkpoint - Backspace" style="border-bottom-width: 1px;border-bottom-style: solid; border-bottom-right-radius: 5px;" onclick="window.game.scene.removeCheckpoint()">
                             <rewind/>
                         </tool>
                         <br>
-                        <tool title="Change Vehicle - Ctrl + B" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-right-radius: 5px;border-top-width: 1px;border-top-style: solid;border-top-right-radius: 5px;" tabindex="0" onclick="window.game.track.switchBike()">
+                        <tool title="Change Vehicle - Ctrl + B" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-right-radius: 5px;border-top-width: 1px;border-top-style: solid;border-top-right-radius: 5px;" tabindex="0" onclick="window.game.scene.switchBike()">
                             <wheel>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 25 25">
                                     <circle cx="12.5" cy="12.5" r="10"/>
@@ -117,43 +115,33 @@
                             </wheel>
                         </tool>
                         <br>
-                        <tool title="Fullscreen - F" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-right-radius: 5px;border-top-width: 1px;border-top-style: solid;border-top-right-radius: 5px;" onclick="document.fullscreenElement ? (document.exitFullscreen(), this.firstElementChild.classList.remove('active')) : (window.game.container.requestFullscreen(), this.firstElementChild.classList.add('active'))">
+                        <tool title="Fullscreen - F" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-right-radius: 5px;border-top-width: 1px;border-top-style: solid;border-top-right-radius: 5px;" onclick="document.fullscreenElement ? (document.exitFullscreen(), this.firstElementChild.classList.remove('active')) : (window.game.game-container.requestFullscreen(), this.firstElementChild.classList.add('active'))">
                             <fullscreen/>
                         </tool>
                         <settings>
                             <tool title="Increase length - A + Scroll" style="border-top-width: 1px;border-top-style: solid;border-top-right-radius: 5px;" onclick="
-                            if (window.game.track.toolHandler.selected === 'eraser') {
-                                window.game.track.toolHandler.currentTool.size < 500 && (window.game.track.toolHandler.currentTool.size += 5);
-                                return;
-                            }
-
-                            window.game.track.toolHandler.currentTool.length < 200 && (window.game.track.toolHandler.currentTool.length += 8);
+                            if (window.game.scene.toolHandler.selected === 'eraser') window.game.scene.toolHandler.currentTool.size < 500 && (window.game.scene.toolHandler.currentTool.size += 5); else window.game.scene.toolHandler.currentTool.length < 200 && (window.game.scene.toolHandler.currentTool.length += 8);
                             ">
                                 <increment/>
                             </tool>
                             <tool title="Decrease length - A + Scroll" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-right-radius: 5px;" onclick="
-                            if (window.game.track.toolHandler.selected === 'eraser') {
-                                window.game.track.toolHandler.currentTool.size > 10 && (window.game.track.toolHandler.currentTool.size -= 5);
-                                return;
-                            }
-
-                            window.game.track.toolHandler.currentTool.length > 4 && (window.game.track.toolHandler.currentTool.length -= 8);
+                            if (window.game.scene.toolHandler.selected === 'eraser') window.game.scene.toolHandler.currentTool.size > 10 && (window.game.scene.toolHandler.currentTool.size -= 5); else window.game.scene.toolHandler.currentTool.length > 4 && (window.game.scene.toolHandler.currentTool.length -= 8);
                             ">
                                 <decrement/>
                             </tool>
                             <div data-id="eraser">
                                 <tool title="Erase physical lines - Enabled" class="active" style="border-top-width: 1px;border-top-style: solid;border-top-right-radius: 5px;" onclick="
-                                this.classList[(window.game.track.toolHandler.currentTool.settings.physics = !window.game.track.toolHandler.currentTool.settings.physics) ? 'add' : 'remove']('active');
+                                this.classList[(window.game.scene.toolHandler.currentTool.settings.physics = !window.game.scene.toolHandler.currentTool.settings.physics) ? 'add' : 'remove']('active');
                                 ">
                                     <brush/>
                                 </tool>
                                 <tool title="Erase visual lines - Enabled" class="active" onclick="
-                                this.classList[(window.game.track.toolHandler.currentTool.settings.scenery = !window.game.track.toolHandler.currentTool.settings.scenery) ? 'add' : 'remove']('active');
+                                this.classList[(window.game.scene.toolHandler.currentTool.settings.scenery = !window.game.scene.toolHandler.currentTool.settings.scenery) ? 'add' : 'remove']('active');
                                 ">
                                     <brush class="scenery"/>
                                 </tool>
                                 <tool title="Erase powerups - Enabled" class="active" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-right-radius: 5px;" onclick="
-                                this.classList[(window.game.track.toolHandler.currentTool.settings.powerups = !window.game.track.toolHandler.currentTool.settings.powerups) ? 'add' : 'remove']('active');
+                                this.classList[(window.game.scene.toolHandler.currentTool.settings.powerups = !window.game.scene.toolHandler.currentTool.settings.powerups) ? 'add' : 'remove']('active');
                                 ">
                                     <powerup class="target"/>
                                 </tool>
@@ -161,34 +149,34 @@
                         </settings>
                     </div>
                     <div class="right">
-                        <tool title="Brush - A" onclick="window.game.track.toolHandler.setTool('brush'), window.game.track.toolHandler.currentTool.scenery = !1">
+                        <tool title="Brush - A" onclick="window.game.scene.toolHandler.setTool('brush'), window.game.scene.toolHandler.currentTool.scenery = !1">
                             <brush/>
                         </tool>
-                        <tool title="Scenery Brush - S" onclick="window.game.track.toolHandler.setTool('brush'), window.game.track.toolHandler.currentTool.scenery = !0">
+                        <tool title="Scenery Brush - S" onclick="window.game.scene.toolHandler.setTool('brush'), window.game.scene.toolHandler.currentTool.scenery = !0">
                             <brush class="scenery"/>
                         </tool>
-                        <tool title="Line - Q" onclick="window.game.track.toolHandler.setTool('line'), window.game.track.toolHandler.currentTool.scenery = !1">
+                        <tool title="Line - Q" onclick="window.game.scene.toolHandler.setTool('line'), window.game.scene.toolHandler.currentTool.scenery = !1">
                             <line>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 25 25">
                                     <line x1="20" y1="5" x2="5" y2="20"/>
                                 </svg>
                             </line>
                         </tool>
-                        <tool title="Scenery Line - W" onclick="window.game.track.toolHandler.setTool('line'), window.game.track.toolHandler.currentTool.scenery = !0">
+                        <tool title="Scenery Line - W" onclick="window.game.scene.toolHandler.setTool('line'), window.game.scene.toolHandler.currentTool.scenery = !0">
                             <line class="scenery">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 25 25" style="stroke: #aaa">
                                     <line x1="20" y1="5" x2="5" y2="20"/>
                                 </svg>
                             </line>
                         </tool>
-                        <tool title="Eraser - E" onclick="window.game.track.toolHandler.setTool('eraser')">
+                        <tool title="Eraser - E" onclick="window.game.scene.toolHandler.setTool('eraser')">
                             <eraser/>
                         </tool>
-                        <tool title="Camera - R" onclick="window.game.track.toolHandler.setTool('camera')">
+                        <tool title="Camera - R" onclick="window.game.scene.toolHandler.setTool('camera')">
                             <camera/>
                         </tool>
                         <tool title="Grid - G" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-left-radius: 5px;" onclick="
-                        this.classList[(window.game.track.gridSize = 11 - window.game.track.gridSize) > 1 ? 'add' : 'remove']('active');
+                        this.classList[(window.game.scene.gridSize = 11 - window.game.scene.gridSize) > 1 ? 'add' : 'remove']('active');
                         ">
                             <line class="scenery">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 25 25" style="stroke: #ccc; stroke-width: 1">
@@ -200,47 +188,47 @@
                             </line>
                         </tool>
                         <br>
-                        <tool title="Goal" style="border-top-width: 1px;border-top-style: solid;border-top-left-radius: 5px;" onclick="window.game.track.toolHandler.setTool('goal')">
+                        <tool title="Goal" style="border-top-width: 1px;border-top-style: solid;border-top-left-radius: 5px;" onclick="window.game.scene.toolHandler.setTool('goal')">
                             <powerup class="target"/>
                         </tool>
-                        <tool title="Checkpoint" onclick="window.game.track.toolHandler.setTool('checkpoint')">
+                        <tool title="Checkpoint" onclick="window.game.scene.toolHandler.setTool('checkpoint')">
                             <powerup class="checkpoint"/>
                         </tool>
-                        <tool title="Booster" onclick="window.game.track.toolHandler.setTool('boost')">
+                        <tool title="Booster" onclick="window.game.scene.toolHandler.setTool('boost')">
                             <powerup class="boost triangle">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 25 25" style="stroke-width: 2">
                                     <polyline points="5,7 20,12.5 5,18 5,7"/>
                                 </svg>
                             </powerup>
                         </tool>
-                        <tool title="Gravity" onclick="window.game.track.toolHandler.setTool('gravity')">
+                        <tool title="Gravity" onclick="window.game.scene.toolHandler.setTool('gravity')">
                             <powerup class="gravity triangle">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 25 25" style="stroke-width: 2">
                                     <polyline points="5,7 20,12.5 5,18 5,7"/>
                                 </svg>
                             </powerup>
                         </tool>
-                        <tool title="Bomb" onclick="window.game.track.toolHandler.setTool('bomb')">
+                        <tool title="Bomb" onclick="window.game.scene.toolHandler.setTool('bomb')">
                             <powerup class="bomb"/>
                         </tool>
-                        <tool title="Slow-motion" onclick="window.game.track.toolHandler.setTool('slow-mo')">
+                        <tool title="Slow-motion" onclick="window.game.scene.toolHandler.setTool('slow-mo')">
                             <powerup class="slowmo"/>
                         </tool>
-                        <tool title="Anti-gravity" onclick="window.game.track.toolHandler.setTool('antigravity')">
+                        <tool title="Anti-gravity" onclick="window.game.scene.toolHandler.setTool('antigravity')">
                             <powerup class="antigravity"/>
                         </tool>
-                        <tool title="Teleporter" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-left-radius: 5px;" onclick="window.game.track.toolHandler.setTool('teleporter')">
+                        <tool title="Teleporter" style="border-bottom-width: 1px;border-bottom-style: solid;border-bottom-left-radius: 5px;" onclick="window.game.scene.toolHandler.setTool('teleporter')">
                             <powerup class="teleport"/>
                         </tool>
                     </div>
                 </toolbar>
-            </interface>
+            </game-interface>
             <canvas id="view" width="800" height="450"></canvas>
-        </container>
+        </game-container>
         <script type="module" src="bootstrap.js"></script>
         <script type="module">
             game.init();
-            
+                        
             let e = e => e.stopPropagation();
             [...document.querySelectorAll("input"), ...document.querySelectorAll("textarea")].forEach(n => {
                 n.addEventListener("keydown", e);

@@ -57,6 +57,20 @@ export default class {
         return this.players[0];
     }
 
+    init(players = [
+        {
+            vehicle: "BMX"
+        }
+    ]) {
+        for (const player of players) {
+            this.players.push(new Player(this, {
+                vehicle: player.vehicle
+            }));
+        }
+
+        this.cameraFocus = this.firstPlayer.head;
+    }
+
     zoomIn() {
         if (this.zoom < 4 * window.devicePixelRatio) {
             this.zoom = Math.round(10 * this.zoom + window.devicePixelRatio * 2) / 10;
@@ -90,8 +104,9 @@ export default class {
 
             this.collectItems(snapshot.powerupsConsumed);
         } else {
-            for (const player of this.players)
+            for (const player of this.players) {
                 player.reset();
+            }
 
             this.currentTime = 0;
         }
@@ -147,7 +162,7 @@ export default class {
     }
 
     watchGhost(a) {
-        a = a.split(/\u002C/g).map(key => Object.fromEntries(key.split(/\s+/g).filter(keys => keys).map(input => [ input, 1 ])));
+        a = a.split(/\u002C+/g).map(key => Object.fromEntries(key.split(/\s+/g).filter(keys => keys).map(input => [ input, 1 ])));
 
         this.reset();
         this.cameraFocus = this.players[0].vehicle.head;
@@ -159,8 +174,8 @@ export default class {
     }
 
     collide(part) {
-        let x = Math.floor(part.position.x / this.scale - 0.5);
-        let y = Math.floor(part.position.y / this.scale - 0.5);
+        let x = Math.floor(part.position.x / this.scale - .5);
+        let y = Math.floor(part.position.y / this.scale - .5);
         let sectors = [
             (this.grid[x] || {})[y],
             (this.grid[x] || {})[y + 1],
@@ -185,7 +200,7 @@ export default class {
                 player.update(delta);
             }
 
-            this.currentTime += 1000 / 25;
+            this.currentTime += 1e3 / 25;
         }
 
         if (this.cameraFocus) {
@@ -203,6 +218,7 @@ export default class {
         
         if (!this.cameraFocus) {
             ctx.save();
+            ctx.strokeStyle = this.parent.theme === "dark" ? "#fff" : "#000";
             this.toolHandler.currentTool && this.toolHandler.currentTool.draw(ctx);
             ctx.restore();
         }
@@ -232,11 +248,10 @@ export default class {
             }
 
             position = this.parent.mouse.position.toPixel();
-            old = this.parent.mouse.old.toPixel();
             
             ctx.save(),
-            ctx.strokeStyle = "#f00",
             ctx.beginPath(),
+            ctx.strokeStyle = "#f00",
             ctx.moveTo(old.x, old.y),
             ctx.lineTo(position.x, position.y),
             ctx.stroke(),
@@ -253,28 +268,12 @@ export default class {
                         let sector = `${w}_${y}`;
                         sectors[sector] = 1;
                         if (this.sectors[sector] === void 0) {
-                            const canvas = this.sectors[sector] = document.createElement("canvas");
-                            canvas.width = this.scale * this.zoom;
-                            canvas.height = this.scale * this.zoom;
-
-                            const context = canvas.getContext("2d");
-                            context.lineCap = "round";
-                            context.lineWidth = Math.max(2 * this.zoom, 0.5);
-                            context.strokeStyle = this.parent.theme === "dark" ? "#999" : "#aaa";
-                            for (const line of this.scenery) {
-                                line.draw(context, w * this.scale * this.zoom, y * this.scale * this.zoom);
-                            }
-
-                            context.strokeStyle = this.parent.theme === "dark" ? "#fff" : "#000";
-                            for (const line of this.grid[w][y].physics) {
-                                line.draw(context, w * this.scale * this.zoom, y * this.scale * this.zoom);
-                            }
+                            this.sectors[sector] = this.grid[w][y].render(this, w, y);
                         }
 
                         ctx.drawImage(this.sectors[sector], Math.floor(this.parent.canvas.width / 2 - this.camera.x * this.zoom + w * this.scale * this.zoom), Math.floor(this.parent.canvas.height / 2 - this.camera.y * this.zoom + y * this.scale * this.zoom));
                     }
 
-                    ctx.strokeStyle = "#000";
                     for (const powerup of this.grid[w][y].powerups) {
                         powerup.draw(ctx);
                     }
@@ -405,24 +404,27 @@ export default class {
         return l;
     }
     
-    addLine(a, b, c) {
-        a = new (c ? SceneryLine : PhysicsLine)(a.x, a.y, b.x, b.y,this);
-        if (2 <= a.len && 1E5 > a.len && (this.addLineInternal(a), ["line", "brush"].includes(this.toolHandler.selected))) {
+    addLine(start, end, type) {
+        const line = new (type ? SceneryLine : PhysicsLine)(start.x, start.y, end.x, end.y, this);
+        if (line.len >= 2 && line.len < 1e5) {
+            this.addLineInternal(line);
             if (["line", "brush"].includes(this.toolHandler.selected)) {
                 this.parent.mouse.old.copy(this.parent.mouse.position);
             }
         }
 
         this.undoManager.push({
-            undo: a.remove.bind(a),
-            redo: () =>  this.addLineInternal(a)
+            undo: line.remove.bind(line),
+            redo: () =>  this.addLineInternal(line)
         });
 
-        return a
+        return line;
     }
 
-    addLineInternal(a) {
-        this[a.type].push(a);
+    addLineInternal(line) {
+        // Do something with this?
+        // Add method to line to check if it's in view
+        // this[a.type].push(a);
         let b = function(a, b, c) {
             var zb = {};
             zb[c] || (zb[c] = {});
@@ -449,13 +451,13 @@ export default class {
                 }
             }
             return d
-        }(a.a, a.b, this.scale), c, d;
+        }(line.a, line.b, this.scale), c, d;
         for (let e = 0; e < b.length; e++)
             c = Math.floor(b[e].x / this.scale),
             d = Math.floor(b[e].y / this.scale),
             this.grid[c] === void 0 && (this.grid[c] = {}),
-            this.grid[c][d] === void 0 && (this.grid[c][d] = new Sector),
-            a.type === "scenery" ? this.grid[c][d].scenery.push(a) : this.grid[c][d].physics.push(a),
+            this.grid[c][d] === void 0 && (this.grid[c][d] = new Sector()),
+            line.type === "scenery" ? this.grid[c][d].scenery.push(line) : this.grid[c][d].physics.push(line),
             delete this.sectors[c + "_" + d]
     }
 
@@ -471,7 +473,7 @@ export default class {
         else if (e.length > 1)
             var n = e[1].split(",");
         this.addLines(i, this.addLine),
-        this.addLines(s, this.addLine, true);
+        this.addLines(s, this.addLine, 1);
         for (var t in n) {
             e = n[t].split(/\s+/g);
             var i, b = parseInt(e[1], 32);
@@ -589,6 +591,12 @@ export default class {
 
     reset() {
         this.currentTime = 0;
+        for (const row in this.grid) {
+            for (const column in this.grid[row]) {
+                this.grid[row][column].fix();
+            }
+        }
+
         for (const player of this.players) {
             player.reset();
         }

@@ -12,21 +12,23 @@ canvas#view {
     background-color: white;
 }
 
-container {
+game-container {
 	display: block;
 	width: fit-content;
 	position: relative;
     overflow: hidden;
 }
 
-container interface {
+game-container game-interface {
 	position: absolute;
 	display: block;
 	z-index: 1;
 	width: 100%;
+    height: 100%;
+	pointer-events: none;
 }
 
-interface overlay {
+game-interface game-overlay {
     width: 100%;
     height: 100%;
     display: none;
@@ -34,16 +36,17 @@ interface overlay {
     flex-direction: column;
     justify-content: center;
     backdrop-filter: blur(10px);
-    position: fixed;
+    pointer-events: all;
+    position: absolute;
 }
 
-overlay nav {
+game-overlay nav {
     width: 40vw;
     display: flex;
     justify-content: center;
 }
 
-overlay nav button {
+game-overlay nav button {
     width: 100%;
     border: none;
     color: white;
@@ -57,19 +60,17 @@ overlay nav button {
     -webkit-user-select: none;
 }
 
-overlay nav button:hover {
+game-overlay nav button:hover {
     background-color: rgba(255, 255, 255, .1);
 }
 
-overlay nav button.active {
+game-overlay nav button.active {
     opacity: 1;
     background-color: rgba(255, 255, 255, .08);
 }
 
-overlay options {
-    width: 40vw;
-    height: 34vh;
-    padding: 20px;
+game-overlay options {
+    align-items: center;
     display: none;
     flex-direction: column;
 }
@@ -99,12 +100,13 @@ options textarea {
     resize: none;
 }
 
-interface toolbar {
+game-interface toolbar {
     top: 0;
     width: 100%;
     display: block;
     position: absolute;
     user-select: none;
+    pointer-events: all;
     -webkit-user-select: none;
 }
 
@@ -126,8 +128,8 @@ toolbar div.right {
 }
 
 toolbar tool {
-    width: 1vw;
-    height: 1vw;
+    width: 1em;
+    height: 1em;
     padding: 8px;
     outline: none;
     display: flex;
