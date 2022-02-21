@@ -16,29 +16,27 @@ export default class Player {
     constructor(parent, { vehicle, ghost }) {
         this.scene = parent;
         this.ghostData = ghost;
-        this.gamepad = new Gamepad(this);
+        this.ghost = !!this.ghostData;
         if (!this.ghost) {
             this.gamepad.init();
-            this.gamepad.on("keydown", this.updateControls.bind(this));
-            this.gamepad.on("keyup", this.updateControls.bind(this));
         }
-        
+
         this.createCosmetics();
         this.createVehicle(vehicle);
         this.createRagdoll();
     }
-    
-    slow = false;
     dead = false;
+    slow = false;
     ragdoll = null;
     explosion = null;
-    powerupsEnabled = true;
-    targetsCollected = 0;
-    powerupsConsumed = [];
+    pendingConsumables = 0;
+    itemsCollected = new Set();
     gravity = new Vector(0, .3);
+    gamepad = new Gamepad(this);
     snapshots = new SnapshotHandler();
-    get ghost() {
-        return !!this.ghostData;
+    records = Array.from({ length: 5 }, () => new Set());
+    get targetsCollected() {
+        return this.scene.collectables.filter(item => item.type === "T" && this.itemsCollected.has(item.id)).length;
     }
     
     createCosmetics() {
@@ -51,6 +49,7 @@ export default class Player {
 
     createRagdoll() {
         if (this.dead) {
+            this.ragdoll = new Ragdoll(this, this.vehicle.rider);
             this.ragdoll.setVelocity(this.vehicle.head.velocity, this.vehicle.rearWheel.velocity);
             this.hat = new Shard(this, this.vehicle.head.position.clone());
             this.hat.velocity = this.vehicle.head.velocity.clone();
@@ -60,7 +59,7 @@ export default class Player {
             return;
         }
         
-        this.ragdoll = new Ragdoll(this, this.vehicle.rider);
+        // this.ragdoll = new Ragdoll(this, this.vehicle.rider);
     }
 
     createExplosion(part) {
@@ -69,53 +68,50 @@ export default class Player {
     }
 
     update(delta) {
+        if (this.pendingConsumables) {
+            if (this.pendingConsumables & 2) {
+                this.trackComplete();
+            } else if (this.pendingConsumables & 1) {
+                for (const player of this.scene.players) {
+                    player.snapshots.push(player.snapshot());
+                }
+            }
+            
+            this.pendingConsumables = 0;
+            return;
+        }
+
+        if (this.targetsCollected === this.scene.targets) {
+            return;
+        }
+
         if (this.explosion) {
             this.explosion.update();
-
             return;
         }
 
         if (this.ghost) {
-            if (this.ghostData[0][this.scene.currentTime]) {
-                if (this.gamepad.downKeys.has("ArrowLeft")) {
-                    this.gamepad.downKeys.delete("ArrowLeft");
-                } else {
-                    this.gamepad.downKeys.set("ArrowLeft", true);
-                }
+            if (this.ghostData[0] && this.ghostData[0][this.scene.currentTime]) {
+                this.gamepad.toggle("left");
             }
 
-            if (this.ghostData[1][this.scene.currentTime]) {
-                if (this.gamepad.downKeys.has("ArrowRight")) {
-                    this.gamepad.downKeys.delete("ArrowRight");
-                } else {
-                    this.gamepad.downKeys.set("ArrowRight", true);
-                }
+            if (this.ghostData[1] && this.ghostData[1][this.scene.currentTime]) {
+                this.gamepad.toggle("right");
             }
 
-            if (this.ghostData[2][this.scene.currentTime]) {
-                if (this.gamepad.downKeys.has("ArrowUp")) {
-                    this.gamepad.downKeys.delete("ArrowUp");
-                } else {
-                    this.gamepad.downKeys.set("ArrowUp", true);
-                }
+            if (this.ghostData[2] && this.ghostData[2][this.scene.currentTime]) {
+                this.gamepad.toggle("up");
             }
 
-            if (this.ghostData[3][this.scene.currentTime]) {
-                if (this.gamepad.downKeys.has("ArrowDown")) {
-                    this.gamepad.downKeys.delete("ArrowDown");
-                } else {
-                    this.gamepad.downKeys.set("ArrowDown", true);
-                }
+            if (this.ghostData[3] && this.ghostData[3][this.scene.currentTime]) {
+                this.gamepad.toggle("down");
             }
 
-            if (this.ghostData[4][this.scene.currentTime]) {
-                if (this.gamepad.downKeys.has("z")) {
-                    this.gamepad.downKeys.delete("z");
-                } else {
-                    this.gamepad.downKeys.set("z", true);
-                    this.vehicle.swap();
-                }
+            if (this.ghostData[4] && this.ghostData[4][this.scene.currentTime]) {
+                this.vehicle.swap();
             }
+        } else if (this.scene.currentTime === 0) {
+            this.updateRecords(this.gamepad.downKeys);
         }
 
         this.vehicle.update(delta);
@@ -123,38 +119,54 @@ export default class Player {
             this.ragdoll.update();
             this.hat.update();
         } else {
-            this.ragdoll.updatePosition(this.vehicle.rider);
+            //this.ragdoll.updatePosition(this.vehicle.rider);
         }
+
+        // if (this.pendingConsumables) {
+        //     if (this.pendingConsumables & 2) {
+        //         this.trackComplete();
+        //     } else if (this.pendingConsumables & 1) {
+        //         for (const player of this.scene.players) {
+        //             player.snapshots.push(player.snapshot());
+        //         }
+        //     }
+            
+        //     this.pendingConsumables = 0;
+        //     return;
+        // }
     }
 
-    updateControls(key) {
-        if (this.dead)
+    updateRecords(keys) {
+        if (!keys) {
             return;
+        }
 
-        switch(key) {
-            case "a":
-            case "ArrowLeft":
-                //break;
+        this.scene.cameraFocus = this.vehicle.head;
+        if (typeof keys === "string") {
+            keys = new Set([
+                keys
+            ]);
+        }
 
-            case "d":
-            case "ArrowRight":
-                //break;
+        if (keys.has("left") && !this.records[0].delete(this.scene.currentTime)) {
+            this.records[0].add(this.scene.currentTime);
+        }
 
-            case "w":
-            case "ArrowUp":
-                //break;
+        if (keys.has("right") && !this.records[1].delete(this.scene.currentTime)) {
+            this.records[1].add(this.scene.currentTime);
+        }
 
-            case "s":
-            case "ArrowDown":
-                this.scene.cameraFocus = this.vehicle.head;
-                //this.vehicle.updateControls();
-                break;
+        if (keys.has("up") && !this.records[2].delete(this.scene.currentTime)) {
+            this.records[2].add(this.scene.currentTime);
+        }
 
-            case "z":
-                this.scene.cameraFocus = this.vehicle.head;
-                if (this.gamepad.downKeys.has("z"))
-                    this.vehicle.swap();
-            break;
+        if (keys.has("down") && !this.records[3].delete(this.scene.currentTime)) {
+            this.records[3].add(this.scene.currentTime);
+        }
+
+        if (keys.has("z") && !this.records[4].delete(this.scene.currentTime) && this.gamepad.downKeys.has("z") && !this.scene.paused) {
+            this.records[4].add(this.scene.currentTime);
+            this.vehicle.swap();
         }
     }
 
@@ -174,83 +186,65 @@ export default class Player {
         ctx.restore();
     }
 
-    collide(powerup) {
-        switch(powerup) {
-            case "checkpoint":
-                for (const player of this.scene.players) {
-                    player.snapshots.push(player.snapshot());
-                }
-
-                break;
-
-            case "target":
-                if (!this.ghost) {
-                    this.targetsCollected++;
-
-                    if (this.targetsCollected === this.scene.targets) {
-                        this.trackComplete();
-                    }
-                }
-
-                break;
-        }
-    }
-
     trackComplete() {
         if (this.targetsCollected === this.scene.targets && this.scene.currentTime > 0 && !this.scene.editor) {
-            fetch("/tracks/ghost_save", {
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
+            fetch("/tracks/ghosts/save", {
+                method: "post",
                 body: new URLSearchParams({
                     id: window.location.pathname.split("/")[2],
                     vehicle: this.vehicle.name,
                     time: this.scene.currentTime,
-                    code: `${game.scene.firstPlayer.gamepad.records.map(record => Object.keys(record).join(" ")).join(",")},${this.scene.currentTime},${this.vehicle.name}`
-                }),
-                method: "post"
+                    code: `${game.scene.firstPlayer.records.map(record => [...record].join(" ")).join(",")},${this.scene.currentTime},${this.vehicle.name}`
+                })
             });
         }
     }
 
     snapshot() {
         return {
-            slow: this.slow,
-            dead: this.dead,
-            targetsCollected: this.targetsCollected,
-            powerupsConsumed: [...this.powerupsConsumed],
             currentTime: this.scene.currentTime,
-            gamepad: this.gamepad.snapshot(),
+            dead: this.dead,
+            downKeys: new Set(this.gamepad.downKeys),
             gravity: this.gravity.clone(),
+            itemsCollected: new Set(this.itemsCollected),
+            records: this.records.map(record => new Set(record)),
+            slow: this.slow,
             vehicle: this.vehicle.clone()
         }
     }
 
     restore(snapshot) {
+        this.scene.currentTime = snapshot.currentTime;
+        this.ragdoll = null;
+        this.explosion = null;
         this.slow = snapshot.slow;
         this.dead = snapshot.dead;
-        this.targetsCollected = snapshot.targetsCollected;
-        this.powerupsConsumed = [...snapshot.powerupsConsumed];
+        this.updateRecords(snapshot.downKeys);
+        this.itemsCollected = new Set(snapshot.itemsCollected);
+        this.records = snapshot.records.map(record => new Set(record));
         this.gravity = snapshot.gravity.clone();
-
-        this.gamepad.restore(snapshot.gamepad);
-        this.vehicle.restore(snapshot.vehicle);
+        this.vehicle = snapshot.vehicle.clone();
+        if (this.ghost) {
+            this.gamepad.downKeys.clear();
+        }
     }
 
     reset() {
+        this.hat = null;
         this.slow = false;
         this.dead = false;
-        this.hat = null;
+        this.ragdoll = null;
         this.explosion = null;
-        this.powerupsEnabled = true;
-        this.targetsCollected = 0;
-        this.powerupsConsumed = [];
-
-        this.snapshots.reset();
-        this.gamepad.reset();
-
+        this.pendingConsumables = 0;
+        this.itemsCollected = new Set();
         this.gravity = new Vector(0, .3);
+        this.records = Array.from({ length: 5 }, () => new Set());
+        this.snapshots.reset();
+        if (this.ghost) {
+            this.gamepad.downKeys.clear();
+        }
+
         this.createVehicle(this.vehicle.name);
-        this.ragdoll.updatePosition(this.vehicle.rider);
+        // this.ragdoll.updatePosition(this.vehicle.rider);
     }
 }

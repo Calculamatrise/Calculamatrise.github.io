@@ -1,10 +1,8 @@
 import Mouse from "./handler/Mouse.js";
 
 import Main from "./scenes/Main.js";
-import Player from "./Player.js";
 
 import Vector from "./Vector.js";
-import Sector from "./sector/Sector.js";
 import Target from "./item/Target.js";
 import Checkpoint from "./item/Checkpoint.js";
 import Bomb from "./item/Bomb.js";
@@ -30,10 +28,12 @@ export default class {
         this.mouse.on("mousemove", this.mouseMove.bind(this));
         this.mouse.on("mouseup", this.mouseUp.bind(this));
         this.mouse.on("mousewheel", this.scroll.bind(this));
+        document.addEventListener("keydown", this.keydown.bind(this));
+        document.addEventListener("keyup", this.keyup.bind(this));
     }
 
     fps = 25;
-    lastTime = null;
+    lastTime = -1;
     lastFrame = null;
     progress = 0;
     get theme() {
@@ -116,12 +116,13 @@ export default class {
                     break;
 
                 case "goal":
-                    x = new Target(this.scene, this.mouse.old.x,this.mouse.old.y);
-                    this.scene.targets++;
+                    x = new Target(this.scene, this.mouse.old.x, this.mouse.old.y);
+                    this.scene.collectables.push(x);
                     break;
 
                 case "checkpoint":
                     x = new Checkpoint(this.scene, this.mouse.old.x,this.mouse.old.y);
+                    this.scene.collectables.push(x);
                     break;
 
                 case "bomb":
@@ -139,6 +140,7 @@ export default class {
                 case "teleporter":
                     x = new Teleporter(this.scene, this.mouse.old.x,this.mouse.old.y);
                     this.scene.teleporter = x;
+                    this.scene.collectables.push(x);
                     break;
 
                 case "brush":
@@ -149,11 +151,9 @@ export default class {
             }
             
             if (x !== void 0) {
-                let c = Math.floor(x.position.x / this.scene.scale)
-                  , d = Math.floor(x.position.y / this.scene.scale);
-                this.scene.grid[c] === void 0 && (this.scene.grid[c] = []);
-                this.scene.grid[c][d] === void 0 && (this.scene.grid[c][d] = new Sector);
-                this.scene.grid[c][d].powerups.push(x);
+                let c = Math.floor(x.position.x / this.scene.grid.scale);
+                let d = Math.floor(x.position.y / this.scene.grid.scale);
+                this.scene.grid.sector(c, d, true).powerups.push(x);
             }
         }
     }
@@ -165,8 +165,8 @@ export default class {
 
         if (this.scene.toolHandler.selected !== "eraser") {
             if (event.button !== 2) {
-                this.mouse.position.x = Math.round(this.mouse.position.x / this.scene.gridSize) * this.scene.gridSize;
-                this.mouse.position.y = Math.round(this.mouse.position.y / this.scene.gridSize) * this.scene.gridSize;
+                this.mouse.position.x = Math.round(this.mouse.position.x / this.scene.grid.size) * this.scene.grid.size;
+                this.mouse.position.y = Math.round(this.mouse.position.y / this.scene.grid.size) * this.scene.grid.size;
             }
         }
 
@@ -204,12 +204,9 @@ export default class {
                     if (this.scene.teleporter.position.distanceTo(this.mouse.old) > 40) {
                         this.scene.teleporter.createAlt(this.mouse.old.x, this.mouse.old.y);
                     
-                        let x = Math.floor(this.scene.teleporter.alt.x / this.scene.scale);
-                        let y = Math.floor(this.scene.teleporter.alt.y / this.scene.scale);
-        
-                        this.scene.grid[x] === void 0 && (this.scene.grid[x] = []),
-                        this.scene.grid[x][y] === void 0 && (this.scene.grid[x][y] = new Sector()),
-                        this.scene.grid[x][y].powerups.push(this.scene.teleporter);
+                        let x = Math.floor(this.scene.teleporter.alt.x / this.scene.grid.scale);
+                        let y = Math.floor(this.scene.teleporter.alt.y / this.scene.grid.scale);
+                        this.scene.grid.sector(x, y, true).powerups.push(this.scene.teleporter);
                     } else {
                         this.scene.teleporter.remove();
                     }
@@ -221,14 +218,179 @@ export default class {
 
                 let d = Math.round(180 * Math.atan2(-(this.mouse.position.x - this.mouse.old.x), this.mouse.position.y - this.mouse.old.y) / Math.PI);
                 let c = this.scene.toolHandler.selected === "boost" ? new Boost(this.scene, this.mouse.old.x,this.mouse.old.y,d) : new Gravity(this.scene, this.mouse.old.x,this.mouse.old.y,d);
-                let y = Math.floor(c.position.x / this.scene.scale);
-                let x = Math.floor(c.position.y / this.scene.scale);
-
-                this.scene.grid[y] === void 0 && (this.scene.grid[y] = []),
-                this.scene.grid[y][x] === void 0 && (this.scene.grid[y][x] = new Sector()),
-                this.scene.grid[y][x].powerups.push(c);
+                let x = Math.floor(c.position.x / this.scene.grid.scale);
+                let y = Math.floor(c.position.y / this.scene.grid.scale);
+                this.scene.grid.sector(x, y, true).powerups.push(c);
             }
         //}
+    }
+
+    keydown(event) {
+        event.preventDefault();
+        switch(event.key.toLowerCase()) {
+            case "backspace":
+                if (event.shiftKey) {
+                    window.game.scene.restoreCheckpoint();
+                    break;
+                }
+    
+                window.game.scene.removeCheckpoint();
+                break;
+    
+            case "enter":
+                window.game.scene.gotoCheckpoint();
+                break;
+    
+            case ".":
+                window.game.scene.restoreCheckpoint();
+                break;
+    
+            case "-":
+                window.game.scene.zoomOut();
+                break;
+    
+            case "+":
+            case "=":
+                window.game.scene.zoomIn();
+                break;
+    
+            case "z":
+                if (!window.game.scene.cameraFocus) {
+                    if (window.game.scene.id === void 0) {
+                        if (event.ctrlKey) {
+                            window.game.scene.undoManager.redo();
+    
+                            break;
+                        }
+    
+                        window.game.scene.undoManager.undo();
+                    }
+    
+                    if (window.autoPause) {
+                        window.game.scene.paused = false, window.autoPause = false
+                    }
+                }
+    
+                break;
+    
+            case "p":
+            case " ":
+                window.game.scene.paused = window.autoPause ? true : !window.game.scene.paused,
+                window.game.container.querySelector("playpause")?.classList[window.game.scene.paused ? "remove" : "add"]("playing"),
+                window.autoPause = false;
+                break;
+        }
+    
+        if (window.game.scene.editor) {    
+            switch(event.key.toLowerCase()) {
+                case "a":
+                    if (window.game.scene.toolHandler.selected !== "brush" || window.game.scene.toolHandler.currentTool.scenery) {
+                        window.game.scene.toolHandler.setTool("brush");
+                        window.game.scene.toolHandler.currentTool.scenery = !1;
+                        window.game.canvas.style.cursor = "none";
+                    } else if (!window.game.scene.cameraLock) {
+                        window.game.scene.cameraLock = true;
+                    }
+    
+                    break;
+    
+                case "s":
+                    if (window.game.scene.toolHandler.selected !== "scenery brush" || !window.game.scene.toolHandler.currentTool.scenery) {
+                        window.game.scene.toolHandler.setTool("brush");
+                        window.game.scene.toolHandler.currentTool.scenery = !0;
+                        window.game.canvas.style.cursor = "none";
+                    } else if (!window.game.scene.cameraLock) {
+                        window.game.scene.cameraLock = true;
+                    }
+    
+                    break;
+    
+                case "q":
+                    if (window.game.scene.toolHandler.selected !== "line" || window.game.scene.toolHandler.currentTool.scenery) {
+                        window.game.scene.toolHandler.setTool("line");
+                        window.game.scene.toolHandler.currentTool.scenery = !1;
+                        window.game.canvas.style.cursor = "none";
+                    } else if (!window.game.scene.cameraLock) {
+                        window.game.scene.cameraLock = true;
+                    }
+    
+                    break;
+    
+                case "w":
+                    if (window.game.scene.toolHandler.selected !== "scenery line" || !window.game.scene.toolHandler.currentTool.scenery) {
+                        window.game.scene.toolHandler.setTool("line");
+                        window.game.scene.toolHandler.currentTool.scenery = !0;
+                        window.game.canvas.style.cursor = "none";
+                    } else if (!window.game.scene.cameraLock) {
+                        window.game.scene.cameraLock = true;
+                    }
+    
+                    break;
+    
+                case "e":
+                    window.game.scene.toolHandler.setTool("eraser");
+                    window.game.canvas.style.cursor = "none";
+                    break;
+    
+                case "r":
+                    if (window.game.scene.toolHandler.selected != "camera") {
+                        window.game.scene.toolHandler.setTool("camera");
+                        window.game.canvas.style.cursor = "move";
+                    } else {
+                        window.game.scene.toggleCamera = true;
+                    }
+    
+                    break;
+    
+                case "m":
+                    window.game.scene.undoManager.undo();
+                    break;
+    
+                case "n":
+                    window.game.scene.undoManager.redo();
+                    break;
+            }
+        }
+    }
+
+    keyup(event) {
+        switch (event.key.toLowerCase()) {
+            case "b":
+                if (event.ctrlKey) {
+                    window.game.scene.switchBike();
+                }
+    
+                break;
+    
+            case "g":
+                if (window.game.scene.players.length <= 1) {
+                    window.game.scene.grid.size = 11 - window.game.scene.grid.size;
+                }
+    
+                break;
+    
+            case "r":
+                if (window.game.scene.toggleCamera) {
+                    window.game.canvas.style.cursor = "none";
+                    window.game.scene.toggleCamera = false;
+                }
+    
+                break;
+    
+            case "f":
+            case "f11":
+                document.fullscreenElement ? (document.exitFullscreen(), window.game.container.querySelector("fullscreen")?.classList.remove("active")) : (window.game.container.requestFullscreen(), window.game.container.querySelector("fullscreen")?.classList.add("active"));
+                break;
+    
+            case "f2":
+                window.game.scene.firstPlayer.pastCheckpoint = false;
+                break;
+    
+            case "escape":
+                let overlay = window.game.container.querySelector("game-overlay");
+                overlay.style.setProperty("display", overlay.style.display === "flex" ? (window.game.scene.paused = !1, "none") : (window.game.scene.paused = !0, "flex"));
+                break;
+        }
     }
 
     scroll(event) {
@@ -309,28 +471,11 @@ export default class {
         }
     }
 
-    saveGhost() {
-        if (this.scene.id === void 0) {
-            const date = new Date();
-            !function(t, e) {
-                if (typeof navigator.msSaveBlob == "function")
-                    return navigator.msSaveBlob(t, e);
-
-                var saver = document.createElementNS("http://www.w3.org/2000/svg", "a");
-                saver.href = URL.createObjectURL(t);
-                saver.download = e;
-                saver.dispatchEvent(new MouseEvent("click"));
-                URL.revokeObjectURL(saver.href);
-            }(new Blob([this.firstPlayer.gamepad.records.map(set => Object.keys(set).join(" ")).join(",")], { type: "txt" }), `black_hat_ghost-${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`);
-        }
-    }
-
     reset() {
         if (confirm("Do you really want to start a new track?")) {
             this.close();
             this.init("-18 1i 18 1i###BMX");
-            document.querySelector("#charcount").innerHTML = "Trackcode";
-            document.querySelector("#trackcode").value = null;
+            document.querySelector("textarea#code").value = null;
         }
     }
 

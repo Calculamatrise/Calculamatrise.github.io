@@ -1,7 +1,8 @@
 import Item from "./Item.js";
 
 export default class SingleUseItem extends Item {
-	used = false;
+	id = ++super.constructor.count;
+    used = false;
 	collide(part) {
 		if (part.position.distanceToSquared(this.position) > 500) {
 			return;
@@ -15,12 +16,16 @@ export default class SingleUseItem extends Item {
 			return;
 		}
 
-		part.parent.parent.powerupsConsumed.push(this.id);
+        if (part.parent.parent.itemsCollected.has(this.id)) {
+            return;
+		}
+
+		part.parent.parent.itemsCollected.add(this.id);
 
 		this.activate(part);
-		if (part.parent.ghost) {
-			return;
-		}
+        if (part.parent.parent.ghost) {
+            return;
+        }
 
 		this.used = true;
 	}

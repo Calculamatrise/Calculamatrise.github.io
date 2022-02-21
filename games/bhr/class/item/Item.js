@@ -1,14 +1,13 @@
 import Vector from "../Vector.js";
 
 export default class Item {
+    static count = 0;
     constructor(scene, x, y) {
         this.scene = scene;
         this.position = new Vector(x, y);
-        this.id = this.scene.goals++
     }
-
     scene = null;
-    removed = false; 
+    removed = false;
     draw(ctx, position = this.position.toPixel()) {
         ctx.beginPath(),
         ctx.fillStyle = this.color,
@@ -38,7 +37,6 @@ export default class Item {
         this.removed = true;
         this.scene.remove(this.position);
         this.alt && this.scene.remove(this.alt);
-        this.scene.powerups.splice(this.scene.powerups.indexOf(this), 1);
 
         return this;
     }

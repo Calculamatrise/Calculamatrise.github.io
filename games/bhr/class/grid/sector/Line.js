@@ -1,14 +1,13 @@
-import Vector from "../Vector.js";
+import Vector from "../../Vector.js";
 
-export default class Line {
+export default class {
     constructor(t, e, i, s, n) {
         this.a = t instanceof Vector ? t : new Vector(t, e);
         this.b = e instanceof Vector ? e : new Vector(i, s);
         this.vector = this.b.sub(this.a);
-        this.len = this.vector.length;
+        this.len = this.vector.getLength();
         this.scene = n;
     }
-    
     removed = false;
     draw(ctx, e, i) {
         ctx.beginPath();
@@ -19,7 +18,7 @@ export default class Line {
 
     erase(vector) {
         let b = vector.sub(this.a).dot(this.vector.oppositeScale(this.len));
-        let c = new Vector(0,0);
+        let c = new Vector();
         if (b <= 0) {
             c.copy(this.a)
         } else if (b >= this.len) {
@@ -28,7 +27,7 @@ export default class Line {
             c.copy(this.a.add(this.vector.oppositeScale(this.len).scale(b)));
         }
 
-        return vector.sub(c).length <= this.scene.toolHandler.currentTool.size ? this.remove() : !1
+        return vector.sub(c).getLength() <= this.scene.toolHandler.currentTool.size ? this.remove() : !1
     }
 
     commit() {
@@ -38,12 +37,11 @@ export default class Line {
     remove() {
         this.removed = true;
         this.scene.remove(this.a, this.b);
-        this.scene[this.type].splice(this.scene[this.type].indexOf(this), 1);
-        
+
         return this;
     }
 
     toString() {
-        return `${this.a} ${this.b}`;
+        return `${this.a.toString()} ${this.b.toString()}`;
     }
 }

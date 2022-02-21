@@ -1,43 +1,33 @@
-import EventEmitter from "./EventEmitter.js";
-
-export default class extends EventEmitter {
+export default class {
     constructor(parent) {
-        super();
-
         this.parent = parent;
     }
-
-    downKeys = new Map();
-    #records = Array.from({ length: 5 }, () => ({}));
-    get records() {
-        return this.#records;
-    }
-
+    downKeys = new Set();
     init() {
         window.addEventListener("keydown", this.keydown.bind(this));
-		window.addEventListener("keyup", this.keyup.bind(this));
+        window.addEventListener("keyup", this.keyup.bind(this));
     }
 
-    key(event) {
-        switch(event.key.toLowerCase()) {
+    mask(key) {
+        switch(key.toLowerCase()) {
             case "a":
             case "arrowleft":
-                return 0;
+                return "left";
             
             case "d":
             case "arrowright":
-                return 1;
+                return "right";
 
             case "w":
             case "arrowup":
-                return 2;
+                return "up";
 
             case "s":
             case "arrowdown":
-                return 3;
+                return "down";
 
             case "z":
-                return 4;
+                return "z";
 
             default:
                 return null;
@@ -46,55 +36,27 @@ export default class extends EventEmitter {
 
 	keydown(event) {
 		event.preventDefault();
-
-        const key = this.key(event);
-        
-        if (this.downKeys.has(event.key)) {
+        if (this.downKeys.has(this.mask(event.key))) {
             return;
         }
 
-        this.downKeys.set(event.key, true);
-
-        if (this.#records.hasOwnProperty(key)) {
-            this.#records[key][this.parent.scene.currentTime] = 1;
-        }
-
-        // if (this.parent.scene.paused) {
-        //     return;
-        // }
-
-		return this.emit("keydown", event.key);
+        this.downKeys.add(this.mask(event.key));
+        this.parent.updateRecords(this.mask(event.key));
 	}
 
 	keyup(event) {
 		event.preventDefault();
 
-        const key = this.key(event);
-
-        this.downKeys.delete(event.key);
-
-        if (this.#records.hasOwnProperty(key)) {
-            this.#records[key][this.parent.scene.currentTime] = 1;
-        }
-
-        // if (this.parent.scene.paused) {
-        //     return;
-        // }
-
-		return this.emit("keyup", event.key);
+        this.downKeys.delete(this.mask(event.key));
+        this.parent.updateRecords(this.mask(event.key));
 	}
 
-    snapshot() {
-        return [...this.#records.map(records => ({...records}))];
-    }
+    toggle(key) {
+        if (this.downKeys.delete(key)) {
+            return;
+        }
 
-    restore(records) {
-        this.#records = [...records.map(records => ({...records}))];
-    }
-
-    reset() {
-        this.downKeys = new Map();
-        this.#records = Array.from({ length: 5 }, () => ({}));
+        this.downKeys.add(key);
     }
     
     close() {

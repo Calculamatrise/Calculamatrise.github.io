@@ -4,9 +4,10 @@ import ToolHandler from "../handler/Tool.js";
 import UndoManager from "../managers/Undo.js";
 
 import Vector from "../Vector.js";
-import Sector from "../sector/Sector.js";
-import PhysicsLine from "../sector/PhysicsLine.js";
-import SceneryLine from "../sector/SceneryLine.js";
+import PhysicsLine from "../grid/sector/PhysicsLine.js";
+import SceneryLine from "../grid/sector/SceneryLine.js";
+
+import Grid from "../grid/Grid.js";
 
 import Target from "../item/Target.js";
 import Checkpoint from "../item/Checkpoint.js";
@@ -20,48 +21,37 @@ import Teleporter from "../item/Teleporter.js";
 export default class {
     constructor(parent, { id = null, code = "-18 1i 18 1i###BMX" }) {
         this.parent = parent;
-
         this.id = id;
         this.editor = !this.id;
         if (this.editor) {
             this.toolHandler.setTool("line");
         }
 
-        this.code = code;
-
-        this.read(this.code);
+        this.read(code);
     }
-
-    code = null;
-    goals = 0;
-    scale = 100;
-    targets = 0;
-    gridSize = 1;
-    grid = {}
-    sectors = {}
-    players = []
-    physics = []
-    scenery = []
-    powerups = []
+    // targets = 0;
+    players = [];
     editor = false;
     paused = false;
     currentTime = 0;
+    collectables = [];
     pictureMode = false;
-    camera = new Vector();
     cameraLock = false;
     cameraFocus = null;
+    grid = new Grid(this);
+    camera = new Vector();
     zoom = 0.6 * window.devicePixelRatio;
     toolHandler = new ToolHandler(this);
     undoManager = new UndoManager();
+    get targets() {
+        return this.collectables.filter(item => item.type === "T").length;
+    }
+
     get firstPlayer() {
         return this.players[0];
     }
 
-    init(players = [
-        {
-            vehicle: "BMX"
-        }
-    ]) {
+    init(players = [{ vehicle: "BMX" }]) {
         for (const player of players) {
             this.players.push(new Player(this, {
                 vehicle: player.vehicle
@@ -74,14 +64,18 @@ export default class {
     zoomIn() {
         if (this.zoom < 4 * window.devicePixelRatio) {
             this.zoom = Math.round(10 * this.zoom + window.devicePixelRatio * 2) / 10;
-            this.sectors = {}
+            for (const sector of this.grid.sectors) {
+                sector.rendered = false;
+            }
         }
     }
 
     zoomOut() {
         if (this.zoom > .2 * window.devicePixelRatio) {
             this.zoom = Math.round(10 * this.zoom - window.devicePixelRatio * 2) / 10;
-            this.sectors = {}
+            for (const sector of this.grid.sectors) {
+                sector.rendered = false;
+            }
         }
     }
     
@@ -97,12 +91,11 @@ export default class {
         this.paused = false; // JSON.parse(localStorage.pauseOnEnter) ? true : false;
         this.parent.container.querySelector("playpause")?.classList[this.paused ? "remove" : "add"]("playing");
         if (this.firstPlayer.snapshots.length > 0) {
-            let snapshot = this.firstPlayer.snapshots[this.firstPlayer.snapshots.length - 1];
-            this.currentTime = snapshot.currentTime;
+            for (const player of this.players) {
+                player.restore(player.snapshots[player.snapshots.length - 1]);
+            }
 
-            this.firstPlayer.restore(snapshot);
-
-            this.collectItems(snapshot.powerupsConsumed);
+            this.collectItems(this.firstPlayer.snapshots[this.firstPlayer.snapshots.length - 1].itemsCollected);
         } else {
             for (const player of this.players) {
                 player.reset();
@@ -144,59 +137,61 @@ export default class {
     }
 
     collectItems(items) {
-        for (const powerup of this.powerups) {
-            if (powerup.used !== void 0) {
-                if (items.includes(powerup.id)) {
-                    powerup.used = true;
-                }
+        for (const powerup of this.collectables) {
+            if (items.has(powerup.id)) {
+                powerup.used = true;
             }
         }
     }
 
     removeCollectedItems() {
-        for (const powerup of this.powerups) {
-            if (powerup.used !== void 0) {
-                powerup.used = false;
-            }
+        for (const powerup of this.collectables) {
+            powerup.used = false;
         }
     }
 
-    watchGhost(a) {
-        a = a.split(/\u002C+/g).map(key => Object.fromEntries(key.split(/\s+/g).filter(keys => keys).map(input => [ input, 1 ])));
+    watchGhost(data, { id = null, vehicle = "BMX" } = {}) {
+        data = data.split(/\u002C+/g).map(key => Object.fromEntries(key.split(/\s+/g).filter(keys => keys).map(input => [ input, 1 ])));
+
+        let v = Object.keys(data[data.length - 1])[0];
+        if (["BMX", "MTB"].includes(v.toUpperCase())) {
+            vehicle = v;
+        }
 
         this.reset();
-        this.cameraFocus = this.players[0].vehicle.head;
-        this.players.push(new Player(this, {
-            vehicle: a.vehicle,
-            ghost: a
-        }));
+        let player = id && this.players.find(player => player.id === +id);
+        if (!player) {
+            this.players.push(new Player(this, {
+                ghost: data,
+                vehicle
+            }));
+
+            player = this.players[this.players.length - 1];
+            player.id = +id;
+        }
+
+        this.cameraFocus = player.vehicle.head;
         this.paused = false;
     }
 
     collide(part) {
-        let x = Math.floor(part.position.x / this.scale - .5);
-        let y = Math.floor(part.position.y / this.scale - .5);
-        let sectors = [
-            (this.grid[x] || {})[y],
-            (this.grid[x] || {})[y + 1],
-            (this.grid[x + 1] || {})[y],
-            (this.grid[x + 1] || {})[y + 1]
-        ].filter(sector => sector);
-
-        for (const sector of sectors) {
-            sector.fix();
-        }
-
-        for (const sector of sectors) {
-            sector.collide(part);
-        }
+        const x = Math.floor(part.position.x / this.grid.scale - .5);
+        const y = Math.floor(part.position.y / this.grid.scale - .5);
+        this.grid.sector(x, y).fix();
+        this.grid.sector(x, y + 1).fix();
+        this.grid.sector(x + 1, y).fix();
+        this.grid.sector(x + 1, y + 1).fix();
+        this.grid.sector(x, y).collide(part);
+        this.grid.sector(x + 1, y).collide(part);
+        this.grid.sector(x + 1, y + 1).collide(part);
+        this.grid.sector(x, y + 1).collide(part);
 
         return this;
     }
     
     update(delta) {
         if (!this.paused) {
-            for (const player of this.players) {
+            for (const player of this.players.filter(player => player.targetsCollected !== this.targets)) {
                 player.update(delta);
             }
 
@@ -258,31 +253,20 @@ export default class {
             ctx.restore();
         }
 
-        let i = new Vector().toCanvas(this.parent.canvas).oppositeScale(this.scale).floor();
-        let l = new Vector(this.parent.canvas.width, this.parent.canvas.height).toCanvas(this.parent.canvas).oppositeScale(this.scale).floor();
-        let sectors = [];
-        for (let w = i.x; w <= l.x; w++) {
-            for (let y = i.y; y <= l.y; y++) {
-                if (this.grid[w] !== void 0 && this.grid[w][y] !== void 0) {
-                    if (this.grid[w][y].physics.length > 0 || this.grid[w][y].scenery.length > 0) {
-                        let sector = `${w}_${y}`;
-                        sectors[sector] = 1;
-                        if (this.sectors[sector] === void 0) {
-                            this.sectors[sector] = this.grid[w][y].render(this, w, y);
-                        }
-
-                        ctx.drawImage(this.sectors[sector], Math.floor(this.parent.canvas.width / 2 - this.camera.x * this.zoom + w * this.scale * this.zoom), Math.floor(this.parent.canvas.height / 2 - this.camera.y * this.zoom + y * this.scale * this.zoom));
-                    }
-
-                    for (const powerup of this.grid[w][y].powerups) {
-                        powerup.draw(ctx);
-                    }
+        let i = new Vector().toCanvas(this.parent.canvas).oppositeScale(this.grid.scale).floor();
+        let l = new Vector(this.parent.canvas.width, this.parent.canvas.height).toCanvas(this.parent.canvas).oppositeScale(this.grid.scale).floor();
+        for (const sector of this.grid.range(i, l)) {
+            if (sector.physics.length > 0 || sector.scenery.length > 0) {
+                if (!sector.rendered) {
+                    sector.render();
                 }
-            }
-        }
 
-        for (const sector in this.sectors) {
-            sectors[sector] === void 0 && delete this.sectors[sector];
+                ctx.drawImage(sector.canvas, Math.floor(this.parent.canvas.width / 2 - this.camera.x * this.zoom + sector.row * this.grid.scale * this.zoom), Math.floor(this.parent.canvas.height / 2 - this.camera.y * this.zoom + sector.column * this.grid.scale * this.zoom));
+            }
+
+            for (const powerup of sector.powerups) {
+                powerup.draw(ctx);
+            }
         }
         
         ctx.beginPath(),
@@ -313,7 +297,7 @@ export default class {
                 i += " or BACKSPACE to cancel Checkpoint"
             }
         } else if (this.id === void 0) {
-            if (this.gridSize === 10 && ["line", "brush"].includes(this.toolHandler.selected)) {
+            if (this.grid.size === 10 && ["line", "brush"].includes(this.toolHandler.selected)) {
                 i += " - Grid ";
             }
 
@@ -326,11 +310,11 @@ export default class {
         ctx.strokeText(i = ": " + this.firstPlayer.targetsCollected + " / " + this.targets + "  -  " + i, 55, 16);
         ctx.fillText(i, 55, 16);
         if (this.players.length > 1) {
-            for (i = 1; i < this.players.length; i++) {
+            for (let p = 1; p < this.players.length; p++) {
                 ctx.textAlign = "right",
                 ctx.fillStyle = this.parent.theme === "dark" ? "#999" : "#aaa",
-                ctx.strokeText(i = (this.players[i].name || "Ghost") + (this.players[i].targetsCollected === this.targets ? " finished!" : ": " + this.players[i].targetsCollected + " / " + this.targets), this.parent.canvas.width - 7, 16);
-                ctx.fillText(i, this.parent.canvas.width - 7, 16),
+                ctx.strokeText(i = (this.players[p].name || "Ghost") + (this.players[p].targetsCollected === this.targets ? " finished!" : ": " + this.players[p].targetsCollected + " / " + this.targets), this.parent.canvas.width - 7, 16 * p + (p * 4));
+                ctx.fillText(i, this.parent.canvas.width - 7, 16 * p + (p * 4)),
                 ctx.textAlign = "left",
                 ctx.fillStyle = this.parent.theme === "dark" ? "#fbfbfb" : "#000";
             }
@@ -354,31 +338,18 @@ export default class {
 
     erase(vector) {
         let l = []
-        let x = Math.floor(vector.x / this.scale - 0.5);
-        let y = Math.floor(vector.y / this.scale - 0.5);
-        let e = this.grid[x] || {};
-        let c = this.grid[x + 1] || {};
-        let physics = [
-            ...((e[y] || {}).physics || []),
-            ...((e[y + 1] || {}).physics || []),
-            ...((c[y] || {}).physics || []),
-            ...((c[y + 1] || {}).physics || [])
-        ]
-
-        let scenery = [
-            ...((e[y] || {}).scenery || []),
-            ...((e[y + 1] || {}).scenery || []),
-            ...((c[y] || {}).scenery || []),
-            ...((c[y + 1] || {}).scenery || [])
-        ]
-
-        let powerups = [
-            ...((e[y] || {}).powerups || []),
-            ...((e[y + 1] || {}).powerups || []),
-            ...((c[y] || {}).powerups || []),
-            ...((c[y + 1] || {}).powerups || [])
-        ]
-
+        let x = Math.floor(vector.x / this.grid.scale - 0.5);
+        let y = Math.floor(vector.y / this.grid.scale - 0.5);
+        let physics = []
+        let scenery = []
+        let powerups = []
+        let sector1 = this.grid.sector(x, y);
+        let sector2 = this.grid.sector(x, y + 1);
+        let sector3 = this.grid.sector(x + 1, y);
+        let sector4 = this.grid.sector(x + 1, y + 1);
+        physics.push(...sector1.physics, ...sector2.physics, ...sector3.physics, ...sector4.physics);
+        scenery.push(...sector1.scenery, ...sector2.scenery, ...sector3.scenery, ...sector4.scenery);
+        powerups.push(...sector1.powerups, ...sector2.powerups, ...sector3.powerups, ...sector4.powerups);
         if (this.toolHandler.currentTool.settings.physics) {
             for (let line of physics) {
                 (line = line.erase(vector)) && l.push(line);
@@ -397,8 +368,8 @@ export default class {
             }
         }
 
-        for (const powerup in this.powerups) {
-            this.powerups[powerup].removed !== void 0 && l.push(...this.powerups.splice(powerup, 1));
+        for (const powerup in this.collectables) {
+            this.collectables[powerup].removed !== void 0 && l.push(...this.collectables.splice(powerup, 1));
         }
 
         return l;
@@ -422,9 +393,6 @@ export default class {
     }
 
     addLineInternal(line) {
-        // Do something with this?
-        // Add method to line to check if it's in view
-        // this[a.type].push(a);
         let b = function(a, b, c) {
             var zb = {};
             zb[c] || (zb[c] = {});
@@ -451,14 +419,12 @@ export default class {
                 }
             }
             return d
-        }(line.a, line.b, this.scale), c, d;
+        }(line.a, line.b, this.grid.scale), c, d;
         for (let e = 0; e < b.length; e++)
-            c = Math.floor(b[e].x / this.scale),
-            d = Math.floor(b[e].y / this.scale),
-            this.grid[c] === void 0 && (this.grid[c] = {}),
-            this.grid[c][d] === void 0 && (this.grid[c][d] = new Sector()),
-            line.type === "scenery" ? this.grid[c][d].scenery.push(line) : this.grid[c][d].physics.push(line),
-            delete this.sectors[c + "_" + d]
+            c = Math.floor(b[e].x / this.grid.scale),
+            d = Math.floor(b[e].y / this.grid.scale),
+            this.grid.sector(c, d, true)[line.type].push(line),
+            this.grid.sector(c, d).rendered = false;
     }
 
     read(a = "-18 1i 18 1i###BMX") {
@@ -481,13 +447,13 @@ export default class {
             switch (e[0]) {
                 case "T":
                     i = new Target(this, b, d);
-                    this.targets++;
-                    this.powerups.push(i);
+                    // this.targets++;
+                    this.collectables.push(i);
                     break;
 
                 case "C":
                     i = new Checkpoint(this, b, d);
-                    this.powerups.push(i);
+                    this.collectables.push(i);
                     break;
 
                 case "B":
@@ -513,16 +479,14 @@ export default class {
                 case "W":
                     i = new Teleporter(this, b, d);
                     i.createAlt(parseInt(e[3], 32), parseInt(e[4], 32));
-                    this.powerups.push(i);
+                    this.collectables.push(i);
                     break;
             }
 
             if (i) {
-                b = Math.floor(b / this.scale);
-                d = Math.floor(d / this.scale);
-                if (this.grid[b] === void 0) this.grid[b] = {};
-                if (this.grid[b][d] === void 0) this.grid[b][d] = new Sector();
-                this.grid[b][d].powerups.push(i);
+                b = Math.floor(b / this.grid.scale);
+                d = Math.floor(d / this.grid.scale);
+                this.grid.sector(b, d, true).powerups.push(i);
             }
         }
     }
@@ -540,19 +504,6 @@ export default class {
                       , u = a + h + l + c;
                     isNaN(u) || e.call(this, { x: a, y: h }, { x: l, y: c }, scenery)
                 }
-            }
-        }
-    }
-
-    addToSelf(a, b) {
-        for (var i = 0, d = a.length; i < d; i++) {
-            if (a[i].type) {
-                a[i] = new a[i].type(a[i].x,a[i].y,this)
-            }
-            if (b) {
-                this.addLineInternal(a[i])
-            } else {
-                this.addLine(a[i].a, a[i].b, a[i].type === "scenery")
             }
         }
     }
@@ -581,20 +532,18 @@ export default class {
             }
             
             return d
-        }(a, b, this.scale), d = [], e = 0, f = c.length; e < f; e++) {
-            var h = Math.floor(c[e].x / this.scale),
-                i = Math.floor(c[e].y / this.scale),
-                d = d.concat(this.grid[h][i].remove());
-            delete this.sectors[h + "_" + i]
+        }(a, b, this.grid.scale), d = [], e = 0, f = c.length; e < f; e++) {
+            var h = Math.floor(c[e].x / this.grid.scale),
+                i = Math.floor(c[e].y / this.grid.scale),
+                d = d.concat(this.grid.sector(h, i).remove());
+            this.grid.sector(h, i).rendered = false;
         }
     }
 
     reset() {
         this.currentTime = 0;
-        for (const row in this.grid) {
-            for (const column in this.grid[row]) {
-                this.grid[row][column].fix();
-            }
+        for (const sector of this.grid.sectors) {
+            sector.fix();
         }
 
         for (const player of this.players) {
@@ -603,6 +552,15 @@ export default class {
     }
 
     toString() {
-        return this.physics.map(line => line.toString()).join(",") + "#" + this.scenery.map(line => line.toString()).join(",") + "#" + this.powerups.map(powerup => powerup.toString()).join(",") + "#" + this.firstPlayer.vehicle.name;
+        let physics = [];
+        let scenery = [];
+        let powerups = [];
+        for (const sector of this.grid.sectors) {
+            physics.push(...sector.physics);
+            scenery.push(...sector.scenery);
+            powerups.push(...sector.powerups);
+        }
+
+        return physics.map(line => line.toString()).join(",") + "#" + scenery.map(line => line.toString()).join(",") + "#" + powerups.map(powerup => powerup.toString()).join(",") + "#" + this.firstPlayer.vehicle.name;
     }
 }

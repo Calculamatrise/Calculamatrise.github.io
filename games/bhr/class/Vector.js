@@ -24,10 +24,6 @@ export default class {
         }
     }
 
-    get length() {
-        return Math.sqrt(this.x * this.x + this.y * this.y);
-    }
-
     get pixel() {
         return new this.constructor((this.x - window.game.scene.camera.x) * window.game.scene.zoom + window.game.canvas.width / 2, (this.y - window.game.scene.camera.y) * window.game.scene.zoom + window.game.canvas.height / 2);
     }
@@ -38,6 +34,10 @@ export default class {
 
     toCanvas() {
         return new this.constructor(Math.round((this.x * window.devicePixelRatio - window.game.canvas.width / 2) / window.game.scene.zoom + window.game.scene.camera.x), Math.round((this.y * window.devicePixelRatio - window.game.canvas.height / 2) / window.game.scene.zoom + window.game.scene.camera.y));
+    }
+
+    getLength() {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
     copy(vector) {
@@ -68,17 +68,6 @@ export default class {
         return this;
     }
 
-    lerp(target, alpha) {
-        this.x = (1 - alpha) * this.x + alpha * target.x;
-        this.y = (1 - alpha) * this.y + alpha * target.y;
-
-        return this;
-    }
-
-    lerpTowards(target, smoothing, delta) {
-        return this.lerp(target, 1 - Math.pow(smoothing, delta));
-    }
-
     add(vector) {
         return new this.constructor(this.x + vector.x, this.y + vector.y);
     }
@@ -100,7 +89,7 @@ export default class {
     }
 
     lengthSquared() {
-        return this.x * this.x + this.y * this.y;
+        return this.x ** 2 + this.y ** 2;
     }
 
     distanceTo(vector) {

@@ -1,7 +1,7 @@
 import Vector from "../Vector.js";
 import Entity from "./part/Entity.js";
 import Wheel from "./part/Wheel.js";
-import Spring from "../Spring.js";
+import Spring from "./physics/Spring.js";
 
 export default class {
     constructor(parent) {
@@ -9,28 +9,21 @@ export default class {
 
         this.head = new Entity(this);
         this.head.drive = this.destroy.bind(this);
-        this.frontWheel = new Wheel(this);
         this.rearWheel = new Wheel(this);
+        this.frontWheel = new Wheel(this);
 
         this.rearSpring = new Spring(this.head, this.rearWheel);
         this.chasse = new Spring(this.rearWheel, this.frontWheel);
         this.frontSpring = new Spring(this.frontWheel, this.head);
 
-        this.masses = [
-            this.head,
-            this.frontWheel,
-            this.rearWheel
-        ]
-
-        this.springs = [
-            this.rearSpring,
-            this.chasse,
-            this.frontSpring
-        ]
+        this.masses.push(this.head, this.frontWheel, this.rearWheel);
+        this.springs.push(this.rearSpring, this.chasse, this.frontSpring);
     }
-
     dir = 1;
     pedalSpeed = 0;
+    rotationFactor = 0;
+    masses = [];
+    springs = [];
     get rider() {
         const rider = {};
 
@@ -64,7 +57,7 @@ export default class {
         return rider;
     }
     
-    swap() {
+    swap() {        
         this.dir *= -1;
         this.chasse.swap();
         let rearSpring = this.rearSpring.leff;
@@ -74,28 +67,47 @@ export default class {
 
     update(delta) {
         if (!this.parent.dead)
-            this.updateControls()
+            this.updateControls();
+
+        for (let a = this.springs.length - 1; a >= 0; a--) {
+            this.springs[a].update();
+        }
+
+        for (let a = this.masses.length - 1; a >= 0; a--) {
+            this.masses[a].update(delta);
+        }
 
         if (this.rearWheel.touching && this.frontWheel.touching) {
             this.parent.slow = false;
         }
 
-        for (const spring of this.springs) {
-            spring.update();
-        }
-
-        for (const mass of this.masses) {
-            mass.update(delta);
-        }
-
         if (!this.parent.slow && !this.parent.dead) {
             this.updateControls();
 
-            for (const spring of this.springs)
-                spring.update();
+            for (let a = this.springs.length - 1; a >= 0; a--) {
+                this.springs[a].update();
+            }
 
-            for (const mass of this.masses)
-                mass.update(delta);
+            for (let a = this.masses.length - 1; a >= 0; a--) {
+                this.masses[a].update(delta);
+            }
+        }
+    }
+
+    updateControls() {
+        this.rearWheel.motor += (this.parent.gamepad.downKeys.has("up") - this.rearWheel.motor) / 10;
+        this.rearWheel.brake = this.frontWheel.brake = this.parent.gamepad.downKeys.has("down");
+        
+        let rotate = this.parent.gamepad.downKeys.has("left") - this.parent.gamepad.downKeys.has("right");
+        this.rearSpring.lean(rotate * this.dir * 5);
+        this.frontSpring.lean(-rotate * this.dir * 5);
+        this.chasse.rotate(rotate / this.rotationFactor);
+        if (this.parent.gamepad.downKeys.has("up")) {
+            this.pedalSpeed += this.rearWheel.pedalSpeed / 5;
+            if (!rotate) {
+                this.rearSpring.lean(-7);
+                this.frontSpring.lean(7);
+            }
         }
     }
 
@@ -119,37 +131,28 @@ export default class {
     }
 
     clone() {
-        const bike = new this.constructor(this.parent);
+        const clone = new this.constructor(this.parent);
 
-        bike.dir = this.dir;
-        bike.pedalSpeed = this.pedalSpeed;
-        bike.head = this.head.clone();
-        bike.frontWheel = this.frontWheel.clone();
-        bike.rearWheel = this.rearWheel.clone();
-        bike.rearSpring = this.rearSpring.clone();
-        bike.chasse = this.chasse.clone();
-        bike.frontSpring = this.frontSpring.clone();
+        clone.dir = this.dir;
 
-        return bike;
-    }
+        clone.head.position.copy(this.head.position);
+        clone.head.old.copy(this.head.old);
+        clone.head.velocity.copy(this.head.velocity);
+        
+        clone.rearWheel.position.copy(this.rearWheel.position);
+        clone.rearWheel.old.copy(this.rearWheel.old);
+        clone.rearWheel.velocity.copy(this.rearWheel.velocity);
+        clone.rearWheel.motor = this.rearWheel.motor;
 
-    restore(clone) {
-        this.dir = clone.dir;
-        this.pedalSpeed = clone.pedalSpeed;
-        this.head.collide = true;
-        this.head.position = clone.head.position.clone();
-        this.head.old = clone.head.old.clone();
-        this.head.velocity = clone.head.velocity.clone();
-        this.frontWheel.position = clone.frontWheel.position.clone();
-        this.frontWheel.old = clone.frontWheel.old.clone();
-        this.frontWheel.velocity = clone.frontWheel.velocity.clone();
-        this.rearWheel.position = clone.rearWheel.position.clone();
-        this.rearWheel.old = clone.rearWheel.old.clone();
-        this.rearWheel.velocity = clone.rearWheel.velocity.clone();
-        this.frontWheel.motor = clone.frontWheel.motor;
-        this.rearWheel.motor = clone.rearWheel.motor;
-        this.rearSpring.leff = clone.rearSpring.leff;
-        this.chasse.leff = clone.chasse.leff;
-        this.frontSpring.leff = clone.frontSpring.leff;
+        clone.frontWheel.position.copy(this.frontWheel.position);
+        clone.frontWheel.old.copy(this.frontWheel.old);
+        clone.frontWheel.velocity.copy(this.frontWheel.velocity);
+        clone.frontWheel.motor = this.frontWheel.motor;
+
+        clone.rearSpring.leff = this.rearSpring.leff;
+        clone.chasse.leff = this.chasse.leff;
+        clone.frontSpring.leff = this.frontSpring.leff;
+
+        return clone;
     }
 }

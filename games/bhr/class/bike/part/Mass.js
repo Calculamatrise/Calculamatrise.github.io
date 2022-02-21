@@ -4,7 +4,6 @@ export default class {
     constructor(parent) {
         this.parent = parent;
     }
-    
     size = 10;
     friction = 0;
     collide = true;
