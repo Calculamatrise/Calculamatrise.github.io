@@ -1,6 +1,5 @@
 export default class {
     ui = null;
-
     get active() {
         return this.ui && !!this.ui.parentElement;
     }
@@ -19,10 +18,6 @@ export default class {
 
         if (!localStorage.getItem("dark")) {
             localStorage.setItem("dark", window.matchMedia("(prefers-color-scheme: dark)").matches);
-        }
-
-        if (JSON.parse(localStorage.getItem("dark"))) {
-            dark.checked = true;
         }
     }
 }
