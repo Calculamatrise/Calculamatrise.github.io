@@ -13,7 +13,7 @@ export default class extends EventEmitter {
      * 
      * @param {String} pathname 
      * @param {Object[Boolean]} options[popped] 
-     * @returns {Promise} void
+     * @returns {Promise}
      */
     async navigate(pathname, { popped = false } = {}) {
         if (pathname === void 0 || typeof pathname !== "string") {

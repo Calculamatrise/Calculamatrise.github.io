@@ -16,8 +16,8 @@ export default class {
 
         document.body.prepend(this.ui);
 
-        if (!localStorage.getItem("dark")) {
-            localStorage.setItem("dark", window.matchMedia("(prefers-color-scheme: dark)").matches);
+        if (JSON.parse(localStorage.getItem("dark")) === null) {
+            Application.settings.theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
         }
     }
 }

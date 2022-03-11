@@ -2,7 +2,7 @@
     <button class="secondary" data-view="/" active>Home</button>
     <button class="secondary" data-view="/svg-drawpad/">SVG Drawpad</button>
     <dropdown>
-        <button class="secondary" data-view="/frhd/tools/">FRHD Tools</button>
+        <button class="secondary">FRHD Tools</button>
         <content>
             <button class="secondary" data-view="/frhd/tools/render/">Render</button>
             <button class="secondary" data-view="/frhd/tools/combine/">Combine</button>
@@ -14,7 +14,8 @@
     <button class="secondary" data-view="/contact/">Contact</button>
 </left-nav>
 <right-nav>
-    <button class="secondary" id="dark" onclick="localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))), theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css'">Change Theme</button>
+    <!-- Add a dropdown? -->
+    <button class="secondary" id="dark" onclick="theme.href = (Application.storage.theme = Application.storage.theme !== 'dark' ? 'dark' : 'light') === 'dark' ? '/dark.css' : '/light.css'">Change Theme</button>
 </right-nav>
 <mobile-nav>
     <select oninput="

@@ -3,17 +3,17 @@
     <head>
         <title>Headquarters - Calculamatrise</title>
         <link rel="stylesheet" href="/style.css">
-        <link rel="stylesheet" href="/light.css" id="theme" onload="JSON.parse(localStorage.getItem('dark')) && (this.href = '/dark.css')">
+        <link rel="stylesheet" href="/dark.css" id="theme" onload="Application.storage.theme === 'light' && (this.href = '/light.css')">
         <link rel="manifest" href="/manifest.json">
         <meta name="author" content="Calculamatrise">
         <meta name="title" content="Calculamatrise">
         <meta name="description" content="A programmer's home.">
-        <meta name="image" content="/favicon.ico">
+        <meta name="image" content="/images/favicon.png">
         <meta property="og:title" content="Calculamatrise">
         <meta property="og:description" content="A programmer's home.">
         <meta property="og:image" content="/images/favicon.png">
         <meta property="og:url" content="https://calculamatrise.github.io/">
-        <script async src="/bootstrap.js" type="module"></script>
+        <script type="module" src="/bootstrap.js" async></script>
     </head>
     <body>
         <nav></nav>

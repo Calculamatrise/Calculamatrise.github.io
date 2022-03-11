@@ -1,6 +1,5 @@
 export default class {
     #events = new Map();
-
     on(event, func = function() {}) {
         if (event === void 0 || typeof event !== "string") {
             throw new Error("INVALID_EVENT");
@@ -13,15 +12,11 @@ export default class {
 
     emit(event, ...args) {
         if (event === void 0 || typeof event !== "string") {
-            return new Error("INVALID_EVENT");
+            return;
         }
 
         event = this.#events.get(event);
         if (event === void 0 || typeof event !== "function") {
-            return;
-        }
-
-        if (!event && typeof event !== "function") {
             return new Error("INVALID_FUNCTION");
         }
 
