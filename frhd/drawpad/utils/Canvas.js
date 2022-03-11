@@ -33,36 +33,74 @@ export default class {
 	events = new EventHandler();
 	tools = new ToolHandler(this);
 	text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-	get dark() {
+	get settings() {
+        let settings; this.settings = {};
+        return settings = new Proxy(JSON.parse(localStorage.getItem("frhd-drawpad-settings")), {
+            get(target, key) {
+                if (typeof target[key] === "object" && target[key] !== null) {
+                    return new Proxy(target[key], this);
+                }
+
+                return target[key];
+            },
+            set(object, property, value) {
+                object[property] = value;
+
+                localStorage.setItem("frhd-drawpad-settings", JSON.stringify(settings));
+            
+                return true;
+            }
+        });
+    }
+
+    set settings(value) {
+        localStorage.setItem("frhd-drawpad-settings", JSON.stringify(Object.assign({
+            randomizeStyle: false,
+            styles: {
+                primary: "#000000",
+                secondary: "#aaaaaa"
+            },
+            theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+        }, Object.assign(JSON.parse(localStorage.getItem("frhd-drawpad-settings")) ?? {}, value ?? {}))));
+    }
+    
+    get dark() {
 		return JSON.parse(localStorage.getItem("dark")) ?? window.matchMedia('(prefers-color-scheme: dark)').matches;
 	}
+
 	get tool() {
 		return this.tools.selected;
 	}
+
 	get primary() {
 		return this.dark ? "#fff" : "#000";
 	}
+
 	get secondary() {
 		return this.dark ? "#999" : "#aaa";
 	}
+
 	get fill() {
 		return this.#fill;
 	}
+
 	set fill(boolean) {
 		this.text.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
 		this.tool.element.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
 
 		this.#fill = boolean;
 	}
+
     get layerDepth() {
 		return this.#layer;
 	}
+
 	set layerDepth(layer) {
 		clearTimeout(this.text.timeout);
 
 		this.text.innerHTML = "Layer " + layer;
-		this.text.setAttribute("x", this.viewBox.width / 2 + this.viewBox.x - this.text.innerHTML.length * 2.5);
-		this.text.setAttribute("y", 25 + this.viewBox.y);
+		this.text.setAttribute("x", this.view.width / 2 + this.view.x - this.text.innerHTML.length * 2.5);
+		this.text.setAttribute("y", 25 + this.view.y);
 		this.text.setAttribute("fill", this.dark ? "#FBFBFB" : "1B1B1B");
 		this.view.appendChild(this.text);
 
@@ -72,12 +110,15 @@ export default class {
 
 		this.#layer = layer;
 	}
+
 	get layer() {
 		return this.layers.get(this.#layer);
 	}
+
 	get container() {
 		return this.view.parentElement || document.querySelector("#container");
 	}
+
 	import(data) {
 		try {
             throw new Error("INCOMPLETE METHOD");
@@ -90,6 +131,7 @@ export default class {
 			console.error(error);
 		}
 	}
+
 	resize(event) {
 		this.view.setAttribute("height", getComputedStyle(this.view).getPropertyValue('height').slice(0, -2) * window.devicePixelRatio);
 		this.view.setAttribute("width", getComputedStyle(this.view).getPropertyValue('width').slice(0, -2) * window.devicePixelRatio);
@@ -99,6 +141,7 @@ export default class {
 
         this.draw(this);
 	}
+
 	undo() {
 		const event = this.events.pop();
 		if (event) {
@@ -156,6 +199,7 @@ export default class {
 
 		return null;
 	}
+
 	redo() {
 		const event = this.events.cache.pop();
 		if (event) {
@@ -213,21 +257,13 @@ export default class {
 
 		return null;
 	}
+
 	mouseDown(event) {
-		const patchNotes = this.container.querySelector("#patch-notes") || {};
-		if (patchNotes.iframe) {
-			patchNotes.iframe.remove();
-
-			patchNotes.iframe = null;
-		}
-
 		if (event.button === 1) {
-			this.tools.select(this.tool.constructor.id === "line" ? "brush" : this.tool.constructor.id === "brush" ? "eraser" : this.tool.constructor.id === "eraser" ? "camera" : "line");
-			
+			this.tools.select(this.tools._selected === "line" ? "brush" : this.tools._selected === "brush" ? "eraser" : this.tools._selected === "eraser" ? "camera" : "line");
 			return;
 		} else if (event.button === 2) {
 			// draw scenery lines
-			
 			return;
 		}
 
@@ -255,13 +291,13 @@ export default class {
 		}
 
         this.draw();
-		
 		return;
 	}
+
 	mouseMove(event) {
 		if (this.mouse.isDown && !this.mouse.isAlternate) {	
 			if (event.shiftKey) {
-				this.tools.get("camera").stroke(event);
+				this.tools.cache.get("camera").stroke(event);
 	
 				return;
 			}
@@ -269,25 +305,23 @@ export default class {
 			this.tool.stroke(event);
 		}
 
-		if (["curve", "eraser"].includes(this.tool.constructor.id)) {
+		if (["curve", "eraser"].includes(this.tools._selected)) {
 			this.tool.stroke(event);
 		}
 
-        if (this.tool.active) {
-            this.draw();
-        }
-
+        this.draw();
 		return;
 	}
+
 	mouseUp(event) {
 		if (!this.mouse.isAlternate) {
 			this.tool.clip(event);
 		}
 
         this.draw();
-		
 		return;
 	}
+
 	keyDown(event) {
 		event.preventDefault();
 		event.stopPropagation();
@@ -304,7 +338,7 @@ export default class {
 				break;
 			
 			case "=":
-				if (this.tool.constructor.id === "camera" || event.ctrlKey) {
+				if (this.tools._selected === "camera" || event.ctrlKey) {
 					if (this.zoom <= 1) {
 						break;
 					}
@@ -328,7 +362,7 @@ export default class {
 				break;
 				
 			case "-":
-				if (this.tool.constructor.id === "camera" || event.ctrlKey) {
+				if (this.tools._selected === "camera" || event.ctrlKey) {
 					if (this.zoom >= 10) {
 						break;
 					}
@@ -388,7 +422,7 @@ export default class {
 				break;
 	
 			case "c":
-				if (this.tool.constructor.id === "select" && event.ctrlKey) {
+				if (this.tools._selected === "select" && event.ctrlKey) {
 					this.tool.copy();
 	
 					break;
@@ -397,7 +431,7 @@ export default class {
 				break;
 	
 			case "v":
-				if (this.tool.constructor.id === "select" && event.ctrlKey) {
+				if (this.tools._selected === "select" && event.ctrlKey) {
 					this.tool.paste();
 	
 					break;
@@ -406,13 +440,16 @@ export default class {
 				break;
 		}
 	}
+
     draw() {
         this.ctx.clearRect(0, 0, this.view.width, this.view.height);
         this.layers.cache.forEach(layer => layer.draw(this));
     }
+
 	toString() {
 		return this.view.outerHTML;
 	}
+
 	close() {
 		this.mouse.close();
 		this.events.close();

@@ -8,6 +8,7 @@ export default class {
             this.fillStyle = fillStyle;
         }
     }
+    alpha = 1;
     strokeWidth = 4;
     strokeStyle = "#000000";
     fillStyle = "#000000";
@@ -37,20 +38,18 @@ export default class {
             }
         }
 
-        this.points.push(x, y);
+        this.points.push(parseInt(x), parseInt(y));
     }
+    
     draw(ctx) {
         ctx.save();
-
+        ctx.beginPath();
         ctx.strokeWidth = this.strokeWidth;
         ctx.strokeStyle = this.strokeStyle;
         ctx.fillStyle = this.fillStyle;
-        
-        ctx.beginPath();
         for (let i = 0; i in this.points; i += 2) {
             if (i <= 1) {
                 ctx.moveTo(this.points[i], this.points[i + 1]);
-
                 continue;
             }
 
@@ -60,58 +59,37 @@ export default class {
         ctx.stroke();
         ctx.restore();
     }
+    
     erase(event) {
-        const points = this.getAttribute("points").split(",").map(function(point) {
-            const xAndY = point.split(/\s+/g);
-
-            return {
-                x: parseInt(xAndY[0]),
-                y: parseInt(xAndY[1])
-            }
-        });
-
-        return !!points.find((point, index, points) => {
-            if (!points[index - 1]) {
+        return !!this.points.find((point, index, points) => {
+            if (!points[index - 3]) {
                 return false;
             }
 
             let vector = {
-                x: (parseInt(points[index - 1].x) - window.canvas.view.x) - (parseInt(point.x) - window.canvas.view.x),
-                y: (parseInt(points[index - 1].y) - window.canvas.view.y) - (parseInt(point.y) - window.canvas.view.y)
+                x: points[index - 3] - window.canvas.view.x - points[index - 1] - window.canvas.view.x,
+                y: points[index - 2] - window.canvas.view.y - point - window.canvas.view.y
             }
+
             let len = Math.sqrt(vector.x ** 2 + vector.y ** 2);
-            let b = (event.offsetX - (parseInt(point.x) - window.canvas.view.x)) * (vector.x / len) + (event.offsetY - (parseInt(point.y) - window.canvas.view.y)) * (vector.y / len);
-            const v = {
-                x: 0,
-                y: 0
-            }
-
-            if (b <= 0) {
-                v.x = parseInt(point.x) - window.canvas.view.x;
-                v.y = parseInt(point.y) - window.canvas.view.y;
-            } else if (b >= len) {
-                v.x = parseInt(points[index - 1].x) - window.canvas.view.x;
-                v.y = parseInt(points[index - 1].y) - window.canvas.view.y;
+            let b = (event.offsetX - (points[index - 1] - window.canvas.view.x)) * (vector.x / len) + (event.offsetY - (point - window.canvas.view.y)) * (vector.y / len);
+            if (b >= len) {
+                vector.x = points[index - 3] - window.canvas.view.x - event.offsetX;
+                vector.y = points[index - 2] - window.canvas.view.y - event.offsetY;
             } else {
-                v.x = (parseInt(point.x) - window.canvas.view.x) + vector.x / len * b;
-                v.y = (parseInt(point.y) - window.canvas.view.y) + vector.y / len * b;
+                const clone = window.structuredClone(vector);
+                vector.x = parseInt(points[index - 1]) - window.canvas.view.x - event.offsetX;
+                vector.y = parseInt(point) - window.canvas.view.y - event.offsetY;
+                if (b > 0) {
+                    vector.x += clone.x / len * b;
+                    vector.y += clone.y / len * b;
+                }
             }
 
-            const res = {
-                x: event.offsetX - v.x,
-                y: event.offsetY - v.y
-            }
-
-            len = Math.sqrt(res.x ** 2 + res.y ** 2);
-            if (len <= window.canvas.tool.size) {
-                this.remove();
-
-                return true;
-            }
-
-            return false;
+            return Math.sqrt(vector.x ** 2 + vector.y ** 2) <= window.canvas.tool.size && !!(this.points.splice(index - 3, 4));
         });
     }
+
     clone() {
         const clone = new this.constructor(this.points, {
             strokeWidth: this.strokeWidth,

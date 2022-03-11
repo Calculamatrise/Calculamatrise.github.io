@@ -2,8 +2,6 @@ import Stroke from "../utils/Stroke.js";
 import Tool from "./Tool.js";
 
 export default class extends Tool {
-    static id = "brush";
-
     _size = 4;
     element = new Stroke();
     init() {

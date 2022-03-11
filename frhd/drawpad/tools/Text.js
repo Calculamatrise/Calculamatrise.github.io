@@ -1,8 +1,6 @@
 import Tool from "./Tool.js";
 
 export default class extends Tool {
-    static id = "text";
-
     active = false;
     element = document.createElementNS("http://www.w3.org/2000/svg", "text");
     mouseDown() {

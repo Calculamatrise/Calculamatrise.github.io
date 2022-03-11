@@ -233,26 +233,25 @@ export default class {
     get opacity() {
         return this.alpha;
     }
+
     set opacity(alpha) {
         this.alpha = alpha;
-
-        this.base.style.setProperty("opacity", this.alpha);
+        canvas.draw();
     }
+
     redraw() {
         return;
     }
+
     toggleVisiblity() {
         this.hidden = !this.hidden;
-        if (this.hidden) {
-            for (const line of this.lines) {
-                line.remove();
-            }
-        } else {
-            for (const line of this.lines) {
-                window.canvas.view.prepend(line);
-            }
+        for (const line of this.lines) {
+            line.hidden = this.hidden;
         }
+
+        canvas.draw();
     }
+
     move(newIndex) {
         if (typeof newIndex !== "number" || newIndex === void 0 || this.id === newIndex) {
             throw new Error("Invalid index.");
@@ -280,25 +279,30 @@ export default class {
             behavior: "smooth"
         });
     }
+
     draw(canvas) {
         canvas.ctx.strokeStyle = "white";
         canvas.ctx.strokeWidth = 2;
 
-        canvas.tool.element.draw(canvas.ctx);
+        canvas.tool.element !== void 0 && canvas.tool.element.draw(canvas.ctx);
         for (const line of this.lines) {
+            if (line.hidden) {
+                continue;
+            }
+
+            canvas.ctx.save();
+            canvas.ctx.globalAlpha = this.alpha;
             canvas.ctx.strokeStyle = "white";
             canvas.ctx.strokeWidth = 2;
-
             line.draw(canvas.ctx);
+            canvas.ctx.restore();
         }
     }
-    clear() {
-        for (const line of this.lines) {
-            line.remove();
-        }
 
+    clear() {
         this.lines = []
     }
+
     remove() {
         this.element.remove();
         this.base.remove();

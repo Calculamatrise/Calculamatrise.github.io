@@ -3,13 +3,12 @@ import Tool from "./Tool.js";
 import Stroke from "../utils/Stroke.js";
 
 export default class extends Tool {
-    static id = "line";
-    
     _size = 4;
     element = new Stroke();
     init() {
         this.element.strokeWidth = this.size;
     }
+
     press(event) {
         this.active = true;
 
@@ -23,6 +22,7 @@ export default class extends Tool {
             this.mouse.position.y
         ]);
     }
+
     stroke(event) {
         if (!this.active) {
             return;
@@ -35,6 +35,7 @@ export default class extends Tool {
             this.mouse.position.y
         ]);
     }
+
     clip(event) {
         if (!this.active) {
             return;
@@ -61,6 +62,7 @@ export default class extends Tool {
             value: line
         });
     }
+
     close() {
         this.active = false;
         
