@@ -41,6 +41,8 @@ export default class extends Tool {
                 this.mouse.pointA.y + this.radius * Math.sin(i * Math.PI / 180)
             ]);
         }
+
+        this.element.addPoints(this.element.points[0]);
     }
 
     clip(event) {

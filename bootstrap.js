@@ -6,21 +6,16 @@ window.Application = new App();
 
 window.Application.init();
 
-document.body.addEventListener("click", function(event) {
-    if (event.target.tagName === "CHECKBOX") {
-		event.target[(event.target.hasAttribute("checked") ? "remove" : "set") + "Attribute"]("checked", "");
-	}
-    
-    const href = event.target.getAttribute("data-view");
-    if (href) {
-        Application.router.navigate(href);
-        // location.assign(href);
-    }
-});
-
 document.addEventListener("mousedown", function(event) {
     this.documentElement.style.setProperty("--offsetX", event.offsetX);
     this.documentElement.style.setProperty("--offsetY", event.offsetY);
+});
+
+document.addEventListener("scroll", function(event) {
+    const rect = document.body.getBoundingClientRect();
+    if (rect.y < 0) {
+        Application.navigation.ui.style.setProperty("background-image", `linear-gradient(180deg, #${Application.storage.theme === "dark" ? "2d2d2d, rgba(45, 45, 45" : "d2d2d2, rgba(210, 210, 210"}, ${Math.min(.66 - (Application.navigation.ui.getBoundingClientRect().height - Math.abs(rect.y)) / 100, 1)}))`);
+    }
 });
 
 window.addEventListener("popstate", function(event) {
@@ -29,12 +24,10 @@ window.addEventListener("popstate", function(event) {
     });
 });
 
-document.addEventListener("scroll", function(event) {
-    const rect = document.body.getBoundingClientRect();
-    const nav = document.querySelector("nav");
-    if (rect.y < 0) {
-        nav.style.setProperty("background-image", `linear-gradient(180deg, #${Application.storage.theme ? "2d2d2d, rgba(45, 45, 45" : "d2d2d2, rgba(210, 210, 210"}, ${Math.min(.66 - (nav.getBoundingClientRect().height - Math.abs(rect.y)) / 100, 1)}))`);
-    }
+document.body.addEventListener("click", function(event) {
+    if (event.target.tagName === "CHECKBOX") {
+		event.target[(event.target.hasAttribute("checked") ? "remove" : "set") + "Attribute"]("checked", "");
+	}
 });
 
 if ("serviceWorker" in navigator) {

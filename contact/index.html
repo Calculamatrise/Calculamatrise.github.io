@@ -2,105 +2,100 @@
 <html>
     <head>
         <title>Contact - Calculamatrise</title>
-        <link rel="stylesheet" href="/style.css">
-        <link rel="stylesheet" href="/light.css" id="theme" onload="JSON.parse(localStorage.getItem('dark')) && (this.href = '/dark.css')">
+        <link rel="stylesheet" href="/styles/default.css">
         <script src="/bootstrap.js" type="module"></script>
     </head>
     <body>
-        <div class="content">
-            <h2>Discord</h2>
-            <div class="message">
-                <div class="split-input" value="">
-                    <input type="text" class="username" placeholder="Username" oninput="
-                        this.parentElement.value = `${this.value}#${this.parentElement.querySelector('.discriminator').value}`;
-                    ">
-                    #
-                    <input type="number" class="discriminator" placeholder="Discriminator" maxlength = "4" oninput="
-                        if (this.value.length > this.maxLength) {
-                            this.value = this.value.slice(0, this.maxLength);
-                        }
-                        this.parentElement.value = `${this.parentElement.querySelector('.username').value}#${this.value}`;
-                    " style="width: 130px;">
-                </div>
-                <br>
-                <textarea placeholder="Message" class="content" style="width: 335px; height: 50px; font-family: Arial, Helvetica, sans-serif;"></textarea>
-                <p class="success" style="color: green;"></p>
-                <p class="error" style="color: red;"></p>
-                <button class="primary" style="width: 355px;" onclick="
-                    this.classList.add('loading');
-                    const message = document.querySelector('.message');
-                    const { value: author } = message.querySelector('.split-input'), { value: content } = message.querySelector('.content');
-                    const success = message.querySelector('.success');
-                    const error = message.querySelector('.error');
-                    if (!author || !message) {
-                        this.classList.remove('loading');
-
-                        return error.innerHTML = 'Username, discriminator and message are required.';
+        <h2>Discord</h2>
+        <div class="message">
+            <div class="split-input" value="">
+                <input type="text" class="username" placeholder="Username" oninput="
+                    this.parentElement.value = `${this.value}#${this.parentElement.querySelector('.discriminator').value}`;
+                ">
+                #
+                <input type="number" class="discriminator" placeholder="Discriminator" maxlength = "4" oninput="
+                    if (this.value.length > this.maxLength) {
+                        this.value = this.value.slice(0, this.maxLength);
                     }
-
-                    if (!author.match(/.+#\d+/gi) || author.split(/#/gi)[1].length != 4) {
-                        this.classList.remove('loading');
-
-                        return error.innerHTML = 'Invalid discord tag, please try again.';
-                    } else if (author.match(/calculamatrise#2780/gi)) {
-                        this.classList.remove('loading');
-
-                        return error.innerHTML = 'Impersonating another user won\'t get you anywhere, please try again.';
-                    } else {
-                        error.innerHTML = '';
-                        fetch('https:\/\/discord.com/api/webhooks/858780674449342475/HyGcfmVO_l8J2uDze_ke8FfzzFrU48MT3UZr1xLJO05xCG9qEMImL3ewQwRBu5I5BILH', {
-                            headers: {
-                                'content-type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                username: author,
-                                avatar_url: '',
-                                content: content,
-                                tts: false
-                            }),
-                            method: 'POST'
-                        }).then((response) => {
-                            if (response.status === 400) {
-                                this.classList.remove('loading');
-
-                                return response.json();
-                            }
-                                
-                            return true;
-                        }).then((response) => {
-                            if (typeof response === 'boolean' && response) {
-                                this.classList.remove('loading');
-
-                                return success.innerHTML = 'Message sent!';
-                            }
-
-                            this.classList.remove('loading');
-
-                            success.innerHTML = '';
-                            return error.innerHTML = response.message;
-                        });
-                    }
-                ">Send</button>
+                    this.parentElement.value = `${this.parentElement.querySelector('.username').value}#${this.value}`;
+                " style="width: 130px;">
             </div>
             <br>
-            <input class="button" style="width: 220px; opacity: .5;" value="Calculamatrise#2780" readonly>
-            <button onclick="window.open('https:\/\/discord.gg\/mDvh7V7AK3')">Join Discord</button>
+            <textarea placeholder="Message" class="content" style="width: 335px; height: 50px; font-family: Arial, Helvetica, sans-serif;"></textarea>
+            <p class="success" style="color: green;"></p>
+            <p class="error" style="color: red;"></p>
+            <button class="primary" style="width: 355px;" onclick="
+                this.classList.add('loading');
+                const message = document.querySelector('.message');
+                const { value: author } = message.querySelector('.split-input'), { value: content } = message.querySelector('.content');
+                const success = message.querySelector('.success');
+                const error = message.querySelector('.error');
+                if (!author || !message) {
+                    this.classList.remove('loading');
 
-            <h2>Github</h2>
-            <input class="button" style="width: 220px; opacity: .5;" value="Calculamatrise" readonly>
-            <button onclick="window.open('https:\/\/github.com\/Calculamatrise')">View Profile</button>
+                    error.innerHTML = 'Username, discriminator and message are required.';
+                } else if (!author.match(/.+#\d+/gi) || author.split(/#/gi)[1].length != 4) {
+                    this.classList.remove('loading');
 
-            <h2>Twitter</h2>
-            <input class="button" style="width: 220px; opacity: .5;" value="@Calculamatrise" readonly>
-            <button onclick="window.open('https:\/\/twitter.com\/calculamatrise')">View Porfile</button>
+                    error.innerHTML = 'Invalid discord tag, please try again.';
+                } else if (author.match(/calculamatrise#2780/gi)) {
+                    this.classList.remove('loading');
 
-            <h2>Facebook</h2>
-            <input class="button" style="width: 220px; opacity: .5;" value="Calculamatrise" readonly>
-            <button onclick="window.open('https:\/\/www.facebook.com\/Calculamatrise')">View Porfile</button>
+                    error.innerHTML = 'Impersonating another user won\'t get you anywhere, please try again.';
+                } else {
+                    error.innerHTML = '';
+                    fetch('https:\/\/discord.com/api/webhooks/858780674449342475/HyGcfmVO_l8J2uDze_ke8FfzzFrU48MT3UZr1xLJO05xCG9qEMImL3ewQwRBu5I5BILH', {
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username: author,
+                            avatar_url: '',
+                            content: content,
+                            tts: false
+                        }),
+                        method: 'POST'
+                    }).then((response) => {
+                        if (response.status === 400) {
+                            this.classList.remove('loading');
 
-            <h2>Instagram</h2>
-            <input class="button" style="width: 220px; opacity: .5;" value="Calculamatrise" readonly>
-            <button onclick="window.open('https:\/\/www.instagram.com\/calculamatrise')">View Porfile</button>
+                            return response.json();
+                        }
+                            
+                        return true;
+                    }).then((response) => {
+                        if (typeof response === 'boolean' && response) {
+                            this.classList.remove('loading');
+
+                            return success.innerHTML = 'Message sent!';
+                        }
+
+                        this.classList.remove('loading');
+
+                        success.innerHTML = '';
+                        return error.innerHTML = response.message;
+                    });
+                }
+            ">Send</button>
         </div>
+        <br>
+        <input class="button" style="width: 220px; opacity: .5;" value="Calculamatrise#2780" readonly>
+        <button onclick="window.open('https:\/\/discord.gg\/mDvh7V7AK3')">Join Discord</button>
+
+        <h2>Github</h2>
+        <input class="button" style="width: 220px; opacity: .5;" value="Calculamatrise" readonly>
+        <button onclick="window.open('https:\/\/github.com\/Calculamatrise')">View Profile</button>
+
+        <h2>Twitter</h2>
+        <input class="button" style="width: 220px; opacity: .5;" value="@Calculamatrise" readonly>
+        <button onclick="window.open('https:\/\/twitter.com\/calculamatrise')">View Porfile</button>
+
+        <h2>Facebook</h2>
+        <input class="button" style="width: 220px; opacity: .5;" value="Calculamatrise" readonly>
+        <button onclick="window.open('https:\/\/www.facebook.com\/Calculamatrise')">View Porfile</button>
+
+        <h2>Instagram</h2>
+        <input class="button" style="width: 220px; opacity: .5;" value="Calculamatrise" readonly>
+        <button onclick="window.open('https:\/\/www.instagram.com\/calculamatrise')">View Porfile</button>
     </body>
 </html>

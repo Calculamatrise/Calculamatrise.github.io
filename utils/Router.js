@@ -43,40 +43,27 @@ export default class extends EventEmitter {
         let parser = new DOMParser();
         data = parser.parseFromString(data, "text/html");
 
-        let content = document.querySelector(".content") || document.createElement("div");
-        content.className = "content";
-        content.innerHTML = data.querySelector(".content").innerHTML;
-
         /**
          * @todo figure out how to add/remove scripts/previously used resources from the page
          */
-        for (const script of [
-            ...document.body.querySelectorAll("link"),
-            ...document.body.querySelectorAll("script")
-        ]) {
-            script.remove();
-        }
 
-        for (const element of [
-            ...data.body.querySelectorAll("link")
-        ]) {
+        for (const element of data.body.querySelectorAll("link")) {
             const link = document.createElement("link");
             link.rel = element.rel || "";
             link.href = element.href;
-        
+
             document.body.appendChild(link);
         }
 
-        for (const element of [
-            ...data.body.querySelectorAll("script")
-        ]) {
+        for (const element of data.body.querySelectorAll("script")) {
             const script = document.createElement("script");
             script.type = element.type || "";
             script.src = element.src;
-        
+
             document.body.appendChild(script);
         }
 
+        document.body.replaceChildren(...data.body.children);
         document.title = data.title;
     }
 }

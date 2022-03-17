@@ -2,11 +2,16 @@ const OFFLINE_CACHE = "offline";
 const OFFLINE_PATHNAME = "/offline/";
 const OFFLINE_RESOURCES = [
     OFFLINE_PATHNAME,
+    "/utils/Application.js",
+    "/utils/EventEmitter.js",
+    "/utils/Navigation.js",
+    "/utils/Router.js",
+    "/bootstrap.js",
     "/nav.html",
     "/head.html",
-    "/style.css",
-    "/light.css",
-    "/dark.css",
+    "/styles/style.css",
+    "/styles/light.css",
+    "/styles/dark.css",
     "/favicon.ico"
 ];
 

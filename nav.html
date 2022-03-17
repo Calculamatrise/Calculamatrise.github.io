@@ -15,7 +15,7 @@
 </left-nav>
 <right-nav>
     <!-- Add a dropdown? -->
-    <button class="secondary" id="dark" onclick="theme.href = (Application.storage.theme = Application.storage.theme !== 'dark' ? 'dark' : 'light') === 'dark' ? '/dark.css' : '/light.css'">Change Theme</button>
+    <button class="secondary" id="dark" onclick="theme.href = (Application.storage.theme = Application.storage.theme !== 'dark' ? 'dark' : 'light') === 'dark' ? '/styles/dark.css' : '/styles/light.css'">Change Theme</button>
 </right-nav>
 <mobile-nav>
     <select oninput="
@@ -23,7 +23,7 @@
         switch(this.value) {
             case 'theme':
                 localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))),
-                theme.href = JSON.parse(localStorage.getItem('dark')) ? '/dark.css' : '/light.css';
+                theme.href = JSON.parse(localStorage.getItem('dark')) ? '/styles/dark.css' : '/styles/light.css';
                 this.value = '/';
                 break;
 

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Image Generator - Calculamatrise</title>
+        <title>Image Colour - Calculamatrise</title>
+        <link rel="icon" href="/favicon.ico">
         <link rel="stylesheet" href="/styles/default.css">
         <script src="/bootstrap.js" type="module"></script>
     </head>
@@ -10,11 +11,8 @@
             <input type="file" id="image" accept="image/*">
             <label for="invert">Invert Colours&emsp;</label>
             <input type="checkbox" id="invert"><br><br>
-            <textarea id="code" placeholder="Result" cols="30" rows="10" onclick="this.select()" readonly></textarea>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress"></div>
-            </div><br>
-            <canvas id="canvas"></canvas>
+            <input type="color" id="result" style="display:none;">
+            <div id="color" onclick="result.click()" style="width:400px;height:400px"></div>
         </div>
         <script type="module" src="bootstrap.js"></script>
     </body>

@@ -30,11 +30,26 @@ export default class {
     }
 
     get themedStylesheet() {
-        return document.querySelector("link[rel='stylesheet']#theme");
+        let element = document.querySelector("link[rel='stylesheet']#theme");
+        if (element === null) {
+            element = document.head.appendChild(document.createElement("link"));
+            element.id = "theme";
+            element.rel = "stylesheet";
+            element.href = "/styles/" + Application.storage.theme + ".css";
+        }
+
+        return element;
     }
 
     init() {
-        // this.router.init();
+        this.router.init();
         this.navigation.init();
+        this.navigation.ui.addEventListener("click", (event) => {
+            let href = event.target.getAttribute("data-view");
+            if (href) {
+                this.router.navigate(href);
+                // location.assign(href);
+            }
+        });
     }
 }
