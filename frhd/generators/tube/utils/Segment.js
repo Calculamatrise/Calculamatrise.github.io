@@ -2,7 +2,7 @@ export default class {
     constructor(last = {}) {
         const random = this.randomize(last);
         this.id = random.id;
-        this.code = random.code.split(/,/).map(t => t.split(/\s/));
+        this.code = random.code.split(",").map(t => t.split(/\s+/g));
         this.x = random.x + (last.x || 0);
         this.y = random.y + (last.y || 0);
         this.adjust(last);

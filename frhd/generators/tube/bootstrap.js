@@ -7,8 +7,19 @@ let copy = document.querySelector("button[data-id=copy]");
 
 generate.addEventListener("click", function() {
 	let segments = new Array();
-	for (let i = 0; i < +input.value + 1; i++) {
-        segments.push(new Segment(segments[segments.length - 1]));
+	main: for (let i = 0; i < +input.value + 1; i++) {
+        let segment = new Segment(segments[segments.length - 1]);
+        let n = 0;
+        while(segments.find((vector) => Math.sqrt((vector.x - segment.x) ** 2 + (vector.y - segment.y) ** 2) < 120)) {
+            if (n++ > 40) {
+                continue main;
+            }
+
+            segments.pop();
+            segment = new Segment(segments[segments.length - 1]);
+        }
+
+        segments.push(segment);
 	}
 
     let physics = segments.map(t => t.code).join(",");
