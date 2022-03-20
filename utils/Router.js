@@ -32,7 +32,8 @@ export default class extends EventEmitter {
                 }
             }
 
-            this.replaceContent(await fetch(this.pathname).then(response => response.text()));
+            location.assign(this.pathname);
+            // this.replaceContent(await fetch(this.pathname).then(response => response.text()));
         } catch(e) {
             console.error(e);
             this.emit("/*");
@@ -43,10 +44,6 @@ export default class extends EventEmitter {
         let parser = new DOMParser();
         data = parser.parseFromString(data, "text/html");
 
-        /**
-         * @todo figure out how to add/remove scripts/previously used resources from the page
-         */
-
         for (const element of data.body.querySelectorAll("link")) {
             const link = document.createElement("link");
             link.rel = element.rel || "";
@@ -55,7 +52,7 @@ export default class extends EventEmitter {
             document.body.appendChild(link);
         }
 
-        for (const element of data.body.querySelectorAll("script")) {
+        for (const element of data.scripts) {
             const script = document.createElement("script");
             script.type = element.type || "";
             script.src = element.src;
@@ -63,7 +60,7 @@ export default class extends EventEmitter {
             document.body.appendChild(script);
         }
 
-        document.body.replaceChildren(...data.body.children);
+        document.body = data.body;
         document.title = data.title;
     }
 }

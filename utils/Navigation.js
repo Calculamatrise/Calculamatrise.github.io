@@ -14,7 +14,6 @@ export default class {
         this.ui = document.querySelector("nav") || document.createElement("nav");
         this.ui.innerHTML = await fetch("/nav.html").then(response => response.text());
 
-        document.nav = document.documentElement.appendChild(this.ui);
-        document.head.after(document.nav);
+        document.head.after(document.nav = this.ui);
     }
 }
