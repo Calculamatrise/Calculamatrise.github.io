@@ -3,28 +3,30 @@
 	<head>
 		<title>Track Editor - Calculamatrise</title>
 		<link rel="stylesheet" href="/styles/default.css">
-        <meta property="og:image" content="/favicon.ico">
+        <meta property="og:image" content="/icons/favicon.png">
 		<meta name="description" content="Manipulate a track to your liking.">
 		<meta name="author" content="Calculus">
 		<script type="module" src="/bootstrap.js"></script>
     </head>
     <body>
-		<div class="content">
-			<textarea id="input" placeholder="Track Code" spellcheck="false" style="width: 395px;height: 240px;resize: vertical;"></textarea>
-			<br><br>
-			<input type="number" id="moveX" placeholder="Move x" title="Default: 0" step="1">
-			<input type="number" id="moveY" placeholder="Move y" title="Default: 0" step="1">
-			<br>
-			<input type="number" id="scaleX" placeholder="Scale x" title="Default: 1" step="any">
-			<input type="number" id="scaleY" placeholder="Scale y" title="Default: 1" step="any">
-			<br>
-			<input type="number" id="rotate" placeholder="Rotation factor" title="Default: 0°" step="any">
-			<br><br>
-			<button id="transform">Transform</button>
-			<button onclick="output.select(), document.execCommand('copy');">Copy</button>
-			<br><br>
-			<textarea id="output" placeholder="Result" title="0k" spellcheck="false" readonly style="width: 395px;height: 240px;resize: none;" onclick="this.select()"></textarea>
-		</div>
+        <textarea data-id="track" data-index="1" placeholder="Track" spellcheck="false" style="width: 184px;height: 40px;min-height: 16px;resize: vertical;"></textarea>
+        <textarea data-id="track" data-index="2" placeholder="Add-on track (optional)" title="This track will be merged with the initial track" spellcheck="false" style="width: 184px;height: 40px;min-height: 16px;resize: vertical;"></textarea>
+        <br><br>
+        <input type="number" id="moveX" placeholder="Move x" title="Horizontal translation unit" step="10">
+        <input type="number" id="moveY" placeholder="Move y" title="Vertical translation unit" step="10">
+        <br>
+        <input type="number" id="reflectX" placeholder="Reflection x" title="Equation for the reflection across the y-axis" step="10">
+        <input type="number" id="reflectY" placeholder="Reflection y" title="Equation for the reflection across the x-axis" step="10">
+        <br>
+        <input type="number" id="scaleX" placeholder="Scale x" title="Horizontal scaling factor">
+        <input type="number" id="scaleY" placeholder="Scale y" title="Vertical scaling factor">
+        <br>
+        <input type="number" id="rotate" placeholder="Rotation factor" title="Rotation factor in degrees°" step="15">
+        <br><br>
+        <button id="transform">Transform</button>
+        <button onclick="output.select(), document.execCommand('copy');">Copy</button>
+        <br><br>
+        <textarea id="output" placeholder="Result" title="0k" spellcheck="false" readonly style="width: 395px;height: 240px;resize: none;" onclick="this.select()"></textarea>
         <script type="module" src="bootstrap.js"></script>
 	</body>
 </html>

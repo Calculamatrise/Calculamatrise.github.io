@@ -1,5 +1,9 @@
-export default class {
-    constructor(last = {}) {
+class Segment {
+    constructor(last = {}, restriction = null) {
+        if (restriction !== null) {
+            this.restrictions.add(restriction);
+        }
+
         const random = this.randomize(last);
         this.id = random.id;
         this.code = random.code.split(",").map(t => t.split(/\s+/g));
@@ -86,15 +90,17 @@ export default class {
         }
     ]
 
+    restrictions = new Set();
+
     adjust(last) {
-        for (const t of this.code) {
-            for (let e = 0, i = 1; e < t.length; e += 2, i += 2) {
-                t[e] = this.encode(this.decode(t[e]) + (last.x || 0));
-                t[i] = this.encode(this.decode(t[i]) + (last.y || 0));
+        for (const vector of this.code) {
+            for (let x = 0, y = 1; x < vector.length; x += 2, y += 2) {
+                vector[x] = this.encode(this.decode(vector[x]) + (last.x || 0));
+                vector[y] = this.encode(this.decode(vector[y]) + (last.y || 0));
             }
         }
 
-        this.code = this.code.map(t => t.join(" ")).join(",");
+        this.code = this.code.map((vector) => vector.join(" ")).join(",");
     }
 
     encode(value) {
@@ -109,6 +115,8 @@ export default class {
         if (options === null) {
             return this.constructor.options[Math.floor(Math.random() * 9)];
         }
+
+        options = options.filter((value) => !this.restrictions.has(value));
 
         return this.constructor.options[options[Math.floor(Math.random() * options.length)]];
     }
