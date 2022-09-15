@@ -73,14 +73,15 @@ self.addEventListener("fetch", function(event) {
 
         case "POST": {
             const endpoint = pathname.replace(/\/?$/, '/');
-            // if (event.request.headers.get("Authorization") != 2008) {
-            //     event.respondWith(new Response("Unauthorized", {
-            //         status: 401,
-            //         headers: {
-            //             'Content-Type': 'text/plain'
-            //         }
-            //     }));
-            // } else {
+            if (event.request.headers.get("Authorization") != 2008) {
+                event.respondWith(new Response("Unauthorized", {
+                    status: 401,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    }
+                }));
+            } else {
+                // endpoints w/ out payload
                 switch(endpoint) {
                     case '/api/users/get/': {
                         return event.respondWith(new Response("Example response w/ no payload", {
@@ -89,79 +90,20 @@ self.addEventListener("fetch", function(event) {
                                 'Content-Type': 'text/plain'
                             }
                         }));
-                        break;
-                    }
-
-                    default: {
-                        return event.respondWith(event.request.json().then(function(payload) {
-                            return fetch(pathname.replace(/((\.\w*)|\/)?$/, '.js')).then(function(data) {
-                                return data.text().then(function(script) {
-                                    return eval(`(async function() {
-                                        const payload = ${JSON.stringify(payload)};
-                                        const request = new Request(${JSON.stringify(event.request)});
-                                        const writeHead = (statusCode, headers) => {
-                                            if (typeof statusCode == 'object') {
-                                                if ('status' in this) {
-                                                    this.status = statusCode.status;
-                                                }
-    
-                                                if ('headers' in this) {
-                                                    this.headers = new Headers(statusCode.headers);
-                                                }
-                                            } else {
-                                                this.status = Math.max(200, ~~statusCode);
-                                                if (typeof headers == 'object' && headers !== null) {
-                                                    this.headers = new Headers(headers);
-                                                }
-                                            }
-                                        }
-                                        const write = (data, head) => {
-                                            this.data += data;
-                                            if (typeof head == 'object' && head !== null) {
-                                                writeHead(head);
-                                            }
-                                        }
-                                        this.data += await (async () => {
-                                            ${script}
-                                        })();
-                                        if (this.data.length > 0) {
-                                            this.status = 200;
-                                        }
-                                        this.data = this.data ?? '404 Endpoint does not exist!';
-                                        return this;
-                                    }).call({
-                                        data: '',
-                                        status: 404,
-                                        headers: new Headers()
-                                    })`).then(function(res) {
-                                        if (!res.headers.has("Content-Type")) {
-                                            res.headers.set("Content-Type", "text/plain");
-                                        }
-                                        console.log(res)
-        
-                                        return new Response(res.data, {
-                                            status: res.status,
-                                            headers: res.headers
-                                        });
-                                    });
-                                });
-                            });
-                        }));
-                        break;
                     }
                 }
 
-                // event.respondWith(event.request.json().then(function(payload) {
-                //     if (pathname === '/api/experiment/') {
-                //         return new Response("yum :: " + JSON.stringify(payload), {
-                //             status: 501,
-                //             headers: {
-                //                 'Content-Type': 'text/plain'
-                //             }
-                //         });
-                //     }
-                // }));
-            //}
+                event.respondWith(event.request.json().then(function(payload) {
+                    if (pathname === '/api/experiment/') {
+                        return new Response("yum :: " + JSON.stringify(payload), {
+                            status: 501,
+                            headers: {
+                                'Content-Type': 'text/plain'
+                            }
+                        });
+                    }
+                }));
+            }
             break;
         }
     }
