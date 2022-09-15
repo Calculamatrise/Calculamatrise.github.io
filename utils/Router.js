@@ -12,13 +12,11 @@ export default class extends EventEmitter {
     /**
      * 
      * @param {String} pathname 
-     * @param {Object[Boolean]} options[popped] 
+     * @param {Boolean} options.popped 
      * @returns {Promise}
      */
     async navigate(pathname, { popped = false } = {}) {
-        if (pathname === void 0 || typeof pathname !== "string") {
-            return;
-        }
+        if (typeof pathname !== "string") return;
 
         history[(popped ? "replace" : "push") + "State"](null, document.title, pathname);
 

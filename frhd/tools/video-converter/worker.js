@@ -1,62 +1,73 @@
-onmessage = function({ data }) {
+let offset = { x: 0, y: 0 };
+let types = {
+    physics: [],
+    scenery: [],
+    powerups: []
+}
+
+addEventListener("message", function({ data }) {
     switch(data.cmd) {
-        case "fetch":
-            this.code = this.physics + "#" + this.scenery + "#" + this.powerups;
-            postMessage({
-                cmd: "result",
-                args: {
-                    code: this.code,
-                    size: this.code.length
-                }
-            });
-
-            this.code = "";
-            this.physics = ""
-            this.scenery = ""
-            this.powerups = "";
-            break;
-
         case "init":
-            this.code = "";
-            this.physics = ""
-            this.scenery = ""
-            this.powerups = "";
-            this.offset = {
-                x: -data.args.width,
+            offset = { x: 0, y: 0 };
+            types.physics = [];
+            types.scenery = [];
+            types.powerups = [];
+            offset = {
+                x: -data.width,
                 y: 50
             }
+
+            postMessage(data);
             break;
 
         case "render":
-            for (let y = 0, iy; y < data.args.height; y++) {
-                for (let x = 0, ix, dx, e; x < data.args.width; x++) {
-                    e = (x + y * data.args.width) * 4;
-                    ix = x * 2 + this.offset.x;
-                    iy = y * 2 + this.offset.y;
+            data.filter && filter(data.pixels);
+            data.invert && invert(data.pixels);
+            for (let y = 0, iy; y < data.pixels.height; y++) {
+                for (let x = 0, ix, dx, e; x < data.pixels.width; x++) {
+                    e = (x + y * data.pixels.width) * 4;
+                    ix = x * 2 + offset.x;
+                    iy = y * 2 + offset.y;
                     dx = ix + 2;
-                    if (data.args.pixels.data[e] == 255 || data.args.pixels.data[e - 4] == data.args.pixels.data[e] && Math.floor((e - 4) / data.args.width / 4) == y) continue;
-                    for (let i = x + 1, s; i < data.args.width; i++) {
-                        s = (i + y * data.args.width) * 4;
-                        if (i >= data.args.width - 1 || data.args.pixels.data[s] != data.args.pixels.data[e]) {
-                            dx = (i - 1) * 2 + this.offset.x;
+                    if (data.pixels.data[e] == 255 || data.pixels.data[e - 4] == data.pixels.data[e] && Math.floor((e - 4) / data.pixels.width / 4) == y) continue;
+                    for (let i = x + 1, s; i < data.pixels.width; i++) {
+                        s = (i + y * data.pixels.width) * 4;
+                        if (i >= data.pixels.width - 1 || data.pixels.data[s] != data.pixels.data[e]) {
+                            dx = (i - 1) * 2 + offset.x;
                             break;
                         }
                     }
 
-                    this[data.args.pixels.data[e] == 0 ? "physics" : "scenery"] += `${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${(iy + 2).toString(32)} ${dx.toString(32)} ${(iy + 2).toString(32)},`;
+                    types[data.pixels.data[e] == 0 ? "physics" : "scenery"].push(`${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${(iy + 2).toString(32)} ${dx.toString(32)} ${(iy + 2).toString(32)}`);
                 }
             }
 
-            this.physics += `${(this.offset.x + data.args.width - 40).toString(32)} 1i ${(this.offset.x + data.args.width + 40).toString(32)} 1i,`;
-            this.powerups += `W ${(this.offset.x + data.args.width).toString(32)} 0 ${(this.offset.x + data.args.width + data.args.width * 10).toString(32)} 0,`;
-            this.offset.x += data.args.width * 10;
-            postMessage({
-                cmd: "ready",
-                args: {
-                    code: this.code,
-                    size: this.code.length
-                }
-            });
+            types.physics.push(`${(offset.x + data.pixels.width - 40).toString(32)} 1i ${(offset.x + data.pixels.width + 40).toString(32)} 1i`);
+            types.powerups.push(`W ${(offset.x + data.pixels.width).toString(32)} 0 ${(offset.x + data.pixels.width + data.pixels.width * 10).toString(32)} 0`);
+            offset.x += data.pixels.width * 10;
+            break;
+
+        case "fetch":
+            data.result = `${types.physics.join(",")}#${types.scenery.join(",")}#${types.powerups.join(",")}`;
+            data.size = data.result.length;
+            postMessage(data);
             break;
     }
+});
+
+function filter(pixels) {
+    for (let t = 0, e = 0; t in pixels.data; t += 4) {
+        e = pixels.data[t] * .2 + pixels.data[t + 1] * .7 + pixels.data[t + 2] * .1;
+        pixels.data[t] = pixels.data[t + 1] = pixels.data[t + 2] = e <= 85 ? 0 : e <= 170 ? 170 : 255;
+    }
+    return pixels;
+}
+
+function invert(pixels) {
+    for (let t = 0; t in pixels.data; t += 4) {
+        pixels.data[t] = 255 - pixels.data[t];
+        pixels.data[t + 1] = 255 - pixels.data[t + 1];
+        pixels.data[t + 2] = 255 - pixels.data[t + 2];
+    }
+    return pixels;
 }

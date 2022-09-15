@@ -14,21 +14,24 @@
 </left-nav>
 <right-nav>
     <!-- Add a dropdown? -->
+    <button class="secondary" data-view="/login/">Login</button>
     <button class="secondary" id="dark" onclick="theme.href = (Application.storage.theme = Application.storage.theme !== 'dark' ? 'dark' : 'light') === 'dark' ? '/styles/dark.css' : '/styles/light.css'">Change Theme</button>
 </right-nav>
 <mobile-nav>
     <select oninput="
         console.dir(this)
         switch(this.value) {
-            case 'theme':
+            case 'theme': {
                 localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))),
                 theme.href = JSON.parse(localStorage.getItem('dark')) ? '/styles/dark.css' : '/styles/light.css';
                 this.value = '/';
                 break;
+            }
 
-            default:
+            default: {
                 location.assign(this.value);
                 break;
+            }
         }
     ">
         <optgroup label="Pages">
@@ -43,6 +46,7 @@
             <option value="/contact/">Contact</option>
         </optgroup>
         <optgroup label="Accesibility">
+            <option value="/login/">Login</option>
             <option value="theme">Change Theme</option>
         </optgroup>
     </select>
