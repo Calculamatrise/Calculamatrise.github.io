@@ -50,7 +50,6 @@ self.addEventListener("fetch", function(event) {
     const list = pathname.split('/');
     switch(event.request.method) {
         case "GET": {
-            console.log(event.request);
             switch(list[1]) {
                 case 'frhd': {
                     let list = pathname.split('/');

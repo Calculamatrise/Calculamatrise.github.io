@@ -4,5 +4,5 @@ RewriteCond %{SCRIPT_FILENAME} -d [OR]
 RewriteCond %{SCRIPT_FILENAME} -f
 RewriteRule "(^|/)\." - [F]
 
-RewriteCond %{REQUEST_URI} !^public
-RewriteRule ^(.*)$ public/$1 [L]
+# RewriteCond %{REQUEST_URI} !^public
+# RewriteRule ^(.*)$ public/$1 [L]
