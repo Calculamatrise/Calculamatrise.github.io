@@ -46,16 +46,26 @@ self.addEventListener("activate", function(event) {
 self.addEventListener("fetch", function(event) {
     event.preventDefault();
 
-    const { pathname } = event.request.url ? new URL(event.request.url) : {};
+    const { pathname, searchParams } = event.request.url ? new URL(event.request.url) : {};
+    const list = pathname.split('/');
     switch(event.request.method) {
         case "GET": {
-            switch(pathname.split('/')[1]) {
+            console.log(event.request);
+            switch(list[1]) {
+                case 'frhd': {
+                    let list = pathname.split('/');
+                    if (list[2] === 'tools' && (list[3] === 'image-converter' || list[3] === 'video-converter') && !searchParams.has("bypass")) {
+                        return void event.respondWith(Response.resolveStatus(401, "Unauthorized"));
+                    }
+                    break;
+                }
+
                 case 'offline': {
                     return void event.respondWith(fetch("404.html"));
                 }
 
                 case 'private': {
-                    return void event.respondWith(new Response("403: Forbidden", {
+                    return void event.respondWith(new Response("403 Forbidden", {
                         status: 403,
                         headers: {
                             'Content-Type': 'text/plain'
@@ -74,7 +84,7 @@ self.addEventListener("fetch", function(event) {
         case "POST": {
             const endpoint = pathname.replace(/\/?$/, '/');
             if (event.request.headers.get("Authorization") != 2008) {
-                event.respondWith(new Response("Unauthorized", {
+                event.respondWith(new Response("401 Unauthorized", {
                     status: 401,
                     headers: {
                         'Content-Type': 'text/plain'
@@ -109,3 +119,15 @@ self.addEventListener("fetch", function(event) {
     }
 });
 
+Response.resolveStatus = function(status = 404, message = "Page Not Found") {
+    const code = Math.max(100, ~~status);
+    return new Response(JSON.stringify({
+        message: `${code}: ${message}`,
+        code: 0
+    }, null, 4), {
+        status: code,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+}

@@ -1,7 +1,8 @@
-RewriteEngin on
+RewriteEngine On
 
-RewriteCond ${REQUEST_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} -d [OR]
+RewriteCond %{SCRIPT_FILENAME} -f
+RewriteRule "(^|/)\." - [F]
 
-RewriteCond ${REQUEST_FILENAME}\.html -f
-
-RewriteRule ^(.*)$ $1.html
+RewriteCond %{REQUEST_URI} !^public
+RewriteRule ^(.*)$ public/$1 [L]

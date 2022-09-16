@@ -11,19 +11,15 @@
     "theme_color": "#2B2B2B",
     "categories": [],
     "screenshots": [],
-    "icons": [
-        {
-            "src": "/favicon.ico"
-        },
-        {
-            "src": "/icons/favicon.png",
-            "type": "image/png",
-            "sizes": "512x512"
-        },
-        {
-            "src": "/favicon.ico",
-            "type": "image/x-icon"
-        }
-    ],
+    "icons": [{
+        "src": "/favicon.ico"
+    }, {
+        "src": "/icons/favicon.png",
+        "type": "image/png",
+        "sizes": "512x512"
+    }, {
+        "src": "/favicon.ico",
+        "type": "image/x-icon"
+    }],
     "shortcuts": []
 }
