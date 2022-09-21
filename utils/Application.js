@@ -1,8 +1,9 @@
+import EventEmitter from "./EventEmitter.js";
 import Navigation from "./Navigation.js";
 import RecursiveProxy from "./RecursiveProxy.js";
 import Router from "./Router.js";
 
-export default class {
+export default class extends EventEmitter {
     navigation = new Navigation();
     router = new Router();
     get storage() {
@@ -18,7 +19,7 @@ export default class {
 
     set storage(value) {
         localStorage.setItem("application-settings", JSON.stringify(Object.assign({
-            theme: window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+            theme: "auto"
         }, Object.assign(JSON.parse(localStorage.getItem("application-settings")) ?? {}, value ?? {}))));
     }
 
@@ -28,10 +29,17 @@ export default class {
             element = document.head.appendChild(document.createElement("link"));
             element.id = "theme";
             element.rel = "stylesheet";
-            element.href = "/styles/" + Application.storage.theme + ".css";
+            element.href = `/styles/${this.getColorSceme()}.css`;
         }
 
         return element;
+    }
+
+    constructor() {
+        super();
+
+        window.addEventListener("load",  () => void this.setColorScheme());
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", this.setColorScheme.bind(this));
     }
 
     init() {
@@ -44,5 +52,23 @@ export default class {
                 // location.assign(href);
             }
         });
+    }
+
+    getColorSceme() {
+        if (typeof Application.storage.theme == 'string' && Application.storage.theme != 'auto') {
+            return Application.storage.theme;
+        }
+
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+
+    setColorScheme(colorScheme = window.matchMedia('(prefers-color-scheme: dark)')) {
+        if (typeof colorScheme != 'object') {
+            colorScheme = {
+                matches: 'dark' === this.getColorSceme()
+            };
+        }
+
+        this.themedStylesheet.href = `/styles/${colorScheme.matches ? 'dark' : 'light'}.css`;
     }
 }

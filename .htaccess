@@ -1,3 +1,5 @@
+Options -Indexes
+
 RewriteEngine On
 
 RewriteCond %{SCRIPT_FILENAME} -d [OR]
