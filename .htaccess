@@ -1,8 +1,14 @@
 RewriteEngine On
+RewriteRule ^(.*)$ public/$1 [R=302, L]
 
-RewriteCond %{SCRIPT_FILENAME} -d [OR]
-RewriteCond %{SCRIPT_FILENAME} -f
-RewriteRule "(^|/)\." - [F]
+RewriteEngine On
+RewriteRule ^([0-9]+)?$ ?id=$1
+
+# RewriteEngine On
+
+# RewriteCond %{SCRIPT_FILENAME} -d [OR]
+# RewriteCond %{SCRIPT_FILENAME} -f
+# RewriteRule "(^|/)\." - [F]
 
 # RewriteCond %{REQUEST_URI} !^public
 # RewriteRule ^(.*)$ public/$1 [L]
