@@ -12,7 +12,9 @@ export default class {
 
     async create() {
         this.ui = document.querySelector("nav") || document.createElement("nav");
-        this.ui.innerHTML = await fetch("/nav.html").then(response => response.text());
+        fetch("/nav.html").then(async response => {
+            this.ui.innerHTML = await response.text();
+        });
 
         document.head.after(document.nav = this.ui);
     }
