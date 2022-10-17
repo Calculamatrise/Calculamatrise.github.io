@@ -1,77 +1,77 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Documentation - FRHD API Wrapper | Calculamatrise</title>
-        <meta name="author" content="Calculus">
-        <meta name="description" property="og:description" content="A programmer's home.">
-        <meta property="og:url" content="https://calculamatrise.github.io/frhd/api/docs/">
-        <meta property="og:title" content="Documentation - FRHD API Wrapper">
-        <meta property="og:image" content="/icons/favicon.png">
-        <link rel="stylesheet" href="/styles/default.css">
-        <script src="/bootstrap.js" type="module"></script>
-    </head>
-    <body>
-        <div class="content">
-            <div style="display: inline-block; margin-left: 30px;">
-                <h1>Client</h1>
-                <h4>Logging into Free Rider HD.</h4>
-                <pre class="code-block">
-                    <code><span class="keyword">import</span> { <span class="constant">Client</span> } <span class="keyword">from</span> <span class="string">"frhd"</span>;</code>
-                    <code></code>
-                    <code><span class="keyword">const</span> <span class="constant">client</span> = <span class="keyword">new</span> <span class="constant">Client</span>();</code>
-                    <code></code>
-                    <code><span class="constant">client</span>.<span class="method">on</span>(<span class="string">"ready"</span>, <span class="keyword">function</span>() {</code>
-                    <code>    <span class="constant">console</span>.<span class="method">log</span>(<span class="string">"Ready!"</span>);</code>
-                    <code>});</code>
-                    <code></code>
-                    <code><span class="constant">client</span>.<span class="method">login</span>(<span class="string">"your-token-goes-here"</span>);</code>
-                </pre>
-                <br>
-                <h4>Listen for notifications</h4>
-                <pre class="code-block">
-                    <code><span class="constant">client</span>.<span class="method">on</span>(<span class="string">"challenge"</span>, <span class="keyword">function</span>(<span class="parameter variable">challenge</span>) {</code>
-                    <code>    <span class="constant">console</span>.<span class="method">log</span>(<span class="parameter variable">challenge</span>);</code>
-                    <code>});</code>
-                </pre>
-                <br>
-                <h2>Methods</h2>
-                <h3>UserManager#fetch</h3>
-                <p>Parameters:</p>
-                <h5 style="display: list-item; margin-left: 35px;">
-                    String: Username
-                </h5>
-                <p>Response type: Object</p>
-                <pre class="code-block">
-                    <code><span class="constant">client</span>.<span class="property">users</span>.<span class="method">fetch</span>(<span class="string">"Guest"</span>).<span class="method">then</span>(<span class="keyword">function</span>(<span class="parameter">user</span>) {</code>
-                    <code>    <span class="constant">console</span>.<span class="method">log</span>(<span class="parameter variable">user</span>);</code>
-                    <code>});</code>
-                </pre>
-                <br>
-                <h3>TrackManager#fetch</h3>
-                <p>Parameters:</p>
-                <h5 style="display: list-item; margin-left: 35px;">
-                    Number: Track ID
-                </h5>
-                <p>Response type: Object</p>
-                <pre class="code-block">
-                    <code><span class="constant">client</span>.<span class="property">tracks</span>.<span class="method">fetch</span>(<span class="number">1001</span>).<span class="method">then</span>(<span class="keyword">function</span>(<span class="parameter">track</span>) {</code>
-                    <code>    <span class="constant">console</span>.<span class="method">log</span>(<span class="parameter variable">track</span>);</code>
-                    <code>});</code>
-                </pre>
-                <br>
-                <h3>NotificationManager#fetch</h3>
-                <p>Parameters:</p>
-                <h5 style="display: list-item; margin-left: 35px;">
-                    Number: Count (number of notifications)
-                </h5>
-                <p>Response type: Object (Array)</p>
-                <pre class="code-block">
-                    <code><span class="constant">client</span>.<span class="property">notifications</span>.<span class="method">fetch</span>(<span class="number">100</span>).<span class="method">then</span>(<span class="keyword">function</span>(<span class="parameter">notifications</span>) {</code>
-                    <code>    <span class="constant">console</span>.<span class="method">log</span>(<span class="parameter variable">notifications</span>);</code>
-                    <code>});</code>
-                </pre>
-                <br>
-            </div>
+<head>
+    <title>Documentation - FRHD API Wrapper | Calculamatrise</title>
+    <meta name="author" content="Calculus">
+    <meta name="description" property="og:description" content="A programmer's home.">
+    <meta property="og:url" content="https://calculamatrise.github.io/frhd/api/docs/">
+    <meta property="og:title" content="Documentation - FRHD API Wrapper">
+    <meta property="og:image" content="/icons/favicon.png">
+    <link rel="stylesheet" href="/styles/default.css">
+    <script type="module" src="/bootstrap.js"></script>
+</head>
+<body>
+    <div class="content">
+        <div style="display: inline-block; margin-left: 30px;">
+            <h1>Client</h1>
+            <h4>Logging into Free Rider HD.</h4>
+            <pre class="code-block">
+                <span><code class="keyword">import</code> { <code class="constant">Client</code> } <code class="keyword">from</code> <code class="string">"frhd"</code>;</span>
+                <span>&nbsp;</span>
+                <span><code class="keyword">const</code> <code class="constant">client</code> = <code class="keyword">new</code> <code class="constant">Client</code>();</span>
+                <span>&nbsp;</span>
+                <span><code class="constant">client</code>.<code class="method">on</code>(<code class="string">"ready"</code>, <code class="keyword">function</code>() {</span>
+                <span>    <code class="indent constant">console</code>.<code class="method">log</code>(<code class="string">"Ready!"</code>);</span>
+                <span>});</span>
+                <span>&nbsp;</span>
+                <span><code class="constant">client</code>.<code class="method">login</code>(<code class="string">"your-token-goes-here"</code>);</span>
+            </pre>
+            <br>
+            <h4>Listen for notifications</h4>
+            <pre class="code-block">
+                <span><code class="constant">client</code>.<code class="method">on</code>(<code class="string">"challenge"</code>, <code class="keyword">function</code>(<code class="parameter variable">challenge</code>) {</span>
+                <span>    <code class="constant">console</code>.<code class="method">log</code>(<code class="parameter variable">challenge</code>\);</span>
+                <span>});</span>
+            </pre>
+            <br>
+            <h2>Methods</h2>
+            <h3>UserManager#fetch</h3>
+            <p>Parameters:</p>
+            <h5 style="display: list-item; margin-left: 35px;">
+                String: Username
+            </h5>
+            <p>Response type: Object</p>
+            <pre class="code-block">
+                <span><code class="constant">client</code>.<code class="property">users</code>.<code class="method">fetch</code>(<code class="string">"Guest"</code>).<code class="method">then</code>(<code class="keyword">function</code>(<code class="parameter">user</code>) {</span>
+                <span>    <code class="constant">console</code>.<code class="method">log</code>(<code class="parameter variable">user</code>\);</span>
+                <span>});</span>
+            </pre>
+            <br>
+            <h3>TrackManager#fetch</h3>
+            <p>Parameters:</p>
+            <h5 style="display: list-item; margin-left: 35px;">
+                Number: Track ID
+            </h5>
+            <p>Response type: Object</p>
+            <pre class="code-block">
+                <span><code class="constant">client</code>.<code class="property">tracks</code>.<code class="method">fetch</code>(<code class="number">1001</code>).<code class="method">then</code>(<code class="keyword">function</code>(<code class="parameter">track</code>) {</span>
+                <span>    <code class="constant">console</code>.<code class="method">log</code>(<code class="parameter variable">track</code>\);</code>
+                <span>});</span>
+            </pre>
+            <br>
+            <h3>NotificationManager#fetch</h3>
+            <p>Parameters:</p>
+            <h5 style="display: list-item; margin-left: 35px;">
+                Number: Count (number of notifications)
+            </h5>
+            <p>Response type: Object (Array)</p>
+            <pre class="code-block">
+                <span><code class="constant">client</code>.<code class="property">notifications</code>.<code class="method">fetch</code>(<code class="number">100</code>).<code class="method">then</code>(<code class="keyword">function</code>(<code class="parameter">notifications</code>) {</span>
+                <span>    <code class="constant">console</code>.<code class="method">log</code>(<code class="parameter variable">notifications</code>\);</span>
+                <span>});</span>
+            </pre>
+            <br>
         </div>
-    </body>
+    </div>
+</body>
 </html>

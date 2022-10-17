@@ -29,7 +29,7 @@ export default class extends EventEmitter {
             element = document.head.appendChild(document.createElement("link"));
             element.id = "theme";
             element.rel = "stylesheet";
-            element.href = `/styles/${this.getColorSceme()}.css`;
+            element.href = `/styles/${this.getColorScheme()}.css`;
         }
 
         return element;
@@ -37,8 +37,7 @@ export default class extends EventEmitter {
 
     constructor() {
         super();
-
-        window.addEventListener("load",  () => void this.setColorScheme());
+        window.addEventListener("load", () => void this.setColorScheme());
         window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", this.setColorScheme.bind(this));
     }
 
@@ -54,7 +53,7 @@ export default class extends EventEmitter {
         });
     }
 
-    getColorSceme() {
+    getColorScheme() {
         if (typeof Application.storage.theme == 'string' && Application.storage.theme != 'auto') {
             return Application.storage.theme;
         }
@@ -65,7 +64,7 @@ export default class extends EventEmitter {
     setColorScheme(colorScheme = window.matchMedia('(prefers-color-scheme: dark)')) {
         if (typeof colorScheme != 'object') {
             colorScheme = {
-                matches: 'dark' === this.getColorSceme()
+                matches: 'dark' === this.getColorScheme()
             };
         }
 

@@ -14,7 +14,7 @@ document.addEventListener("mousedown", function(event) {
 document.addEventListener("scroll", function(event) {
     const rect = document.body.getBoundingClientRect();
     if (rect.y < 0) {
-        Application.navigation.ui.style.setProperty("background-image", `linear-gradient(180deg, #${Application.storage.theme === "dark" ? "2d2d2d, rgba(45, 45, 45" : "d2d2d2, rgba(210, 210, 210"}, ${Math.min(.66 - (Application.navigation.ui.getBoundingClientRect().height - Math.abs(rect.y)) / 100, 1)}))`);
+        Application.navigation.ui.style.setProperty("background-image", `linear-gradient(180deg, #${Application.getColorScheme() == "dark" ? "2d2d2d, rgba(45, 45, 45" : "d2d2d2, rgba(210, 210, 210"}, ${Math.min(.66 - (Application.navigation.ui.getBoundingClientRect().height - Math.abs(rect.y)) / 100, 1)}))`);
     }
 });
 
