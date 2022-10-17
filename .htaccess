@@ -1,10 +1,1 @@
-Options -Indexes
-
-RewriteEngine On
-
-RewriteCond %{SCRIPT_FILENAME} -d [OR]
-RewriteCond %{SCRIPT_FILENAME} -f
-RewriteRule "(^|/)\." - [F]
-
-# RewriteCond %{REQUEST_URI} !^public
-# RewriteRule ^(.*)$ public/$1 [L]
+Deny from all
