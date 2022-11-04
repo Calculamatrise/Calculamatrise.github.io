@@ -38,7 +38,7 @@ addEventListener("message", function({ data }) {
                 }
                 
                 postMessage({
-                    cmd: "progress",
+                    cmd: 'progress',
                     progress: Math.round(y / (data.pixels.height / 100))
                 });
             }

@@ -40,10 +40,9 @@ export default class Manipulation {
      * @param {Number} value
      */
     set progress(value) {
-        value = `${~~value}%`;
-        document.title = `Progress... ${value}`;
-        progress.innerText = value;
-        progress.style.setProperty("width", value);
+        value = ~~value;
+        document.title = `Progress... ${value}%`;
+        progress.setAttribute("value", value);
     }
 
     render() {

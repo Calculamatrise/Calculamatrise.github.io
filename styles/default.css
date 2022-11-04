@@ -147,6 +147,12 @@ pre.code-block span {
     counter-increment: line;
 }
 
+pre.code-block > span:hover {
+	background-color: inherit;  
+    border-radius: 1px;
+	filter: brightness(1.2);
+}
+
 pre.code-block span:before {
     content: counter(line);
     margin-right: 10px;
