@@ -1,18 +1,13 @@
 :root {
-    --text: rgb(255, 255, 255);
-    --background: rgb(29, 29, 29);
-    --border-color: rgb(48, 48, 48);
-    --transparency: rgba(255, 255, 255, .15);
+    --accent-color: #2d2d2d;
+    --background-color: #1b1b1b;
+    --border-color: #303030;
+    --text-color: #fdfdfd;
+    --transparency: #ffffff26;
 }
 
 ::-webkit-scrollbar-track {
     background-color: #1119;
-    border-radius: 30px;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #333;
-    border-radius: 30px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -25,7 +20,6 @@
 
 nav {
     border-bottom: 1px solid #444;
-    background-image: linear-gradient(180deg, #2d2d2d, transparent);
 }
 
 @media (max-width: 600px) {
@@ -49,20 +43,6 @@ nav {
     nav select option:hover {
         background-color: #eee;
     }
-}
-
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]), textarea {
-    background-color: #2d2d2d;
-    color: #f5f5f5;
-}
-
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):hover, textarea:hover {
-    background-color: #303030;
-    color: #fdfdfd;
-}
-
-input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):focus, textarea:focus {
-    background-color: #333;
 }
 
 button, input[type="button"], .button, ::-webkit-file-upload-button {
@@ -91,20 +71,11 @@ button, input[type="button"], .button, ::-webkit-file-upload-button {
     background-color: #555;
 }
 
-table tr td:nth-child(1), table tr td:nth-child(2) {
-    background-color: #2d2d2d;
+progress::-moz-progress-bar {
+    background-color: #191919;
 }
 
-table tr td:nth-child(1):hover, table tr td:nth-child(2):hover {
-    background-color: #333;
-}
-
-dropdown content {
-	background-color: #2d2d2d;
-    box-shadow: 0 0 20px -10px #5558;
-}
-
-.progress-bar-container {
+progress::-webkit-progress-bar {
     background-color: #191919;
 }
 

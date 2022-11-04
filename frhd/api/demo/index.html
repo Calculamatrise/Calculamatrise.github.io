@@ -11,17 +11,17 @@
     <script src="/bootstrap.js" type="module"></script>
 </head>
 <body>
-    <div class="content">
-        <textarea id="input" spellcheck="false" style="resize: none; overflow: auto;">
-ctx.beginPath();
-ctx.moveTo(0, 0);
-ctx.lineTo(100, 100);
-ctx.stroke();</textarea>
-        <canvas id="view" width="490px" height="420"></canvas>
+    <main class="content">
+        <pre class="code-block" contenteditable="true">
+            <span><code class="constant">ctx</code>.<code class="method">beginPath</code>();</span>
+            <span><code class="constant">ctx</code>.<code class="method">moveTo</code>(<code class="number">0</code>, <code class="number">0</code>);</span>
+            <span><code class="constant">ctx</code>.<code class="method">lineTo</code>(<code class="number">100</code>, <code class="number">100</code>);</span>
+            <span><code class="constant">ctx</code>.<code class="method">stroke</code>();</span>
+        </pre>
+        <canvas id="view" width="490px" height="420" style="background-color: white;"></canvas>
         <br>
         <textarea id="output" spellcheck="false" style="resize: none; overflow: auto; height: 100px;" placeholder="Code" readonly></textarea>
-        <link rel="stylesheet" href="style.css">
-        <script type="module" src="bootstrap.js"></script>
-    </div>
+    </main>
+    <script type="module" src="bootstrap.js"></script>
 </body>
 </html>

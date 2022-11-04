@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Image Generator - Calculamatrise</title>
-        <link rel="stylesheet" href="/styles/default.css">
-        <script type="module" src="/bootstrap.js"></script>
-    </head>
-    <body>
-        <div class="content">
-            <input type="file" id="image" accept="image/*">
-            <label for="invert">Invert Colours&emsp;</label>
-            <input type="checkbox" id="invert"><br><br>
-            <textarea id="code" placeholder="Result" cols="30" rows="10" onclick="this.select()" readonly></textarea>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress"></div>
-            </div><br>
-            <canvas id="canvas"></canvas>
-        </div>
-        <script type="module" src="bootstrap.js"></script>
-    </body>
+<head>
+    <title>Image Generator - Calculamatrise</title>
+    <link rel="stylesheet" href="/styles/default.css">
+    <script type="module" src="/bootstrap.js"></script>
+</head>
+<body>
+    <main class="content">
+        <input type="file" id="image" accept="image/*">
+        <label for="invert">Invert Colours&emsp;</label>
+        <input type="checkbox" id="invert"><br><br>
+        <textarea id="code" placeholder="Result" cols="30" rows="10" onclick="this.select()" readonly></textarea>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress"></div>
+        </div><br>
+        <canvas id="canvas"></canvas>
+    </main>
+    <script type="module" src="bootstrap.js"></script>
+</body>
 </html>

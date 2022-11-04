@@ -12,14 +12,10 @@
     "categories": [],
     "screenshots": [],
     "icons": [{
-        "src": "/favicon.ico"
-    }, {
-        "src": "/icons/favicon.png",
-        "type": "image/png",
-        "sizes": "512x512"
-    }, {
+        "sizes": "any",
         "src": "/favicon.ico",
-        "type": "image/x-icon"
+        "purpose": "any",
+        "type": "image/svg+xml"
     }],
     "shortcuts": []
 }

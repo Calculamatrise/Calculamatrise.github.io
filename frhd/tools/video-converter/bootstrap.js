@@ -33,3 +33,25 @@ code.addEventListener("drop", function(event) {
         app.image.src = URL.createObjectURL(event.dataTransfer.files[0]);
     }
 });
+
+// const worker = new Worker('my-worker.js');
+// const video = document.getElementById('video');
+// const stream = video.captureStream();
+// const [track] = stream.getVideoTracks();
+// const imageCapture = new ImageCapture(track);
+// const canvas = document.getElementById('canvas');
+// const offscreen = canvas.transferControlToOffscreen();
+
+// worker.postMessage({ offscreen }, [offscreen]);
+
+// const draw = () => {
+//   imageCapture.grabFrame().then(imageBitmap => {
+//     worker.postMessage({ imageBitmap }, [imageBitmap]);
+//   });
+
+//   requestAnimationFrame(draw);
+// };
+
+// video.onplay = () => {
+//   requestAnimationFrame(draw);
+// };

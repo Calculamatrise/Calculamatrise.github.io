@@ -1,53 +1,46 @@
-<left-nav>
+<section class="nav-left">
     <button class="secondary" data-view="/" active>Home</button>
     <button class="secondary" data-view="/svg-drawpad/">SVG Drawpad</button>
-    <dropdown>
+    <div class="dropdown">
         <button class="secondary">FRHD Tools</button>
-        <content>
-            <button class="secondary" data-view="/frhd/tools/render/">Render</button>
+        <main>
             <button class="secondary" data-view="/frhd/tools/combine/">Combine</button>
             <button class="secondary" data-view="/frhd/tools/editor/">Editor</button>
             <button class="secondary" data-view="/frhd/generators/tube/">Tube Generator</button>
-        </content>
-    </dropdown>
+        </main>
+    </div>
     <button class="secondary" data-view="/contact/">Contact</button>
-</left-nav>
-<right-nav>
+</section>
+<section class="nav-right">
     <!-- Add a dropdown? -->
     <button class="secondary" data-view="/login/">Login</button>
     <button class="secondary" id="dark" onclick="theme.href = (Application.storage.theme = Application.storage.theme !== 'dark' ? 'dark' : 'light') === 'dark' ? '/styles/dark.css' : '/styles/light.css'">Change Theme</button>
-</right-nav>
-<mobile-nav>
-    <select oninput="
-        console.dir(this)
-        switch(this.value) {
-            case 'theme': {
-                localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))),
-                theme.href = JSON.parse(localStorage.getItem('dark')) ? '/styles/dark.css' : '/styles/light.css';
-                this.value = '/';
-                break;
-            }
-
-            default: {
-                location.assign(this.value);
-                break;
-            }
+</section>
+<select oninput="
+    console.dir(this)
+    switch(this.value) {
+        case 'theme': {
+            localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))),
+            theme.href = `/styles/${localStorage.getItem('theme') != 'dark' ? localStorage.getItem('theme') : 'dark'}.css`;
+            break;
         }
-    ">
-        <optgroup label="Pages">
-            <option value="/">Home</option>
-            <option value="/svg-drawpad/">SVG Drawpad</option>
-            <optgroup label="FRHD Tools">
-                <option value="/frhd/tools/render/">Render</option>
-                <option value="/frhd/tools/combine/">Combine</option>
-                <option value="/frhd/tools/editor/">Editor</option>
-                <option value="/frhd/generators/tube/">Tube Generator</option>
-            </optgroup>
-            <option value="/contact/">Contact</option>
-        </optgroup>
-        <optgroup label="Accesibility">
-            <option value="/login/">Login</option>
-            <option value="theme">Change Theme</option>
-        </optgroup>
-    </select>
-</mobile-nav>
+
+        default: {
+            location.assign(this.value);
+            break;
+        }
+    }
+" style="display: none;">
+    <option value="/">Home</option>
+    <option value="/svg-drawpad/">SVG Drawpad</option>
+    <optgroup label="FRHD Tools">
+        <option value="/frhd/tools/combine/">Combine</option>
+        <option value="/frhd/tools/editor/">Editor</option>
+        <option value="/frhd/generators/tube/">Tube Generator</option>
+    </optgroup>
+    <option value="/contact/">Contact</option>
+    <optgroup label="Accesibility">
+        <option value="/login/">Login</option>
+        <option value="theme">Change Theme</option>
+    </optgroup>
+</select>
