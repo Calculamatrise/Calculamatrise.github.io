@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Lemonade Stand Simulator - Calculamatrise</title>
-        <link rel="stylesheet" href="/styles/default.css">
-        <script type="module" src="/bootstrap.js"></script>
-    </head>
-    <body>
-        <div class="content">
-            <h1>Lemonade Stand Simulator</h1>
-            <!-- A container to hold all the days so that it is easier for me to add a new day. -->
-            <days id="container">
-                <!-- Each day has it's own element container -->
-                <day data-id="1">
-                    <!-- Each day has a header determining the time/day. -->
-                    <header>
-                        <header-left>Day <span id="day">1</span></header-left>
-                        <header-right><span id="time">1:00</span></header-right>
-                    </header>
-                    <customers>0</customers>
-                    <progress></progress>
-                    <profit>0.00</profit>
-                    <!-- Pre-determined element indicating the price at which lemonade is currently being sold. -->
-                    <price>1.00</price>
-                    <button class="primary nav" id="increasePrice">Raise</button>
-                    <button class="primary nav" id="decreasePrice">Lower</button>
-                </day>
-            </days>
-        </div>
-        <link rel="stylesheet" href="style.css">
-        <script type="module" src="bootstrap.js"></script>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lemonade Stand Simulator - Calculamatrise</title>
+    <link rel="stylesheet" href="/styles/default.css">
+    <script type="module" src="/bootstrap.js"></script>
+</head>
+<body>
+    <main class="content">
+        <h1>Lemonade Stand Simulator</h1>
+        <!-- A container to hold all the days so that it is easier for me to add a new day. -->
+        <days id="container">
+            <!-- Each day has it's own element container -->
+            <day data-id="1">
+                <!-- Each day has a header determining the time/day. -->
+                <header>
+                    <header-left>Day <span id="day">1</span></header-left>
+                    <header-right><span id="time">1</span></header-right>
+                </header>
+                <customers>0</customers>
+                <progress></progress>
+                <profit>0.00</profit>
+                <!-- Pre-determined element indicating the price at which lemonade is currently being sold. -->
+                <price>1.00</price>
+                <button class="secondary" id="increasePrice">Raise</button>
+                <button class="secondary" id="decreasePrice">Lower</button>
+            </day>
+        </days>
+    </main>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="bootstrap.js"></script>
+</body>
 </html>

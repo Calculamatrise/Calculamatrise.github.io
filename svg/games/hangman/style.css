@@ -1,7 +1,7 @@
 svg#view {
-	border: 1px solid var(--text);
+	border: 1px solid var(--border-color);
 	height: 500px;
-	width: 500px;
+	width: -webkit-fill-available;
 }
 
 .container {

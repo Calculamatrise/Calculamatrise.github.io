@@ -1,9 +1,9 @@
 :root {
     --accent-color: #d2d2d2;
-    --text-color: #000000;
     --background-color: #ededed;
     --border-color: #cfcfcf;
-    --transparency: #00000026;
+    --brightness-multiplier: -0.6;
+    --text-color: #000000;
 }
 
 ::-webkit-scrollbar-track {
@@ -16,10 +16,6 @@
 
 ::-webkit-scrollbar-thumb:active {
     background-color: #aaa;
-}
-
-nav {
-    border-bottom: 1px solid #bbb;
 }
 
 @media (max-width: 600px) {
@@ -43,51 +39,4 @@ nav {
     nav select option:hover {
         background-color: #eee;
     }
-}
-
-button, input[type="button"], ::-webkit-file-upload-button {
-    background-color: var(--accent-color);
-    color: #333;
-}
-
-:is(button, input[type="button"], .button).nav:hover {
-    background-color: rgba(0, 0, 0, .1);
-}
-
-:is(button, input[type="button"], .button).nav:active {
-    background-color: rgba(0, 0, 0, .08);
-}
-
-:is(button, input[type="button"], .button):not(.nav)::before, .ripple::before {
-	background-color: #666;
-}
-
-
-:is(button, input[type="button"], .button):not(.nav):hover, ::-webkit-file-upload-button:hover {
-    background-color: #bbb;
-    color: #1d1d1d;
-}
-
-:is(button, input[type="button"], .button):not(.nav):active, ::-webkit-file-upload-button:active {
-    background-color: #aaa;
-}
-
-progress::-moz-progress-bar {
-    background-color: #e6e6e6;
-}
-
-progress::-webkit-progress-bar {
-    background-color: #e6e6e6;
-}
-
-#messages {
-    border: 1px solid #bbb;
-}
-
-.message span.content {
-    background-color: #bbb
-}
-
-.warning {
-    color: #cb0000
 }

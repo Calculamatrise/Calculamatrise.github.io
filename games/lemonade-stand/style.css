@@ -4,7 +4,7 @@ days {
 }
 
 day {
-    padding: 20px;
+    padding: 2rem;
     display: block;
     width: fit-content;
     border-radius: 5px;
@@ -17,33 +17,23 @@ day header {
     justify-content: space-between;
 }
 
-day profit {
+day header #time::after {
+    content: ":00"
+}
+
+day :is(profit, price, customers) {
     display: block;
     font-size: small;
     font-family: monospace;
-    margin: 40px 0 20px;
+    margin: 2rem 0 1rem;
 }
 
 day profit::before {
     content: "Profit: $";
 }
 
-day price {
-    display: block;
-    font-size: small;
-    font-family: monospace;
-    margin: 40px 0 10px;
-}
-
 day price::before {
     content: "Price: $";
-}
-
-day customers {
-    display: block;
-    font-size: small;
-    font-family: monospace;
-    margin: 40px 0 10px;
 }
 
 day customers::before {

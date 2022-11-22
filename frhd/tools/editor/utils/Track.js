@@ -4,19 +4,19 @@ class Track {
     }
 
     static dict = {
-        T: "target",
-        B: "booster",
-        G: "gravity",
-        S: "slowmo",
-        O: "bomb",
-        C: "checkpoint",
-        A: "antigravity",
-        W: "teleporter",
+        T: 'target',
+        B: 'booster',
+        G: 'gravity',
+        S: 'slowmo',
+        O: 'bomb',
+        C: 'checkpoint',
+        A: 'antigravity',
+        W: 'teleporter',
         V: {
-            1: "heli",
-            2: "truck",
-            3: "balloon",
-            4: "blob"
+            1: 'heli',
+            2: 'truck',
+            3: 'balloon',
+            4: 'blob'
         }
     }
 
@@ -43,19 +43,19 @@ class Track {
         let powerups = [];
         for (const type in this.powerups) {
             switch(type) {
-                case "targets":
-                case "boosters":
-                case "gravity":
-                case "slowmos":
-                case "bombs":
-                case "checkpoints":
-                case "antigravity":
-                case "teleporters":
+                case 'targets':
+                case 'boosters':
+                case 'gravity':
+                case 'slowmos':
+                case 'bombs':
+                case 'checkpoints':
+                case 'antigravity':
+                case 'teleporters':
                     let id = Object.keys(this.constructor.dict).find((key) => this.constructor.dict[key] === type.slice(0, -1));
-                    powerups.push(this.powerups[type].map((powerup) => id + " " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
+                    powerups.push(this.powerups[type].map(powerup => id + ' ' + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
                     break;
 
-                case "vehicles":
+                case 'vehicles':
                     for (const vehicle in this.powerups[type]) {
                         powerups.push(this.powerups[type][vehicle].map(powerup => "V " + powerup.map(t => Math.round(t).toString(32)).join(" ")).join(","));
                     }
@@ -63,30 +63,56 @@ class Track {
             }
         }
 
-        return this.physics.map((vector) => vector.map(t => Math.round(t).toString(32)).join(" ")).join(",") + "#" + this.scenery.map((vector) => vector.map(t => Math.round(t).toString(32)).join(" ")).join(",") + "#" + powerups.filter(powerups => powerups).join(",");
+        return this.physics.map(vector => vector.map(t => Math.round(t).toString(32)).join(' ')).join(',') + '#' + this.scenery.map(vector => vector.map(t => Math.round(t).toString(32)).join(' ')).join(',') + '#' + powerups.filter(i => i).join(',');
     }
 
     import(code) {
-        if (code.length === 0) {
-            return;
-        }
-
-        code = code.split("#").map((segment) => segment.split(/\u002C+/g).map((vector) => vector.split(/\s+/g)));
-        let physics = code[0].map(t => t.map(t => Math.round(parseInt(t, 32))).filter(t => !isNaN(t)));
-        let scenery = code[1].map(t => t.map(t => Math.round(parseInt(t, 32))).filter(t => !isNaN(t)));
-        physics[0] && this.physics.push(...physics);
-        scenery[1] && this.scenery.push(...scenery);
-        for (const powerup of code[2]) {
-            let type = this.constructor.dict[powerup[0]];
-            if (type instanceof Object) {
-                type = type[powerup[3]];
+        code = String(code).split('#').map(segment => segment.split(',').map(vector => vector.split(/\s+/g)));
+        line: for (const line of code[0] ?? []) {
+            for (const coordinate in line) {
+                line[coordinate] = parseInt(line[coordinate], 32);
+                if (isNaN(line[coordinate])) {
+                    continue line;
+                }
             }
 
-            if (type === void 0) {
+            this.physics.push(line);
+        }
+
+        line: for (const line of code[1] ?? []) {
+            for (const coordinate in line) {
+                line[coordinate] = parseInt(line[coordinate], 32);
+                if (isNaN(line[coordinate])) {
+                    continue line;
+                }
+            }
+
+            this.scenery.push(line);
+        }
+
+        powerup: for (const powerup of code[2] ?? []) {
+            let isVehicle = false;
+            let type = this.constructor.dict[powerup[0]];
+            if (typeof type == 'object') {
+                isVehicle = true;
+                type = type[parseInt(powerup[3], 32)];
+            }
+
+            if (type === void 0) continue;
+            for (const coordinate in powerup) {
+                if (coordinate == 0) continue;
+                powerup[coordinate] = parseInt(powerup[coordinate], 32);
+                if (isNaN(powerup[coordinate])) {
+                    continue powerup;
+                }
+            }
+
+            if (isVehicle) {
+                this.powerups.vehicles[type].push(powerup.slice(1));
                 continue;
             }
 
-            this.powerups[type + "s"].push(powerup.slice(1).map(t => Math.round(parseInt(t, 32))));
+            this.powerups[type + 's'].push(powerup.slice(1));
         }
 
         return this;

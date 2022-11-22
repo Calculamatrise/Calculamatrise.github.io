@@ -25,40 +25,66 @@
 
 html {
     background-color: var(--background-color);
-    box-sizing: border-box;
     color: var(--text-color);
 	font-family: Arial, helvetica, sans-serif;
 }
 
-nav {
+body > nav {
     backdrop-filter: blur(1rem);
     background-image: linear-gradient(to bottom, var(--accent-color), transparent);
+    border-bottom: 1px solid;
+    border-bottom-color: #80808040;
     display: flex;
     justify-content: space-between;
-    margin: -8px;
-    margin-bottom: 0;
     padding: 0.4rem;
     position: sticky;
     top: 0;
+    width: -webkit-fill-available;
     z-index: 1;
 }
 
-nav button {
-    background-color: transparent;
+/* separate query in case I ever want to change
+the main navigation's parent element to :root */
+body > nav {
+    margin: -8px;
+    margin-bottom: 0;
 }
 
-nav > select {
+body > nav a {
+    background-color: transparent !important;
+}
+
+body > nav a:hover {
+    box-shadow: inset 0 0 1pc 2pc hwb(0 50% 50% / 15%);
+}
+
+body > nav > select {
     display: none;
     color: var(--text-color);
 }
 
-nav > section {
+body > nav > section {
     display: inline-flex;
     max-width: 50%;
 }
 
 body > .content {
-    margin: 1rem 0;
+    margin-top: inherit;
+}
+
+section[caption] {
+    padding-top: 3rem;
+    position: relative;
+}
+
+section[caption]::before {
+    content: attr(caption);
+    font-weight: bold;
+    position: absolute;
+    text-decoration: underline #80808080;
+    text-transform: capitalize;
+    text-underline-position: under;
+    top: 1rem;
 }
 
 .dropdown {
@@ -72,22 +98,23 @@ body > .content {
 
 .dropdown > main {
     background-color: var(--accent-color);
-    box-shadow: 0 0 20px -10px var(--border-color);
-    max-height: 0;
+    border-radius: 5px;
     display: block;
+    max-height: 0;
     overflow: hidden;
 	position: absolute;
     flex-direction: column;
 }
 
-.dropdown:hover > main {
+.dropdown:is(:hover, :focus-within) > main {
+    /* box-shadow: 0 0 20px -10px var(--border-color); */
+    box-shadow: 0 0 0 1px rgb(128 128 128 / 20%);
     height: auto;
     max-height: 100vh;
-    border-radius: 5px;
-    transition: max-height .25s ease-in;
+    transition: all .25s ease-in;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 400px) { /* revert to 600 after testing */
     nav > section {
         display: none;
     }
@@ -182,6 +209,14 @@ pre.code-block code.method {
     color: #4FAFE3;
 }
 
+pre.code-block code.comment {
+    color: #7f848e;
+}
+
+pre.code-block code.enum {
+    color: #56b6c2;
+}
+
 pre.code-block code.keyword {
     color: #C678DD;
 }
@@ -207,7 +242,7 @@ input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="
     background-color: var(--accent-color);
     color: var(--text-color);
     position: relative;
-    border-radius: 2px;
+    border-radius: 4px;
     text-align: center;
     height: 45px;
     width: 200px;
@@ -219,54 +254,72 @@ textarea:focus {
     outline: none;
 }
 
-input[type="file"] {
-    width: 230px;
-}
-
 div.container {
     display: inline-flex;
     position: relative;
     overflow: hidden;
 }
 
-button, input[type="button"], .button, ::-webkit-file-upload-button {
-    width: 130px;
-    height: 45px;
+a.button {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+}
+
+.button, button, input[type="button"], body > nav a, ::-webkit-file-upload-button {
+    aspect-ratio: 2.5 / 1;
+    background-color: var(--accent-color);
     border: none;
+    border-radius: 4px;
+    color: var(--text-color);
+    display: inline-block;
+    font-size: smaller;
+    height: 3rem;
     outline: none;
     overflow: hidden;
     user-select: none;
     position: relative;
-	display: inline-block;
+    text-align: center;
 	text-decoration: none;
     transition: all 100ms;
 }
 
-:is(button, input[type="button"], .button).primary, input.primary::-webkit-file-upload-button {
-    transition: all 100ms;
+:is(.button, button, input[type="button"]):hover, ::-webkit-file-upload-button:hover {
+    cursor: pointer;
+    filter: brightness(calc(1 + 0.4 * var(--brightness-multiplier)));
+    transition: all 50ms;
 }
 
-:is(button, input[type="button"], .button).secondary {
+:is(.button, button, input[type="button"]):not(.secondary):hover:active, ::-webkit-file-upload-button:active {
+    filter: brightness(calc(1 + 0.6 * var(--brightness-multiplier)));
+}
+
+:is(button, input[type="button"], .button).secondary, .secondary::-webkit-file-upload-button {
     border-radius: 4px;
     margin: 2.5px;
 }
 
-:is(button, input[type="button"], .button).secondary:active {
-	transform: scale(.85);
-    transition: transform 80ms ease;
+::-webkit-file-upload-button {
+    margin: 0;
 }
 
-:is(button, input[type="button"], .button):not(.secondary)::before, .ripple::before {
-    opacity: 0;
+:is(.button, button, input[type="button"]).secondary:active, .secondary:active::-webkit-file-upload-button {
+	scale: 0.85;
+    transition: scale 80ms ease;
+}
+
+:is(.button, button, input[type="button"]):not(.secondary)::before, .ripple::before {
+    background-color: #808080;
+    border-radius: 50%;
     content: "";
+    opacity: 0;
+	left: calc(var(--offsetX) * 1px);
     padding: 50%;
 	position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
+    scale: 2;
     top: calc(var(--offsetY) * 1px);
-	left: calc(var(--offsetX) * 1px);
-	transition: transform 800ms, opacity 1s;
-    transform: translate(-50%, -50%) scale(3);
+	transition: opacity 1s, scale 800ms ease-out;
+    translate: -50% -50%;
 }
 
 .rainbow::before {
@@ -277,15 +330,16 @@ button, input[type="button"], .button, ::-webkit-file-upload-button {
     background: radial-gradient(red, orange , yellow, green, cyan, blue, indigo,violet);
 }
 
-:is(button, input, .button):not(.secondary):active:before, .ripple:not(.secondary):not(.focus):active:before, .ripple.focus:not(.secondary):active:not(:focus-within):before {
-    opacity: .5;
-	transition: 0s;
-	transform: translate(-50%, -50%) scale(0);
-}
+/* :is(button, input, .button):not(.secondary):hover:active:before, .ripple:not(.secondary):not(.focus):hover:active:before, .ripple.focus:not(:focus-within):not(.secondary):hover:active:before {
+    opacity: 0.5;
+    scale: 1;
+    transition: opacity 200ms, scale 800ms ease-out !important;
+} */
 
-:is(button, input[type="button"], .button):not(.secondary):hover, ::-webkit-file-upload-button:hover {
-    cursor: pointer;
-    transition: all 50ms;
+:is(button, input, .button):not(.secondary):active:before, .ripple:not(.secondary):not(.focus):active:before, .ripple.focus:not(.secondary):active:not(:focus-within):before {
+    opacity: 0.5;
+    scale: 0;
+	transition: 0s;
 }
 
 :is(button, input[type="button"], .button):disabled {
@@ -297,36 +351,46 @@ button, input[type="button"], .button, ::-webkit-file-upload-button {
     font-size: 0;
 }
 
-button.loading::after, input[type="button"].loading::after, .button.loading::after {
-	top: calc(50% - 5px);
-	left: calc(50% - 5px);
-    width: 8px;
-	height: 8px;
-    content: "";
-    border: 2px solid;
-	position: absolute;
-	border-radius: 50%;
-    border-color: var(--text-color);
-    background-color: transparent;
-	border-bottom-color: transparent;
+.loading {
+    -webkit-user-select: none;
+    color: transparent;
+    position: relative;
+    user-select: none;
+}
+
+.loading * {
+    visibility: hidden;
+}
+
+.loading::after {
 	animation: rotate 800ms cubic-bezier(.5, .5, .5, .5) infinite;
-}
-
-textarea {
-    border-radius: 2px;
-    padding: 10px;
-    height: 400px;
-    width: 470px;
-    border: none;
-}
-
-textarea::placeholder {
-    font-family: Arial, Helvetica, sans-serif;
+    background-color: transparent;
+    border: 2px solid;
+    border-color: var(--text-color) !important;
+    border-bottom-color: transparent !important;
+    border-radius: 50%;
+    bottom: 0;
+    content: "";
+    height: 0;
+    left: 0;
+    margin: auto;
+    padding: 0.25rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 0;
 }
 
 textarea {
     background-color: var(--accent-color);
+    border: none;
+    border-radius: 4px;
     color: var(--text-color);
+    padding: 0.75rem;
+}
+
+textarea::placeholder {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):hover, textarea:hover {
@@ -335,10 +399,6 @@ input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="
 
 input:not([type="checkbox"]):not([type="color"]):not([type="image"]):not([type="file"]):not([type="radio"]):focus, textarea:focus {
     filter: brightness(1.2);
-}
-
-.title {
-    font-family: Helsinki;
 }
 
 table tr th {
@@ -361,15 +421,18 @@ table tr td:nth-child(2) {
 progress {
     border-radius: 0.25rem;
     color: #2196F3 !important;
+    display: block;
     height: 0.5rem;
-    width: 470px;
+    position: relative;
 }
 
 progress::-moz-progress-bar {
+    background-color: rgb(128 128 128 / 5%);
     border-radius: 0.25rem;
 }
 
 progress::-webkit-progress-bar {
+    background-color: rgb(128 128 128 / 5%);
     border-radius: 0.25rem;
 }
 
@@ -378,28 +441,16 @@ progress::-webkit-progress-value {
     border-radius: 0.25rem;
 }
 
-#messages {
-    flex-direction: column;
-    margin-bottom: 10px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 15px;
-    display: flex;
-    height: 70vh;
-    width: auto;
-}
-
-.message span.content {
-    display: inline-block;
-    border-radius: 20px;
-    margin-bottom: 2px;
-    padding: 10px;
-}
-
-.message span.author {
-    display: inline-block;
-    margin-bottom: 2px;
-    padding: 10px;
+progress.show-percentage::before {
+    bottom: 0;
+    color: var(--text-color);
+    content: attr(value) '%';
+    font-size: 0.5rem;
+    left: 0;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
 }
 
 .warning {
@@ -487,50 +538,11 @@ context-menu item:hover {
 	background-color: #3f4042;
 }
 
-checkbox {
-	width: auto;
-	min-width: 25px;
-	min-height: 25px;
-	line-height: 1.4;
-	user-select: none;
-	text-align: right;
-	position: relative;
-	padding-left: 25px;
-	display: inline-block;
-}
-
-checkbox::before {
-	left: 0;
-	top: 10%;
-	content: "";
-	width: 16px;
-	height: 16px;
-	background: white;
-	position: absolute;
-	border-radius: 4px;
-	border: 1px solid black;
-}
-
-checkbox[checked]::before {
-	transform: rotate(90deg);
-}
-
-checkbox[checked]::after {
-	left: 2px;
-	top: 18%;
-	content: "";
-	width: 14px;
-	height: 14px;
-	background: black;
-	position: absolute;
-	clip-path: polygon(25% 50%, 12% 64%, 36% 90%, 90% 24%, 76% 15%, 36% 65%);
-}
-
-body.drag-active {
+.drag-active {
     position: relative;
 }
 
-body.drag-active::after {
+.drag-active::after {
     border: 8px solid var(--border-color);
     content: "Drop";
     position: absolute;
@@ -570,4 +582,12 @@ body.drag-active::after {
         100% 100%,
         0 100%
     );
+}
+
+.success {
+    color: #44dd88
+}
+
+.warning {
+    color: #dd4444
 }

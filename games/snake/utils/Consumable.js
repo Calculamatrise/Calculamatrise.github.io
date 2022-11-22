@@ -1,14 +1,13 @@
-import Vector from "./Vector.js";
+import Vector from "../../utils/Vector.js";
 
 export default class {
 	size = 10;
 	init(parent) {
-		let rand = Math.ceil(Math.random() * (game.canvas.width - 10));
-		rand -= rand % 10;
-		let randTwo = Math.ceil(Math.random() * (game.canvas.height - 10));
-		randTwo -= randTwo % 10;
-		this.position = new Vector(rand, randTwo);
+		let rand = Math.ceil(Math.random() * (parent.canvas.width - 10));
+		let randTwo = Math.ceil(Math.random() * (parent.canvas.height - 10));
+		this.position = new Vector(rand - rand % 10, randTwo - randTwo % 10);
 	}
+
 	draw(ctx) {
 		ctx.save();
 		ctx.fillStyle = "#d2a5ff";

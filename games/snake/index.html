@@ -8,20 +8,22 @@
         <link rel="stylesheet" href="/styles/default.css">
         <script type="module" src="/bootstrap.js"></script>
     </head>
-    <body>
-        <div class="content">
-            <div class="container">
-                <canvas id="view"></canvas>
-                <div id="overlay">
-                    <div id="settings">
-                        <button onclick="sessionStorage.setItem('snake-svg', true)">Continue</button>
-                        <br>
-                        <button id="restart">Restart</button>
-                        <button onclick="document.querySelector('div#overlay').style.display = 'none'">Continue</button>
+    <body style="height: calc(100% - 16px);position: fixed;width: calc(100% - 16px);">
+        <main style="margin: -8px;margin-top: 0;">
+            <canvas id="view" style="border: 1px solid var(--border-color);"></canvas>
+            <div class="overlay" id="settings-overlay" style="display: none;">
+                <nav>
+                    <div class="right">
+                        <label for="settings">Settings</label>
                     </div>
+                </nav>
+                <div id="settings" style="display: none;">
+                    <input type="checkbox" id="settings" style="display: none;">
+                    <button id="restart">Restart</button>
+                    <button onclick="document.querySelector('div#overlay').style.display = 'none'">Continue</button>
                 </div>
             </div>
-        </div>
+        </main>
         <link rel="stylesheet" href="style.css">
         <script type="module" src="bootstrap.js"></script>
     </body>

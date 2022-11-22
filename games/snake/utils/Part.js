@@ -1,14 +1,16 @@
-import Vector from "./Vector.js";
+import Vector from "../../utils/Vector.js";
 
 export default class {
-	constructor(x, y) {
-		this.position = new Vector(x, y);
-		this.old = new Vector(x, y);
-	}
+	color = window.Application?.getColorScheme() === 'dark' ? 'white' : 'black';
 	size = 10;
+	constructor(x, y) {
+		this.position = new Vector(x - x % 10, y - y % 10);
+		this.old = this.position.clone();
+	}
+
 	draw(ctx) {
 		ctx.save();
-		ctx.fillStyle = JSON.parse(localStorage.getItem("dark")) ? "white" : "black";
+		ctx.fillStyle = this.color;
 		ctx.fillRect(this.position.x, this.position.y, this.size, this.size);
 		ctx.restore();
 	}

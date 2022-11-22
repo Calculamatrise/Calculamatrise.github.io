@@ -14,29 +14,28 @@
     <script>
         const search = new URLSearchParams(location.search);
         fetch("https://discord.com/api/v10/oauth2/token", {
-            method: "post",
+            method: 'post',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: new URLSearchParams({
-                client_id: "708904786916933693",
-                client_secret: "",
-                grant_type: "authorization_code",
-                code: search.get("code"),
+                client_id: '708904786916933693',
+                client_secret: '',
+                grant_type: 'authorization_code',
+                code: search.get('code'),
                 redirect_uri: location.origin + location.pathname
             })
-        }).then(async function(response) {
-            const data = await response.json();
-            const element = document.createElement("span");
+        }).then(r => r.json()).then(async function(data) {
+            const element = document.createElement('span');
             if (typeof data == 'object' && 'error' in data) {
                 element.innerText = data.error_description ?? data.error;
-                element.classList.add("error");
+                element.classList.add('error');
             } else {
                 element.innerText = "Redirecting...";
                 Application.storage.auth = data;
             }
 
-            return void document.body.appendChild(element);
+            return document.body.appendChild(element);
         });
     </script>
 </body>

@@ -5,9 +5,9 @@ let types = {
     powerups: []
 }
 
-addEventListener("message", function({ data }) {
+addEventListener('message', function({ data }) {
     switch(data.cmd) {
-        case "init":
+        case 'init':
             offset = { x: 0, y: 0 };
             types.physics = [];
             types.scenery = [];
@@ -20,7 +20,7 @@ addEventListener("message", function({ data }) {
             postMessage(data);
             break;
 
-        case "render":
+        case 'render':
             data.filter && filter(data.pixels);
             data.invert && invert(data.pixels);
             for (let y = 0, iy; y < data.pixels.height; y++) {
@@ -47,7 +47,7 @@ addEventListener("message", function({ data }) {
             offset.x += data.pixels.width * 10;
             break;
 
-        case "fetch":
+        case 'fetch':
             data.result = `${types.physics.join(",")}#${types.scenery.join(",")}#${types.powerups.join(",")}`;
             data.size = data.result.length;
             postMessage(data);

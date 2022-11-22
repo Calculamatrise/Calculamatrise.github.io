@@ -1,14 +1,14 @@
-import Manipulation from "./Utils/Manipulation.js";
+import Manipulation from "./utils/Manipulation.js";
 
-image.onchange = function() {
-    canvas.innerHTML = null;
-    progress.style.width = "0%";
-    progress.innerText = "";
-    
-    if (this.files.length < 1) return;
-    Manipulation.fileReader.readAsDataURL(this.files[0]);
-}
+const app = new Manipulation();
 
-invert.onchange = function() {
-    image.value = null;
-}
+image.addEventListener('click', function() {
+    this.value = null;
+});
+
+image.addEventListener('change', function() {
+    app.progress = 0;
+    if (this.files.length > 0) {
+        app.image.src = URL.createObjectURL(this.files[0]);
+    }
+});

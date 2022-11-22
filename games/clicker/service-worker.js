@@ -1,4 +1,10 @@
-onmessage = function({ data }) {
+let defaults = {
+    clicks: 0,
+    level: 1,
+    prestige: 0
+}
+
+onmessage = async function({ data }) {
     switch(data.cmd) {
         case "click":
             switch(data.args.clicks) {
@@ -12,23 +18,37 @@ onmessage = function({ data }) {
                 case 4999:
                 case 9999:
                     data.args.level++;
-                break;
-                    
+                    break;
+
                 case 99999:
                     data.args.clicks = 0;
                     data.args.level = 1;
                     data.args.prestige++;
             }
+
             data.args.clicks += (data.args.prestige + 1);
-        break;
+            break;
 
         case "level":
             data.args.level++;
-        break;
+            break;
 
         case "prestige":
             data.args.prestige++;
-        break;
+            break;
     }
+
     this.postMessage(data);
+}
+
+function uuid({ includeLower, partLength, parts } = {}) {
+    return Array.from({ length: parts ?? 4 }, () => {
+        return Array.from({ length: partLength ?? 5 }, () => {
+            let rand = Math.floor(Math.random() * 2 + (includeLower ?? true));
+            let min = [48, 65, 97][rand];
+            let max = [10, 26, 26][rand];
+            let code = Math.floor(min + Math.random() * max);
+            return String.fromCharCode(code);
+        }).join('');
+    }).join('-');
 }

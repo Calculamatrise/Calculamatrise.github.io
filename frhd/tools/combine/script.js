@@ -1,48 +1,43 @@
-inputs = [
-    document.getElementById("input1"),
-    document.getElementById("input2")
-];
-
+var inputs = tracks.querySelectorAll('textarea');
 for (const input of inputs) {
-    input.addEventListener("input", run);
+    input.addEventListener('change', run);
 }
 
 function add() {
-    let e = Object.assign(document.createElement("textarea"), {
-        placeholder: "Track " + (inputs.length + 1),
-        style: "width: 230px; height: 65px;",
+    return tracks.appendChild(Object.assign(document.createElement("textarea"), {
+        placeholder: 'Track ' + (inputs.length + 1),
+        style: "width: 222.5px;height: 65px;",
         spellcheck: false,
-        onclick: function() {
-            this.select()
-        },
-        oninput: run
-    });
-    inputs[inputs.length - 1].after(e);
-    inputs.push(e);
+        onchange: run
+    }));
 }
 
 function run() {
-    let physics = "", scenery = "", powerups = "";
-    if (!inputs[0] || !inputs[1]) {
-        inputs[0] = document.getElementById("input1"),
-        inputs[1] = document.getElementById("input2")
+    let physics = [];
+    let scenery = [];
+    let powerups = [];
+    let inputs = tracks.querySelectorAll('textarea');
+    for (let i = 0; i < inputs.length; i++) {
+        let parts = inputs[i].value.split('#');
+        parts[0] && physics.push(parts[0]);
+        parts[1] && scenery.push(parts[1]);
+        parts[2] && powerups.push(parts[2]);
     }
-    inputs.forEach(i => {
-        physics += (i.value.split("#")[0] || "") + (i.value.split("#")[0] ? "," : "")
-        scenery += (i.value.split("#")[1] || "") + (i.value.split("#")[1] ? "," : "")
-        powerups += (i.value.split("#")[2] || "") + (i.value.split("#")[2] ? "," : "")
-    });
-    output.value = physics.replace(/,$/g, "") + "#" + scenery.replace(/,$/g, "") + "#" + powerups.replace(/,$/g, "");
+
+    output.value = physics.join(',') + '#' + scenery.join(',') + '#' + powerups.join(',');
     output.select();
 }
 
 function copy() {
-    output.select();
-    document.execCommand('copy');
+    navigator.clipboard.writeText(output.value);
 }
 
-window.addEventListener('keydown',function(e) {
-    var key = e.keyCode || e.which;
-    if (key == 13) run();
-    if (key == 67) copy();
+navigation.addEventListener('navigate', function navigate() {
+    navigation.removeEventListener('navigate', navigate);
+    window.removeEventListener('keydown', keydown);
 });
+
+window.addEventListener('keydown', keydown);
+function keydown(event) {
+    event.shiftKey || event.key == 'Enter' && run();
+}

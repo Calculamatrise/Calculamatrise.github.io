@@ -1,6 +1,13 @@
 import Vector from "./Vector.js";
 
 export default class Player {
+    direction = 1;
+    size = 15;
+    speed = 2.5;
+    gravity = new Vector(0, .17);
+    jumpHeight = null;
+    position = null;
+    velocity = new Vector();
 	constructor(parent, x, y) {
 		this.parent = parent;
         this.position = new Vector([
@@ -8,18 +15,10 @@ export default class Player {
             parseFloat(y) - parseFloat(y) % 10
         ]);
 	}
-	
-    size = 15;
-    speed = 2;
-    direction = 1;
-    velocity = new Vector();
-    gravity = new Vector(0, .12);
-    position = null;
-    jumpHeight = null;
 
     jump() {
         this.jumpHeight = this.position.y - this.size * 2;
-        this.velocity.y = -4;
+        this.velocity.y = this.speed * -1.7;
     }
 
 	update(delta) {
@@ -37,7 +36,7 @@ export default class Player {
 
         this.velocity.add(this.gravity).scale(.99);
         this.position.add(this.velocity);
-        
+
         this.velocity.y = this.position.y - this.position.old.y;
 
         this.position.add(new Vector(this.speed).scale(this.direction));

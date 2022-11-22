@@ -1,4 +1,4 @@
-import Manipulation from "./Utils/Manipulation.js";
+import Manipulation from "./utils/Manipulation.js";
 
 const app = new Manipulation(document.querySelector("canvas#view"));
 

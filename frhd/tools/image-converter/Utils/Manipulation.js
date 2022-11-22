@@ -1,4 +1,18 @@
 export default class Manipulation {
+    canvas = new OffscreenCanvas(512, 512);
+    ctx = this.canvas.getContext("2d");
+    image = new Image();
+    worker = new Worker("./worker.js");
+
+    /**
+     * @param {number} value
+     */
+    set progress(value) {
+        value = ~~value;
+        document.title = `Progress... ${value}%`;
+        progress.setAttribute("value", value);
+    }
+
     constructor() {
         this.image.crossOrigin = "Anonymous";
         this.image.onload = this.render.bind(this);
@@ -32,27 +46,13 @@ export default class Manipulation {
             }
         });
     }
-    canvas = new OffscreenCanvas(512, 512);
-    ctx = this.canvas.getContext("2d");
-    image = new Image();
-    worker = new Worker("./worker.js");
-    /**
-     * @param {Number} value
-     */
-    set progress(value) {
-        value = ~~value;
-        document.title = `Progress... ${value}%`;
-        progress.setAttribute("value", value);
-    }
 
     render() {
         this.progress = 0;
         this.canvas.width = this.image.width;
         this.canvas.height = this.image.height;
-
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
-
         this.worker.postMessage({
             cmd: "render",
             filter: true,

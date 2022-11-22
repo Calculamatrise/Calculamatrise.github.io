@@ -26,14 +26,14 @@
             <span><code class="constant">client</code>.<code class="method">login</code>(<code class="string">"your-token-goes-here"</code>);</span>
         </pre>
         <br>
-        <h4>Listen for notifications</h4>
+        <h2>Methods</h2>
         <pre class="code-block">
-            <span><code class="constant">client</code>.<code class="method">on</code>(<code class="string">"challenge"</code>, <code class="keyword">function</code>(<code class="parameter variable">challenge</code>) {</span>
-            <span>    <code class="constant">console</code>.<code class="method">log</code>(<code class="parameter variable">challenge</code>\);</span>
+            <span><code class="keyword">import</code> { <code class="constant">Events</code> } <code class="keyword">from</code> <code class="string">"frhd"</code>;</span>
+            <span><br></span>
+            <span><code class="constant">client</code>.<code class="method">on</code>(<code class="constant">Events</code>.<code class="enum">FriendRequestReceieved</code>, <code class="keyword">function</code>(<code class="parameter variable">challenge</code>) {</span>
+            <span>    <code class="constant">console</code>.<code class="method">log</code>(<code class="parameter variable">challenge</code>);</span>
             <span>});</span>
         </pre>
-        <br>
-        <h2>Methods</h2>
         <h3>UserManager#fetch</h3>
         <p>Parameters:</p>
         <h5 style="display: list-item; margin-left: 35px;">
@@ -65,7 +65,7 @@
         </h5>
         <p>Response type: Object (Array)</p>
         <pre class="code-block">
-            <span><code class="constant">client</code>.<code class="property">notifications</code>.<code class="method">fetch</code>(<code class="number">100</code>).<code class="method">then</code>(<code class="keyword">function</code>(<code class="parameter">notifications</code>) {</span>
+            <span><code class="constant">client</code>.<code class="property">notifications</code>.<code class="method">fetch</code>(<code class="number">10</code>).<code class="method">then</code>(<code class="keyword">function</code>(<code class="parameter">notifications</code>) {</span>
             <span>    <code class="constant">console</code>.<code class="method">log</code>(<code class="parameter variable">notifications</code>);</span>
             <span>});</span>
         </pre>

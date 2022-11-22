@@ -7,11 +7,10 @@
 </head>
 <body>
     <main class="content">
-        <input type="number" id="input" value="10" placeholder="Segments">
+        <input type="number" id="input" min="1" value="10" placeholder="Segments">
         <button class="button" data-id="generate">Generate</button>
-        <button class="button" data-id="copy">Copy Code</button>
-        <br><br>
-        <textarea id=output rows=20 cols=52 readonly></textarea>
+        <button class="button" onclick="navigator.clipboard.writeText(output.value);">Copy</button><br><br>
+        <textarea id="output" rows="20" cols="52" onclick="this.select();" readonly></textarea>
     </main>
     <script type="module" src="bootstrap.js"></script>
 </body>

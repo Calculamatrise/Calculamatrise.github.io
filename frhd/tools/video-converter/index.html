@@ -7,11 +7,10 @@
 </head>
 <body>
     <main class="content">
-        <input type="file" id="input" accept="video/*">
-        <label for="invert">Invert Colours&emsp;</label>
-        <input type="checkbox" id="invert"><br><br>
+        <input type="file" class="secondary" id="input" accept="video/*">
+        <label>Invert Colours&emsp;<input type="checkbox" id="invert"></label>
         <canvas id="view" width="720" height="480"></canvas>
-        <progress id="progress" value="0" max="100"></progress><br>
+        <progress id="progress" value="0" max="100" class="show-percentage"></progress><br>
         <textarea id="code" placeholder="Result" value="" cols="30" rows="10" onclick="this.select()" readonly></textarea>
     </main>
     <script type="module" src="bootstrap.js?bypass"></script>

@@ -47,7 +47,7 @@ export default class {
                 return parseFloat(profit.innerText);
             },
             set(value) {
-                profit.innerText = value;
+                profit.innerText = value.toFixed(2);
             }
         },
         price: {
@@ -55,7 +55,7 @@ export default class {
                 return parseFloat(price.innerText);
             },
             set(value) {
-                price.innerText = value;
+                price.innerText = value.toFixed(2);
             }
         },
         reputation: {

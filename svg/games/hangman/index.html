@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>SVG Hangman - Calculamatrise</title>
-        <link rel="stylesheet" href="/styles/default.css">
-        <script type="module" src="/bootstrap.js"></script>
-    </head>
-    <body>
-        <div class="content">
-            <div class="container">
-                <svg id="view" xmlns="http://www.w3.org/2000/svg"></svg>
-                <div id="overlay">
-                    <div id="settings">
-                        <button id="restart">Restart</button>
-                        <button onclick="document.querySelector('div#overlay').style.display = 'none'">Continue</button>
-                    </div>
-                </div>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Hangman - Calculamatrise</title>
+    <link rel="stylesheet" href="/styles/default.css">
+    <script type="module" src="/bootstrap.js"></script>
+</head>
+<body>
+    <main class="content">
+        <svg id="view" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="overlay" id="settings-overlay">
+            <div id="settings" style="display: none;">
+                <button id="restart">Restart</button>
+                <button onclick="document.querySelector('div#overlay').style.display = 'none'">Continue</button>
             </div>
-            <br>
-            <input type="text" placeholder="Your guess" maxlength="1" onkeydown="window.game.guess(this, event.key.toLowerCase())">
         </div>
-        <link rel="stylesheet" href="style.css">
-        <script type="module" src="bootstrap.js"></script>
-    </body>
+        <input type="text" placeholder="Your guess" maxlength="1" onkeydown="window.game.guess(this, event.key.toLowerCase())">
+    </main>
+    <link rel="stylesheet" href="style.css">
+    <script type="module" src="bootstrap.js"></script>
+</body>
 </html>

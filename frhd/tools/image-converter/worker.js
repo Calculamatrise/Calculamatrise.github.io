@@ -10,7 +10,7 @@ addEventListener("message", function({ data }) {
             data.result = `${data.physics}#${data.scenery}#${data.powerups}`;
             break;
 
-        case "render":
+        case "render": {
             let types = {
                 physics: [],
                 scenery: [],
@@ -46,6 +46,7 @@ addEventListener("message", function({ data }) {
             data.result = types.physics.join(",") + "#" + types.scenery.join(",") + "#" + types.powerups.join(",");
             data.size = data.result.length;
             break;
+        }
     }
 
     postMessage(data);

@@ -1,64 +1,89 @@
 import EventEmitter from "./EventEmitter.js";
 
+let i = 0;
+const parser = new DOMParser();
 export default class extends EventEmitter {
-    get pathname() {
-        return location.pathname;
-    }
-
-    async init() {
-        // this may be useful later.
+    constructor() {
+        super();
+        navigation.addEventListener('navigate', event => {
+            if (event.userInitiated && event.navigationType !== 'traverse') {
+                const destinationURL = new URL(event.destination.url);
+                this.navigate(destinationURL.pathname, {
+                    popped: event.navigationType === 'traverse' && !(navigation.currentEntry.index < event.destination.index)
+                });
+            }
+        });
+        window.addEventListener('popstate', event => {
+            this.navigate(location.pathname, {
+                dom: event.state,
+                popped: true
+            });
+        });
     }
 
     /**
      * 
-     * @param {String} pathname 
-     * @param {Boolean} options.popped 
+     * @param {string} pathname
+     * @param {object} options
+     * @param {boolean} options.popped
      * @returns {Promise}
      */
-    async navigate(pathname, { popped = false } = {}) {
-        if (typeof pathname !== "string") return;
+    async navigate(pathname, { dom = history.state, popped = false, saveState = false } = {}) {
+        if (typeof pathname != 'string') return;
+        else if (dom) dom = parser.parseFromString(dom, 'text/html');
+        let oldContent = parser.parseFromString(document.body.innerHTML, 'text/html');
+        const nav = oldContent.querySelector('body > nav');
+        if (nav !== null) {
+            nav.remove();
+        }
 
-        history[(popped ? "replace" : "push") + "State"](null, document.title, pathname);
-
+        history[(popped ? 'replace' : 'push') + 'State'](null && oldContent.documentElement.outerHTML, document.title, pathname);
         try {
-            this.emit(this.pathname);
-            let dir = this.pathname.slice(1, -1).split("/");
+            this.emit(pathname);
+            let dir = pathname.slice(1, -1).split('/');
             if (dir.length > 1) {
                 for (let t = 1; t < dir.length; t++) {
-                    let pathname = dir.slice(0, -t).join("/");
+                    let pathname = dir.slice(0, -t).join('/');
                     this.emit(`/${pathname}/*`);
                 }
             }
 
-            location.assign(this.pathname);
-            // this.replaceContent(await fetch(this.pathname).then(response => response.text()));
+            let loadAssets = dom === null;
+            if (loadAssets) {
+                dom = await fetch(pathname).then(r => r.text()).then(res => parser.parseFromString(res, 'text/html'));
+                for (const element of dom.querySelectorAll('link')) {
+                    const link = document.createElement('link');
+                    link.rel = element.rel || '';
+                    link.href = element.href;
+                    document.body.appendChild(link);
+                    // element.remove();
+                }
+
+                for (const element of document.body.querySelectorAll('script')) {
+                    element.src += '?i=' + i++;
+                }
+            }
+
+            const nav = dom.querySelector('body > nav');
+            if (nav !== null) {
+                nav.remove();
+            }
+
+            document.body.replaceChildren(document.body.querySelector('nav'), ...dom.body.children);
+            if (dom.title) {
+                document.title = dom.title;
+            }
+
+
+            for (const element of document.body.querySelectorAll('script')) {
+                const script = document.createElement('script');
+                script.type = element.type || '';
+                script.src = element.src ? element.src + '?i=' + i++ : null;
+                element.replaceWith(script);
+            }
         } catch(e) {
-            console.error(e);
-            this.emit("/*");
+            console.error(e, 'haa');
+            this.emit('/*');
         }
-    }
-
-    replaceContent(data) {
-        let parser = new DOMParser();
-        data = parser.parseFromString(data, "text/html");
-
-        for (const element of data.body.querySelectorAll("link")) {
-            const link = document.createElement("link");
-            link.rel = element.rel || "";
-            link.href = element.href;
-
-            document.body.appendChild(link);
-        }
-
-        for (const element of data.scripts) {
-            const script = document.createElement("script");
-            script.type = element.type || "";
-            script.src = element.src;
-
-            document.body.appendChild(script);
-        }
-
-        document.body = data.body;
-        document.title = data.title;
     }
 }

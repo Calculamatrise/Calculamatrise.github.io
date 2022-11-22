@@ -1,42 +1,28 @@
 <section class="nav-left">
-    <button class="secondary" data-view="/" active>Home</button>
-    <button class="secondary" data-view="/svg-drawpad/">SVG Drawpad</button>
+    <a class="button secondary" href="/" active>Home</a>
+    <a class="button secondary" href="/svg-drawpad/">SVG Drawpad</a>
     <div class="dropdown">
-        <button class="secondary">FRHD Tools</button>
+        <a class="button secondary">FRHD Tools</a>
         <main>
-            <button class="secondary" data-view="/frhd/tools/combine/">Combine</button>
-            <button class="secondary" data-view="/frhd/tools/editor/">Editor</button>
-            <button class="secondary" data-view="/frhd/generators/tube/">Tube Generator</button>
+            <a class="button secondary" href="/frhd/tools/combine/">Combine</a>
+            <a class="button secondary" href="/frhd/tools/editor/">Editor</a>
+            <a class="button secondary" href="/frhd/tools/tube-generator/">Tube Generator</a>
         </main>
     </div>
-    <button class="secondary" data-view="/contact/">Contact</button>
+    <a class="button secondary" href="/contact/">Contact</a>
 </section>
 <section class="nav-right">
     <!-- Add a dropdown? -->
-    <button class="secondary" data-view="/login/">Login</button>
-    <button class="secondary" id="dark" onclick="theme.href = (Application.storage.theme = Application.storage.theme !== 'dark' ? 'dark' : 'light') === 'dark' ? '/styles/dark.css' : '/styles/light.css'">Change Theme</button>
+    <a class="button secondary" href="/login/">Login</a>
+    <a class="button secondary" onclick="Application.setColorScheme(Application.storage.theme = Application.getColorScheme() !== 'dark' ? 'dark' : 'light')">Change Theme</a>
 </section>
-<select oninput="
-    console.dir(this)
-    switch(this.value) {
-        case 'theme': {
-            localStorage.setItem('dark', !JSON.parse(localStorage.getItem('dark'))),
-            theme.href = `/styles/${localStorage.getItem('theme') != 'dark' ? localStorage.getItem('theme') : 'dark'}.css`;
-            break;
-        }
-
-        default: {
-            location.assign(this.value);
-            break;
-        }
-    }
-" style="display: none;">
+<select style="display: none;">
     <option value="/">Home</option>
     <option value="/svg-drawpad/">SVG Drawpad</option>
     <optgroup label="FRHD Tools">
         <option value="/frhd/tools/combine/">Combine</option>
         <option value="/frhd/tools/editor/">Editor</option>
-        <option value="/frhd/generators/tube/">Tube Generator</option>
+        <option value="/frhd/tools/tube-generator/">Tube Generator</option>
     </optgroup>
     <option value="/contact/">Contact</option>
     <optgroup label="Accesibility">

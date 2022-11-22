@@ -1,78 +1,45 @@
 export default class Manipulation {
-    constructor({ image }) {
-        this.canvas = canvas;
-        this.ctx = this.canvas.getContext("2d");
+    canvas = new OffscreenCanvas(512, 512);
+    ctx = this.canvas.getContext("2d");
+    image = new Image();
+    worker = new Worker("./worker.js");
 
-        this.image = new Image();
-        this.image.src = image;
+    /**
+     * @param {number} value
+     */
+    set progress(value) {
+        value = ~~value;
+        document.title = `Progress... ${value}%`;
+        progress.setAttribute("value", value);
+    }
+
+    constructor() {
         this.image.crossOrigin = "Anonymous";
-        this.image.onload = this.render.bind(this);
-
-        this.worker = new Worker("./worker.js");
-        this.worker.onmessage = ({ data }) => {
+        this.image.addEventListener('load', this.render.bind(this));
+        this.worker.addEventListener("message", ({ data }) => {
             switch(data.cmd) {
-                case "progress":
-                    document.title = "Progress... " + data.args.value;
-                    progress.innerText = data.args.innerText || data.args.value;
-                    progress.style.width = data.args.value;
-                break;
+                case 'progress':
+                    this.progress = data.progress;
+                    break;
 
-                case "render":
-                    svg.innerHTML = data.args.lines;
-                break;
-            }
-        }
-
-        this.pixels = this.ctx.createImageData(this.canvas.width, this.canvas.height);
-    }
-    static get fileReader() {
-        this.reader = new FileReader();
-        this.reader.onload = function() {
-            new Manipulation({
-                image: this.result
-            });
-        }
-        return this.reader;
-    }
-    static filter(pixels) {
-        for (let t = 0, e = 0; t in pixels.data; t += 4) {
-            e = pixels.data[t] * .2 + pixels.data[t + 1] * .7 + pixels.data[t + 2] * .1;
-            pixels.data[t] = pixels.data[t + 1] = pixels.data[t + 2] = e <= 85 ? 0 : e <= 170 ? 170 : 255;
-        }
-        return pixels;
-    }
-    static invert(pixels) {
-        for (let t = 0; t in pixels.data; t += 4) {
-            pixels.data[t] = 255 - pixels.data[t];
-            pixels.data[t + 1] = 255 - pixels.data[t + 1];
-            pixels.data[t + 2] = 255 - pixels.data[t + 2];
-        }
-        return pixels;
-    }
-    render() {
-        this.canvas.width = svg.style.width = this.image.width;
-        this.canvas.height = svg.style.height = this.image.height;
-        
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
-
-        this.pixels = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-
-        document.title = "Progress... 0%";
-        progress.style.width = "0%";
-
-        this.worker.postMessage({
-            cmd: "render",
-            args: {
-                canvas: {
-                    width: this.canvas.width,
-                    height: this.canvas.height
-                },
-                lines: new String(),
-                pixels: invert.checked ? Manipulation.invert(this.pixels) : this.pixels
+                case 'render':
+                    svg.innerHTML = data.result;
+                    break;
             }
         });
+    }
 
-        return this;
+    render() {
+        this.progress = 0;
+        svg.style.setProperty('width', this.canvas.width = this.image.width);
+        svg.style.setProperty('height', this.canvas.height = this.image.height);
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
+        this.worker.postMessage({
+            cmd: 'render',
+            filter: false,
+            invert: invert.checked,
+            pixels: this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height)
+        });
     }
 }

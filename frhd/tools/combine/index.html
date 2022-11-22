@@ -10,11 +10,17 @@
         <button class="primary" onclick="run()">Combine</button>
         <button class="primary" onclick="copy()">Copy</button>
         <button class="primary" onclick="add()">Add Track</button>
-        <br><br>
-        <textarea id="input1" onclick="this.select()" spellcheck="false" placeholder="Track 1" style="width: 222.5px; height: 65px;"></textarea>
-        <textarea id="input2" onclick="this.select()" spellcheck="false" placeholder="Track 2" style="width: 222.5px; height: 65px;"></textarea>
-        <br>
-        <textarea id="output" onclick="this.select()" placeholder="Combined Track" readonly></textarea>
+        <div id="tracks" style="
+            display: grid;
+            grid-gap: 5px;
+            grid-template-columns: repeat(2, auto);
+            margin: 1rem 0 5px;
+            width: min-content;
+        ">
+            <textarea id="input1" spellcheck="false" placeholder="Track 1" style="width: 222.5px; height: 65px;"></textarea>
+            <textarea id="input2" spellcheck="false" placeholder="Track 2" style="width: 222.5px; height: 65px;"></textarea>
+        </div>
+        <textarea id="output" placeholder="Combined Track" onclick="this.select()" readonly></textarea>
     </main>
     <script src="script.js"></script>
 </body>
