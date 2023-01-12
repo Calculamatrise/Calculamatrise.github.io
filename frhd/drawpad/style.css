@@ -1,4 +1,4 @@
-html {
+:root {
 	--size: .5;
 	--background: #EBEBEB;
 	--hard-background: #DDDDDD;
@@ -6,8 +6,10 @@ html {
 	--text: #1B1B1B;
 	--stroke: skyblue;
 	--fill: violet;
-	color: var(--text);
-	border: none;
+}
+
+html {
+    color: var(--text);
 }
 
 body {
@@ -15,8 +17,8 @@ body {
 	overflow: hidden;
 }
 
-nav {
-	display: none;
+body > nav {
+	display: none !important;
 }
 
 div.content {
