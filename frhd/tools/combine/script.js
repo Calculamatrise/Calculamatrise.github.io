@@ -1,12 +1,7 @@
-var inputs = tracks.querySelectorAll('textarea');
-for (const input of inputs) {
-    input.addEventListener('change', run);
-}
-
 function add() {
-    return tracks.appendChild(Object.assign(document.createElement("textarea"), {
-        placeholder: 'Track ' + (inputs.length + 1),
-        style: "width: 222.5px;height: 65px;",
+    return tracks.appendChild(Object.assign(document.createElement('textarea'), {
+        placeholder: 'Track ' + (1 + tracks.querySelectorAll('textarea').length),
+        style: 'width: 200px;',
         spellcheck: false,
         onchange: run
     }));
@@ -24,16 +19,12 @@ function run() {
         parts[2] && powerups.push(parts[2]);
     }
 
-    output.value = physics.join(',') + '#' + scenery.join(',') + '#' + powerups.join(',');
+    output.value = Array(physics.join(','), scenery.join(','), powerups.join(',')).join('#');
     output.select();
 }
 
-function copy() {
-    navigator.clipboard.writeText(output.value);
-}
-
 navigation.addEventListener('navigate', function navigate() {
-    navigation.removeEventListener('navigate', navigate);
+    this.removeEventListener('navigate', navigate);
     window.removeEventListener('keydown', keydown);
 });
 

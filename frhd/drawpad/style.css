@@ -110,10 +110,6 @@ div#container :is(user-interface, mobile-user-interface) button, div#container d
 }
 
 div#container .overlay {
-	top: 15vh;
-	left: 15vw;
-	width: 40vw;
-	height: 40vh;
 	overflow: hidden;
 	position: absolute;
 	align-items: center;
@@ -121,19 +117,6 @@ div#container .overlay {
 	place-content: center;
 	flex-flow: row wrap;
 	box-shadow: inset 0px 5px 8px -10px #ffffff80;
-}
-
-div#container iframe#patch-notes-iframe {
-	top: 20vh;
-	width: 70vw;
-	height: 60vh;
-	border: none;
-	opacity: .95;
-	padding: 2px;
-	border-radius: 30px;
-	flex-flow: column wrap;
-	background-color: var(--border-color);
-	z-index: 20;
 }
 
 div#container div#settings {
@@ -149,11 +132,14 @@ div#container div#settings {
 }
 
 div#container div#layers {
-	display: none;
+	background-color: hsl(0deg 0% 50% / 30%); /* var(--hard-background); */
 	border-radius: 30px;
+	display: none;
 	flex-flow: column;
-	padding: 10vh 15vw 20vh;
-	background-color: #ffffff20; /* var(--hard-background); */
+	height: auto;
+	inset: 15vmin 20vmin;
+	margin: auto;
+	width: auto;
 	z-index: 20;
 }
 
@@ -289,4 +275,9 @@ and (-webkit-min-device-pixel-ratio: 2) {
 	div#container mobile-user-interface {
 		display: block;
 	}
+}
+
+svg {
+	stroke: var(--text);
+	fill: var(--text);
 }

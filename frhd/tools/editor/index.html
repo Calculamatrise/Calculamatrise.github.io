@@ -14,11 +14,11 @@
             display: grid;
             grid-gap: 5px;
             grid-template-columns: repeat(2, auto);
-            margin: 1rem 0 5px;
+            margin: 1rem 0 .25rem;
             width: min-content;
         ">
-            <textarea placeholder="Track" spellcheck="false" style="width: 184px;height: 40px;min-height: 16px;resize: vertical;"></textarea>
-            <textarea placeholder="Add-on track (optional)" title="This track will be merged with the initial track" spellcheck="false" style="width: 184px;height: 40px;min-height: 16px;resize: vertical;"></textarea>
+            <textarea placeholder="Track" spellcheck="false" style="width: 200px;min-height: 2.5rem;resize: vertical;"></textarea>
+            <textarea placeholder="Add-on track (optional)" title="This track will be merged with the initial track" spellcheck="false" style="width: 200px;min-height: 2.5rem;resize: vertical;"></textarea>
         </div>
         <input type="number" id="moveX" placeholder="Move x" title="Horizontal translation unit" step="10">
         <input type="number" id="moveY" placeholder="Move y" title="Vertical translation unit" step="10">
@@ -34,7 +34,7 @@
         <button id="transform">Transform</button>
         <button onclick="navigator.clipboard.writeText(output.value);">Copy</button>
         <br><br>
-        <textarea id="output" placeholder="Result" title="0k" spellcheck="false" readonly style="width: 395px;height: 240px;resize: none;" onclick="this.select()"></textarea>
+        <textarea id="output" placeholder="Result" title="0k" spellcheck="false" readonly style="width: 405px;height: 6rem;resize: none;" onclick="this.select()"></textarea>
     </main>
     <script type="module" src="bootstrap.js"></script>
 </body>

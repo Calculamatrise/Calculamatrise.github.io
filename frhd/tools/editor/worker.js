@@ -1,22 +1,25 @@
-importScripts("./utils/Track.js");
+importScripts("/frhd/utils/Track.js");
+
+this.track = new Track();
 onmessage = function({ data }) {
-    if (this.track == void 0 || data.args.code != void 0 || (data.args.tracks != void 0 && data.args.tracks.length > 0)) {
-        this.track = new Track(data.args.code);
-        for (const track of data.args.tracks) {
+    if (data.args.code != void 0 || (data.args.tracks != void 0 && data.args.tracks.length > 0)) {
+        this.track.clear();
+		this.track.import(data.args.code || '-18 1i 18 1i##');
+		for (const track of data.args.tracks) {
             this.track.import(track);
         }
     }
 
     switch(data.cmd) {
         case 'transform':
-            this.track.move(data.args.move.x, data.args.move.y);
+            this.track.translate(data.args.translate.x, data.args.translate.y);
             this.track.rotate(data.args.rotationFactor);
             this.track.scale(data.args.scale.x, data.args.scale.y);
             this.track.flip(data.args.reflect.x, data.args.reflect.y);
             break;
 
-        case 'move':
-            this.track.move(data.args.x, data.args.y);
+        case 'translate':
+            this.track.translate(data.args.x, data.args.y);
             break;
 
         case 'rotate':
@@ -32,6 +35,6 @@ onmessage = function({ data }) {
             break;
     }
 
-    data.args.code = this.track.code;
+    data.args.code = this.track.toString();
     postMessage(data);
 }
