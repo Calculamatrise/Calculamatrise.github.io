@@ -1,18 +1,9 @@
 importScripts("/frhd/utils/Track.js");
 
-let canvas = null;
-let ctx = null;
+const canvas = new OffscreenCanvas(0, 0);
+const ctx = canvas.getContext('2d');
 this.track = new Track();
 onmessage = async function ({ data }) {
-	if ('canvas' in data) {
-		canvas = data.canvas;
-		ctx = canvas.getContext('2d');
-		ctx.lineCap = 'round';
-		ctx.lineJoin = 'round';
-		ctx.lineWidth = 2;
-		return;
-	}
-
 	if (data.args.code != void 0 || (data.args.tracks != void 0 && data.args.tracks.length > 0)) {
 		this.track.clear();
 		this.track.import(data.args.code);
@@ -49,7 +40,7 @@ onmessage = async function ({ data }) {
 	}
 
 	data.args.code = this.track.toString();
-	this.track.getImageData();
+	data.args.blob = await this.track.getImageData();
 	postMessage(data);
 }
 
@@ -58,9 +49,11 @@ Track.prototype.getImageData = function() {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     let combined = [...this.physics, ...this.scenery];
 	let limitX = combined.flatMap(r => r.filter((t, i) => i % 2 == 0)).sort((a, b) => a - b);
-	ctx.canvas.width = 4000;
+	// ctx.canvas.width = 4000;
+	ctx.canvas.width = Math.min(Math.abs(limitX[0]) + Math.abs(limitX.at(-1)), 10e3);
 	let limitY = combined.flatMap(r => r.filter((t, i) => i % 2)).sort((a, b) => a - b);
-	ctx.canvas.height = 2000;
+	ctx.canvas.height = Math.abs(limitY[0]) + Math.abs(limitY.at(-1));
+	// ctx.canvas.height = 800;
     ctx.translate(Math.abs(limitX[0]), Math.abs(limitY[0]));
     ctx.strokeStyle = '#000';
     for (const t of this.physics) {
@@ -81,4 +74,6 @@ Track.prototype.getImageData = function() {
             ctx.stroke();
         }
     }
+
+	return ctx.canvas.convertToBlob();
 }

@@ -1,21 +1,73 @@
 {
-    "background_color": "#1b1b1b",
-    "description": "A programmer's home.",
-    "dir": "ltr",
-    "display": "minimal-ui",
-    "name": "Calculamatrise",
-    "orientation": "portrait",
-    "scope": "/",
-    "short_name": "Calculamatrise",
-    "start_url": "/",
-    "theme_color": "#2B2B2B",
-    "categories": [],
-    "screenshots": [],
-    "icons": [{
-        "sizes": "any",
-        "src": "/favicon.ico",
-        "purpose": "any",
-        "type": "image/svg+xml"
-    }],
-    "shortcuts": []
+	"background_color": "#1B1B1B",
+	"categories": [
+		"entertainment",
+		"productivity",
+		"utilities"
+	],
+	"description": "A programmer's home.",
+	"dir": "ltr",
+	"display": "standalone",
+	"display_override": [
+		"fullscreen",
+		"minimal-ui"
+	],
+	"iarc_rating_id": "",
+	"icons": [
+		{
+			"purpose": "any",
+			"sizes": "any",
+			"src": "/favicon.ico"
+		},
+		{
+			"purpose": "any",
+			"sizes": "any",
+			"src": "/assets/icons/favicon.svg",
+			"type": "image/svg+xml"
+		},
+		{
+			"sizes": "512x512",
+			"src": "/assets/icons/favicon.png",
+			"type": "image/png"
+		}
+	],
+	"lang": "en",
+	"name": "Calculamatrise",
+	"orientation": "portrait",
+	"prefer_related_applications": false,
+	"protocol_handlers": [
+		{
+			"protocol": "web+frtools",
+			"url": "/frhd/tools/%s"
+		},
+		{
+			"protocol": "web+svgdrawpad",
+			"url": "/svg-drawpad/%s"
+		}
+	],
+	"scope": "/",
+	"screenshots": [
+		{
+			"src": "/assets/screenshots/screenshot1.png",
+			"sizes": "1920x1080",
+			"type": "image/png",
+			"platform": "wide",
+			"label": "Homescreen of Calculamatrise"
+		}
+	],
+	"short_name": "Calculamatrise",
+	"shortcuts": [],
+	"start_url": "/",
+	"share_target": {
+		"action": "/",
+		"enctype": "application/x-www-form-urlencoded",
+		"method": "GET",
+		"params": {
+			"title": "name",
+			"text": "description",
+			"url": "link"
+		}
+	},
+	"related_applications": [],
+	"theme_color": "#2B2B2B"
 }

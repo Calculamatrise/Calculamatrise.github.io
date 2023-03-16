@@ -54,15 +54,12 @@ window.insertObject = function () {
 	}
 }
 
-window.preview = function() {
-	this.requestFullscreen();
-}
-
 import levelDictionary from "./constants/marioLevelDictionary.js";
 
-const offscreen = view.transferControlToOffscreen();
 const worker = new Worker('./worker.js');
 worker.addEventListener('message', function({ data }) {
+	URL.revokeObjectURL(preview.src);
+	preview.src = URL.createObjectURL(data.args.blob);
 	output.title = `${Number(String(data.args.code.length).slice(0, -3))}k`;
 	if (parseInt(output.title) > 2e3 && confirm("The track is a little large; would you like to download the edited track instead?")) {
 		let date = new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i);
@@ -76,8 +73,6 @@ worker.addEventListener('message', function({ data }) {
 
 	output.value = data.args.code;
 });
-
-worker.postMessage({ canvas: offscreen }, [offscreen]);
 
 function updateCombined(updated = insertedObjects) {
 	// let physics = [];

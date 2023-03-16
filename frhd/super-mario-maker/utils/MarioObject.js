@@ -124,8 +124,8 @@ export default class {
 		for (const line of Array(...destructured[0], ...destructured[1])) {
 			for (let t = 0, e; t < line.length; t += 2) {
 				e = line[t];
-				line[t] = 1e3 + Math.cos(rotationFactor) * e + Math.sin(rotationFactor) * line[t + 1] + (Math.max(90, this.rotation) != 90 && sample.width) + this.x * 25;
-				line[t + 1] = -Math.sin(rotationFactor) * e + Math.cos(rotationFactor) * line[t + 1] - (180 % this.rotation == 0 && sample.height) + this.y * 25;
+				line[t] = Math.floor(Math.cos(rotationFactor) * e + Math.sin(rotationFactor) * line[t + 1] + this.x * 25 + (Math.max(90, this.rotation) != 90 && sample.width) + 1e3);
+				line[t + 1] = Math.floor(-Math.sin(rotationFactor) * e + Math.cos(rotationFactor) * line[t + 1] + this.y * 25 - (180 % this.rotation == 0 && sample.height));
 			}
 		}
 

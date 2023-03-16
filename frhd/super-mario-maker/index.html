@@ -3,8 +3,8 @@
 <head>
     <title>Super Mario Track Editor - Calculamatrise</title>
     <link rel="stylesheet" href="/styles/default.css">
-    <meta property="og:image" content="/icons/favicon.png">
-    <meta name="description" content="Manipulate a track to your liking.">
+    <meta name="image" property="og:image" content="/icons/favicon.png">
+    <meta name="description" content="Create a super mario based track!">
     <meta name="author" content="Calculus">
     <script type="module" src="/bootstrap.js"></script>
 </head>
@@ -24,6 +24,7 @@
 						<option value="block">Block</option>
 						<option value="bullet">Bullet</option>
 						<option value="mblock">Mystery Block</option>
+						<option value="custom">Custom</option>
 					</select>
 					<input type="number" placeholder="x" id="x" style="border-radius: 0;">
 					<input type="number" placeholder="y" id="y" style="border-radius: 0;">
@@ -38,8 +39,8 @@
 				</div>
 			</div>
 			<textarea placeholder="Output" id="output" style="margin-top: .25rem;resize: none;width: -webkit-fill-available;" readonly></textarea>
+			<img id="preview" style="background-color: white;border-radius: 4px;width: 100%;" onclick="document.fullscreen ? document.exitFullscreen() : this.requestFullscreen();">
 		</div>
-		<canvas id="view" onclick="document.fullscreen ? document.exitFullscreen() : preview.call(this)" style="background-color: white;height: 20vmin;border-radius: 4px;width: 100vmin;"></canvas>
 	</main>
     <script type="module" src="bootstrap.js"></script>
 </body>
