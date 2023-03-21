@@ -1,23 +1,17 @@
-import Layer from "./Layer.js";
+import Layer from "../utils/Layer.js";
 
 export default class {
 	cache = [];
 	create() {
 		this.cache.forEach(function (layer) {
-			layer.element.classList.remove("selected");
+			layer.element.classList.remove('selected');
 		});
 
 		return new Layer(this);
 	}
 
 	get(layerId) {
-		return this.cache.find(function (layer) {
-			if (layer.id === parseInt(layerId)) {
-				return true;
-			}
-
-			return false;
-		});
+		return this.cache.find(({ id }) => id === parseInt(layerId));
 	}
 
 	has(layerId) {
@@ -28,14 +22,10 @@ export default class {
 		window.canvas.layerDepth = index + 1;
 		this.cache.splice(index, 0, layer);
 		this.cache.forEach((layer, index) => {
-			layer.element.querySelector("#selector").value = layer.base.dataset.id = layer.id = index + 1;
-			if (layer.id > 1) {
-				view.querySelector(`g[data-id='${index}']`).after(layer.base);
-			}
-
-			layer.element.classList.remove("selected");
+			layer.selector.value = layer.id = index + 1;
+			layer.element.classList.remove('selected');
 			if (layer.id === window.canvas.layerDepth) {
-				layer.element.classList.add("selected");
+				layer.element.classList.add('selected');
 			}
 		});
 
@@ -45,10 +35,10 @@ export default class {
 	remove(layerId) {
 		const layer = this.cache.splice(this.cache.indexOf(this.get(layerId)), 1);
 		this.cache.forEach(function (layer, index) {
-			layer.element.querySelector("#selector").value = layer.base.dataset.id = layer.id = index + 1;
-			layer.element.classList.remove("selected");
+			layer.selector.value = layer.id = index + 1;
+			layer.element.classList.remove('selected');
 			if (layer.id === window.canvas.layerDepth) {
-				layer.element.classList.add("selected");
+				layer.element.classList.add('selected');
 			}
 		});
 

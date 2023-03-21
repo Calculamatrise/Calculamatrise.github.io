@@ -18,9 +18,7 @@ export default class {
 								padding: 0
 							},
 							value: this.id,
-							onkeydown(event) {
-								event.stopPropagation();
-							},
+							onkeydown: event => event.stopPropagation(),
 							onchange: event => {
 								console.log(event.target.value)
 								if (parseInt(event.target.value) < 1) {
@@ -32,9 +30,9 @@ export default class {
 								} else if (isNaN(event.target.value) || parseInt(event.target.value) === this.id) {
 									return;
 								}
-				
+
 								this.move(parseInt(event.target.value));
-								this.element.querySelector("#selector").focus();
+								this.selector.focus();
 							}
 						})
 					],
@@ -85,9 +83,7 @@ export default class {
 						}),
 						this.parent.createElement('button', {
 							innerText: 'Clear',
-							onclick: () => {
-								confirm(`Are you sure you\'d like to clear Layer ${this.id}?`) && this.clear();
-							}
+							onclick: () => confirm(`Are you sure you\'d like to clear Layer ${this.id}?`) && this.clear()
 						}),
 						this.parent.createElement('button', {
 							innerText: 'Merge',
@@ -96,7 +92,7 @@ export default class {
 									alert("There must be more than one layer in order to merge layers!");
 									return;
 								}
-				
+
 								let layerId = prompt(`Which layer would you like to merge Layer ${this.id} with?`);
 								if (layerId !== null) {
 									let layer = this.parent.get(parseInt(layerId));
@@ -105,10 +101,10 @@ export default class {
 										if (layerId === null) {
 											return;
 										}
-				
+
 										layer = this.parent.get(parseInt(layerId));
 									}
-				
+
 									if (layer) {
 										const layer = this.parent.get(layerId);
 										if (layer) {
@@ -127,7 +123,7 @@ export default class {
 									alert("You must have at least one layer at all times!");
 									return;
 								}
-				
+
 								confirm(`Are you sure you\'d like to delete Layer ${this.id}?`) && this.remove();
 							},
 							style: {
@@ -137,7 +133,7 @@ export default class {
 					]
 				})
 			],
-			className: "layer selected",
+			className: 'layer selected',
 			onclick: event => {
 				if (event.target.className !== this.element.className) return;
 				window.canvas.layerDepth = this.id;
@@ -181,7 +177,7 @@ export default class {
 
 		this.element.scrollIntoView({
 			behavior: 'smooth',
-			block: 'center',
+			block: 'end',
 			inline: 'center'
 		});
 
@@ -197,72 +193,56 @@ export default class {
 		canvas.draw();
 	}
 
-	redraw() {
-		return;
-	}
-
-	toggleVisiblity() {
-		this.hidden = !this.hidden;
-		for (const line of this.lines) {
-			line.hidden = this.hidden;
-		}
-
-		canvas.draw();
-	}
-
-	move(newIndex) {
-		if (typeof newIndex != 'number' || newIndex === void 0 || this.id === newIndex) {
-			throw new Error("Invalid index.");
-		}
-
-		this.parent.remove(this.id);
-		this.parent.cache.forEach((layer) => {
-			if (this.id < newIndex) {
-				if (layer.id === newIndex - 1) {
-					layer.base.after(this.base);
-					layer.element.after(this.element);
-				}
-			} else {
-				if (layer.id === newIndex) {
-					layer.base.before(this.base);
-					layer.element.before(this.element);
-				}
-			}
-		});
-
-		this.parent.insert(this, newIndex - 1);
-		this.element.scrollIntoView({
-			behavior: 'smooth',
-			block: 'center',
-			inline: 'center'
-		});
-	}
-
-	draw(canvas) {
-		canvas.ctx.strokeStyle = 'white';
-		canvas.ctx.strokeWidth = 2;
-		canvas.tool.element !== void 0 && canvas.tool.element.draw(canvas.ctx);
-		for (const line of this.lines) {
-			if (line.hidden) {
-				continue;
-			}
-
-			canvas.ctx.save();
-			canvas.ctx.globalAlpha = this.alpha;
-			canvas.ctx.strokeStyle = 'white';
-			canvas.ctx.strokeWidth = 2;
-			line.draw(canvas.ctx);
-			canvas.ctx.restore();
-		}
-	}
-
 	clear() {
 		this.lines = [];
 	}
 
+	draw(canvas) {
+		canvas.ctx.save();
+		canvas.ctx.globalAlpha = this.alpha;
+		canvas.tool.element !== void 0 && canvas.tool.element.draw(canvas.ctx);
+		if (!this.hidden) {
+			for (const line of this.lines) {
+				line.draw(canvas.ctx);
+			}
+		}
+
+		canvas.ctx.restore();
+	}
+
+	move(newIndex) {
+		if (typeof newIndex != 'number' || this.id === newIndex) {
+			throw new Error("Invalid index.");
+		}
+
+		this.parent.remove(this.id);
+		// this.parent.cache.forEach(layer => {
+		// 	if (this.id < newIndex) {
+		// 		if (layer.id === newIndex - 1) {
+		// 			layer.element.after(this.element);
+		// 		}
+		// 	} else {
+		// 		if (layer.id === newIndex) {
+		// 			layer.element.before(this.element);
+		// 		}
+		// 	}
+		// });
+		this.parent.cache.forEach(layer => layer.id === newIndex && layer.element.after(this.element));
+		this.parent.insert(this, newIndex - 1);
+		this.element.scrollIntoView({
+			behavior: 'smooth',
+			block: 'end',
+			inline: 'center'
+		});
+	}
+
+	toggleVisiblity() {
+		this.hidden = !this.hidden;
+		canvas.draw();
+	}
+
 	remove() {
 		this.element.remove();
-		this.base.remove();
 		this.parent.remove(this.id);
 		if (this.parent.cache.length < window.canvas.layerDepth) {
 			window.canvas.layerDepth = window.canvas.layerDepth === this.id ? this.parent.cache.length : 1;

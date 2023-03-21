@@ -43,9 +43,7 @@ export default class {
 	draw(ctx) {
 		ctx.save();
 		ctx.beginPath();
-		ctx.strokeWidth = this.strokeWidth * window.devicePixelRatio;
 		ctx.strokeStyle = this.strokeStyle;
-		ctx.fillStyle = this.fillStyle;
 		for (let i = 0; i in this.points; i += 2) {
 			if (i <= 1) {
 				ctx.moveTo(this.points[i], this.points[i + 1]);

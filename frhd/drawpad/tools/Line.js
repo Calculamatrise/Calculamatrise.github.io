@@ -41,6 +41,7 @@ export default class extends Tool {
 
 		this.active = false;
 		if (this.mouse.pointA.x === this.mouse.pointB.x && this.mouse.pointA.y === this.mouse.pointB.y) {
+			this.element.points = [];
 			return;
 		}
 
@@ -51,10 +52,10 @@ export default class extends Tool {
 		]);
 
 		const line = this.element.clone();
-		this.element.points = []
+		this.element.points = [];
 		this.canvas.layer.lines.push(line);
 		this.canvas.events.push({
-			action: "add",
+			action: 'add',
 			value: line
 		});
 	}

@@ -9,44 +9,41 @@
     <meta name="author" content="Calculamatrise">
     <meta name="title" property="og:title" content="Calculamatrise">
     <meta name="description" property="og:description" content="A program that uses the Canvas API to create an image of your creation.">
-    <meta name="image" property="og:image" content="/icons/favicon.png">
+    <meta name="image" property="og:image" content="/frhd/drawpad/favicon.ico">
     <meta property="og:url" content="https://calculamatrise.github.io/">
-    <script type="module" src="bootstrap.js"></script>
+	<meta name="viewport" content="minimal-ui,width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<script type="module" src="bootstrap.js"></script>
 </head>
 <body onload="
     document.querySelector('#primary').parentElement.style.setProperty('background-color', (document.querySelector('#primary').value = window.canvas.settings.styles.primary) + '40');
     document.querySelector('#secondary').parentElement.style.setProperty('background-color', (document.querySelector('#secondary').value = window.canvas.settings.styles.secondary) + '40');
-    //document.querySelector('#randomColors').innerText = window.canvas.settings.randomizeStyle ? 'Disable Random Colours' : 'Enable Random Colours';
 ">
-    <div id="container">
+    <main id="container">
         <canvas id="view"></canvas>
         <user-interface>
-            <top-left-nav>
-                <button class="secondary" onclick="this.innerText = `${(document.querySelector('#toolbar').style.display = document.querySelector('#toolbar').style.display === 'grid' ? 'none' : 'grid') === 'grid' ? 'Hide' : 'Show'} Toolbar`;">Show Toolbar</button>
-                <div id="toolbar">
-                    <button class="ripple" onclick="window.canvas.tools.select('line');">Line</button>
-                    <button class="ripple" onclick="window.canvas.tools.select('brush');">Brush</button>
-                    <button class="ripple" onclick="window.canvas.tools.select('curve');">Curve</button>
-                    <button class="ripple" onclick="window.canvas.tools.select('circle');">Circle</button>
-                    <button class="ripple" onclick="window.canvas.tools.select('rectangle');">Rectangle</button>
-                    <button class="ripple" onclick="window.canvas.tools.select('eraser');">Eraser</button>
-                    <button class="ripple" onclick="window.canvas.tools.select('camera');">Camera</button>
-                    <button class="ripple" onclick="window.canvas.tools.select('select');">Select</button>
-                    <button class="ripple" onclick="
-                        this.parentElement.querySelector('#toolbar #advanced-tools').style.display = this.parentElement.querySelector('#toolbar #advanced-tools').style.display === 'flex' ? 'none' : 'flex',
-                        this.parentElement.querySelector('#toolbar #advanced-tools').scrollIntoView({ behavior: 'smooth' }),
-                        this.innerText = this.innerText === 'Show Advanced Tools' ? 'Hide Advanced Tools' : 'Show Advanced Tools'
-                    ">Show Advanced Tools</button>
-                    <div id="advanced-tools">
-                        <button onclick="window.canvas.tools.select('ellipse');">Ellipse</button>
+            <section class="left top">
+                <label for="toolbar" class="button secondary">Toolbar</label>
+                <div style="display: grid;max-height: 50vmin;overflow: auto;">
+					<input type="checkbox" id="toolbar" style="display: none;">
+                    <label class="button ripple" onclick="window.canvas.tools.select('line');">Line<input type="radio" name="tool" id="line" style="display: none;"></label>
+                    <label class="button ripple" onclick="window.canvas.tools.select('brush');">Brush<input type="radio" name="tool" id="brush" style="display: none;"></label>
+                    <label class="button ripple" onclick="window.canvas.tools.select('curve');">Curve<input type="radio" name="tool" id="curve" style="display: none;"></label>
+                    <label class="button ripple" onclick="window.canvas.tools.select('circle');">Circle<input type="radio" name="tool" id="circle" style="display: none;"></label>
+                    <label class="button ripple" onclick="window.canvas.tools.select('rectangle');">Rectangle<input type="radio" name="tool" id="rectangle" style="display: none;"></label>
+                    <label class="button ripple" onclick="window.canvas.tools.select('eraser');">Eraser<input type="radio" name="tool" id="eraser" style="display: none;"></label>
+                    <label class="button ripple" onclick="window.canvas.tools.select('camera');">Camera<input type="radio" name="tool" id="camera" style="display: none;"></label>
+                    <label for="advanced-tools" class="button secondary">Advanced</label>
+                    <div style="display: contents;">
+						<input type="checkbox" id="advanced-tools" style="display: none;" onchange="this.nextElementSibling.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'center' })">
+                        <label class="button ripple" onclick="window.canvas.tools.select('ellipse');">Ellipse<input type="radio" name="tool" id="ellipse" style="display: none;"></label>
                     </div>
                 </div>
-            </top-left-nav>
-            <top-right-nav>
-                <button class="secondary" onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex';">Layers</button>
-                <button class="secondary" onclick="document.querySelector('#settings').style.display = document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex';">Settings</button>
-            </top-right-nav>
-            <bottom-left-nav>
+            </section>
+            <section class="right top" style="z-index: 50;">
+                <button class="secondary" onclick="document.querySelector('#settings').style.setProperty('display', 'none'), document.querySelector('#layers').style.setProperty('display', document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex');">Layers</button>
+                <button class="secondary" onclick="document.querySelector('#layers').style.setProperty('display', 'none'), document.querySelector('#settings').style.setProperty('display', document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex');">Settings</button>
+			</section>
+            <section class="bottom left" style="border-radius: 4px;">
                 <div class="option ripple" onclick="this.firstElementChild.click();">
                     <input type="color" id="primary" oninput="
                         this.parentElement.style.setProperty('background-color', (window.canvas.settings.styles.primary = this.value) + '40');
@@ -61,12 +58,12 @@
                     ">
                     Secondary Colour
                 </div>
-            </bottom-left-nav>
+            </section>
         </user-interface>
-        <mobile-user-interface>
-            <top-left-nav>
-                <select name="Line" id="tools" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0;" oninput="window.canvas.tools.select(event.target.value);">
-                    <option value="line" selected>Line</option>
+        <mobile-user-interface style="display: none;">
+            <section class="left top">
+                <select name="tool" id="tools">
+					<option value="line" selected>Line</option>
                     <option value="brush">Brush</option>
                     <option value="curve">Curve</option>
                     <option value="circle">Circle</option>
@@ -78,25 +75,9 @@
                         <option value="ellipse">Ellipse</option>
                     </optgroup>
                 </select>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 433.046 433.046" style="width: 40px; height: 40px">
-                    <path d="M221.816,53.821V10.314c0-3.313-2.687-6-6-6H6c-3.313,0-6,2.687-6,6v96.626c0,3.313,2.687,6,6,6h209.816
-                        c3.313,0,6-2.687,6-6V66.067c10.545,2.68,18.368,12.252,18.368,23.618v24.847c0,13.437-10.932,24.368-24.368,24.368h-74.54
-                        c-20.054,0-36.368,16.314-36.368,36.368v76.822H92.306c-3.313,0-6,2.687-6,6v164.641c0,3.314,2.687,6,6,6h37.205
-                        c3.313,0,6-2.686,6-6V258.091c0-3.313-2.687-6-6-6h-12.603v-76.822c0-13.437,10.932-24.368,24.368-24.368h74.54
-                        c20.054,0,36.368-16.315,36.368-36.368V89.685C252.185,71.676,239.024,56.691,221.816,53.821z M209.816,100.94H12V16.314h197.816
-                        V100.94z M123.511,416.732H98.306V264.091h25.205V416.732z"/>
-                    <path d="M432.885,94.668c0-3.313-2.687-6-6-6H290.616c-3.313,0-6,2.687-6,6l-0.227,179.297c0,20.434,16.624,37.059,37.059,37.059
-                        c6.967,0,12.635,5.668,12.635,12.635v80.062c0,13.583,11.051,24.635,24.635,24.635s24.635-11.051,24.635-24.635v-80.062
-                        c0-6.967,5.668-12.635,12.636-12.635c20.434,0,37.058-16.625,37.058-37.059L432.885,94.668z M311.526,100.668v108.859
-                        c0,3.313,2.687,6,6,6s6-2.687,6-6V100.668h16v65.859c0,3.313,2.687,6,6,6s6-2.687,6-6v-65.859h16v97.859c0,3.314,2.687,6,6,6
-                        s6-2.686,6-6v-97.859h15v75.859c0,3.313,2.687,6,6,6s6-2.687,6-6v-75.859h14.358v125.196H296.616V100.668H311.526z
-                        M421.046,273.965c0,13.817-11.241,25.059-25.058,25.059c-13.584,0-24.636,11.051-24.636,24.635v80.062
-                        c0,6.967-5.668,12.635-12.635,12.635s-12.635-5.668-12.635-12.635v-80.062c0-13.583-11.051-24.635-24.635-24.635
-                        c-13.817,0-25.059-11.241-25.059-25.059v-36.101h124.656V273.965z"/>
-                </svg>
-            </top-left-nav>
-            <top-right-nav>
-                <div onclick="document.querySelector('#layers').style.display = document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex';">
+            </section>
+            <section class="right top" style="z-index: 50;">
+                <button onclick="document.querySelector('#settings').style.setProperty('display', 'none'), document.querySelector('#layers').style.setProperty('display', document.querySelector('#layers').style.display === 'flex' ? 'none' : 'flex');" style="aspect-ratio: auto;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 421.59 421.59" style="width: 40px; height: 40px">
                         <path d="M400.491,291.098l-58.865-36.976l58.864-36.971c2.185-1.372,3.511-3.771,3.511-6.351s-1.326-4.979-3.511-6.352
                             l-58.865-36.977l58.862-36.973c2.185-1.373,3.511-3.771,3.511-6.351s-1.326-4.979-3.511-6.351L214.783,1.149
@@ -109,8 +90,8 @@
                             L39.191,210.798z M210.792,405.232L39.191,297.448l54.87-34.472l112.742,70.814c1.22,0.766,2.604,1.149,3.989,1.149
                             s2.77-0.383,3.989-1.149l112.744-70.812l54.876,34.47L210.792,405.232z"/>
                     </svg>
-                </div>
-                <div style="margin-left: 10px;" onclick="document.querySelector('#settings').style.display = document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex';">
+                </button>
+                <button onclick="document.querySelector('#layers').style.setProperty('display', 'none'), document.querySelector('#settings').style.setProperty('display', document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex');" style="aspect-ratio: auto;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 778.3 778.3" style="width: 40px; height: 40px">
                         <path d="M420.7,778.15h-63.4c-24,0-43.5-19.5-43.5-43.5v-77.2c-23.6-6.6-46.2-16.3-67.3-28.899l-49.8,49.399
                             c-8.2,8.101-19.1,12.601-30.6,12.601c-11.7,0-22.7-4.601-30.9-12.8l-44.7-45c-16.9-17-16.8-44.601,0.2-61.5l52-51.601
@@ -136,9 +117,9 @@
                             S470.8,537.45,389,537.45z M389,260.55c-70.9,0-128.6,57.7-128.6,128.6c0,70.9,57.7,128.5,128.6,128.5s128.6-57.7,128.6-128.6
                             C517.6,318.15,459.9,260.55,389,260.55z"/>
                     </svg>
-                </div>
-            </top-right-nav>
-            <bottom-left-nav>
+                </button>
+            </section>
+            <section class="bottom left">
                 <div onclick="this.firstElementChild.click();">
                     <input type="color" id="primary" oninput="
                         this.parentElement.style.setProperty('background-color', (window.canvas.settings.styles.primary = this.value) + '40');
@@ -185,10 +166,7 @@
                             L276.817,111.179z"/>
                     </svg>
                 </div>
-            </bottom-left-nav>
-            <bottom-right-nav style="display: none;">
-                <button class="secondary" id="patch-notes">Patch Notes</button>
-            </bottom-right-nav>
+            </section>
         </mobile-user-interface>
         <!-- Layers Overlay -->
         <div class="overlay" id="layers">
@@ -221,6 +199,6 @@
                 link.dispatchEvent(new MouseEvent('click'));
             ">Export Canvas</button>
         </div>
-    </div>
+    </main>
 </body>
 </html>

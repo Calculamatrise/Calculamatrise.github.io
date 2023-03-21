@@ -5,9 +5,9 @@ window.Application = new App({
     theme: 'auto'
 });
 
-document.addEventListener('mousedown', function(event) {
-    this.documentElement.style.setProperty('--offsetX', event.offsetX);
-    this.documentElement.style.setProperty('--offsetY', event.offsetY);
+document.documentElement.addEventListener('pointerdown', function(event) {
+    this.style.setProperty('--offsetX', event.offsetX);
+    this.style.setProperty('--offsetY', event.offsetY);
 });
 
 if ('serviceWorker' in navigator) {

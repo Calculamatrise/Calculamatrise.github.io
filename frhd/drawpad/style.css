@@ -21,149 +21,152 @@ body > nav {
 	display: none !important;
 }
 
+canvas#view {
+	background-color: var(--background);
+	height: 100vh;
+	pointer-events: none;
+	touch-action: none;
+	width: 100vw;
+}
+
+:not(label):has(> input:is([type="checkbox"],[type="radio"]):not(:checked)) {
+    display: none !important;
+}
+
 div.content {
 	padding: 0;
 	overflow: hidden;
 }
 
-div#container {
+#container {
 	position: relative;
 	touch-action: none;
 }
 
-div#container :is(user-interface, mobile-user-interface) :is(top-left-nav, top-right-nav, bottom-left-nav, bottom-right-nav) {
+#container :is(user-interface, mobile-user-interface) > section {
 	margin: 10px;
+	max-width: 50vmin;
+	overflow: hidden;
 	position: fixed;
-	display: inline-block;
 	z-index: 0;
 }
 
-div#container mobile-user-interface {
-	display: none;
-}
-
-div#container :is(user-interface, mobile-user-interface) top-left-nav {
-	top: 0;
-	left: 0;
-	z-index: 50;
-}
-
-div#container :is(user-interface, mobile-user-interface) top-right-nav {
-	top: 0;
-	right: 0;
-	max-width: 48vw;
-	flex-wrap: wrap;
-	display: inline-flex;
-	justify-content: flex-end;
-	z-index: 50;
-}
-
-div#container :is(user-interface, mobile-user-interface) bottom-left-nav {
-	left: 0;
+#container :is(user-interface, mobile-user-interface) .bottom {
 	bottom: 0;
-	z-index: 50;
 }
 
-div#container :is(user-interface, mobile-user-interface) bottom-right-nav {
+#container :is(user-interface, mobile-user-interface) .left {
+	left: 0;
+}
+
+#container :is(user-interface, mobile-user-interface) .top {
+	top: 0;
+}
+
+#container :is(user-interface, mobile-user-interface) .right {
 	right: 0;
-	bottom: 0;
-	z-index: 50;
+	text-align: right;
 }
 
-div#container user-interface top-left-nav #toolbar {
-	display: none;
-	overflow: auto;
-	max-height: 43.55vh;
+#container user-interface section.left.top label[for]::before {
+	content: "Show "
 }
 
-div#container user-interface top-left-nav #toolbar #advanced-tools {
-	display: none;
-	flex-direction: column;
+#container user-interface section.left.top:has(#toolbar:checked) > label[for=toolbar]::before,
+#container user-interface section.left.top:has(#advanced-tools:checked) label[for=advanced-tools]::before {
+	content: "Hide "
 }
 
-div#container user-interface bottom-left-nav .option {
-	width: 130px;
-	height: 45px;
-	display: flex;
-	font-size: small;
+/* #container user-interface section.left.top :has(> :checked) ~ label[for]::before {
+	content: "Hide "
+} */
+
+label.button {
+	line-height: 3rem;
+}
+
+#container user-interface section.bottom.left .option {
+	-webkit-user-select: none;
+	font-size: smaller;
+	height: 3rem;
+	line-height: 3rem;
 	overflow: hidden;
+	padding: 0 1rem;
 	position: relative;
-	align-items: center;
-	justify-content: center;
+	text-align: center;
+	user-select: none;
 }
 
-div#container user-interface bottom-left-nav .option.disabled {
+#container user-interface section.bottom.left .option.disabled {
 	opacity: .5;
 	pointer-events: none;
 }
 
-div#container user-interface bottom-left-nav .option input {
-	top: 0;
+#container user-interface section.bottom.left .option input {
 	left: 0;
-	position: absolute;
-	visibility: hidden;
 	pointer-events: none;
+	position: absolute;
+	top: 0;
+	visibility: hidden;
 }
 
-div#container :is(user-interface, mobile-user-interface) button, div#container div#layers button {
+#container :is(user-interface, mobile-user-interface, .overlay) button {
 	background-color: transparent;
 }
 
-div#container .overlay {
-	overflow: hidden;
-	position: absolute;
+#container .overlay {
 	align-items: center;
-	border-radius: 20px;
+	border-radius: 1rem;
+	box-shadow: inset 0px 5px 8px -10px #80808040;
+	inset: 0;
+	overflow: hidden;
 	place-content: center;
-	flex-flow: row wrap;
-	box-shadow: inset 0px 5px 8px -10px #ffffff80;
+	position: absolute;
 }
 
-div#container div#settings {
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	display: none;
-    border-radius: 0;
+#container div#settings {
 	background-color: #ffffff30;
 	backdrop-filter: blur(2em);
+    border-radius: 0;
+	display: none;
+	height: 100%;
+	width: 100%;
 	z-index: 40;
 }
 
-div#container div#layers {
+#container div#layers {
 	background-color: hsl(0deg 0% 50% / 30%); /* var(--hard-background); */
 	border-radius: 30px;
 	display: none;
 	flex-flow: column;
 	height: auto;
-	inset: 15vmin 20vmin;
+	inset: 15%;
 	margin: auto;
+	padding: 1rem;
 	width: auto;
 	z-index: 20;
 }
 
-div#container div#layers div#layer-container {
-	display: flex;
-	overflow: auto;
-	flex-wrap: wrap;
-	max-width: 53vw;
-	width: max-content;
-	align-items: center;
-	flex-direction: row;
+#container div#layers div#layer-container {
+	display: grid;
+	grid-auto-rows: min-content;
+	grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+	margin: 1rem;
 	max-height: 80%;
+	overflow: auto;
+	width: -webkit-fill-available;
 }
 
 /* Automatic layer counter >>>
-div#container div#layers .layer {
+#container div#layers .layer {
 	counter-increment: layer;
 }
 
-div#container div#layers .layer > div:nth-child(1):after {
+#container div#layers .layer > div:nth-child(1):after {
 	content: counter(layer);
 } */
 
-div#container div#layers .layer {
+#container div#layers .layer {
 	margin: 10px;
 	padding: 10px;
 	display: flex;
@@ -175,7 +178,7 @@ div#container div#layers .layer {
 	flex-flow: column wrap;
 }
 
-div#container div#layers .layer:not(div#container div#layers .layer.selected)::before {
+#container div#layers .layer:not(#container div#layers .layer.selected)::before {
 	content: "";
 	opacity: .3;
 	width: 100%;
@@ -191,7 +194,7 @@ div#container div#layers .layer:not(div#container div#layers .layer.selected)::b
 	z-index: -1;
 }
 
-div#container div#layers .layer:not(div#container div#layers .layer.selected):hover::before {
+#container div#layers .layer:not(#container div#layers .layer.selected):hover::before {
 	opacity: .5;
 	pointer-events: none;
 	background-color: var(--hard-background);
@@ -199,7 +202,7 @@ div#container div#layers .layer:not(div#container div#layers .layer.selected):ho
 	z-index: -1;
 }
 
-div#container div#layers .layer.selected::before {
+#container div#layers .layer.selected::before {
 	content: "";
 	opacity: .9;
 	width: 100%;
@@ -215,13 +218,13 @@ div#container div#layers .layer.selected::before {
 	z-index: -1;
 }
 
-div#container div#layers .layer input.selector {
+#container div#layers .layer input.selector {
 	display: inline-block;
 	width: 30px;
 	height: 20px;
 }
 
-div#container div#layers .layer .option {
+#container div#layers .layer .option {
 	width: 130px;
 	height: 45px;
 	display: flex;
@@ -232,20 +235,20 @@ div#container div#layers .layer .option {
 	justify-content: center;
 }
 
-div#container div#layers .layer .option input {
+#container div#layers .layer .option input {
 	margin-right: 8px;
 	pointer-events: none;
 }
 
 
-div#container div#layers .layer .options {
+#container div#layers .layer .options {
 	/*display: none;*/
 	display: flex;
 	flex-direction: column;
 	margin-top: 10px;
 }
 
-div#container span#settings {
+#container span#settings {
 	top: 0;
 	right: 0;
 	margin: 10px;
@@ -257,23 +260,16 @@ input[type="color"]#colour {
 	position: absolute;
 }
 
-canvas#view {
-	width: 100vw;
-	height: 100vh;
-	pointer-events: none;
-	background-color: var(--background);
-}
-
 @media only screen 
 and (min-device-width: 320px) 
 and (max-device-width: 568px)
 and (-webkit-min-device-pixel-ratio: 2) {
-	div#container user-interface, div#container user-interface * {
+	#container user-interface, #container user-interface * {
 		display: none;
 	}
 
-	div#container mobile-user-interface {
-		display: block;
+	#container mobile-user-interface {
+		display: block !important;
 	}
 }
 

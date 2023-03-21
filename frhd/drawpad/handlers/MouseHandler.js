@@ -2,18 +2,12 @@ import EventEmitter from "../../../utils/EventEmitter.js";
 
 export default class extends EventEmitter {
 	down = false;
-	pointA = {
-		x: -50,
-		y: -50
-	}
-	pointB = {
-		x: -50,
-		y: -50
-	}
 	real = {
-		x: -50,
-		y: -50
+		x: 0,
+		y: 0
 	}
+	pointA = Object.assign({}, this.real);
+	pointB = Object.assign({}, this.real);
 	constructor(parent) {
 		super();
 		this.parent = parent;
@@ -28,16 +22,23 @@ export default class extends EventEmitter {
 	}
 
 	get position() {
+		return this.getPosition({
+			offsetX: this.real.x,
+			offsetY: this.real.y
+		});
+	}
+
+	getPosition(event = event) {
 		return {
-			x: ((this.real.x * this.parent.zoom) + this.parent.view.x) * window.devicePixelRatio,
-			y: ((this.real.y * this.parent.zoom) + this.parent.view.y) * window.devicePixelRatio
+			x: ((event.offsetX * this.parent.zoom) + this.parent.camera.x) * window.devicePixelRatio,
+			y: ((event.offsetY * this.parent.zoom) + this.parent.camera.y) * window.devicePixelRatio
 		}
 	}
 
 	init() {
 		document.addEventListener('pointerdown', this.pointerdown.bind(this));
-		window.addEventListener('pointermove', this.move.bind(this));
-		window.addEventListener('pointerup', this.up.bind(this));
+		document.addEventListener('pointermove', this.move.bind(this));
+		document.addEventListener('pointerup', this.up.bind(this));
 		document.addEventListener('wheel', this.wheel.bind(this), { passive: false });
 	}
 
@@ -50,11 +51,15 @@ export default class extends EventEmitter {
 
 		this.down = true;
 		if (!this.locked) {
+			this.real = {
+				x: event.offsetX,
+				y: event.offsetY
+			}
 			this.pointA = this.getPosition(event);
 			this.parent.view.setPointerCapture(event.pointerId);
 		}
 
-		return this.emit('down', event);
+		this.emit('down', event);
 	}
 
 	move(event) {
@@ -64,25 +69,19 @@ export default class extends EventEmitter {
 			y: event.offsetY
 		}
 
-		return this.emit('move', event);
+		this.emit('move', event);
 	}
 
 	up(event) {
 		event.preventDefault();
+		if (event.target.id !== 'view') return;
 		this.down = false;
 		if (!this.locked) {
 			this.pointB = this.getPosition(event);
 			this.parent.view.releasePointerCapture(event.pointerId);
 		}
 
-		return this.emit('up', event);
-	}
-
-	getPosition(event) {
-		return {
-			x: ((event.offsetX * this.parent.zoom) + this.parent.view.x) * window.devicePixelRatio,
-			y: ((event.offsetY * this.parent.zoom) + this.parent.view.y) * window.devicePixelRatio
-		}
+		this.emit('up', event);
 	}
 
 	wheel(event) {
@@ -124,6 +123,7 @@ export default class extends EventEmitter {
 		// }
 
 		// document.documentElement.style.setProperty("--size", zoom + event.deltaY / 1000);
+		this.emit('wheel', event);
 	}
 
 	close() {

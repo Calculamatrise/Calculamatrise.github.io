@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Mario Visual Track Editor - Calculamatrise</title>
+    <link rel="stylesheet" href="/styles/default.css">
+	<link rel="stylesheet" href="style.css">
+    <meta name="author" content="Calculamatrise">
+    <meta name="title" property="og:title" content="Calculamatrise">
+    <meta name="description" property="og:description" content="A program that uses the Canvas API to create an image of your creation.">
+    <meta name="image" property="og:image" content="/assets/icons/favicon.png">
+    <meta property="og:url" content="https://calculamatrise.github.io/">
+	<meta name="viewport" content="minimal-ui,width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <script type="module" src="bootstrap.js"></script>
+</head>
+<body>
+    <main id="container">
+		<canvas id="view"></canvas>
+		<!-- Left nav with object options, dropdown with level select, export and import button all on left nav -->
+		<div class="user-interface">
+			<section class="left top">
+				<select id="obj" style="border-radius: 0;display: inline-block;" onchange="canvas.loadLevel(this.value)">
+					<option value="plain" disabled selected>Select a level</option>
+					<option value="blank">Blank</option>
+					<option value="custom">Custom</option>
+				</select>
+			</section>
+			<section class="right top">
+				<label class="button ripple" style="display: inline-grid;">Import<input type="file" accept="text/plain" style="display: none;" onchange="this.files.length > 0 && this.files[0].text().then(text => canvas.import(text));"></label>
+				<!-- <button>Import</button> -->
+				<button onclick="Object.assign(document.createElement('a'), {download: 'super_mario_track_' + new Date().toISOString().split(/t/i).join('_').replace(/\..+/, '').replace(/:/g, '-'), href: window.URL.createObjectURL(new Blob([canvas.toString()], { type: 'text/plain' }))}).click();">Export</button>
+			</section>
+			<section class="left middle">
+				<label class="button option ripple" onclick="canvas.tools.select('block');">Block<input type="radio" name="tool" id="block" style="display: none;"></label>
+				<label class="button option ripple" onclick="canvas.tools.select('bullet');">Bullet<input type="radio" name="tool" id="bullet" style="display: none;"></label>
+				<label class="button option ripple" onclick="canvas.tools.select('mblock');">Mystery Block<input type="radio" name="tool" id="mblock" style="display: none;"></label>
+				<label class="button option ripple" onclick="canvas.tools.select('custom');">Custom<input type="radio" name="tool" id="custom" style="display: none;"></label>
+				<label class="button option ripple" onclick="canvas.tools.select('eraser');">Eraser<input type="radio" name="tool" id="custom" style="display: none;"></label>
+			</section>
+		</div>
+	</main>
+    <script type="module" src="bootstrap.js"></script>
+</body>
+</html>

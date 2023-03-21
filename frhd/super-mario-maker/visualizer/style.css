@@ -1,0 +1,101 @@
+:root {
+	--accent-color: #2d2d2d;
+	--background: #EBEBEB;
+	--hard-background: #DDDDDD;
+	--soft-background: #EEEEEE;
+	--text: #1B1B1B;
+	--stroke: skyblue;
+	--fill: violet;
+}
+
+html {
+    color: var(--text);
+}
+
+body {
+	margin: 0;
+	overflow: hidden;
+}
+
+body > nav {
+	display: none !important;
+}
+
+label.button {
+	line-height: 3rem;
+}
+
+:not(label):has(> input:is([type="checkbox"],[type="radio"]):not(:checked)) {
+    display: none !important;
+}
+
+#container {
+	position: relative;
+	touch-action: none;
+}
+
+#container > #view {
+	background-color: var(--background);
+	height: 100vh;
+	touch-action: none;
+	width: 100vw;
+}
+
+#container .user-interface > section {
+	margin: 10px;
+	max-width: 50vmin;
+	overflow: hidden;
+	position: absolute;
+	z-index: 0;
+}
+
+#container .user-interface .bottom {
+	bottom: 0;
+}
+
+#container .user-interface .left {
+	left: 0;
+}
+
+#container .user-interface .middle {
+	bottom: 0;
+	height: fit-content;
+	margin-bottom: auto;
+	margin-top: auto;
+	top: 0;
+}
+
+#container .user-interface .right {
+	right: 0;
+	text-align: right;
+}
+
+#container .user-interface .top {
+	top: 0;
+}
+
+#container .user-interface :is(button, .button, select) {
+	background-color: transparent;
+}
+
+#container .user-interface select option {
+	background-color: var(--accent-color);
+}
+
+#container .user-interface section label[for]::before {
+	content: "Show "
+}
+
+#container .user-interface section:has(#toolbar:checked) > label[for=toolbar]::before,
+#container .user-interface section:has(#levels:checked) > label[for=levels]::before {
+	content: "Hide "
+}
+
+/* #container .user-interface section:has(> * > :checked) > label::before {
+	content: "Hide "
+} */
+
+#container .user-interface .option {
+	-webkit-user-drag: element;
+	display: block;
+}
