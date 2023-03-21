@@ -89,8 +89,8 @@ export default class {
 	import(code) {
 		this.clear();
 		const [physics, scenery] = code.split('#');
-		physics.length > 0 && this.physics.push(...this.constructor.parseLines(physics));
-		scenery.length > 0 && this.scenery.push(...this.constructor.parseLines(scenery));
+		physics.length > 0 && this.physics.push(...this.constructor.parseLines(physics).filter(line => Math.min(...line.filter((_, i) => i % 2)) < 1e3));
+		scenery.length > 0 && this.scenery.push(...this.constructor.parseLines(scenery).filter(line => Math.min(...line.filter((_, i) => i % 2)) < 1e3));
 		this.draw();
 	}
 
@@ -148,9 +148,8 @@ export default class {
 		const miniScenery = structuredClone(scenery);
 		for (const line of Array(...miniPhysics, ...miniScenery)) {
 			for (let i = 0; i < line.length; i += 2) {
-				line[i] *= .6;
-				line[i + 1] *= .6;
-				line[i + 1] += 2e3;
+				line[i] = Math.floor(line[i] * .6);
+				line[i + 1] = Math.floor(line[i + 1] * .6) + 2e3;
 			}
 		}
 

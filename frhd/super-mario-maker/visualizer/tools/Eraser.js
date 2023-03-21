@@ -15,18 +15,12 @@ export default class extends Tool {
 	erase(event) {
 		const positionX = (this.mouse.position.x - this.canvas.view.width / 2 + this.canvas.camera.x) / this.canvas.zoom;
 		const positionY = (this.mouse.position.y - this.canvas.view.height / 2 + this.canvas.camera.y) / this.canvas.zoom;
-		for (const objectIndex in this.canvas.objects) {
-			const object = this.canvas.objects[objectIndex];
-			// if (this.size > Math.sqrt((object.x - positionX) ** 2 + (object.y - positionY) ** 2)) {
-			// 	this.canvas.objects.splice(objectIndex, 1);
-			// 	continue;
-			// }
-
+		this.canvas.objects.forEach((object, index, objects) => {
 			for (const line of object.physics) {
 				for (let i = 0; i < line.length - 2; i += 2) {
 					// if (this.size > Math.sqrt((line[i] - positionX) ** 2 + (line[i + 1] - positionY) ** 2)) {
 					// 	this.canvas.objects.splice(objectIndex, 1);
-					// 	continue;
+					// 	return;
 					// }
 
 					let vector = {
@@ -49,15 +43,13 @@ export default class extends Tool {
 						}
 					}
 
-					if (Math.sqrt(vector.x ** 2 + vector.y ** 2) > this.size) {
-						continue;
+					if (Math.sqrt(vector.x ** 2 + vector.y ** 2) <= this.size) {
+						objects.splice(index, 1);
+						return;
 					}
-
-					this.canvas.objects.splice(objectIndex, 1);
-					continue;
 				}
 			}
-		}
+		});
 	}
 
 	press(event) {

@@ -4,7 +4,13 @@ export default class extends EventEmitter {
 	down = false;
 	real = {
 		x: 0,
-		y: 0
+		y: 0,
+		toCanvas(canvas) {
+			return {
+				x: (this.x - canvas.view.width / 2 + canvas.camera.x) / canvas.zoom,
+				y: (this.y - canvas.view.height / 2 + canvas.camera.y) / canvas.zoom
+			}
+		}
 	}
 	pointA = Object.assign({}, this.real);
 	pointB = Object.assign({}, this.real);
@@ -30,8 +36,8 @@ export default class extends EventEmitter {
 
 	getPosition(event = event) {
 		return {
-			x: ((event.offsetX * this.parent.zoom) + this.parent.camera.x) * window.devicePixelRatio,
-			y: ((event.offsetY * this.parent.zoom) + this.parent.camera.y) * window.devicePixelRatio
+			x: ((event.offsetX * window.devicePixelRatio) + this.parent.camera.x) / this.parent.zoom,
+			y: ((event.offsetY * window.devicePixelRatio) + this.parent.camera.y) / this.parent.zoom
 		}
 	}
 
@@ -51,10 +57,8 @@ export default class extends EventEmitter {
 
 		this.down = true;
 		if (!this.locked) {
-			this.real = {
-				x: event.offsetX,
-				y: event.offsetY
-			}
+			this.real.x = event.offsetX;
+			this.real.y = event.offsetY;
 			this.pointA = this.getPosition(event);
 			this.parent.view.setPointerCapture(event.pointerId);
 		}
@@ -64,11 +68,8 @@ export default class extends EventEmitter {
 
 	move(event) {
 		event.preventDefault();
-		this.real = {
-			x: event.offsetX,
-			y: event.offsetY
-		}
-
+		this.real.x = event.offsetX;
+		this.real.y = event.offsetY;
 		this.emit('move', event);
 	}
 

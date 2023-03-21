@@ -100,8 +100,6 @@ export default class extends Tool {
 
 	clip() {
 		this.canvas.objects.push({
-			x: (Math.floor(Math.round((this.mouse.position.x - this.canvas.view.width / 2 + this.canvas.camera.x) / this.canvas.zoom / 25) * 25) + this.offsetX),
-			y: (Math.floor(Math.round((this.mouse.position.y - this.canvas.view.height / 2 + this.canvas.camera.y) / this.canvas.zoom / 25) * 25) - this.offsetY),
 			physics: structuredClone(this.physics),
 			scenery: structuredClone(this.scenery)
 		});
