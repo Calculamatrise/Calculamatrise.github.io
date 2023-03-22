@@ -39,10 +39,10 @@ export default class {
 					],
 					innerText: "Layer ",
 					onclick: event => {
-						window.canvas.layerDepth = this.id;
+						this.parent.canvas.layerDepth = this.id;
 						this.parent.cache.forEach(function (layer, index) {
 							layer.element.classList.remove("selected");
-							if (layer.id === window.canvas.layerDepth) {
+							if (layer.id === this.parent.canvas.layerDepth) {
 								layer.element.classList.add("selected");
 							}
 						});
@@ -140,10 +140,10 @@ export default class {
 			className: 'layer selected',
 			onclick: event => {
 				if (event.target.className !== this.element.className) return;
-				window.canvas.layerDepth = this.id;
+				this.parent.canvas.layerDepth = this.id;
 				this.parent.cache.forEach(function (layer, index) {
 					layer.element.classList.remove('selected');
-					if (layer.id === window.canvas.layerDepth) {
+					if (layer.id === this.parent.canvas.layerDepth) {
 						layer.element.classList.add('selected');
 					}
 				});
@@ -194,7 +194,7 @@ export default class {
 
 	set opacity(alpha) {
 		this.alpha = alpha;
-		canvas.draw();
+		this.parent.canvas.draw();
 	}
 
 	clear() {
@@ -206,7 +206,7 @@ export default class {
 		ctx.save();
 		ctx.globalAlpha = this.alpha;
 		if (!this.hidden) {
-			ctx.strokeStyle = canvas.physicsStyle;
+			ctx.strokeStyle = this.parent.canvas.physicsStyle;
 			for (const line of this.physics) {
 				ctx.beginPath();
 				ctx.moveTo(line[0], line[1]);
@@ -217,7 +217,7 @@ export default class {
 				ctx.stroke();
 			}
 
-			ctx.strokeStyle = canvas.sceneryStyle;
+			ctx.strokeStyle = this.parent.canvas.sceneryStyle;
 			for (const line of this.scenery) {
 				ctx.beginPath();
 				ctx.moveTo(line[0], line[1]);
@@ -260,14 +260,14 @@ export default class {
 
 	toggleVisiblity() {
 		this.hidden = !this.hidden;
-		canvas.draw();
+		this.parent.canvas.draw();
 	}
 
 	remove() {
 		this.element.remove();
 		this.parent.remove(this.id);
-		if (this.parent.cache.length < window.canvas.layerDepth) {
-			window.canvas.layerDepth = window.canvas.layerDepth === this.id ? this.parent.cache.length : 1;
+		if (this.parent.cache.length < this.parent.canvas.layerDepth) {
+			this.parent.canvas.layerDepth = this.parent.canvas.layerDepth === this.id ? this.parent.cache.length : 1;
 		}
 
 		return this;

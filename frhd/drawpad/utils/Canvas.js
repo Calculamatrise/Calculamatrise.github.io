@@ -1,14 +1,17 @@
+import EventEmitter from "../../../utils/EventEmitter.js";
 import MouseHandler from "../handlers/MouseHandler.js";
 import ToolHandler from "../handlers/ToolHandler.js";
 import HistoryManager from "../managers/HistoryManager.js";
 import LayerManager from "../managers/LayerManager.js";
 
-export default class {
+export default class extends EventEmitter {
 	camera = {x: 0, y: 0};
 	events = new HistoryManager();
 	fill = false;
-	layers = new LayerManager();
+	layers = new LayerManager(this);
 	mouse = new MouseHandler();
+	physicsStyle = '#FFFFFF';
+	sceneryStyle = '#999999';
 	settings = new Proxy(Object.assign({
 		theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 	}, JSON.parse(localStorage.getItem('frhd-drawpad-settings'))), {
@@ -22,6 +25,7 @@ export default class {
 		set: (...args) => {
 			Reflect.set(...args);
 			localStorage.setItem('frhd-drawpad-settings', JSON.stringify(this.settings));
+			this.emit('settingsChange', this.settings);
 			return true;
 		},
 		deleteProperty: (...args) => {
@@ -34,12 +38,9 @@ export default class {
 	text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
 	zoom = 1;
 	constructor(view) {
+		super();
 		this.view = view;
-		this.view.x = 0;
-		this.view.y = 0;
 		this.ctx = this.view.getContext('2d');
-		this.physicsStyle = '#'.padEnd(7, this.settings.theme == 'dark' ? 'F' : '0');
-		this.sceneryStyle = '#'.padEnd(7, this.settings.theme == 'dark' ? '9' : 'A');
 
 		this.layers.create();
 		this.mouse.init(this.view);
@@ -47,9 +48,29 @@ export default class {
 		this.mouse.on('move', this.stroke.bind(this));
 		this.mouse.on('up', this.clip.bind(this));
 
+		this.on('settingsChange', this.setColorScheme);
+		this.setColorScheme();
+
 		document.addEventListener('keydown', this.keydown.bind(this));
 		window.addEventListener('resize', this.constructor.resize.bind(this.view));
 		window.dispatchEvent(new Event('resize'));
+	}
+
+	setColorScheme({ theme } = this.settings) {
+		if (theme == 'dark') {
+			document.documentElement.attributeStyleMap.clear();
+			this.physicsStyle = '#FFFFFF';
+			this.sceneryStyle = '#999999';
+		} else {
+			document.documentElement.style.setProperty('--accent-color', '#D2D2D2');
+			document.documentElement.style.setProperty('--background', '#EBEBEB');
+			document.documentElement.style.setProperty('--hard-background', '#EEEEEE');
+			document.documentElement.style.setProperty('--text-color', '#1B1B1B');
+			this.physicsStyle = '#000000';
+			this.sceneryStyle = '#AAAAAA';
+		}
+
+		this.draw(this.ctx);
 	}
 
 	clear() {

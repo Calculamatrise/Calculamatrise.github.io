@@ -7,6 +7,10 @@ export default class {
 
 	active = 0;
 	cache = [];
+	constructor(parent) {
+		this.canvas = parent;
+	}
+
 	create() {
 		this.active++;
 		this.cache.forEach(function (layer) {
@@ -24,12 +28,12 @@ export default class {
 	}
 
 	insert(layer, index) {
-		window.canvas.layerDepth = index + 1;
+		this.canvas.layerDepth = index + 1;
 		this.cache.splice(index, 0, layer);
 		this.cache.forEach((layer, index) => {
 			layer.selector.value = layer.id = index + 1;
 			layer.element.classList.remove('selected');
-			if (layer.id === window.canvas.layerDepth) {
+			if (layer.id === this.canvas.layerDepth) {
 				layer.element.classList.add('selected');
 			}
 		});
@@ -42,7 +46,7 @@ export default class {
 		this.cache.forEach(function (layer, index) {
 			layer.selector.value = layer.id = index + 1;
 			layer.element.classList.remove('selected');
-			if (layer.id === window.canvas.layerDepth) {
+			if (layer.id === this.canvas.layerDepth) {
 				layer.element.classList.add('selected');
 			}
 		});

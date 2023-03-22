@@ -298,7 +298,8 @@ a.button {
 }
 
 .button, button, input[type="button"], body > nav a, ::-webkit-file-upload-button {
-    aspect-ratio: 2.5 / 1;
+    -webkit-user-select: none;
+	aspect-ratio: 2.5 / 1;
     background-color: var(--accent-color);
     border: none;
     border-radius: 4px;

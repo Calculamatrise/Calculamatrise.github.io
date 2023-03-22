@@ -1,15 +1,12 @@
 :root {
-	--size: .5;
-	--background: #EBEBEB;
-	--hard-background: #DDDDDD;
-	--soft-background: #EEEEEE;
-	--text: #1B1B1B;
-	--stroke: skyblue;
-	--fill: violet;
+	--accent-color: #2D2D2D;
+	--background: #1B1B1B;
+	--hard-background: #111111;
+	--text-color: #FBFBFB;
 }
 
 html {
-    color: var(--text);
+    color: var(--text-color);
 }
 
 body {
@@ -22,9 +19,11 @@ body > nav {
 }
 
 canvas#view {
+	-webkit-user-select: none;
 	background-color: var(--background);
 	height: 100vh;
 	touch-action: none;
+	user-select: none;
 	width: 100vw;
 }
 
@@ -39,7 +38,6 @@ div.content {
 
 #container {
 	position: relative;
-	touch-action: none;
 }
 
 #container .user-interface > section {
@@ -94,6 +92,7 @@ label.button {
 
 #container .user-interface section.bottom.left .option {
 	-webkit-user-select: none;
+	display: block;
 	font-size: smaller;
 	height: 3rem;
 	line-height: 3rem;
@@ -117,7 +116,7 @@ label.button {
 	visibility: hidden;
 }
 
-#container :is(.user-interface, .overlay) button {
+#container :is(.user-interface, .overlay) button, #container :is(.user-interface, .overlay) .button {
 	background-color: transparent;
 }
 
@@ -132,7 +131,7 @@ label.button {
 }
 
 #container div#settings {
-	background-color: #ffffff30;
+	background-color: hsl(0 0% 50% / 10%);
 	backdrop-filter: blur(2em);
     border-radius: 0;
 	display: none;
@@ -142,7 +141,8 @@ label.button {
 }
 
 #container div#layers {
-	background-color: hsl(0deg 0% 50% / 30%); /* var(--hard-background); */
+	backdrop-filter: blur(4px);
+	background-color: hsl(0deg 0% 50% / 20%);
 	border-radius: 30px;
 	display: none;
 	flex-flow: column;
@@ -268,6 +268,6 @@ input[type="color"]#colour {
 }
 
 svg {
-	stroke: var(--text);
-	fill: var(--text);
+	stroke: var(--text-color);
+	fill: var(--text-color);
 }

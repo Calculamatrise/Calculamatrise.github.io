@@ -41,8 +41,8 @@
                 <button class="secondary" onclick="document.querySelector('#layers').style.setProperty('display', 'none'), document.querySelector('#settings').style.setProperty('display', document.querySelector('#settings').style.display === 'flex' ? 'none' : 'flex');">Settings</button>
 			</section>
             <section class="bottom left" style="border-radius: 4px;">
-                <label class="button option ripple" style="border-radius: 0;display: block;background-color: rgba(0, 0, 0, 0.25);"><input type="radio" name="color" onchange="canvas.tools.selected.scenery = 0;" checked>Primary Colour</label>
-                <label class="button option ripple" style="border-radius: 0;display: block;background-color: rgba(170, 170, 170, 0.25);"><input type="radio" name="color" onchange="canvas.tools.selected.scenery |= 1;">Secondary Colour</label>
+                <label class="button option ripple" style="border-radius: 0;background-color: rgba(0, 0, 0, 0.25);"><input type="radio" name="color" onchange="canvas.tools.selected.scenery = 0;" checked>Primary Colour</label>
+                <label class="button option ripple" style="border-radius: 0;background-color: rgba(170, 170, 170, 0.25);"><input type="radio" name="color" onchange="canvas.tools.selected.scenery |= 1;">Secondary Colour</label>
             </section>
         </div>
         <!-- Layers Overlay -->
