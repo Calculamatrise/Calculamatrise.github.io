@@ -24,7 +24,6 @@ body > nav {
 canvas#view {
 	background-color: var(--background);
 	height: 100vh;
-	pointer-events: none;
 	touch-action: none;
 	width: 100vw;
 }
@@ -43,7 +42,7 @@ div.content {
 	touch-action: none;
 }
 
-#container :is(user-interface, mobile-user-interface) > section {
+#container .user-interface > section {
 	margin: 10px;
 	max-width: 50vmin;
 	overflow: hidden;
@@ -51,33 +50,41 @@ div.content {
 	z-index: 0;
 }
 
-#container :is(user-interface, mobile-user-interface) .bottom {
+#container .user-interface .bottom {
 	bottom: 0;
 }
 
-#container :is(user-interface, mobile-user-interface) .left {
+#container .user-interface .left {
 	left: 0;
 }
 
-#container :is(user-interface, mobile-user-interface) .top {
+#container .user-interface .top {
 	top: 0;
 }
 
-#container :is(user-interface, mobile-user-interface) .right {
+#container .user-interface .right {
 	right: 0;
 	text-align: right;
 }
 
-#container user-interface section.left.top label[for]::before {
+#container .user-interface :is(button, .button, select) {
+	background-color: transparent;
+}
+
+#container .user-interface select optgroup, #container .user-interface select option {
+	background-color: var(--accent-color);
+}
+
+#container .user-interface section.left.top label[for]::before {
 	content: "Show "
 }
 
-#container user-interface section.left.top:has(#toolbar:checked) > label[for=toolbar]::before,
-#container user-interface section.left.top:has(#advanced-tools:checked) label[for=advanced-tools]::before {
+#container .user-interface section.left.top:has(#toolbar:checked) > label[for=toolbar]::before,
+#container .user-interface section.left.top:has(#advanced-tools:checked) label[for=advanced-tools]::before {
 	content: "Hide "
 }
 
-/* #container user-interface section.left.top :has(> :checked) ~ label[for]::before {
+/* #container .user-interface section.left.top :has(> :checked) ~ label[for]::before {
 	content: "Hide "
 } */
 
@@ -85,7 +92,7 @@ label.button {
 	line-height: 3rem;
 }
 
-#container user-interface section.bottom.left .option {
+#container .user-interface section.bottom.left .option {
 	-webkit-user-select: none;
 	font-size: smaller;
 	height: 3rem;
@@ -97,12 +104,12 @@ label.button {
 	user-select: none;
 }
 
-#container user-interface section.bottom.left .option.disabled {
+#container .user-interface section.bottom.left .option.disabled {
 	opacity: .5;
 	pointer-events: none;
 }
 
-#container user-interface section.bottom.left .option input {
+#container .user-interface section.bottom.left .option input {
 	left: 0;
 	pointer-events: none;
 	position: absolute;
@@ -110,7 +117,7 @@ label.button {
 	visibility: hidden;
 }
 
-#container :is(user-interface, mobile-user-interface, .overlay) button {
+#container :is(.user-interface, .overlay) button {
 	background-color: transparent;
 }
 
@@ -258,19 +265,6 @@ label.button {
 input[type="color"]#colour {
 	visibility: hidden;
 	position: absolute;
-}
-
-@media only screen 
-and (min-device-width: 320px) 
-and (max-device-width: 568px)
-and (-webkit-min-device-pixel-ratio: 2) {
-	#container user-interface, #container user-interface * {
-		display: none;
-	}
-
-	#container mobile-user-interface {
-		display: block !important;
-	}
 }
 
 svg {

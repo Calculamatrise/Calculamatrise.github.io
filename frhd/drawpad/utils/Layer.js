@@ -1,7 +1,8 @@
 export default class {
 	alpha = 1;
 	hidden = false;
-	lines = [];
+	physics = [];
+	scenery = [];
 	constructor(parent) {
 		this.parent = parent;
 		this.id = this.parent.cache.length + 1;
@@ -194,20 +195,38 @@ export default class {
 	}
 
 	clear() {
-		this.lines = [];
+		this.physics.splice(0);
+		this.scenery.splice(0);
 	}
 
-	draw(canvas) {
-		canvas.ctx.save();
-		canvas.ctx.globalAlpha = this.alpha;
-		canvas.tool.element !== void 0 && canvas.tool.element.draw(canvas.ctx);
+	draw(ctx) {
+		ctx.save();
+		ctx.globalAlpha = this.alpha;
 		if (!this.hidden) {
-			for (const line of this.lines) {
-				line.draw(canvas.ctx);
+			ctx.strokeStyle = canvas.physicsStyle;
+			for (const line of this.physics) {
+				ctx.beginPath();
+				ctx.moveTo(line[0], line[1]);
+				for (let i = 2; i < line.length; i += 2) {
+					ctx.lineTo(line[i], line[i + 1]);
+				}
+
+				ctx.stroke();
+			}
+
+			ctx.strokeStyle = canvas.sceneryStyle;
+			for (const line of this.scenery) {
+				ctx.beginPath();
+				ctx.moveTo(line[0], line[1]);
+				for (let i = 2; i < line.length; i += 2) {
+					ctx.lineTo(line[i], line[i + 1]);
+				}
+
+				ctx.stroke();
 			}
 		}
 
-		canvas.ctx.restore();
+		ctx.restore();
 	}
 
 	move(newIndex) {

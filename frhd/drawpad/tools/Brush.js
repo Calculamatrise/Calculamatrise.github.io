@@ -1,50 +1,55 @@
-import Stroke from "../utils/Stroke.js";
 import Tool from "./Tool.js";
 
 export default class extends Tool {
 	_size = 4;
-	element = new Stroke();
-	init() {
-		this.element.strokeWidth = this.size;
+	points = [];
+	draw(ctx) {
+		if (!this.active) return;
+		ctx.save();
+		ctx.beginPath();
+		ctx.strokeStyle = this.canvas.physicsStyle;
+		ctx.moveTo(this.points[0], this.points[1]);
+		for (let i = 2; i < this.points.length; i += 2) {
+			ctx.lineTo(this.points[i], this.points[i + 1]);
+		}
+
+		const position = this.mouse.position.toCanvas(this.canvas);
+		ctx.lineTo(position.x, position.y);
+		ctx.stroke();
+		ctx.restore();
 	}
 
 	press() {
 		this.active = true;
-		this.element.strokeWidth = this.size;
-		this.element.strokeStyle = this.canvas.primary;
-		this.element.fillStyle = 'transparent';
-		this.element.addPoints(this.mouse.pointA.x, this.mouse.pointA.y);
+		const position = this.mouse.position.toCanvas(this.canvas);
+		this.points.push(position.x, position.y);
 	}
 
 	stroke() {
-		if (this.mouse.pointA.x === this.mouse.position.x && this.mouse.pointA.y === this.mouse.position.y) {
+		if (!this.active) return;
+		const old = this.mouse.old.toCanvas(this.canvas);
+		const position = this.mouse.position.toCanvas(this.canvas);
+		if (Math.sqrt((position.x - old.x) ** 2 + (position.y - old.y) ** 2) < this.size) {
 			return;
 		}
 
-		this.element.addPoints(this.mouse.position.x, this.mouse.position.y);
+		this.points.push(position.x, position.y);
+		this.mouse.old = Object.assign({}, this.mouse.position);
 	}
 
-	clip(event) {
-		if (!this.active) {
-			return;
-		}
-
+	clip() {
+		if (!this.active) return;
 		this.active = false;
-		if (this.mouse.pointA.x === this.mouse.pointB.x && this.mouse.pointA.y === this.mouse.pointB.y) {
-			return;
-		}
-
-		const temp = this.element.clone();
-		this.element.points = [];
-		this.canvas.layer.lines.push(temp);
+		const clone = structuredClone(this.points);
+		this.canvas.layers.selected.physics.push(clone);
 		this.canvas.events.push({
 			action: 'add',
-			value: temp
+			value: clone
 		});
+		this.points = [];
 	}
 
 	close() {
 		this.active = false;
-		this.element.points = [];
 	}
 }

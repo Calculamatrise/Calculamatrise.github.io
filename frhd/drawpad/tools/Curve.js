@@ -1,65 +1,71 @@
 import Tool from "./Tool.js";
 
-import Stroke from "../utils/Stroke.js";
-
 export default class extends Tool {
 	_size = 4;
 	active = false;
-	anchorA = null;
-	anchorB = null;
-	segmentLength = 1;
-	element = new Stroke();
-	init() {
-		this.element.strokeWidth = this.size;
+	pointA = null;
+	pointB = null;
+	points = []
+	segmentLength = 2;
+	draw(ctx) {
+		if (!this.pointA) return;
+		ctx.save();
+		ctx.beginPath();
+		ctx.strokeStyle = (this.scenery || this.mouse.isAlternate) ? this.canvas.sceneryStyle : this.canvas.physicsStyle;
+		ctx.moveTo(this.points[0], this.points[1]);
+		for (let i = 2; i < this.points.length; i += 2) {
+			ctx.lineTo(this.points[i], this.points[i + 1]);
+		}
+
+		ctx.stroke();
+		ctx.restore();
 	}
 
 	press() {
-		if (this.active) {
-			return;
-		}
-
-		this.anchorA = this.mouse.pointA;
-		this.element.strokeStyle = this.canvas.primary;
-		this.element.strokeWidth = this.size;
-		this.element.points = [];
-		this.element.addPoints([this.anchorA.x, this.anchorA.y], [this.mouse.position.x, this.mouse.position.y]);
+		if (this.active) return;
+		this.pointA = this.mouse.position.toCanvas(this.canvas);
+		this.pointB = Object.assign({}, this.pointA);
 	}
 
 	stroke() {
+		const position = this.mouse.position.toCanvas(this.canvas);
 		if (this.active) {
-			this.element.points = [];
-			for (let i = 0; i < 1; i += this.segmentLength / 100) {
-				this.element.addPoints([
-					Math.pow((1 - i), 2) * this.anchorA.x + 2 * (1 - i) * i * this.mouse.position.x + Math.pow(i, 2) * this.anchorB.x,
-					Math.pow((1 - i), 2) * this.anchorA.y + 2 * (1 - i) * i * this.mouse.position.y + Math.pow(i, 2) * this.anchorB.y
-				]);
+			this.points.splice(0);
+			// calculate length to determine devision of segment length
+			const old = this.mouse.old.toCanvas(this.canvas);
+			const position = this.mouse.position.toCanvas(this.canvas);
+			const len = Math.sqrt((position.x - old.x) ** 2 + (position.y - old.y) ** 2);
+			for (let i = 0; i <= 1; i += this.segmentLength / (len / 2)) {
+				this.points.push(
+					Math.floor(Math.pow((1 - i), 2) * this.pointA.x + 2 * (1 - i) * i * position.x + Math.pow(i, 2) * this.pointB.x),
+					Math.floor(Math.pow((1 - i), 2) * this.pointA.y + 2 * (1 - i) * i * position.y + Math.pow(i, 2) * this.pointB.y)
+				);
 			}
-			return;
+
+			this.pointB && this.points.push(this.pointB.x, this.pointB.y);
 		} else if (this.mouse.down && !this.mouse.isAlternate) {
-			this.element.points = [];
-			this.element.addPoints([this.anchorA.x, this.anchorA.y], [this.mouse.position.x, this.mouse.position.y]);
+			this.points.splice(0);
+			this.pointA && this.points.push(this.pointA.x, this.pointA.y, position.x, position.y);
 		}
 	}
 
-	clip(event) {
+	clip() {
 		if (this.active) {
 			this.active = false;
-
-			const line = this.element.clone();
-			this.element.points = [];
-			this.canvas.layer.lines.push(line);
+			this.pointA = null;
+			const clone = structuredClone(this.points);
+			this.canvas.layers.selected.physics.push(clone);
 			this.canvas.events.push({
 				action: 'add',
-				value: line
+				value: clone
 			});
-			return;
-		} else if (this.mouse.pointA.x === this.mouse.pointB.x && this.mouse.pointA.y === this.mouse.pointB.y) {
+			this.points.splice(0);
 			return;
 		}
 
-		this.anchorB = this.mouse.pointB;
-		this.element.points = [];
-		this.element.addPoints([this.anchorA.x, this.anchorA.y], [this.anchorB.x, this.anchorB.y]);
+		this.pointB = this.mouse.position.toCanvas(this.canvas);
+		this.points.splice(0);
+		this.points.push([this.pointA.x, this.pointA.y], [this.pointB.x, this.pointB.y]);
 		this.active = true;
 	}
 }

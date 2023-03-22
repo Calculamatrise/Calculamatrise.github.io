@@ -63,9 +63,9 @@ export default class {
 		this.ctx.strokeStyle = this.physicsStyle;
 		for (const line of this.physics.concat(...this.objects.map(({ physics }) => physics))) {
 			this.ctx.beginPath();
-			for (let i = 0; i < line.length; i += 2) {
-				this.ctx.moveTo(line[i], line[i + 1]);
-				this.ctx.lineTo(line[i + 2], line[i + 3]);
+			this.ctx.moveTo(line[0], line[1]);
+			for (let i = 2; i < line.length; i += 2) {
+				this.ctx.lineTo(line[i], line[i + 1]);
 			}
 
 			this.ctx.stroke();
@@ -74,9 +74,9 @@ export default class {
 		this.ctx.strokeStyle = this.sceneryStyle;
 		for (const line of this.scenery.concat(...this.objects.map(({ scenery }) => scenery))) {
 			this.ctx.beginPath();
-			for (let i = 0; i < line.length; i += 2) {
-				this.ctx.moveTo(line[i], line[i + 1]);
-				this.ctx.lineTo(line[i + 2], line[i + 3]);
+			this.ctx.moveTo(line[0], line[1]);
+			for (let i = 2; i < line.length; i += 2) {
+				this.ctx.lineTo(line[i], line[i + 1]);
 			}
 
 			this.ctx.stroke();
@@ -118,12 +118,12 @@ export default class {
 		switch (event.key.toLowerCase()) {
 			case '+':
 			case '=':
-				this.zoom = Math.min(this.zoom + .25, 4);
+				this.zoom = Math.min(this.zoom * window.devicePixelRatio + .25, window.devicePixelRatio * 4);
 				this.draw();
 				break;
 
 			case '-':
-				this.zoom = Math.max(this.zoom - .25, .1);
+				this.zoom = Math.max(this.zoom / window.devicePixelRatio - .25, window.devicePixelRatio / 5);
 				this.draw();
 				break;
 

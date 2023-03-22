@@ -1,12 +1,17 @@
 import Layer from "../utils/Layer.js";
 
 export default class {
+	get selected() {
+		return this.get(Math.min(this.active, this.cache.length));
+	}
+
+	active = 0;
 	cache = [];
 	create() {
+		this.active++;
 		this.cache.forEach(function (layer) {
 			layer.element.classList.remove('selected');
 		});
-
 		return new Layer(this);
 	}
 

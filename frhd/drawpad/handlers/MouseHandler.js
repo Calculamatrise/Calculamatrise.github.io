@@ -2,7 +2,8 @@ import EventEmitter from "../../../utils/EventEmitter.js";
 
 export default class extends EventEmitter {
 	down = false;
-	real = {
+	old = {x: 0, y: 0};
+	position = {
 		x: 0,
 		y: 0,
 		toCanvas(canvas) {
@@ -11,12 +12,6 @@ export default class extends EventEmitter {
 				y: (this.y - canvas.view.height / 2 + canvas.camera.y) / canvas.zoom
 			}
 		}
-	}
-	pointA = Object.assign({}, this.real);
-	pointB = Object.assign({}, this.real);
-	constructor(parent) {
-		super();
-		this.parent = parent;
 	}
 
 	get isAlternate() {
@@ -27,96 +22,74 @@ export default class extends EventEmitter {
 		return document.pointerLockElement === this.canvas;
 	}
 
-	get position() {
-		return this.getPosition({
-			offsetX: this.real.x,
-			offsetY: this.real.y
-		});
+	lockedToTarget(event) {
+		return document.pointerLockElement === event.target;
 	}
 
-	getPosition(event = event) {
-		return {
-			x: ((event.offsetX * window.devicePixelRatio) + this.parent.camera.x) / this.parent.zoom,
-			y: ((event.offsetY * window.devicePixelRatio) + this.parent.camera.y) / this.parent.zoom
-		}
+	init(target = document) {
+		target.addEventListener('pointerdown', this.pointerdown.bind(this, target));
+		target.addEventListener('pointermove', this.move.bind(this, target));
+		target.addEventListener('pointerup', this.up.bind(this, target));
+		target.addEventListener('wheel', this.wheel.bind(this, target), { passive: false });
+		this.close = this.close.bind(this, target);
 	}
 
-	init() {
-		document.addEventListener('pointerdown', this.pointerdown.bind(this));
-		document.addEventListener('pointermove', this.move.bind(this));
-		document.addEventListener('pointerup', this.up.bind(this));
-		document.addEventListener('wheel', this.wheel.bind(this), { passive: false });
-	}
-
-	pointerdown(event) {
+	pointerdown(target, event) {
 		event.preventDefault();
-		if (event.target.id !== 'container') return;
-		if (layers.style.display !== 'none') {
-			layers.style.display = 'none';
-		}
-
+		layers.style.display !== 'none' && layers.style.setProperty('display', 'none');
 		this.down = true;
-		if (!this.locked) {
-			this.real.x = event.offsetX;
-			this.real.y = event.offsetY;
-			this.pointA = this.getPosition(event);
-			this.parent.view.setPointerCapture(event.pointerId);
-		}
-
+		this.locked || (this.position.x = event.offsetX * window.devicePixelRatio,
+		this.position.y = event.offsetY * window.devicePixelRatio,
+		this.old = Object.assign({}, this.position),
+		target.setPointerCapture(event.pointerId));
 		this.emit('down', event);
 	}
 
-	move(event) {
+	move(target, event) {
 		event.preventDefault();
-		this.real.x = event.offsetX;
-		this.real.y = event.offsetY;
+		this.position.x = event.offsetX * window.devicePixelRatio;
+		this.position.y = event.offsetY * window.devicePixelRatio;
 		this.emit('move', event);
 	}
 
-	up(event) {
+	up(target, event) {
 		event.preventDefault();
-		if (event.target.id !== 'view') return;
 		this.down = false;
-		if (!this.locked) {
-			this.pointB = this.getPosition(event);
-			this.parent.view.releasePointerCapture(event.pointerId);
-		}
-
+		this.locked || (target.releasePointerCapture(event.pointerId));
 		this.emit('up', event);
 	}
 
-	wheel(event) {
+	wheel(target, event) {
 		event.preventDefault();
-		event.stopPropagation();
-		if (event.ctrlKey) {
-			if (event.deltaY < 0) {
-				if (this.parent.zoom <= 1) {
-					return;
-				}
+		// if (event.ctrlKey) {
+		// 	if (event.deltaY < 0) {
+		// 		if (this.parent.zoom <= 1) {
+		// 			return;
+		// 		}
 
-				this.parent.zoom -= this.parent.zoomIncrementValue;
-				// this.parent.view.setAttribute("viewBox", `${this.parent.view.x + (this.parent.view.width - window.innerWidth * this.parent.zoom) / 2} ${this.parent.view.y + (this.parent.view.height - window.innerHeight * this.parent.zoom) / 2} ${window.innerWidth * this.parent.zoom} ${window.innerHeight * this.parent.zoom}`);
-				this.parent.text.setAttribute("y", 25 + this.parent.view.y);
-			} else {
-				if (this.parent.zoom >= 10) {
-					return;
-				}
+		// 		this.parent.zoom -= this.parent.zoomIncrementValue;
+		// 		// this.parent.view.setAttribute("viewBox", `${this.parent.view.x + (this.parent.view.width - window.innerWidth * this.parent.zoom) / 2} ${this.parent.view.y + (this.parent.view.height - window.innerHeight * this.parent.zoom) / 2} ${window.innerWidth * this.parent.zoom} ${window.innerHeight * this.parent.zoom}`);
+		// 		this.parent.text.setAttribute("y", 25 + this.parent.view.y);
+		// 	} else {
+		// 		if (this.parent.zoom >= 10) {
+		// 			return;
+		// 		}
 
-				this.parent.zoom += this.parent.zoomIncrementValue;
-				// this.parent.view.setAttribute("viewBox", `${this.parent.view.x - (window.innerWidth * this.parent.zoom - this.parent.view.width) / 2} ${this.parent.view.y - (window.innerHeight * this.parent.zoom - this.parent.view.height) / 2} ${window.innerWidth * this.parent.zoom} ${window.innerHeight * this.parent.zoom}`);
-				this.parent.text.setAttribute("y", 25 + this.parent.view.y);
-			}
+		// 		this.parent.zoom += this.parent.zoomIncrementValue;
+		// 		// this.parent.view.setAttribute("viewBox", `${this.parent.view.x - (window.innerWidth * this.parent.zoom - this.parent.view.width) / 2} ${this.parent.view.y - (window.innerHeight * this.parent.zoom - this.parent.view.height) / 2} ${window.innerWidth * this.parent.zoom} ${window.innerHeight * this.parent.zoom}`);
+		// 		this.parent.text.setAttribute("y", 25 + this.parent.view.y);
+		// 	}
 
-			return;
-		}
+		// 	return;
+		// }
 
-		if (event.deltaY > 0 && this.parent.tool.size <= 2) {
-			return;
-		} else if (event.deltaY < 0 && this.parent.tool.size >= 100) {
-			return;
-		}
+		// if (event.deltaY > 0 && this.parent.tool.size <= 2) {
+		// 	return;
+		// } else if (event.deltaY < 0 && this.parent.tool.size >= 100) {
+		// 	return;
+		// }
 
-		this.parent.tool.size -= event.deltaY / 100;
+		// this.parent.tool.size -= event.deltaY / 100;
 
 		// const zoom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--size'));
 		// if (event.deltaY > 0 && zoom >= 100 || event.deltaY < 0 && zoom < 1) {
@@ -127,9 +100,9 @@ export default class extends EventEmitter {
 		this.emit('wheel', event);
 	}
 
-	close() {
-		document.removeEventListener('pointerdown', this.pointerdown.bind(this));
-		document.removeEventListener('pointermove', this.move.bind(this));
-		document.removeEventListener('pointerup', this.up.bind(this));
+	close(target) {
+		target.removeEventListener('pointerdown', this.pointerdown.bind(this));
+		target.removeEventListener('pointermove', this.move.bind(this));
+		target.removeEventListener('pointerup', this.up.bind(this));
 	}
 }

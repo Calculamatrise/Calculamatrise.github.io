@@ -1,67 +1,45 @@
 import Tool from "./Tool.js";
-import Stroke from "../utils/Stroke.js";
 
 export default class extends Tool {
 	_size = 4;
-	element = new Stroke();
-	init() {
-		this.element.strokeWidth = this.size;
+	scenery = 0;
+	draw(ctx) {
+		if (!this.active) return;
+		ctx.save();
+		ctx.beginPath();
+		ctx.strokeStyle = this.scenery ? this.canvas.sceneryStyle : this.canvas.physicsStyle;
+		const old = this.mouse.old.toCanvas(this.canvas);
+		ctx.moveTo(old.x, old.y);
+		const position = this.mouse.position.toCanvas(this.canvas);
+		ctx.lineTo(position.x, position.y);
+		ctx.stroke();
+		ctx.restore();
 	}
 
-	press(event) {
+	press() {
 		this.active = true;
-		this.element.strokeStyle = this.canvas.primary;
-		this.element.strokeWidth = this.size;
-		this.element.addPoints([
-			this.mouse.pointA.x,
-			this.mouse.pointA.y
-		], [
-			this.mouse.position.x,
-			this.mouse.position.y
-		]);
+		this.mouse.isAlternate && (this.scenery |= 2);
 	}
 
-	stroke(event) {
-		if (!this.active) {
-			return;
-		}
-
-		this.element.strokeWidth = this.size;
-		this.element.points.splice(this.element.points.length - 2, 2);
-		this.element.addPoints([
-			this.mouse.position.x,
-			this.mouse.position.y
-		]);
-	}
-
-	clip(event) {
-		if (!this.active) {
-			return;
-		}
-
+	clip() {
+		if (!this.active) return;
 		this.active = false;
-		if (this.mouse.pointA.x === this.mouse.pointB.x && this.mouse.pointA.y === this.mouse.pointB.y) {
-			this.element.points = [];
+		const old = this.mouse.old.toCanvas(this.canvas);
+		const position = this.mouse.position.toCanvas(this.canvas);
+		if (Math.sqrt((position.x - old.x) ** 2 + (position.y - old.y) ** 2) < 2) {
 			return;
 		}
 
-		this.element.points.splice(this.element.points.length - 2, 2);
-		this.element.addPoints([
-			this.mouse.pointB.x,
-			this.mouse.pointB.y
-		]);
-
-		const line = this.element.clone();
-		this.element.points = [];
-		this.canvas.layer.lines.push(line);
+		this.canvas.layers.selected[this.scenery ? 'scenery' : 'physics'].push([old.x, old.y, position.x, position.y]);
 		this.canvas.events.push({
 			action: 'add',
-			value: line
+			value: [old.x, old.y, position.x, position.y]
 		});
+
+		(this.scenery & 2) == 2 && (this.scenery = 0);
 	}
 
 	close() {
 		this.active = false;
-		this.element.points = []
 	}
 }

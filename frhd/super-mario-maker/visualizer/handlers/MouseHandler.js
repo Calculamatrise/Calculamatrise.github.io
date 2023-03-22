@@ -31,13 +31,15 @@ export default class extends EventEmitter {
 		target.addEventListener('pointermove', this.move = this.move.bind(this));
 		target.addEventListener('pointerup', this.up = this.up.bind(this));
 		target.addEventListener('wheel', this.wheel = this.wheel.bind(this), { passive: false });
-		this.close = this.close.bind(target);
+		this.close = this.close.bind(this, target);
 	}
 
 	pointerdown(event) {
 		event.preventDefault();
 		this.down = true;
-		this.locked || (this.pointA = Object.assign({}, this.position));
+		this.locked || (this.position.x = event.offsetX * window.devicePixelRatio,
+		this.position.y = event.offsetY * window.devicePixelRatio,
+		this.pointA = Object.assign({}, this.position));
 		this.emit('down', event);
 	}
 
@@ -60,10 +62,10 @@ export default class extends EventEmitter {
 		this.emit('wheel', event);
 	}
 
-	close() {
-		this.removeEventListener('pointerdown', this.pointerdown);
-		this.removeEventListener('pointermove', this.move);
-		this.removeEventListener('pointerup', this.up);
-		this.removeEventListener('wheel', this.wheel);
+	close(target) {
+		target.removeEventListener('pointerdown', this.pointerdown);
+		target.removeEventListener('pointermove', this.move);
+		target.removeEventListener('pointerup', this.up);
+		target.removeEventListener('wheel', this.wheel);
 	}
 }

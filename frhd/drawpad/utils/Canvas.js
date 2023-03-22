@@ -4,12 +4,11 @@ import HistoryManager from "../managers/HistoryManager.js";
 import LayerManager from "../managers/LayerManager.js";
 
 export default class {
-	#fill = false;
-	#layer = 1;
 	camera = {x: 0, y: 0};
 	events = new HistoryManager();
+	fill = false;
 	layers = new LayerManager();
-	mouse = new MouseHandler(this);
+	mouse = new MouseHandler();
 	settings = new Proxy(Object.assign({
 		randomizeStyle: false,
 		styles: {
@@ -39,15 +38,16 @@ export default class {
 	tools = new ToolHandler(this);
 	text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
 	zoom = 1;
-	zoomIncrementValue = 0.5;
 	constructor(view) {
 		this.view = view;
 		this.view.x = 0;
 		this.view.y = 0;
 		this.ctx = this.view.getContext('2d');
+		this.physicsStyle = '#'.padEnd(7, this.settings.theme == 'dark' ? 'F' : '0');
+		this.sceneryStyle = '#'.padEnd(7, this.settings.theme == 'dark' ? '9' : 'A');
 
 		this.layers.create();
-		this.mouse.init();
+		this.mouse.init(this.view);
 		this.mouse.on('down', this.press.bind(this));
 		this.mouse.on('move', this.stroke.bind(this));
 		this.mouse.on('up', this.clip.bind(this));
@@ -55,10 +55,6 @@ export default class {
 		document.addEventListener('keydown', this.keydown.bind(this));
 		window.addEventListener('resize', this.constructor.resize.bind(this.view));
 		window.dispatchEvent(new Event('resize'));
-	}
-
-	get tool() {
-		return this.tools.selected;
 	}
 
 	get primary() {
@@ -69,54 +65,35 @@ export default class {
 		return this.settings.theme == 'dark' ? "#999" : "#aaa";
 	}
 
-	get fill() {
-		return this.#fill;
-	}
-
-	set fill(boolean) {
-		this.text.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
-		this.tool.element.setAttribute("fill", boolean ? this.primary : "#FFFFFF00");
-		this.#fill = boolean;
-	}
-
-	get layerDepth() {
-		return this.#layer;
-	}
-
-	set layerDepth(layer) {
-		clearTimeout(this.text.timeout);
-		this.text.innerHTML = "Layer " + layer;
-		this.text.setAttribute("x", this.view.width / 2 + this.view.x - this.text.innerHTML.length * 2.5);
-		this.text.setAttribute("y", 25 + this.view.y);
-		this.text.setAttribute("fill", this.settings.theme == 'dark' ? "#FBFBFB" : "1B1B1B");
-		this.view.appendChild(this.text);
-		this.text.timeout = setTimeout(() => {
-			this.text.remove();
-		}, 2000);
-
-		this.#layer = layer;
-	}
-
-	get layer() {
-		return this.layers.get(this.#layer);
-	}
-
 	get container() {
 		return this.view.parentElement || document.querySelector('#container');
 	}
 
 	clear() {
-		for (const layer of this.layers) {
+		for (const layer of this.layers.cache) {
 			layer.physics.splice(0);
 			layer.scenery.splice(0);
 		}
 	}
 
+	draw() {
+		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+		this.ctx.translate(this.ctx.canvas.width / 2 - this.camera.x, this.ctx.canvas.height / 2 - this.camera.y);
+		this.ctx.scale(this.zoom, this.zoom);
+		this.ctx.lineCap = 'round';
+		this.ctx.lineJoin = 'round';
+		this.ctx.lineWidth = 2 * window.devicePixelRatio;
+		// this.ctx.strokeStyle = 'white';
+		this.layers.cache.forEach(layer => layer.draw(this.ctx));
+		this.tools.selected.draw(this.ctx);
+	}
+
 	import(data) {
 		this.clear();
-		const [physics, scenery] = code.split('#');
-		physics.length > 0 && this.layer.physics.push(...this.constructor.parseLines(physics));
-		scenery.length > 0 && this.layer.scenery.push(...this.constructor.parseLines(scenery));
+		const [physics, scenery] = data.split('#');
+		physics.length > 0 && (this.layers.selected.physics = this.constructor.parseLines(physics));
+		scenery.length > 0 && (this.layers.selected.scenery = this.constructor.parseLines(scenery));
 		this.draw();
 	}
 
@@ -220,40 +197,31 @@ export default class {
 		if (event.button === 1) {
 			this.tools.select(this.tools._selected === 'line' ? 'brush' : this.tools._selected === 'brush' ? 'eraser' : this.tools._selected === 'eraser' ? 'camera' : 'line');
 			return;
-		} else if (event.button === 2) {
-			// draw scenery lines
-			return;
 		}
 
-		if (!this.mouse.isAlternate) {
-			if (event.ctrlKey) {
-				this.tools.select('select');
-			}
-
-			event.shiftKey || this.tool.press(event);
+		if (event.ctrlKey) {
+			this.tools.select('select');
 		}
 
+		event.shiftKey || this.tools.selected.press(event);
 		this.draw();
 	}
 
 	stroke(event) {
 		if (event.shiftKey && this.mouse.down) {
 			this.tools.cache.get('camera').stroke(event);
-		} else if (this.mouse.down && !this.mouse.isAlternate)
-			this.tool.stroke(event);
+		} else
+			this.tools.selected.stroke(event);
 
 		if (['curve', 'eraser'].includes(this.tools._selected)) {
-			this.tool.stroke(event);
+			this.tools.selected.stroke(event);
 		}
 
 		this.draw();
 	}
 
 	clip(event) {
-		if (!event.shiftKey && !this.mouse.isAlternate) {
-			this.tool.clip(event);
-		}
-
+		event.shiftKey || this.tools.selected.clip(event);
 		this.draw();
 	}
 
@@ -273,27 +241,19 @@ export default class {
 			case '+':
 			case '=':
 				if (event.ctrlKey || this.tools._selected === 'camera') {
-					if (this.zoom >= 10) {
-						break;
-					}
-
-					this.zoom += this.zoomIncrementValue;
-					this.tool.init();
-				} else if (this.tool.size < 100) {
-					this.tool.size += 1;
+					this.zoom = Math.min(this.zoom * window.devicePixelRatio + .25, window.devicePixelRatio * 4);
+					this.draw();
+				} else if (this.tools.selected.size < 100) {
+					this.tools.selected.size += 1;
 				}
 				break;
 
 			case '-':
 				if (event.ctrlKey || this.tools._selected === 'camera') {
-					if (this.zoom <= 1) {
-						break;
-					}
-
-					this.zoom -= this.zoomIncrementValue;
-					this.tool.init();
-				} else if (this.tool.size > 2) {
-					this.tool.size -= 1;
+					this.zoom = Math.max(this.zoom / window.devicePixelRatio - .25, window.devicePixelRatio / 5);
+					this.draw();
+				} else if (this.tools.selected.size > 2) {
+					this.tools.selected.size -= 1;
 				}
 				break;
 
@@ -325,14 +285,14 @@ export default class {
 
 			case 'c':
 				if (event.ctrlKey && this.tools._selected === 'select') {
-					// this.tool.copy();
+					// this.tools.selected.copy();
 					navigator.clipboard.writeText('-18 1i 18 1i###BMX');
 				}
 				break;
 
 			case 'v':
 				if (event.ctrlKey && this.tools._selected === 'select') {
-					// this.tool.paste();
+					// this.tools.selected.paste();
 					navigator.clipboard.readText().then(console.log);
 				}
 				break;
@@ -341,20 +301,8 @@ export default class {
 		this.draw();
 	}
 
-	draw() {
-		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-		this.ctx.translate(-this.camera.x, -this.camera.y);
-		this.ctx.scale(this.zoom, this.zoom);
-		this.ctx.lineCap = 'round';
-		this.ctx.lineJoin = 'round';
-		// this.ctx.lineWidth = Math.max(2 * this.zoom, 0.5);
-		this.ctx.strokeStyle = 'white';
-		this.layers.cache.forEach(layer => layer.draw(this));
-	}
-
 	toString() {
-		return Array(this.layers.map(({ physics }) => physics).map(line => line.map(coord => coord.toString(32)).join(' ')).join(','), this.layers.map(({ scenery }) => scenery).map(line => line.map(coord => coord.toString(32)).join(' ')).join(',')).join('#');
+		return Array(this.layers.cache.flatMap(({ physics }) => physics).map(line => line.map(coord => coord.toString(32)).join(' ')).join(','), this.layers.cache.flatMap(({ scenery }) => scenery).map(line => line.map(coord => coord.toString(32)).join(' ')).join(',')).join('#');
 	}
 
 	close() {

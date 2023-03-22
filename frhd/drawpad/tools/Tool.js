@@ -32,6 +32,7 @@ export default class {
 	}
 
 	init() {}
+	draw() {}
 	press() {}
 	stroke() {}
 	clip() {}

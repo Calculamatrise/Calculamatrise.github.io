@@ -1,71 +1,66 @@
 import Tool from "./Tool.js";
 
-import Stroke from "../utils/Stroke.js";
-
 export default class extends Tool {
-	_size = 4;
-	segmentLength = 2;
-	element = new Stroke();
 	get radius() {
-		return Math.sqrt((this.mouse.position.x - this.mouse.pointA.x) ** 2 + (this.mouse.position.y - this.mouse.pointA.y) ** 2);
+		const old = this.mouse.old.toCanvas(this.canvas);
+		const position = this.mouse.position.toCanvas(this.canvas);
+		return Math.sqrt((position.x - old.x) ** 2 + (position.y - old.y) ** 2);
 	}
 
-	init() {
-		this.element.strokeWidth = this.size;
+	_size = 4;
+	points = []
+	segmentLength = 2;
+	draw(ctx) {
+		if (!this.active) return;
+		ctx.save();
+		ctx.beginPath();
+		ctx.strokeStyle = (this.scenery || this.mouse.isAlternate) ? this.canvas.sceneryStyle : this.canvas.physicsStyle;
+		ctx.moveTo(this.points[0], this.points[1]);
+		for (let i = 2; i < this.points.length; i += 2) {
+			ctx.lineTo(this.points[i], this.points[i + 1]);
+		}
+
+		ctx.stroke();
+		ctx.restore();
 	}
 
-	press(event) {
+	press() {
 		this.active = true;
-		this.element.strokeStyle = this.canvas.primary;
-		this.element.strokeWidth = this.size;
-		this.element.addPoints([
-			this.mouse.pointA.x,
-			this.mouse.pointA.y
-		], [
-			this.mouse.position.x,
-			this.mouse.position.y
-		]);
 	}
 
-	stroke(event) {
-		if (!this.active) {
-			return;
+	stroke() {
+		if (!this.active) return;
+		this.points.splice(0);
+		const old = this.mouse.old.toCanvas(this.canvas);
+		for (let i = 0; i <= 360; i += this.segmentLength / (this.radius / 360)) {
+			this.points.push(
+				Math.floor(old.x + this.radius * Math.cos(i * Math.PI / 180)),
+				Math.floor(old.y + this.radius * Math.sin(i * Math.PI / 180))
+			);
 		}
 
-		this.element.points = [];
-		this.element.strokeWidth = this.size;
-		for (let i = 0; i <= 360; i += this.segmentLength) {
-			this.element.addPoints([
-				this.mouse.pointA.x + this.radius * Math.cos(i * Math.PI / 180),
-				this.mouse.pointA.y + this.radius * Math.sin(i * Math.PI / 180)
-			]);
-		}
-
-		this.element.addPoints(this.element.points[0]);
+		this.points.push(this.points[0], this.points[1]);
 	}
 
-	clip(event) {
-		if (!this.active) {
-			return;
-		}
-
+	clip() {
+		if (!this.active) return;
 		this.active = false;
-		if (this.mouse.pointA.x === this.mouse.pointB.x && this.mouse.pointA.y === this.mouse.pointB.y) {
+		const old = this.mouse.old.toCanvas(this.canvas);
+		const position = this.mouse.position.toCanvas(this.canvas);
+		if (old.x === position.x && old.y === position.y) {
 			return;
 		}
 
-		const line = this.element.clone();
-		this.element.points = [];
-		this.canvas.layer.lines.push(line);
+		const clone = structuredClone(this.points);
+		this.canvas.layers.selected.physics.push(clone);
 		this.canvas.events.push({
-			action: "add",
-			value: line
+			action: 'add',
+			value: clone
 		});
+		this.points.splice(0);
 	}
 
 	close() {
 		this.active = false;
-
-		this.element.points = [];
 	}
 }
