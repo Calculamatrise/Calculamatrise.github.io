@@ -10,11 +10,6 @@ export default class {
 	layers = new LayerManager();
 	mouse = new MouseHandler();
 	settings = new Proxy(Object.assign({
-		randomizeStyle: false,
-		styles: {
-			primary: '#000000',
-			secondary: '#aaaaaa'
-		},
 		theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 	}, JSON.parse(localStorage.getItem('frhd-drawpad-settings'))), {
 		get(target, key) {
@@ -55,18 +50,6 @@ export default class {
 		document.addEventListener('keydown', this.keydown.bind(this));
 		window.addEventListener('resize', this.constructor.resize.bind(this.view));
 		window.dispatchEvent(new Event('resize'));
-	}
-
-	get primary() {
-		return this.settings.theme == 'dark' ? "#fff" : "#000";
-	}
-
-	get secondary() {
-		return this.settings.theme == 'dark' ? "#999" : "#aaa";
-	}
-
-	get container() {
-		return this.view.parentElement || document.querySelector('#container');
 	}
 
 	clear() {

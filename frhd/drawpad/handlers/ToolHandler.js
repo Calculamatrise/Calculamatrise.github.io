@@ -38,10 +38,10 @@ export default class {
 		this.selected.close();
 		this._selected = toolName.toLowerCase();
 		this.selected.init();
-		this.canvas.container.style.setProperty('cursor', this._selected === 'camera' ? 'move' : 'default');
+		this.canvas.view.style.setProperty('cursor', this._selected === 'camera' ? 'move' : 'default');
 
-		const colours = this.canvas.container.querySelector("section.bottom.left");
-		colours !== null && colours.style[(/^(brush|curve|(dynamic_)?circle|rectangle)$/i.test(this._selected) ? 'remove' : 'set') + 'Property']('display', 'none');
+		const colours = document.querySelector("#container .user-interface section.bottom.left");
+		colours !== null && colours.style[(/^(brush|curve|(dynamic_)?circle|ellipse|line|rectangle)$/i.test(this._selected) ? 'remove' : 'set') + 'Property']('display', 'none');
 	}
 
 	select(toolName) {

@@ -63,6 +63,9 @@ export default class {
 									style: {
 										width: '100px',
 										pointerEvents: 'all'
+									},
+									oninput: event => {
+										this.opacity = event.target.value / 100;
 									}
 								})
 							],
