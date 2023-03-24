@@ -2,21 +2,22 @@ import Layer from "../utils/Layer.js";
 
 export default class {
 	get selected() {
-		return this.get(Math.min(this.active, this.cache.length));
+		return this.cache.find(({ element }) => element.classList.contains('selected')) ?? this.get(0);
 	}
 
-	active = 0;
-	cache = [];
+	cache = []
 	constructor(parent) {
 		this.canvas = parent;
 	}
 
 	create() {
-		this.active++;
-		this.cache.forEach(function (layer) {
+		for (const layer of this.cache) {
 			layer.element.classList.remove('selected');
-		});
-		return new Layer(this);
+		}
+
+		const layer = new Layer(this);
+		this.cache.push(layer);
+		return layer;
 	}
 
 	get(layerId) {
@@ -27,34 +28,47 @@ export default class {
 		return !!this.get(layerId);
 	}
 
-	insert(layer, index) {
-		this.canvas.layerDepth = index + 1;
-		this.cache.splice(index, 0, layer);
+	insert(layer, newIndex) {
+		this.cache.splice(newIndex - 1, 0, layer);
+		const hasBefore = this.has(newIndex - 1);
+		const adjacent = hasBefore ? this.get(newIndex - 1) : this.get(newIndex + 1);
+		adjacent.element[hasBefore ? 'after' : 'before'](layer.element);
 		this.cache.forEach((layer, index) => {
-			layer.selector.value = layer.id = index + 1;
-			layer.element.classList.remove('selected');
-			if (layer.id === this.canvas.layerDepth) {
-				layer.element.classList.add('selected');
-			}
+			layer.selector.value = index + 1;
+			layer.element.classList[layer.id == newIndex ? 'add' : 'remove']('selected');
 		});
 
 		return this;
 	}
 
-	remove(layerId) {
-		const layer = this.cache.splice(this.cache.indexOf(this.get(layerId)), 1);
-		this.cache.forEach(function (layer, index) {
-			layer.selector.value = layer.id = index + 1;
-			layer.element.classList.remove('selected');
-			if (layer.id === this.canvas.layerDepth) {
-				layer.element.classList.add('selected');
-			}
+	remove(layer) {
+		const spliceIndex = this.cache.indexOf(layer);
+		this.cache.splice(spliceIndex, 1);
+		this.cache.forEach((layer, index) => {
+			layer.selector.value = index + 1;
+			layer.element.classList[layer.id == Math.min(spliceIndex + 1, this.cache.length) ? 'add' : 'remove']('selected');
 		});
 
 		return layer;
 	}
 
-	createElement(type, options = {}) {
+	select(id) {
+		for (const layer of this.cache) {
+			layer.element.classList[layer.id == id ? 'add' : 'remove']('selected');
+		}
+
+		this.selected.selector.focus();
+	}
+
+	close() {
+		for (const layer of this.cache) {
+			layer.remove();
+		}
+
+		this.cache.splice(0);
+	}
+
+	static createElement(type, options = {}) {
 		const callback = arguments[arguments.length - 1];
 		const element = document.createElement(type);
 		if ('innerText' in options) {
@@ -82,12 +96,5 @@ export default class {
 
 		Object.assign(element, options);
 		return typeof callback == 'function' && callback(element), element;
-	}
-
-	close() {
-		this.cache.forEach(function (layer) {
-			layer.remove();
-		});
-		this.cache = []
 	}
 }

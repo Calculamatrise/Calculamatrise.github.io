@@ -22,17 +22,17 @@
                 <label for="toolbar" class="button secondary">Toolbar</label>
                 <div style="display: grid;max-height: 50vmin;overflow: auto;">
 					<input type="checkbox" id="toolbar" style="display: none;">
-                    <label class="button ripple" onclick="window.canvas.tools.select('line');">Line<input type="radio" name="tool" id="line" style="display: none;"></label>
-                    <label class="button ripple" onclick="window.canvas.tools.select('brush');">Brush<input type="radio" name="tool" id="brush" style="display: none;"></label>
-                    <label class="button ripple" onclick="window.canvas.tools.select('curve');">Curve<input type="radio" name="tool" id="curve" style="display: none;"></label>
-                    <label class="button ripple" onclick="window.canvas.tools.select('circle');">Circle<input type="radio" name="tool" id="circle" style="display: none;"></label>
-                    <label class="button ripple" onclick="window.canvas.tools.select('rectangle');">Rectangle<input type="radio" name="tool" id="rectangle" style="display: none;"></label>
-                    <label class="button ripple" onclick="window.canvas.tools.select('eraser');">Eraser<input type="radio" name="tool" id="eraser" style="display: none;"></label>
-                    <label class="button ripple" onclick="window.canvas.tools.select('camera');">Camera<input type="radio" name="tool" id="camera" style="display: none;"></label>
+                    <label class="button ripple" onclick="canvas.tools.select('line');">Line<input type="radio" name="tool" id="line" style="display: none;"></label>
+                    <label class="button ripple" onclick="canvas.tools.select('brush');">Brush<input type="radio" name="tool" id="brush" style="display: none;"></label>
+                    <label class="button ripple" onclick="canvas.tools.select('curve');">Curve<input type="radio" name="tool" id="curve" style="display: none;"></label>
+                    <label class="button ripple" onclick="canvas.tools.select('circle');">Circle<input type="radio" name="tool" id="circle" style="display: none;"></label>
+                    <label class="button ripple" onclick="canvas.tools.select('rectangle');">Rectangle<input type="radio" name="tool" id="rectangle" style="display: none;"></label>
+                    <label class="button ripple" onclick="canvas.tools.select('eraser');">Eraser<input type="radio" name="tool" id="eraser" style="display: none;"></label>
+                    <label class="button ripple" onclick="canvas.tools.select('camera');">Camera<input type="radio" name="tool" id="camera" style="display: none;"></label>
                     <label for="advanced-tools" class="button secondary">Advanced</label>
                     <div style="display: contents;">
 						<input type="checkbox" id="advanced-tools" style="display: none;" onchange="this.nextElementSibling.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'center' })">
-                        <label class="button ripple" onclick="window.canvas.tools.select('ellipse');">Ellipse<input type="radio" name="tool" id="ellipse" style="display: none;"></label>
+                        <label class="button ripple" onclick="canvas.tools.select('ellipse');">Ellipse<input type="radio" name="tool" id="ellipse" style="display: none;"></label>
                     </div>
                 </div>
             </section>

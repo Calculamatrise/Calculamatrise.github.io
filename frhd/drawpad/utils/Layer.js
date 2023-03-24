@@ -1,61 +1,38 @@
 export default class {
 	alpha = 1;
 	hidden = false;
+	// create grid
 	physics = [];
 	scenery = [];
 	constructor(parent) {
 		this.parent = parent;
-		this.id = this.parent.cache.length + 1;
-		this.element = layers.querySelector("#layer-container").appendChild(this.parent.createElement('div', {
+		this.element = layers.querySelector("#layer-container").appendChild(this.parent.constructor.createElement('div', {
 			children: [
-				this.parent.createElement('label', {
+				this.parent.constructor.createElement('label', {
 					children: [
-						this.selector = this.parent.createElement('input', {
-							type: 'number',
-							id: 'selector',
+						this.selector = this.parent.constructor.createElement('input', {
 							className: 'ripple selector',
+							id: 'selector',
+							min: 1,
 							step: '1',
 							style: {
 								padding: 0
 							},
-							value: this.id,
+							type: 'number',
+							value: this.parent.cache.length + 1,
 							onkeydown: event => event.stopPropagation(),
-							onchange: event => {
-								console.log(event.target.value)
-								if (parseInt(event.target.value) < 1) {
-									event.target.value = 1;
-									return;
-								} else if (parseInt(event.target.value) > this.parent.cache.length) {
-									event.target.value = this.parent.cache.length;
-									return;
-								} else if (isNaN(event.target.value) || parseInt(event.target.value) === this.id) {
-									return;
-								}
-
-								this.move(parseInt(event.target.value));
-								this.selector.focus();
-							}
+							onchange: event => isFinite(event.target.valueAsNumber) && this.move(Math.min(Math.max(event.target.valueAsNumber, 1), this.parent.cache.length))
 						})
 					],
 					innerText: "Layer ",
-					onclick: event => {
-						this.parent.canvas.layerDepth = this.id;
-						this.parent.cache.forEach(function (layer, index) {
-							layer.element.classList.remove("selected");
-							if (layer.id === this.parent.canvas.layerDepth) {
-								layer.element.classList.add("selected");
-							}
-						});
-
-						this.selector.focus();
-					}
+					onclick: () => this.parent.select(this.id)
 				}),
-				this.parent.createElement('div', {
+				this.parent.constructor.createElement('div', {
 					className: 'options',
 					children: [
-						this.parent.createElement('div', {
+						this.parent.constructor.createElement('div', {
 							children: [
-								this.parent.createElement('input', {
+								this.parent.constructor.createElement('input', {
 									max: 100,
 									min: 0,
 									type: 'range',
@@ -75,21 +52,21 @@ export default class {
 								flexDirection: 'column'
 							}
 						}),
-						this.parent.createElement('label', {
+						this.parent.constructor.createElement('label', {
 							children: [
-								this.parent.createElement('input', {
+								this.parent.constructor.createElement('input', {
 									type: 'checkbox',
 									onchange: this.toggleVisiblity.bind(this)
 								})
 							],
-							className: 'option ripple',
+							className: 'button option ripple',
 							innerText: 'Hide'
 						}),
-						this.parent.createElement('button', {
+						this.parent.constructor.createElement('button', {
 							innerText: 'Clear',
 							onclick: () => confirm(`Are you sure you\'d like to clear Layer ${this.id}?`) && this.clear()
 						}),
-						this.parent.createElement('button', {
+						this.parent.constructor.createElement('button', {
 							innerText: 'Merge',
 							onclick: () => {
 								if (this.parent.cache.length <= 1) {
@@ -120,7 +97,7 @@ export default class {
 								}
 							}
 						}),
-						this.parent.createElement('button', {
+						this.parent.constructor.createElement('button', {
 							innerText: 'Delete',
 							onclick: () => {
 								if (this.parent.cache.length <= 1) {
@@ -138,54 +115,18 @@ export default class {
 				})
 			],
 			className: 'layer selected',
-			onclick: event => {
-				if (event.target.className !== this.element.className) return;
-				this.parent.canvas.layerDepth = this.id;
-				this.parent.cache.forEach(function (layer, index) {
-					layer.element.classList.remove('selected');
-					if (layer.id === this.parent.canvas.layerDepth) {
-						layer.element.classList.add('selected');
-					}
-				});
-
-				this.selector.focus();
-			}
+			onclick: ({ target }) => target === this.element && this.parent.select(this.id)
 		}));
-
-		/*
-		// Check if the mouse position on the layer container is greater than the next or previous layer. Then use element#after to move it.
-
-		this.element.addEventListener("mousedown", function(event) {
-			this.style.setProperty("position", "absolute");
-			this.style.setProperty("left", event.offsetX + "px");
-			this.style.setProperty("top", event.offsetY + "px");
-		});
-		this.element.addEventListener("mousemove", function(event) {
-			if (!event.button && !event.buttons) {
-				return;
-			}
-
-			this.style.setProperty("left", parseInt(this.style.getPropertyValue("left")) + event.movementX + "px");
-			this.style.setProperty("top", parseInt(this.style.getPropertyValue("top")) + event.movementY + "px");
-			console.log(this.style.getPropertyValue("left"), this.style.getPropertyValue("top"))
-			//console.log(event)
-		});
-		this.element.addEventListener("mouseup", function(event) {
-			this.style.setProperty("position", "unset");
-		});
-		this.element.addEventListener("mouseleave", function(event) {
-			this.style.setProperty("position", "unset");
-		});
-
-		//*/
 
 		this.element.scrollIntoView({
 			behavior: 'smooth',
 			block: 'end',
 			inline: 'center'
 		});
+	}
 
-		this.parent.cache.push(this);
+	get id() {
+		return 1 + this.parent.cache.indexOf(this);
 	}
 
 	get opacity() {
@@ -233,29 +174,14 @@ export default class {
 	}
 
 	move(newIndex) {
-		if (typeof newIndex != 'number' || this.id === newIndex) {
-			throw new Error("Invalid index.");
-		}
-
-		this.parent.remove(this.id);
-		// this.parent.cache.forEach(layer => {
-		// 	if (this.id < newIndex) {
-		// 		if (layer.id === newIndex - 1) {
-		// 			layer.element.after(this.element);
-		// 		}
-		// 	} else {
-		// 		if (layer.id === newIndex) {
-		// 			layer.element.before(this.element);
-		// 		}
-		// 	}
-		// });
-		this.parent.cache.forEach(layer => layer.id === newIndex && layer.element.after(this.element));
-		this.parent.insert(this, newIndex - 1);
+		const removed = this.parent.remove(this);
+		this.parent.insert(removed, newIndex);
 		this.element.scrollIntoView({
 			behavior: 'smooth',
 			block: 'end',
 			inline: 'center'
 		});
+		this.selector.focus();
 	}
 
 	toggleVisiblity() {
@@ -265,11 +191,6 @@ export default class {
 
 	remove() {
 		this.element.remove();
-		this.parent.remove(this.id);
-		if (this.parent.cache.length < this.parent.canvas.layerDepth) {
-			this.parent.canvas.layerDepth = this.parent.canvas.layerDepth === this.id ? this.parent.cache.length : 1;
-		}
-
-		return this;
+		this.parent.remove(this);
 	}
 }

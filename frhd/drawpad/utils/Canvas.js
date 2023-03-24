@@ -88,7 +88,6 @@ export default class extends EventEmitter {
 		this.ctx.lineCap = 'round';
 		this.ctx.lineJoin = 'round';
 		this.ctx.lineWidth = 2 * window.devicePixelRatio;
-		// this.ctx.strokeStyle = 'white';
 		this.layers.cache.forEach(layer => layer.draw(this.ctx));
 		this.tools.selected.draw(this.ctx);
 	}
