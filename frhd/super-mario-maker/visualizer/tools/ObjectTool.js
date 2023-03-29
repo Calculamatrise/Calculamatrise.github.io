@@ -10,9 +10,9 @@ export default class extends Tool {
 		ctx.strokeStyle = this.canvas.physicsStyle;
 		for (const line of this.physics) {
 			ctx.beginPath();
-			for (let i = 0; i < line.length; i += 2) {
-				ctx.moveTo(line[i], line[i + 1]);
-				ctx.lineTo(line[i + 2], line[i + 3]);
+			ctx.moveTo(line[0], line[1]);
+			for (let i = 2; i < line.length; i += 2) {
+				ctx.lineTo(line[i], line[i + 1]);
 			}
 
 			ctx.stroke();
@@ -21,9 +21,9 @@ export default class extends Tool {
 		ctx.strokeStyle = this.canvas.sceneryStyle;
 		for (const line of this.scenery) {
 			ctx.beginPath();
-			for (let i = 0; i < line.length; i += 2) {
-				ctx.moveTo(line[i], line[i + 1]);
-				ctx.lineTo(line[i + 2], line[i + 3]);
+			ctx.moveTo(line[0], line[1]);
+			for (let i = 2; i < line.length; i += 2) {
+				ctx.lineTo(line[i], line[i + 1]);
 			}
 
 			ctx.stroke();

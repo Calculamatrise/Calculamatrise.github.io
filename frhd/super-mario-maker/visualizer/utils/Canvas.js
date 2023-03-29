@@ -1,8 +1,8 @@
-import LevelDictionary from "../../constants/marioLevelDictionary.js";
 import MouseHandler from "../handlers/MouseHandler.js";
 import ToolHandler from "../handlers/ToolHandler.js";
 
 const key = 'super-mario-visualizer-settings';
+const LevelDictionary = await fetch('../constants/levels.json').then(r => r.json());
 export default class {
 	camera = {x: 0,y: 0};
 	mouse = new MouseHandler();
@@ -62,6 +62,7 @@ export default class {
 		this.ctx.save();
 		this.ctx.strokeStyle = this.physicsStyle;
 		for (const line of this.physics.concat(...this.objects.map(({ physics }) => physics))) {
+			if (line.length < 4) continue;
 			this.ctx.beginPath();
 			this.ctx.moveTo(line[0], line[1]);
 			for (let i = 2; i < line.length; i += 2) {
@@ -73,6 +74,7 @@ export default class {
 
 		this.ctx.strokeStyle = this.sceneryStyle;
 		for (const line of this.scenery.concat(...this.objects.map(({ scenery }) => scenery))) {
+			if (line.length < 4) continue;
 			this.ctx.beginPath();
 			this.ctx.moveTo(line[0], line[1]);
 			for (let i = 2; i < line.length; i += 2) {
@@ -139,6 +141,10 @@ export default class {
 	}
 
 	loadLevel(levelId) {
+		if (/^custom$/i.test(levelId)) {
+			return this.import(prompt('Enter your custom level code:') ?? LevelDictionary['blank']);
+		}
+
 		this.import(LevelDictionary[levelId]);
 	}
 

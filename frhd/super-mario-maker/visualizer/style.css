@@ -1,15 +1,11 @@
 :root {
-	--accent-color: #2d2d2d;
-	--background: #EBEBEB;
-	--hard-background: #DDDDDD;
-	--soft-background: #EEEEEE;
-	--text: #1B1B1B;
-	--stroke: skyblue;
-	--fill: violet;
+	--accent-color: #2D2D2D;
+	--background: #1B1B1B;
+	--text-color: #FBFBFB;
 }
 
 html {
-    color: var(--text);
+    color: var(--text-color);
 }
 
 body {

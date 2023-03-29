@@ -13,7 +13,7 @@
     <script type="module" src="bootstrap.js"></script>
 </head>
 <body>
-    <main id="container">
+    <main id="container" oncontextmenu="event.preventDefault()">
 		<canvas id="view"></canvas>
 		<!-- Left nav with object options, dropdown with level select, export and import button all on left nav -->
 		<div class="user-interface">
@@ -27,7 +27,7 @@
 			<section class="right top">
 				<label class="button ripple" style="display: inline-grid;">Import<input type="file" accept="text/plain" style="display: none;" onchange="this.files.length > 0 && this.files[0].text().then(text => canvas.import(text));"></label>
 				<!-- <button>Import</button> -->
-				<button onclick="Object.assign(document.createElement('a'), {download: 'super_mario_track_' + new Date().toISOString().split(/t/i).join('_').replace(/\..+/, '').replace(/:/g, '-'), href: window.URL.createObjectURL(new Blob([canvas.toString()], { type: 'text/plain' }))}).click();">Export</button>
+				<button onclick="Object.assign(document.createElement('a'), {download: 'super_mario_track-' + new Intl.DateTimeFormat('en-CA', { dateStyle: 'short', timeStyle: 'medium' }).format().replace(/[/:]/g, '-').replace(/,+\s*/, '_').replace(/\s+.*$/, ''), href: window.URL.createObjectURL(new Blob([canvas.toString()], { type: 'text/plain' }))}).click();">Export</button>
 			</section>
 			<section class="left middle">
 				<label class="button option ripple" onclick="canvas.tools.select('block');">Block<input type="radio" name="tool" id="block" style="display: none;"></label>

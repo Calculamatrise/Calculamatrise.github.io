@@ -1,6 +1,6 @@
-import objectDictionary from "../constants/marioObjectDictionary.js";
 import Helpers from "../utils/Helpers.js";
 
+const ObjectDictionary = await fetch('./constants/objects.json').then(r => r.json());
 export default class {
 	get rotation() {
 		return Number(this.element.objectRotation.value);
@@ -118,8 +118,8 @@ export default class {
 	}
 
 	toString() {
-		const sample = objectDictionary[this.type];
-		const destructured = sample.code.split('#').map(part => part.split(',').map(part => part.split(' ').map(part => parseInt(part, 32)).filter(isFinite)));
+		const sample = ObjectDictionary[this.type];
+		const destructured = sample.split('#').map(part => part.split(',').map(part => part.split(' ').map(part => parseInt(part, 32)).filter(isFinite)));
 		const rotationFactor = this.rotation * -Math.PI / 180;
 		for (const line of Array(...destructured[0], ...destructured[1])) {
 			for (let t = 0, e; t < line.length; t += 2) {

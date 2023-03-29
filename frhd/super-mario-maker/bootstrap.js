@@ -53,18 +53,17 @@ window.insertObject = function () {
 	}
 }
 
-import levelDictionary from "./constants/marioLevelDictionary.js";
-
+const LevelDictionary = await fetch('./constants/levels.json').then(r => r.json());
 const worker = new Worker('./worker.js');
-worker.addEventListener('message', function({ data }) {
+worker.addEventListener('message', ({ data }) => {
 	URL.revokeObjectURL(preview.src);
 	preview.src = URL.createObjectURL(data.args.blob);
 	output.title = `${Number(String(data.args.code.length).slice(0, -3))}k`;
-	if (parseInt(output.title) > 2e3 && confirm("The track is a little large; would you like to download the edited track instead?")) {
-		let date = new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i);
-		let link = document.createElement('a');
-		link.href = URL.createObjectURL(new Blob([data.args.code], { type: 'text/plain' }));
-		link.download = 'frhd_edit_' + date[0] + '_' + date[1].replace(/\..+/, '').replace(/:/g, '-');
+	if (parseInt(output.title) > 2e3 && confirm("The result is quite large; would you like to download the edited track instead?")) {
+		let link = Object.assign(document.createElement('a'), {
+			download: 'frhd_edit-' + new Intl.DateTimeFormat('en-CA', { dateStyle: 'short', timeStyle: 'medium' }).format().replace(/[/:]/g, '-').replace(/,+\s*/, '_').replace(/\s+.*$/, ''),
+			href: window.URL.createObjectURL(new Blob([data.args.code], { type: 'text/plain' }))
+		});
 		link.click();
 		URL.revokeObjectURL(link.href);
 		return;
@@ -73,21 +72,15 @@ worker.addEventListener('message', function({ data }) {
 	output.value = data.args.code;
 });
 
-function updateCombined(updated = insertedObjects) {
-	// let physics = [];
-	// let scenery = [];
-	// let powerups = [];
-	// for (const object of updated) {
-	// 	const parts = object.toString().split('#');
-	// 	parts[0] && physics.push(parts[0]);
-	// 	parts[1] && scenery.push(parts[1]);
-	// 	parts[2] && powerups.push(parts[2]);
-	// }
+navigation.addEventListener('navigate', function onnavigate() {
+	this.removeEventListener('click', onnavigate);
+	worker !== void 0 && worker.terminate();
+});
 
-	// output.value = Array(physics.join(','), scenery.join(','), powerups.join(',')).join('#');
+function updateCombined(updated = insertedObjects) {
 	worker.postMessage({
 		args: {
-			code: lvl.value === 'custom' ? custom.value.padEnd(2, '##') : levelDictionary[lvl.value],
+			code: lvl.value === 'custom' ? custom.value.padEnd(2, '##') : LevelDictionary[lvl.value],
 			translate: {
 				x: 0,
 				y: 2e3
@@ -101,8 +94,3 @@ function updateCombined(updated = insertedObjects) {
 		cmd: 'transform'
 	});
 }
-
-navigation.addEventListener('navigate', function onnavigate() {
-	this.removeEventListener('click', onnavigate);
-	worker !== void 0 && worker.terminate();
-});
