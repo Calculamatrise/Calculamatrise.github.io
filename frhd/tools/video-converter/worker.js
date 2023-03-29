@@ -1,50 +1,66 @@
-let offset = { x: 0, y: 0 };
+let canvas = new OffscreenCanvas(0, 0);
+let ctx = canvas.getContext('2d');
+let readCtx = canvas.getContext('2d', { willReadFrequently: true });
+let shouldFilter = false;
+let shouldInvert = false;
+let offset = {x: 0, y: 50};
 let types = {
     physics: [],
     scenery: [],
     powerups: []
 }
 
-addEventListener('message', function({ data }) {
+addEventListener('message', ({ data }) => {
+	if ('canvas' in data) {
+		canvas = data.canvas;
+		ctx = canvas.getContext('2d');
+		readCtx = canvas.getContext('2d', { willReadFrequently: true }); // set to false when hardware acceleration is enabled
+		return;
+	} else if ('imageBitmap' in data) {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(data.imageBitmap, 0, 0, canvas.width, canvas.height);
+		const pixels = readCtx.getImageData(0, 0, canvas.width, canvas.height);
+		shouldFilter && filter(pixels);
+		shouldInvert && invert(pixels);
+		for (let y = 0, iy; y < pixels.height; y++) {
+			for (let x = 0, ix, dx, e; x < pixels.width; x++) {
+				e = (x + y * pixels.width) * 4;
+				ix = x * 2 + offset.x;
+				iy = y * 2 + offset.y;
+				dx = ix + 2;
+				if (pixels.data[e] == 255 || pixels.data[e - 4] == pixels.data[e] && Math.floor((e - 4) / pixels.width / 4) == y) continue;
+				for (let i = x + 1, s; i < pixels.width; i++) {
+					s = (i + y * pixels.width) * 4;
+					if (i >= pixels.width - 1 || pixels.data[s] != pixels.data[e]) {
+						dx = (i - 1) * 2 + offset.x;
+						break;
+					}
+				}
+
+				types[pixels.data[e] == 0 ? 'physics' : 'scenery'].push(`${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${(iy + 2).toString(32)} ${dx.toString(32)} ${(iy + 2).toString(32)}`);
+			}
+		}
+
+		types.physics.push(`${(offset.x + pixels.width - 40).toString(32)} 1i ${(offset.x + pixels.width + 40).toString(32)} 1i`);
+		types.powerups.push(`W ${(offset.x + pixels.width).toString(32)} 0 ${(offset.x + pixels.width + pixels.width * 10).toString(32)} 0`);
+		offset.x += pixels.width * 10;
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.putImageData(pixels, 0, 0);
+		data.imageBitmap.close();
+		return;
+	}
+
     switch(data.cmd) {
         case 'init':
-            offset = { x: 0, y: 0 };
-            types.physics = [];
-            types.scenery = [];
-            types.powerups = [];
-            offset = {
-                x: -data.width,
-                y: 50
-            }
-
+			canvas.height = data.height;
+			canvas.width = data.width;
+			shouldFilter = data.filter;
+			shouldInvert = data.invert;
+            types.physics.splice(0);
+            types.scenery.splice(0);
+            types.powerups.splice(0);
+			offset.x = -data.width;
             postMessage(data);
-            break;
-
-        case 'render':
-            data.filter && filter(data.pixels);
-            data.invert && invert(data.pixels);
-            for (let y = 0, iy; y < data.pixels.height; y++) {
-                for (let x = 0, ix, dx, e; x < data.pixels.width; x++) {
-                    e = (x + y * data.pixels.width) * 4;
-                    ix = x * 2 + offset.x;
-                    iy = y * 2 + offset.y;
-                    dx = ix + 2;
-                    if (data.pixels.data[e] == 255 || data.pixels.data[e - 4] == data.pixels.data[e] && Math.floor((e - 4) / data.pixels.width / 4) == y) continue;
-                    for (let i = x + 1, s; i < data.pixels.width; i++) {
-                        s = (i + y * data.pixels.width) * 4;
-                        if (i >= data.pixels.width - 1 || data.pixels.data[s] != data.pixels.data[e]) {
-                            dx = (i - 1) * 2 + offset.x;
-                            break;
-                        }
-                    }
-
-                    types[data.pixels.data[e] == 0 ? "physics" : "scenery"].push(`${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${(iy + 2).toString(32)} ${dx.toString(32)} ${(iy + 2).toString(32)}`);
-                }
-            }
-
-            types.physics.push(`${(offset.x + data.pixels.width - 40).toString(32)} 1i ${(offset.x + data.pixels.width + 40).toString(32)} 1i`);
-            types.powerups.push(`W ${(offset.x + data.pixels.width).toString(32)} 0 ${(offset.x + data.pixels.width + data.pixels.width * 10).toString(32)} 0`);
-            offset.x += data.pixels.width * 10;
             break;
 
         case 'fetch':
@@ -71,17 +87,3 @@ function invert(pixels) {
     }
     return pixels;
 }
-
-
-// let canvas;
-// let context;
-
-// addEventListener('message', event => {
-//   if (event.data.offscreen) {
-//     canvas = event.data.offscreen;
-//     context = canvas.getContext('2d');
-//   } else if (event.data.imageBitmap && context) {
-//     context.drawImage(event.data.imageBitmap, 0, 0);
-//     // do something with frame
-//   }
-// });

@@ -15,9 +15,6 @@ export default class {
 							id: 'selector',
 							min: 1,
 							step: '1',
-							style: {
-								padding: 0
-							},
 							type: 'number',
 							value: this.parent.cache.length + 1,
 							onkeydown: event => event.stopPropagation(),
@@ -60,7 +57,11 @@ export default class {
 								})
 							],
 							className: 'button option ripple',
-							innerText: 'Hide'
+							innerText: 'Hide',
+							onclick() {
+								this.firstElementChild.checked = !this.firstElementChild.checked;
+								this.firstElementChild.dispatchEvent(new Event('change'));
+							}
 						}),
 						this.parent.constructor.createElement('button', {
 							innerText: 'Clear',
@@ -108,7 +109,7 @@ export default class {
 								confirm(`Are you sure you\'d like to delete Layer ${this.id}?`) && this.remove();
 							},
 							style: {
-								color: 'hsl(0deg 70% 40%)'
+								color: 'crimson'
 							}
 						})
 					]

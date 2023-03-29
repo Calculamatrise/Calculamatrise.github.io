@@ -1,4 +1,3 @@
-import Helpers from "./utils/Helpers.js";
 import MarioObject from "./utils/MarioObject.js";
 
 const insertedObjects = new Proxy([], {

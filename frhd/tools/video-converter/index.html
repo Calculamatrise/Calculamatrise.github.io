@@ -5,14 +5,14 @@
     <link rel="stylesheet" href="/styles/default.css">
     <script src="/bootstrap.js" type="module"></script>
 </head>
-<body>
+<body onload="new URLSearchParams(location.search).has('bypass') || document.body.replaceChildren('401: Unauthorized'), document.body.style.removeProperty('display'), document.body.removeAttribute('onload')" style="display: none;">
     <main class="content">
         <input type="file" class="secondary" id="input" accept="video/*">
-        <label>Invert Colours&emsp;<input type="checkbox" id="invert"></label>
-        <canvas id="view" width="720" height="480"></canvas>
+        <label>Invert Colours&emsp;<input type="checkbox" id="invert"></label><br>
+		<canvas id="view" width="720" height="480"></canvas>
         <progress id="progress" value="0" max="100" class="show-percentage"></progress><br>
         <textarea id="code" placeholder="Result" value="" cols="30" rows="10" onclick="this.select()" readonly></textarea>
     </main>
-    <script type="module" src="bootstrap.js?bypass"></script>
+    <script type="module" src="bootstrap.js"></script>
 </body>
 </html>

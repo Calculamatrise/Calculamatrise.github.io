@@ -1,43 +1,29 @@
 export default class Manipulation {
-    canvas = new OffscreenCanvas(512, 512);
-    ctx = this.canvas.getContext("2d");
+    canvas = new OffscreenCanvas(0, 0);
+    ctx = this.canvas.getContext('2d');
     image = new Image();
-    worker = new Worker("./worker.js");
-
-    /**
-     * @param {number} value
-     */
-    set progress(value) {
-        value = ~~value;
-        document.title = `Progress... ${value}%`;
-        progress.setAttribute("value", value);
-    }
-
+    worker = new Worker('./worker.js');
     constructor() {
-        this.image.crossOrigin = "Anonymous";
+        this.image.crossOrigin = 'Anonymous';
         this.image.onload = this.render.bind(this);
-        this.worker.addEventListener("message", ({ data }) => {
+        this.worker.addEventListener('message', ({ data }) => {
             switch(data.cmd) {
-                case "move":
+                case 'move':
                     code.value = data.result;
                     break;
 
-                case "progress":
+                case 'progress':
                     this.progress = data.progress;
                     break;
 
-                case "render":
+                case 'render':
                     this.image.value = null;
                     if (~~data.size > 16e4) {
-                        if (!confirm("The track is a little large; would you like to download the edited track instead?")) return;
-                        let date = new Date(new Date().setHours(new Date().getHours() - new Date().getTimezoneOffset() / 60)).toISOString().split(/t/i);
-                        let link = document.createElement("a");
-                        let file = new Blob([data.result], {
-                            type: "text/plain"
-                        });
-                        link.href = URL.createObjectURL(file);
-                        link.download = "frhd_track_" + date[0] + "_" + date[1].replace(/\..+/, "").replace(/:/g, "-");
-                        link.click();
+                        if (!confirm("The result is a quite large; would you like to download the converted track instead?")) return;
+                        Object.assign(document.createElement('a'), {
+							download: 'frhd_track-' + new Intl.DateTimeFormat('en-CA', { dateStyle: 'short', timeStyle: 'medium' }).format().replace(/[/:]/g, '-').replace(/,+\s*/, '_').replace(/\s+.*$/, ''),
+							   href: window.URL.createObjectURL(new Blob([data.result], { type: 'text/plain' }))
+						}).dispatchEvent(new MouseEvent('click'));
                         return;
                     }
 
@@ -47,14 +33,20 @@ export default class Manipulation {
         });
     }
 
+	/** @param {number} value */
+    set progress(value) {
+        value = ~~value;
+        document.title = `Progress... ${value}%`;
+        progress.setAttribute('value', value);
+    }
+
     render() {
-        this.progress = 0;
         this.canvas.width = this.image.width;
         this.canvas.height = this.image.height;
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.drawImage(this.image, 0, 0, this.canvas.width, this.canvas.height);
         this.worker.postMessage({
-            cmd: "render",
+            cmd: 'render',
             filter: true,
             invert: invert.checked,
             pixels: this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height)

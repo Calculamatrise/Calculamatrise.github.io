@@ -47,6 +47,7 @@ export default class extends EventEmitter {
 		this.mouse.on('down', this.press.bind(this));
 		this.mouse.on('move', this.stroke.bind(this));
 		this.mouse.on('up', this.clip.bind(this));
+		this.mouse.on('wheel', this.wheel.bind(this));
 
 		this.on('settingsChange', this.setColorScheme);
 		this.setColorScheme();
@@ -202,10 +203,7 @@ export default class extends EventEmitter {
 			return;
 		}
 
-		if (event.ctrlKey) {
-			this.tools.select('select');
-		}
-
+		event.ctrlKey && this.tools.select('select');
 		event.shiftKey || this.tools.selected.press(event);
 		this.draw();
 	}
@@ -226,6 +224,27 @@ export default class extends EventEmitter {
 	clip(event) {
 		event.shiftKey || this.tools.selected.clip(event);
 		this.draw();
+	}
+
+	wheel(event) {
+		if (event.ctrlKey) {
+			if (event.deltaY < 0) {
+				this.zoom = Math.min(this.zoom * window.devicePixelRatio + .25, window.devicePixelRatio * 4);
+			} else {
+				this.zoom = Math.max(this.zoom / window.devicePixelRatio - .25, window.devicePixelRatio / 5);
+			}
+
+			window.dispatchEvent(new Event('resize'));
+			return;
+		}
+
+		if (event.deltaY > 0 && this.tools.selected.size <= 2) {
+			return;
+		} else if (event.deltaY < 0 && this.tools.selected.size >= 100) {
+			return;
+		}
+
+		this.tools.selected.size -= event.deltaY / 100;
 	}
 
 	keydown(event) {

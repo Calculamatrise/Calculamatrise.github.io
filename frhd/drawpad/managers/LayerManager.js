@@ -61,11 +61,9 @@ export default class {
 	}
 
 	close() {
-		for (const layer of this.cache) {
+		for (const layer of this.cache.splice(0)) {
 			layer.remove();
 		}
-
-		this.cache.splice(0);
 	}
 
 	static createElement(type, options = {}) {

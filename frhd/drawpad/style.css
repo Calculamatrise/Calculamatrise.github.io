@@ -206,8 +206,9 @@ label.button {
 }
 
 #container div#layers .layer input.selector {
-	width: 2rem;
 	height: 1rem;
+	padding: 0;
+	width: 2rem;
 }
 
 #container div#layers .layer .option {

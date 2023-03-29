@@ -5,13 +5,13 @@
     <link rel="stylesheet" href="/styles/default.css">
     <script type="module" src="/bootstrap.js"></script>
 </head>
-<body>
+<body onload="new URLSearchParams(location.search).has('bypass') || document.body.replaceChildren('401: Unauthorized'), document.body.style.removeProperty('display'), document.body.removeAttribute('onload')" style="display: none;">
     <main class="content">
         <input type="file" class="secondary" id="image" accept="image/*">
         <label>Invert Colours&emsp;<input type="checkbox" id="invert"></label>
         <progress id="progress" value="0" max="100" class="show-percentage"></progress>
         <textarea id="code" placeholder="Result" cols="30" rows="10" onclick="this.select()" readonly></textarea>
     </main>
-    <script type="module" src="bootstrap.js?bypass"></script>
+    <script type="module" src="bootstrap.js"></script>
 </body>
 </html>

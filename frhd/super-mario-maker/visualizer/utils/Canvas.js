@@ -88,9 +88,10 @@ export default class {
 
 	import(code) {
 		this.clear();
-		const [physics, scenery] = code.split('#');
+		const [physics, scenery, powerups] = code.split('#');
 		physics.length > 0 && this.physics.push(...this.constructor.parseLines(physics).filter(line => Math.min(...line.filter((_, i) => i % 2)) < 1e3));
 		scenery.length > 0 && this.scenery.push(...this.constructor.parseLines(scenery).filter(line => Math.min(...line.filter((_, i) => i % 2)) < 1e3));
+		powerups.length > 0 && (this.powerups = powerups);
 		this.draw();
 	}
 
@@ -153,7 +154,7 @@ export default class {
 			}
 		}
 
-		return Array(physics.concat(miniPhysics).map(line => line.map(coord => coord.toString(32)).join(' ')).join(','), scenery.concat(miniScenery).map(line => line.map(coord => coord.toString(32)).join(' ')).join(',')).join('#');
+		return Array(physics.concat(miniPhysics).map(line => line.map(coord => coord.toString(32)).join(' ')).join(','), scenery.concat(miniScenery).map(line => line.map(coord => coord.toString(32)).join(' ')).join(','), this.powerups || '').join('#');
 	}
 
 	static parseLines(part) {

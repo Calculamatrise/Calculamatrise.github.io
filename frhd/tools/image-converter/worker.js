@@ -1,16 +1,21 @@
-const canvas = new OffscreenCanvas(1024, 1024);
-const ctx = canvas.getContext("2d");
+let canvas = new OffscreenCanvas(0, 0);
+let ctx = canvas.getContext('2d');
+addEventListener('message', function({ data }) {
+	if ('canvas' in data) {
+		canvas = data.canvas;
+		ctx = canvas.getContext('2d');
+		return;
+	}
 
-addEventListener("message", function({ data }) {
     switch(data.cmd) {
-        case "move":
-            data.physics = types.physics.split(/\u002C/g).map(t => t.split(/\s/g).map((t, e) => (parseInt(t, 32) + data[e % 2 == 0 ? "x" : "y"]).toString(32)).join(" ")).join(" ");
-            data.scenery = types.scenery.split(/\u002C/g).map(t => t.split(/\s/g).map((t, e) => (parseInt(t, 32) + data[e % 2 == 0 ? "x" : "y"]).toString(32)).join(" ")).join(" ");
-            data.powerups = types.powerups.split(/\u002C/g).map(t => t.split(/\s/g).map((t, e, i) => (i[0] == "V" ? e > 0 && e < 3 : e > 0) ? (parseInt(t, 32) + data[e % 2 == 0 ? "x" : "y"]).toString(32) : t).join(" ")).join(",");
+        case 'move':
+            data.physics = types.physics.split(/,+/g).map(t => t.split(/\s+/g).map((t, e) => (parseInt(t, 32) + data[e % 2 == 0 ? 'x' : 'y']).toString(32)).join(' ')).join(' ');
+            data.scenery = types.scenery.split(/,+/g).map(t => t.split(/\s+/g).map((t, e) => (parseInt(t, 32) + data[e % 2 == 0 ? 'x' : 'y']).toString(32)).join(' ')).join(' ');
+            data.powerups = types.powerups.split(/,+/g).map(t => t.split(/\s+/g).map((t, e, i) => (i[0] == 'V' ? e > 0 && e < 3 : e > 0) ? (parseInt(t, 32) + data[e % 2 == 0 ? 'x' : 'y']).toString(32) : t).join(' ')).join(',');
             data.result = `${data.physics}#${data.scenery}#${data.powerups}`;
             break;
 
-        case "render": {
+        case 'render': {
             let types = {
                 physics: [],
                 scenery: [],
@@ -20,7 +25,7 @@ addEventListener("message", function({ data }) {
             data.filter && filter(data.pixels);
             data.invert && invert(data.pixels);
             for (let y = 0, iy; y < data.pixels.height; y++) {
-                for (let x = 0, ix, dx, e, f; x < data.pixels.width; x++) {
+                for (let x = 0, ix, dx, e; x < data.pixels.width; x++) {
                     e = (x + y * data.pixels.width) * 4;
                     ix = x * 2;
                     iy = y * 2;
@@ -34,7 +39,7 @@ addEventListener("message", function({ data }) {
                         }
                     }
 
-                    types[data.pixels.data[e] == 0 ? "physics" : "scenery"].push(`${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${(iy + 2).toString(32)} ${dx.toString(32)} ${(iy + 2).toString(32)}`);
+                    types[data.pixels.data[e] == 0 ? 'physics' : 'scenery'].push(`${ix.toString(32)} ${iy.toString(32)} ${dx.toString(32)} ${iy.toString(32)},${ix.toString(32)} ${(iy + 2).toString(32)} ${dx.toString(32)} ${(iy + 2).toString(32)}`);
                 }
                 
                 postMessage({
@@ -43,7 +48,7 @@ addEventListener("message", function({ data }) {
                 });
             }
 
-            data.result = types.physics.join(",") + "#" + types.scenery.join(",") + "#" + types.powerups.join(",");
+            data.result = types.physics.join(',') + '#' + types.scenery.join(',') + '#' + types.powerups.join(',');
             data.size = data.result.length;
             break;
         }

@@ -16,7 +16,7 @@
 </head>
 <body>
     <main id="container">
-        <canvas id="view"></canvas>
+        <canvas id="view" oncontextmenu="event.preventDefault();"></canvas>
         <div class="user-interface">
             <section class="left top">
                 <label for="toolbar" class="button secondary">Toolbar</label>
@@ -56,7 +56,7 @@
             <label for="import" class="button secondary ripple" style="text-align: center; line-height: 350%; font-size: calc(40px / 3);">Import Canvas</label>
             <button class="secondary ripple" onclick="
                 Object.assign(document.createElement('a'), {
-                	download: 'svg_canvas-' + new Intl.DateTimeFormat('en-CA', { dateStyle: 'short', timeStyle: 'medium' }).format().replace(/[/:]/g, '-').replace(/,+\s*/, '_').replace(/\s+.*$/, ''),
+                	download: 'frhd_drawpad_track-' + new Intl.DateTimeFormat('en-CA', { dateStyle: 'short', timeStyle: 'medium' }).format().replace(/[/:]/g, '-').replace(/,+\s*/, '_').replace(/\s+.*$/, ''),
                		href: window.URL.createObjectURL(new Blob([canvas.toString()], { type: 'text/plain' }))
 				}).dispatchEvent(new MouseEvent('click'));
             ">Export Canvas</button>

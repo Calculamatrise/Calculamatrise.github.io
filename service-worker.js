@@ -44,30 +44,10 @@ self.addEventListener('activate', function(event) {
 self.addEventListener('fetch', function(event) {
     event.preventDefault();
 
-    const { pathname, searchParams } = new URL(event.request.url);
-    const list = pathname.split('/');
+    const { pathname } = new URL(event.request.url);
     switch(event.request.method) {
         case 'GET': {
             // fetch head from here and retrun it in response
-            switch(list[1]) {
-                case 'frhd': {
-                    let list = pathname.split('/');
-                    if (list[2] === 'tools' && (list[3] === 'image-converter' || list[3] === 'video-converter') && !searchParams.has("bypass")) {
-                        return event.respondWith(Response.resolveStatus(401, 'Unauthorized'));
-                    }
-                    break;
-                }
-
-                case 'private': {
-                    return event.respondWith(new Response("403 Forbidden", {
-                        status: 403,
-                        headers: {
-                            'Content-Type': 'text/plain'
-                        }
-                    }));
-                }
-            }
-
             return event.respondWith(fetch(event.request).catch(function() {
                 return caches.open(OFFLINE_CACHE).then(function(cache) {
                     return cache.match(event.request.url).then(function(res) {
