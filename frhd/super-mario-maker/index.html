@@ -11,9 +11,8 @@
 <body>
     <main class="content">
 		<div style="width: min-content;">
-			<select id="lvl" onchange="levelChanged(event)" style="border-bottom: 2px solid var(--border-color);margin-bottom: .25rem;width: -webkit-fill-available;">
+			<select id="level" onchange="levelChanged(event)" style="border-bottom: 2px solid var(--border-color);margin-bottom: .25rem;width: -webkit-fill-available;">
 				<option value="custom" disabled selected>Select a level</option>
-				<option value="blank">Blank</option>
 				<option value="custom">Custom</option>
 			</select>
 			<textarea placeholder="Custom code" id="custom" style="display: none;resize: none;width: -webkit-fill-available;"></textarea>
@@ -21,9 +20,6 @@
 				<div is="object-template" id="template" style="display: flex;">
 					<select id="obj" style="border-radius: 0;">
 						<option value="plain" disabled selected>Select an object</option>
-						<option value="block">Block</option>
-						<option value="bullet">Bullet</option>
-						<option value="mblock">Mystery Block</option>
 						<option value="custom">Custom</option>
 					</select>
 					<input type="number" placeholder="x" id="x" style="border-radius: 0;">

@@ -27,13 +27,13 @@ const insertedObjects = new Proxy([], {
 	}
 });
 
-window.levelChanged = function (event) {
+window.levelChanged = event => {
 	custom.style[(event.target.value === 'custom' ? 'remove' : 'set') + 'Property']('display', 'none');
 	custom.value = null;
 	updateCombined();
 }
 
-window.insertObject = function () {
+window.insertObject = () => {
 	const object = document.querySelector(`option[value=${obj.value}]`);
 	if (!object.disabled) {
 		insertedObjects.push(new MarioObject({
@@ -53,7 +53,17 @@ window.insertObject = function () {
 	}
 }
 
-const LevelDictionary = await fetch('./constants/levels.json').then(r => r.json());
+const LevelDictionary = await fetch('https://yxkpro.github.io/super-mario-maker/constants/levels.json').then(r => r.status === 404 ? fetch('./constants/levels.json') : r).then(r => r.json());
+if ('level' in window) {
+	for (const id in LevelDictionary) {
+		level.lastElementChild.before(Object.assign(document.createElement('option'), {
+			innerText: id.replace('_', ' '),
+			style: 'text-transform: capitalize;',
+			value: id
+		}));
+	}
+}
+
 const worker = new Worker('./worker.js');
 worker.addEventListener('message', ({ data }) => {
 	URL.revokeObjectURL(preview.src);
@@ -80,7 +90,7 @@ navigation.addEventListener('navigate', function onnavigate() {
 function updateCombined(updated = insertedObjects) {
 	worker.postMessage({
 		args: {
-			code: lvl.value === 'custom' ? custom.value.padEnd(2, '##') : LevelDictionary[lvl.value],
+			code: level.value === 'custom' ? custom.value.padEnd(2, '##') : LevelDictionary[level.value],
 			translate: {
 				x: 0,
 				y: 2e3

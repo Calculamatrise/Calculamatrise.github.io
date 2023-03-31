@@ -2,7 +2,7 @@ import MouseHandler from "../handlers/MouseHandler.js";
 import ToolHandler from "../handlers/ToolHandler.js";
 
 const key = 'super-mario-visualizer-settings';
-const LevelDictionary = await fetch('../constants/levels.json').then(r => r.json());
+const LevelDictionary = await fetch('https://yxkpro.github.io/super-mario-maker/constants/levels.json').then(r => r.status === 404 ? fetch('../constants/levels.json') : r).then(r => r.json());
 export default class {
 	camera = {x: 0,y: 0};
 	mouse = new MouseHandler();
@@ -42,6 +42,15 @@ export default class {
 		this.mouse.on('down', this.press.bind(this));
 		this.mouse.on('move', this.stroke.bind(this));
 		this.mouse.on('up', this.clip.bind(this));
+		if ('level' in window) {
+			for (const id in LevelDictionary) {
+				level.lastElementChild.before(Object.assign(document.createElement('option'), {
+					innerText: id.replace('_', ' '),
+					style: 'text-transform: capitalize;',
+					value: id
+				}));
+			}
+		}
 
 		document.addEventListener('keydown', this.keydown.bind(this));
 		window.addEventListener('resize', this.constructor.resize.bind(this.view));

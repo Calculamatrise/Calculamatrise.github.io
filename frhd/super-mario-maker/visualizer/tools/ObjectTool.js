@@ -38,18 +38,18 @@ export default class extends Tool {
 				for (const line of this.constructor.physics) {
 					for (let i = 0; i < line.length; i += 2) {
 						if (event.shiftKey)
-							line[i + 1] = line[i + 1] * -1 - this.offsetY * 2;
+							line[i + 1] = line[i + 1] * -1 - 2 * (this.offsetY % 25);
 						else
-							line[i] = line[i] * -1 + this.offsetX * 2;
+							line[i] = line[i] * -1 - 2 * (this.offsetX % 25);
 					}
 				}
 
 				for (const line of this.constructor.scenery) {
 					for (let i = 0; i < line.length; i += 2) {
 						if (event.shiftKey)
-							line[i + 1] = line[i + 1] * -1 - this.offsetY * 2;
+							line[i + 1] = line[i + 1] * -1 - 2 * (this.offsetY % 25);
 						else
-							line[i] = line[i] * -1 + this.offsetX * 2;
+							line[i] = line[i] * -1 - 2 * (this.offsetX % 25);
 					}
 				}
 				break;
@@ -60,16 +60,16 @@ export default class extends Tool {
 				for (const line of this.constructor.physics) {
 					for (let i = 0, e; i < line.length; i += 2) {
 						e = line[i];
-						line[i] = Math.round(Math.cos(rotationFactor) * e + Math.sin(rotationFactor) * line[i + 1]);
-						line[i + 1] = Math.round(-Math.sin(rotationFactor) * e + Math.cos(rotationFactor) * line[i + 1]) - this.offsetY * 2;
+						line[i] = Math.round(Math.cos(rotationFactor) * e + Math.sin(rotationFactor) * line[i + 1]) - 2 * (this.offsetX % 25);
+						line[i + 1] = Math.round(-Math.sin(rotationFactor) * e + Math.cos(rotationFactor) * line[i + 1]);
 					}
 				}
 
 				for (const line of this.constructor.scenery) {
 					for (let i = 0, e; i < line.length; i += 2) {
 						e = line[i];
-						line[i] = Math.round(Math.cos(rotationFactor) * e + Math.sin(rotationFactor) * line[i + 1]);
-						line[i + 1] = Math.round(-Math.sin(rotationFactor) * e + Math.cos(rotationFactor) * line[i + 1]) - this.offsetY * 2;
+						line[i] = Math.round(Math.cos(rotationFactor) * e + Math.sin(rotationFactor) * line[i + 1]) - 2 * (this.offsetX % 25);
+						line[i + 1] = Math.round(-Math.sin(rotationFactor) * e + Math.cos(rotationFactor) * line[i + 1]);
 					}
 				}
 				break;
@@ -85,15 +85,15 @@ export default class extends Tool {
 		this.scenery = structuredClone(this.constructor.scenery);
 		for (const line of this.physics) {
 			for (let i = 0; i < line.length; i += 2) {
-				line[i] += Math.floor(Math.round(((this.mouse.position.x - this.canvas.view.width / 2 + this.canvas.camera.x) / this.canvas.zoom) / 25) * 25);
-				line[i + 1] += Math.floor(Math.round(((this.mouse.position.y - this.canvas.view.height / 2 + this.canvas.camera.y) / this.canvas.zoom) / 25) * 25);
+				line[i] += Math.round(((this.mouse.position.x + this.offsetX % 25 - this.canvas.view.width / 2 + this.canvas.camera.x) / this.canvas.zoom) / 25) * 25;
+				line[i + 1] += Math.round(((this.mouse.position.y + this.offsetY % 25 - this.canvas.view.height / 2 + this.canvas.camera.y) / this.canvas.zoom) / 25) * 25;
 			}
 		}
 
 		for (const line of this.scenery) {
 			for (let i = 0; i < line.length; i += 2) {
-				line[i] += Math.floor(Math.round((this.mouse.position.x - this.canvas.view.width / 2 + this.canvas.camera.x) / this.canvas.zoom / 25) * 25);
-				line[i + 1] += Math.floor(Math.round((this.mouse.position.y - this.canvas.view.height / 2 + this.canvas.camera.y) / this.canvas.zoom / 25) * 25);
+				line[i] += Math.round((this.mouse.position.x + this.offsetX % 25 - this.canvas.view.width / 2 + this.canvas.camera.x) / this.canvas.zoom / 25) * 25;
+				line[i + 1] += Math.round((this.mouse.position.y + this.offsetY % 25 - this.canvas.view.height / 2 + this.canvas.camera.y) / this.canvas.zoom / 25) * 25;
 			}
 		}
 	}
