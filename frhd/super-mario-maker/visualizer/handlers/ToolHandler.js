@@ -47,7 +47,7 @@ export default class {
 		for (const id in ObjectDictionary) {
 			this.cache.set(id, new ObjectDictionary[id](this));
 			if ('objects' in window) {
-				objects.appendChild(Helpers.createElement('label', {
+				objects.prepend(Helpers.createElement('label', {
 					children: [
 						Helpers.createElement('input', {
 							name: 'tool',

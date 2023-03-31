@@ -27,7 +27,10 @@
 				<label class="button ripple" style="display: inline-grid;">Import<input type="file" accept="text/plain" style="display: none;" onchange="this.files.length > 0 && this.files[0].text().then(text => canvas.import(text));"></label>
 				<button onclick="Object.assign(document.createElement('a'), {download: 'super_mario_track-' + new Intl.DateTimeFormat('en-CA', { dateStyle: 'short', timeStyle: 'medium' }).format().replace(/[/:]/g, '-').replace(/,+\s*/, '_').replace(/\s+.*$/, ''), href: window.URL.createObjectURL(new Blob([canvas.toString()], { type: 'text/plain' }))}).click();">Export</button>
 			</section>
-			<section class="left middle" id="objects"></section>
+			<section class="left middle" id="objects">
+				<label class="button option ripple"><input type="radio" name="tool" style="display: none;" onchange="canvas.tools.select('custom')">Custom</label>
+				<label class="button option ripple"><input type="radio" name="tool" style="display: none;" onchange="canvas.tools.select('eraser')">Eraser</label>
+			</section>
 		</div>
 	</main>
     <script type="module" src="bootstrap.js"></script>
