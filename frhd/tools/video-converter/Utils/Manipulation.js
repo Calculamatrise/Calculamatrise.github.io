@@ -49,7 +49,7 @@ export default class {
     }
 
     get #scale() {
-        return Math.abs(this.scale / this.scale ** 2);
+        return Math.abs(this.scale ** (this.scale / Math.abs(this.scale))); // Math.abs(this.scale / this.scale ** 2);
     }
 
     /** @param {number} value */

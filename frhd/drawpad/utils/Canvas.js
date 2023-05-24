@@ -53,8 +53,21 @@ export default class extends EventEmitter {
 		this.setColorScheme();
 
 		document.addEventListener('keydown', this.keydown.bind(this));
-		window.addEventListener('resize', this.constructor.resize.bind(this.view));
+		window.addEventListener('resize', this.setCanvasSize.bind(this));
 		window.dispatchEvent(new Event('resize'));
+	}
+
+	setCanvasSize() {
+		const computedStyle = getComputedStyle(this.view);
+		this.view.setAttribute('height', parseFloat(computedStyle.height) * window.devicePixelRatio);
+		this.view.setAttribute('width', parseFloat(computedStyle.width) * window.devicePixelRatio);
+		this.ctx.fillStyle = '#'.padEnd(7, this.settings.theme == 'dark' ? 'fb' : '0');
+		this.ctx.lineCap = 'round';
+		this.ctx.lineJoin = 'round';
+		this.ctx.lineWidth = 2 * window.devicePixelRatio;
+		this.ctx.strokeStyle = this.ctx.fillStyle;
+		this.ctx.scale(this.zoom, this.zoom);
+		this.ctx.translate((this.ctx.canvas.width / 2 - this.camera.x) / this.zoom, (this.ctx.canvas.height / 2 - this.camera.y) / this.zoom);
 	}
 
 	setColorScheme({ theme } = this.settings) {
@@ -82,13 +95,7 @@ export default class extends EventEmitter {
 	}
 
 	draw() {
-		this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-		this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-		this.ctx.translate(this.ctx.canvas.width / 2 - this.camera.x, this.ctx.canvas.height / 2 - this.camera.y);
-		this.ctx.scale(this.zoom, this.zoom);
-		this.ctx.lineCap = 'round';
-		this.ctx.lineJoin = 'round';
-		this.ctx.lineWidth = 2 * window.devicePixelRatio;
+		this.ctx.clearRect((this.camera.x - this.ctx.canvas.width / 2) / this.zoom, (this.camera.y - this.ctx.canvas.height / 2) / this.zoom, this.ctx.canvas.width / this.zoom, this.ctx.canvas.height / this.zoom);
 		this.layers.cache.forEach(layer => layer.draw(this.ctx));
 		this.tools.selected.draw(this.ctx);
 	}
@@ -263,7 +270,9 @@ export default class extends EventEmitter {
 			case '+':
 			case '=':
 				if (event.ctrlKey || this.tools._selected === 'camera') {
-					this.zoom = Math.min(this.zoom * window.devicePixelRatio + .25, window.devicePixelRatio * 4);
+					const {a, b, c, d, e, f} = this.ctx.getTransform();
+					this.zoom = Math.min(window.devicePixelRatio * 4, (this.zoom + .25) * window.devicePixelRatio);
+					this.ctx.setTransform(this.zoom, b, c, this.zoom, e, f);
 					this.draw();
 				} else if (this.tools.selected.size < 100) {
 					this.tools.selected.size += 1;
@@ -272,7 +281,9 @@ export default class extends EventEmitter {
 
 			case '-':
 				if (event.ctrlKey || this.tools._selected === 'camera') {
-					this.zoom = Math.max(this.zoom / window.devicePixelRatio - .25, window.devicePixelRatio / 5);
+					const {a, b, c, d, e, f} = this.ctx.getTransform();
+					this.zoom = Math.max(window.devicePixelRatio / 5, (this.zoom - .25) * window.devicePixelRatio);
+					this.ctx.setTransform(this.zoom, b, c, this.zoom, e, f);
 					this.draw();
 				} else if (this.tools.selected.size > 2) {
 					this.tools.selected.size -= 1;
@@ -334,10 +345,5 @@ export default class extends EventEmitter {
 
 	static parseLines(part) {
 		return part.split(/,+/g).map(line => line.split(/\s+/g).map(coord => parseInt(coord, 32)));
-	}
-
-	static resize(event) {
-		this.setAttribute('height', getComputedStyle(this).getPropertyValue('height').slice(0, -2) * window.devicePixelRatio);
-		this.setAttribute('width', getComputedStyle(this).getPropertyValue('width').slice(0, -2) * window.devicePixelRatio);
 	}
 }

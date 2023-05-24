@@ -196,6 +196,8 @@ class Track {
 	}
 
 	scale(x = 1, y = 1) {
+		x = Math.abs(x ** (x / Math.abs(x)));
+		y = Math.abs(y ** (y / Math.abs(y)));
 		for (const line of this.physics) {
 			for (let t = 0; t < line.length; t += 2) {
 				line[t] *= x;
