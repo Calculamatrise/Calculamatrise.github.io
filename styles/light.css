@@ -4,6 +4,7 @@
     --border-color: #cfcfcf;
     --brightness-multiplier: -0.6;
     --text-color: #000000;
+	color-scheme: light;
 }
 
 ::-webkit-scrollbar-track {
