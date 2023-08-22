@@ -2,7 +2,7 @@ import EventEmitter from "./EventEmitter.js";
 
 export default class extends EventEmitter {
     get mobile() {
-        return navigator.userAgentData.mobile || window.innerWidth <= 500;
+        return navigator.userAgentData?.mobile || window.innerWidth <= 500;
     }
 
     nav = document.querySelector('nav') ?? document.createElement('nav');
