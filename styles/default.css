@@ -247,6 +247,11 @@ select {
 	padding: 1rem 1.25rem;
 }
 
+select > option {
+	background-color: var(--background-color);
+	/* background-color: inherit; */
+}
+
 input:not([type="checkbox"],[type="color"],[type="image"],[type="file"],[type="radio"],[type="range"]) {
     background-color: var(--accent-color);
     border: none;
